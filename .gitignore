@@ -1,0 +1,6 @@
+# Playtest saves and OS clutter
+save/
+Thumbs.db
+desktop.ini
+.DS_Store
+*.bak
