@@ -1,0 +1,585 @@
+//=============================================================================
+// NovaMenu.js
+//=============================================================================
+/*:
+ * @plugindesc Final Fantasy-style main menu: slanted command bars on the left and
+ * tall portrait cards for the party on the right.
+ * @author Project Nova
+ *
+ * @param Portrait Prefix
+ * @desc Portrait file in img/pictures is <prefix><Actor Name>.png unless the actor note says otherwise.
+ * @default Portrait_
+ *
+ * @param Visible Cards
+ * @type number
+ * @min 1
+ * @desc How many party cards are shown side by side (more members scroll by page).
+ * @default 4
+ *
+ * @param Title Text
+ * @desc Heading shown at the top-left of the menu.
+ * @default MAIN MENU
+ *
+ * @param Gold Icon
+ * @type number
+ * @desc Icon index shown next to the gold amount.
+ * @default 208
+ *
+ * @help
+ * Portraits
+ *   Put a portrait (any size, about 3:4) in img/pictures named
+ *   Portrait_<Actor Name>.png, e.g. Portrait_Kael.png.
+ *   To use a different file, write in the actor's note:  <portrait:FileName>
+ *   Without a portrait the card falls back to the actor's face graphic.
+ *
+ * The bottom of each card shows the actor's side-view battler, animated.
+ * Commands are the standard menu commands, so other plugins that add
+ * commands keep working.
+ */
+
+(function() {
+    'use strict';
+
+    var params = PluginManager.parameters('NovaMenu');
+    var PREFIX = String(params['Portrait Prefix'] || 'Portrait_');
+    var VISIBLE = Math.max(1, Number(params['Visible Cards'] || 4));
+    var TITLE = String(params['Title Text'] || 'MAIN MENU');
+    var GOLD_ICON = Number(params['Gold Icon'] || 208);
+
+    var COLOR = {
+        accent: '#62d6ff',
+        accentSoft: 'rgba(98, 214, 255, 0.35)',
+        frame: 'rgba(170, 215, 240, 0.55)',
+        panelTop: 'rgba(16, 30, 54, 0.88)',
+        panelBottom: 'rgba(6, 12, 26, 0.94)',
+        text: '#ffffff',
+        dim: '#a9c4dc',
+        hp: ['#5ff08c', '#23a356'],
+        mp: ['#62b8ff', '#2a62d6'],
+        exp: ['#ffe08a', '#d9a227']
+    };
+    var HEADER_H = 64;
+    var FOOTER_H = 48;
+
+    function portraitName(actor) {
+        var meta = actor.actor().meta.portrait;
+        return meta ? String(meta).trim() : PREFIX + actor.name();
+    }
+
+    function ctxOf(bitmap) { return bitmap._context || bitmap.context; }
+    function dirty(bitmap) {
+        if (bitmap._setDirty) bitmap._setDirty();
+        else if (bitmap._baseTexture) bitmap._baseTexture.update();
+    }
+
+    // Parallelogram / bevelled shapes drawn straight on the canvas.
+    function pathPoly(ctx, pts) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0][0], pts[0][1]);
+        for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+        ctx.closePath();
+    }
+
+    //=========================================================================
+    // Scene_Menu
+    //=========================================================================
+    var _Scene_Menu_create = Scene_Menu.prototype.create;
+    Scene_Menu.prototype.create = function() {
+        _Scene_Menu_create.call(this);
+        this.createNovaBackdrop();
+        this.createNovaHeader();
+        this.createNovaFooter();
+        $gameParty.members().forEach(function(actor) {
+            ImageManager.loadPicture(portraitName(actor));
+            ImageManager.loadSvActor(actor.battlerName());
+            ImageManager.loadFace(actor.faceName());
+        });
+    };
+
+    Scene_Menu.prototype.createGoldWindow = function() {
+        // Gold lives in the header and footer instead.
+        this._goldWindow = new Window_Gold(0, 0);
+        this._goldWindow.visible = false;
+    };
+
+    Scene_Menu.prototype.createCommandWindow = function() {
+        this._commandWindow = new Window_NovaMenuCommand(16, HEADER_H + 16);
+        this._commandWindow.setHandler('item', this.commandItem.bind(this));
+        this._commandWindow.setHandler('skill', this.commandPersonal.bind(this));
+        this._commandWindow.setHandler('equip', this.commandPersonal.bind(this));
+        this._commandWindow.setHandler('status', this.commandPersonal.bind(this));
+        this._commandWindow.setHandler('formation', this.commandFormation.bind(this));
+        this._commandWindow.setHandler('options', this.commandOptions.bind(this));
+        this._commandWindow.setHandler('save', this.commandSave.bind(this));
+        this._commandWindow.setHandler('gameEnd', this.commandGameEnd.bind(this));
+        this._commandWindow.setHandler('cancel', this.popScene.bind(this));
+        this.addWindow(this._commandWindow);
+    };
+
+    Scene_Menu.prototype.createStatusWindow = function() {
+        var x = this._commandWindow.x + this._commandWindow.width + 8;
+        this._statusWindow = new Window_NovaMenuStatus(x, HEADER_H);
+        this._statusWindow.reserveFaceImages();
+        this.addWindow(this._statusWindow);
+    };
+
+    Scene_Menu.prototype.createNovaBackdrop = function() {
+        var w = Graphics.boxWidth, h = Graphics.boxHeight;
+        var bmp = new Bitmap(w, h);
+        var ctx = ctxOf(bmp);
+        var g = ctx.createLinearGradient(0, 0, w, h);
+        g.addColorStop(0, 'rgba(4, 10, 26, 0.92)');
+        g.addColorStop(0.55, 'rgba(10, 28, 58, 0.80)');
+        g.addColorStop(1, 'rgba(2, 6, 16, 0.95)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        // diagonal light streaks
+        for (var i = 0; i < 6; i++) {
+            var x0 = w * (0.15 + i * 0.16), sw = 18 + (i % 3) * 22;
+            ctx.fillStyle = 'rgba(120, 200, 255, ' + (0.035 + (i % 2) * 0.02) + ')';
+            pathPoly(ctx, [[x0, 0], [x0 + sw, 0], [x0 + sw - h * 0.45, h], [x0 - h * 0.45, h]]);
+            ctx.fill();
+        }
+        dirty(bmp);
+        this._novaBackdrop = new Sprite(bmp);
+        this.addChildAt(this._novaBackdrop, this.children.indexOf(this._windowLayer));
+    };
+
+    Scene_Menu.prototype.createNovaHeader = function() {
+        var w = Graphics.boxWidth;
+        var bmp = new Bitmap(w, HEADER_H);
+        var ctx = ctxOf(bmp);
+        var g = ctx.createLinearGradient(0, 0, w, 0);
+        g.addColorStop(0, 'rgba(98, 214, 255, 0.28)');
+        g.addColorStop(0.45, 'rgba(98, 214, 255, 0.06)');
+        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, HEADER_H);
+        ctx.fillStyle = COLOR.accent;
+        ctx.fillRect(16, HEADER_H - 8, w * 0.42, 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.fillRect(16, HEADER_H - 5, w * 0.24, 1);
+        dirty(bmp);
+        bmp.fontSize = 34;
+        bmp.textColor = '#eaf7ff';
+        bmp.outlineColor = 'rgba(0, 40, 80, 0.8)';
+        bmp.outlineWidth = 5;
+        bmp.drawText(TITLE, 24, 10, w * 0.6, 44, 'left');
+        this._novaHeader = new Sprite(bmp);
+        this.addChild(this._novaHeader);
+
+        this._novaGold = new Sprite(new Bitmap(260, HEADER_H));
+        this._novaGold.x = w - 270;
+        this.addChild(this._novaGold);
+        this.refreshNovaGold();
+    };
+
+    Scene_Menu.prototype.refreshNovaGold = function() {
+        var bmp = this._novaGold.bitmap;
+        bmp.clear();
+        var ctx = ctxOf(bmp);
+        ctx.fillStyle = 'rgba(6, 18, 40, 0.75)';
+        pathPoly(ctx, [[30, 14], [254, 14], [242, 50], [18, 50]]);
+        ctx.fill();
+        ctx.strokeStyle = COLOR.frame;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        dirty(bmp);
+        var iconSet = ImageManager.loadSystem('IconSet');
+        var iw = Window_Base._iconWidth, ih = Window_Base._iconHeight;
+        bmp.blt(iconSet, GOLD_ICON % 16 * iw, Math.floor(GOLD_ICON / 16) * ih, iw, ih, 36, 16);
+        bmp.fontSize = 24;
+        bmp.textColor = '#ffffff';
+        bmp.outlineWidth = 4;
+        bmp.drawText($gameParty.gold() + ' ' + TextManager.currencyUnit, 70, 14, 166, 36, 'right');
+    };
+
+    Scene_Menu.prototype.createNovaFooter = function() {
+        var w = Graphics.boxWidth;
+        this._novaFooter = new Sprite(new Bitmap(w, FOOTER_H));
+        this._novaFooter.y = Graphics.boxHeight - FOOTER_H;
+        this.addChild(this._novaFooter);
+        this._novaFooterSecond = -1;
+        this.refreshNovaFooter();
+    };
+
+    Scene_Menu.prototype.refreshNovaFooter = function() {
+        var bmp = this._novaFooter.bitmap, w = bmp.width;
+        bmp.clear();
+        var ctx = ctxOf(bmp);
+        var g = ctx.createLinearGradient(0, 0, w, 0);
+        g.addColorStop(0, 'rgba(0, 0, 0, 0.75)');
+        g.addColorStop(1, 'rgba(0, 0, 0, 0.25)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 8, w, FOOTER_H - 8);
+        ctx.fillStyle = COLOR.accentSoft;
+        ctx.fillRect(0, 8, w, 1);
+        dirty(bmp);
+        bmp.fontSize = 20;
+        bmp.outlineWidth = 3;
+        bmp.textColor = COLOR.dim;
+        bmp.drawText('TIME', 20, 12, 60, 32, 'left');
+        bmp.textColor = '#ffffff';
+        bmp.drawText($gameSystem.playtimeText(), 74, 12, 120, 32, 'left');
+        var where = $gameMap.displayName() || ($dataMapInfos[$gameMap.mapId()] || {}).name || '';
+        bmp.textColor = COLOR.dim;
+        bmp.drawText('LOCATION', w - 380, 12, 110, 32, 'left');
+        bmp.textColor = '#ffffff';
+        bmp.drawText(where, w - 270, 12, 256, 32, 'left');
+    };
+
+    var _Scene_Menu_update = Scene_Menu.prototype.update;
+    Scene_Menu.prototype.update = function() {
+        _Scene_Menu_update.call(this);
+        var sec = $gameSystem.playtime();
+        if (sec !== this._novaFooterSecond) {
+            this._novaFooterSecond = sec;
+            this.refreshNovaFooter();
+        }
+    };
+
+    //=========================================================================
+    // Window_NovaMenuCommand - slanted bars
+    //=========================================================================
+    function Window_NovaMenuCommand() { this.initialize.apply(this, arguments); }
+    Window_NovaMenuCommand.prototype = Object.create(Window_MenuCommand.prototype);
+    Window_NovaMenuCommand.prototype.constructor = Window_NovaMenuCommand;
+
+    Window_NovaMenuCommand.prototype.initialize = function(x, y) {
+        Window_MenuCommand.prototype.initialize.call(this, x, y);
+        this.opacity = 0;
+        this._novaPulse = 0;
+    };
+    Window_NovaMenuCommand.prototype.windowWidth = function() {
+        return Math.max(190, Math.min(240, Math.floor(Graphics.boxWidth * 0.24)));
+    };
+    Window_NovaMenuCommand.prototype.standardPadding = function() { return 8; };
+    Window_NovaMenuCommand.prototype.itemHeight = function() { return 46; };
+    // fittingHeight() assumes lineHeight-sized rows; these bars are taller.
+    Window_NovaMenuCommand.prototype.windowHeight = function() {
+        return this.numVisibleRows() * this.itemHeight() + this.standardPadding() * 2;
+    };
+    Window_NovaMenuCommand.prototype.numVisibleRows = function() {
+        var room = Math.floor((Graphics.boxHeight - HEADER_H - FOOTER_H - 32) / this.itemHeight());
+        return Math.min(this.maxItems(), room);
+    };
+    Window_NovaMenuCommand.prototype.updateCursor = function() { this.setCursorRect(0, 0, 0, 0); };
+    Window_NovaMenuCommand.prototype.select = function(index) {
+        Window_MenuCommand.prototype.select.call(this, index);
+        if (this.contents) this.refresh();
+    };
+    Window_NovaMenuCommand.prototype.activate = function() {
+        Window_MenuCommand.prototype.activate.call(this);
+        if (this.contents) this.refresh();
+    };
+    Window_NovaMenuCommand.prototype.deactivate = function() {
+        Window_MenuCommand.prototype.deactivate.call(this);
+        if (this.contents) this.refresh();
+    };
+
+    Window_NovaMenuCommand.prototype.drawItem = function(index) {
+        var rect = this.itemRect(index);
+        var selected = index === this.index();
+        var lit = selected && this.active;
+        var ctx = ctxOf(this.contents);
+        var x = rect.x + 14, y = rect.y + 5, w = rect.width - 18, h = rect.height - 10, skew = 10;
+        var g = ctx.createLinearGradient(x, 0, x + w, 0);
+        if (selected) {
+            g.addColorStop(0, lit ? 'rgba(98, 214, 255, 0.95)' : 'rgba(98, 214, 255, 0.55)');
+            g.addColorStop(0.55, lit ? 'rgba(40, 120, 200, 0.55)' : 'rgba(40, 120, 200, 0.3)');
+            g.addColorStop(1, 'rgba(20, 60, 120, 0.05)');
+        } else {
+            g.addColorStop(0, 'rgba(30, 60, 100, 0.75)');
+            g.addColorStop(1, 'rgba(20, 40, 80, 0.10)');
+        }
+        ctx.fillStyle = g;
+        pathPoly(ctx, [[x + skew, y], [x + w, y], [x + w - skew, y + h], [x, y + h]]);
+        ctx.fill();
+        ctx.strokeStyle = selected ? 'rgba(220, 250, 255, 0.9)' : 'rgba(140, 190, 230, 0.35)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x + skew, y + 0.5); ctx.lineTo(x + w, y + 0.5);
+        ctx.moveTo(x, y + h - 0.5); ctx.lineTo(x + w - skew, y + h - 0.5);
+        ctx.stroke();
+        dirty(this.contents);
+
+        if (selected) {
+            this.contents.fontSize = 22;
+            this.changeTextColor(COLOR.accent);
+            this.contents.drawText('»', rect.x - 2, rect.y, 20, rect.height, 'left');
+        }
+        this.contents.fontSize = 22;
+        this.changeTextColor(selected ? '#ffffff' : '#d6e8f7');
+        this.changePaintOpacity(this.isCommandEnabled(index));
+        this.contents.drawText(this.commandName(index), x + skew + 12, rect.y, w - skew - 20, rect.height, 'left');
+        this.changePaintOpacity(true);
+        this.resetFontSettings();
+    };
+
+    //=========================================================================
+    // Window_NovaMenuStatus - portrait cards
+    //=========================================================================
+    function Window_NovaMenuStatus() { this.initialize.apply(this, arguments); }
+    Window_NovaMenuStatus.prototype = Object.create(Window_MenuStatus.prototype);
+    Window_NovaMenuStatus.prototype.constructor = Window_NovaMenuStatus;
+
+    Window_NovaMenuStatus.prototype.initialize = function(x, y) {
+        this._novaX = x;
+        this._battlers = [];
+        this._animTick = 0;
+        Window_MenuStatus.prototype.initialize.call(this, x, y);
+        this.opacity = 0;
+    };
+    Window_NovaMenuStatus.prototype.windowWidth = function() { return Graphics.boxWidth - this._novaX - 8; };
+    Window_NovaMenuStatus.prototype.windowHeight = function() { return Graphics.boxHeight - HEADER_H - FOOTER_H; };
+    Window_NovaMenuStatus.prototype.standardPadding = function() { return 10; };
+    Window_NovaMenuStatus.prototype.maxCols = function() { return VISIBLE; };
+    Window_NovaMenuStatus.prototype.spacing = function() { return 8; };
+    Window_NovaMenuStatus.prototype.itemHeight = function() { return this.height - this.padding * 2; };
+    Window_NovaMenuStatus.prototype.numVisibleRows = function() { return 1; };
+    Window_NovaMenuStatus.prototype.updateCursor = function() { this.setCursorRect(0, 0, 0, 0); };
+    Window_NovaMenuStatus.prototype.select = function(index) {
+        Window_MenuStatus.prototype.select.call(this, index);
+        if (this.contents) this.refresh();
+    };
+    Window_NovaMenuStatus.prototype.activate = function() {
+        Window_MenuStatus.prototype.activate.call(this);
+        if (this.contents) this.refresh();
+    };
+    Window_NovaMenuStatus.prototype.deactivate = function() {
+        Window_MenuStatus.prototype.deactivate.call(this);
+        if (this.contents) this.refresh();
+    };
+    Window_NovaMenuStatus.prototype.refresh = function() {
+        Window_MenuStatus.prototype.refresh.call(this);
+        this.rebuildBattlers();
+    };
+
+    Window_NovaMenuStatus.prototype.drawItem = function(index) {
+        var actor = $gameParty.members()[index];
+        if (!actor) return;
+        var rect = this.itemRect(index);
+        if (rect.y < 0 || rect.y >= this.contentsHeight()) return;  // other page
+        var selected = this.active && index === this.index();
+        var pending = index === this._pendingIndex;
+        this.drawCardFrame(rect, selected, pending, actor.isBattleMember());
+        this.drawPortrait(actor, rect);
+        this.drawCardInfo(actor, rect);
+    };
+
+    Window_NovaMenuStatus.prototype.cardShape = function(rect) {
+        var x = rect.x + 1, y = rect.y + 1, w = rect.width - 2, h = rect.height - 2, c = 14;
+        return [[x + c, y], [x + w - c, y], [x + w, y + c], [x + w, y + h - c], [x + w - c, y + h],
+                [x + c, y + h], [x, y + h - c], [x, y + c]];
+    };
+
+    Window_NovaMenuStatus.prototype.drawCardFrame = function(rect, selected, pending, active) {
+        var ctx = ctxOf(this.contents);
+        var shape = this.cardShape(rect);
+        var g = ctx.createLinearGradient(0, rect.y, 0, rect.y + rect.height);
+        g.addColorStop(0, COLOR.panelTop);
+        g.addColorStop(1, COLOR.panelBottom);
+        ctx.save();
+        if (selected) { ctx.shadowColor = COLOR.accent; ctx.shadowBlur = 14; }
+        ctx.fillStyle = g;
+        pathPoly(ctx, shape);
+        ctx.fill();
+        ctx.restore();
+        ctx.lineWidth = selected ? 2.5 : 1.5;
+        ctx.strokeStyle = pending ? '#ffd27a' : (selected ? COLOR.accent : COLOR.frame);
+        pathPoly(ctx, shape);
+        ctx.stroke();
+        // inner hairline
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        var inner = this.cardShape({ x: rect.x + 4, y: rect.y + 4, width: rect.width - 8, height: rect.height - 8 });
+        pathPoly(ctx, inner);
+        ctx.stroke();
+        if (!active) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+            pathPoly(ctx, shape);
+            ctx.fill();
+        }
+        dirty(this.contents);
+    };
+
+    Window_NovaMenuStatus.prototype.portraitHeight = function(rect) { return Math.floor(rect.height * 0.5); };
+
+    Window_NovaMenuStatus.prototype.drawPortrait = function(actor, rect) {
+        var ph = this.portraitHeight(rect);
+        var px = rect.x + 5, py = rect.y + 5, pw = rect.width - 10;
+        var pic = ImageManager.loadPicture(portraitName(actor));
+        var ctx = ctxOf(this.contents);
+        ctx.save();
+        pathPoly(ctx, this.cardShape({ x: px - 1, y: py - 1, width: pw + 2, height: ph + 40 }));
+        ctx.clip();
+        // Cover the area but never enlarge: upscaling is what makes small art blurry.
+        // Large art (e.g. high-res illustrations) is reduced with high-quality smoothing.
+        var src, sx0 = 0, sy0 = 0, sw0, sh0;
+        if (pic.isReady() && pic.width > 0) {
+            src = pic._canvas || pic._image; sw0 = pic.width; sh0 = pic.height;
+        } else {
+            var face = ImageManager.loadFace(actor.faceName());
+            var fw = Window_Base._faceWidth, fh = Window_Base._faceHeight, fi = actor.faceIndex();
+            src = face._canvas || face._image; sx0 = fi % 4 * fw; sy0 = Math.floor(fi / 4) * fh; sw0 = fw; sh0 = fh;
+        }
+        var scale = Math.min(1, Math.max(pw / sw0, ph / sh0));
+        var dw = Math.round(sw0 * scale), dh = Math.round(sh0 * scale);
+        var dx = px + Math.round((pw - dw) / 2);
+        ctx.imageSmoothingEnabled = scale < 1;
+        if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(src, sx0, sy0, sw0, sh0, dx, py, dw, dh);
+        ctx.imageSmoothingEnabled = true;
+        // fade the portrait into the card body
+        var g = ctx.createLinearGradient(0, py + ph * 0.62, 0, py + ph);
+        g.addColorStop(0, 'rgba(8, 16, 34, 0)');
+        g.addColorStop(1, 'rgba(8, 16, 34, 0.96)');
+        ctx.fillStyle = g;
+        ctx.fillRect(px, py + ph * 0.62, pw, ph * 0.38 + 1);
+        ctx.restore();
+        dirty(this.contents);
+    };
+
+    Window_NovaMenuStatus.prototype.drawGaugeBar = function(x, y, w, rate, colors) {
+        var ctx = ctxOf(this.contents);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        pathPoly(ctx, [[x + 4, y], [x + w, y], [x + w - 4, y + 7], [x, y + 7]]);
+        ctx.fill();
+        var fw = Math.max(0, Math.min(1, rate)) * w;
+        if (fw > 0) {
+            var g = ctx.createLinearGradient(x, 0, x + fw, 0);
+            g.addColorStop(0, colors[1]);
+            g.addColorStop(1, colors[0]);
+            ctx.fillStyle = g;
+            pathPoly(ctx, [[x + 4, y], [x + fw, y], [x + Math.max(0, fw - 4), y + 7], [x, y + 7]]);
+            ctx.fill();
+        }
+        dirty(this.contents);
+    };
+
+    Window_NovaMenuStatus.prototype.drawCardInfo = function(actor, rect) {
+        var x = rect.x + 12, w = rect.width - 24;
+        var y = rect.y + this.portraitHeight(rect) - 34;
+        var lh = 26;
+        this.resetFontSettings();
+
+        // Level
+        this.contents.fontSize = 16;
+        this.changeTextColor(COLOR.dim);
+        this.contents.drawText(TextManager.levelA, x, y, 40, 30, 'left');
+        this.contents.fontSize = 32;
+        this.changeTextColor(COLOR.accent);
+        this.contents.drawText(actor.level, x + 26, y - 6, 70, 40, 'left');
+        y += 30;
+
+        // Name + class
+        this.contents.fontSize = 22;
+        this.changeTextColor('#ffffff');
+        this.contents.drawText(actor.name(), x, y, w, lh, 'left');
+        y += lh - 2;
+        this.contents.fontSize = 15;
+        this.changeTextColor(COLOR.dim);
+        this.contents.drawText(actor.currentClass().name, x, y, w, 20, 'left');
+        y += 22;
+
+        // EXP to next level
+        this.contents.fontSize = 15;
+        this.changeTextColor(COLOR.dim);
+        this.contents.drawText('Next', x, y, w, 20, 'left');
+        this.changeTextColor('#ffffff');
+        this.contents.fontSize = 14;
+        var next = actor.isMaxLevel() ? 'MAX' : actor.nextRequiredExp() + ' EXP';
+        this.contents.drawText(next, x + 36, y, w - 36, 20, 'right');
+        y += 20;
+        var expRate = 1;
+        if (!actor.isMaxLevel()) {
+            var cur = actor.currentLevelExp(), nxt = actor.nextLevelExp();
+            expRate = (actor.currentExp() - cur) / Math.max(1, nxt - cur);
+        }
+        this.drawGaugeBar(x, y + 2, w, expRate, COLOR.exp);
+        y += 16;
+
+        // HP / MP
+        this.drawStatRow(x, y, w, TextManager.hpA, actor.hp, actor.mhp, COLOR.hp, actor.hp < actor.mhp / 4);
+        y += 36;
+        this.drawStatRow(x, y, w, TextManager.mpA, actor.mp, actor.mmp, COLOR.mp, false);
+        y += 38;
+
+        // Weapon
+        var weapon = actor.weapons()[0];
+        if (weapon) {
+            this.contents.fontSize = 15;
+            this.drawIcon(weapon.iconIndex, x - 2, y);
+            this.changeTextColor('#e8f2fb');
+            this.contents.drawText(weapon.name, x + 32, y + 2, w - 32, 28, 'left');
+        }
+        y += 34;
+
+        // States
+        var icons = actor.allIcons().slice(0, Math.floor(w / Window_Base._iconWidth));
+        for (var i = 0; i < icons.length; i++) this.drawIcon(icons[i], x + i * Window_Base._iconWidth, y);
+        this.resetFontSettings();
+    };
+
+    Window_NovaMenuStatus.prototype.drawStatRow = function(x, y, w, label, value, max, colors, crisis) {
+        this.contents.fontSize = 16;
+        this.changeTextColor(colors[0]);
+        this.contents.drawText(label, x, y, 40, 22, 'left');
+        this.contents.fontSize = 20;
+        this.changeTextColor(crisis ? this.crisisColor() : '#ffffff');
+        var maxText = '/' + max;
+        this.contents.fontSize = 14;
+        var mw = this.textWidth(maxText);
+        this.changeTextColor(COLOR.dim);
+        this.contents.drawText(maxText, x, y + 3, w, 22, 'right');
+        this.contents.fontSize = 20;
+        this.changeTextColor(crisis ? this.crisisColor() : '#ffffff');
+        this.contents.drawText(value, x, y, w - mw - 2, 22, 'right');
+        this.drawGaugeBar(x, y + 24, w, value / Math.max(1, max), colors);
+    };
+
+    // Animated side-view battlers at the bottom of each visible card.
+    Window_NovaMenuStatus.prototype.rebuildBattlers = function() {
+        var self = this;
+        this._battlers.forEach(function(s) { self.removeChild(s); });
+        this._battlers = [];
+        var members = $gameParty.members();
+        var top = this.topIndex(), count = this.maxPageItems();
+        for (var i = top; i < Math.min(members.length, top + count); i++) {
+            var actor = members[i];
+            var rect = this.itemRect(i);
+            var sprite = new Sprite(ImageManager.loadSvActor(actor.battlerName()));
+            sprite.anchor.x = 0.5;
+            sprite.anchor.y = 1;
+            sprite.x = this.padding + rect.x + rect.width / 2;
+            sprite.y = this.padding + rect.y + rect.height - 6;
+            sprite._novaActor = actor;
+            sprite.opacity = actor.isBattleMember() ? 255 : 150;
+            this._battlers.push(sprite);
+            this.addChild(sprite);
+        }
+        this.updateBattlerFrames();
+    };
+
+    Window_NovaMenuStatus.prototype.updateBattlerFrames = function() {
+        var pattern = [0, 1, 2, 1][Math.floor(this._animTick / 12) % 4];
+        this._battlers.forEach(function(sprite) {
+            var actor = sprite._novaActor;
+            var motion = actor.isDead() ? 17 : (actor.isDying() ? 14 : (actor.isStateAffected(10) ? 16 : 1));
+            var bmp = sprite.bitmap;
+            if (!bmp || !bmp.isReady()) return;
+            var cw = bmp.width / 9, ch = bmp.height / 6;
+            var p = motion === 17 ? 2 : pattern;
+            sprite.setFrame((Math.floor(motion / 6) * 3 + p) * cw, (motion % 6) * ch, cw, ch);
+        });
+    };
+
+    Window_NovaMenuStatus.prototype.update = function() {
+        Window_MenuStatus.prototype.update.call(this);
+        this._animTick++;
+        if (this._animTick % 12 === 0) this.updateBattlerFrames();
+    };
+
+    window.Window_NovaMenuCommand = Window_NovaMenuCommand;
+    window.Window_NovaMenuStatus = Window_NovaMenuStatus;
+})();
