@@ -562,10 +562,11 @@
     };
 
     Window_NovaMenuStatus.prototype.updateBattlerFrames = function() {
-        var pattern = [0, 1, 2, 1][Math.floor(this._animTick / 12) % 4];
+        var pattern = [0, 1, 2, 1][Math.floor(this._animTick / 10) % 4];
         this._battlers.forEach(function(sprite) {
             var actor = sprite._novaActor;
-            var motion = actor.isDead() ? 17 : (actor.isDying() ? 14 : (actor.isStateAffected(10) ? 16 : 1));
+            // 0 = walk: the generator's "wait" frames are identical, so walking is what reads as alive
+            var motion = actor.isDead() ? 17 : (actor.isDying() ? 14 : (actor.isStateAffected(10) ? 16 : 0));
             var bmp = sprite.bitmap;
             if (!bmp || !bmp.isReady()) return;
             var cw = bmp.width / 9, ch = bmp.height / 6;
@@ -577,9 +578,380 @@
     Window_NovaMenuStatus.prototype.update = function() {
         Window_MenuStatus.prototype.update.call(this);
         this._animTick++;
-        if (this._animTick % 12 === 0) this.updateBattlerFrames();
+        if (this._animTick % 10 === 0) this.updateBattlerFrames();
+    };
+
+    //=========================================================================
+    // Shared look for every menu screen (Item, Skill, Equip, Options, Save, Shop ...)
+    //=========================================================================
+    function pictureExists(name) {
+        try {
+            if (typeof require === 'function') {
+                var path = require('path');
+                var base = path.dirname(process.mainModule.filename);
+                return require('fs').existsSync(path.join(base, 'img/pictures', name + '.png'));
+            }
+        } catch (e) { /* browser build: assume it exists */ }
+        return true;
+    }
+
+    function drawBackdrop(bmp) {
+        var w = bmp.width, h = bmp.height, ctx = ctxOf(bmp);
+        var g = ctx.createLinearGradient(0, 0, w, h);
+        g.addColorStop(0, 'rgba(4, 10, 26, 0.92)');
+        g.addColorStop(0.55, 'rgba(10, 28, 58, 0.80)');
+        g.addColorStop(1, 'rgba(2, 6, 16, 0.95)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        for (var i = 0; i < 6; i++) {
+            var x0 = w * (0.15 + i * 0.16), sw = 18 + (i % 3) * 22;
+            ctx.fillStyle = 'rgba(120, 200, 255, ' + (0.035 + (i % 2) * 0.02) + ')';
+            pathPoly(ctx, [[x0, 0], [x0 + sw, 0], [x0 + sw - h * 0.45, h], [x0 - h * 0.45, h]]);
+            ctx.fill();
+        }
+        dirty(bmp);
+    }
+
+    function panelShape(x, y, w, h, c) {
+        return [[x + c, y], [x + w - c, y], [x + w, y + c], [x + w, y + h - c], [x + w - c, y + h],
+                [x + c, y + h], [x, y + h - c], [x, y + c]];
+    }
+
+    // A blue card drawn behind a window (the window's own frame/back are hidden).
+    function Sprite_NovaPanel() { this.initialize.apply(this, arguments); }
+    Sprite_NovaPanel.prototype = Object.create(Sprite.prototype);
+    Sprite_NovaPanel.prototype.constructor = Sprite_NovaPanel;
+    Sprite_NovaPanel.prototype.initialize = function(win) {
+        Sprite.prototype.initialize.call(this);
+        this._win = win;
+        this._w = this._h = 0;
+    };
+    Sprite_NovaPanel.prototype.redraw = function(w, h) {
+        this._w = w; this._h = h;
+        this.bitmap = new Bitmap(Math.max(1, w), Math.max(1, h));
+        var ctx = ctxOf(this.bitmap), c = Math.min(14, Math.floor(Math.min(w, h) / 4));
+        var g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, COLOR.panelTop);
+        g.addColorStop(1, COLOR.panelBottom);
+        ctx.fillStyle = g;
+        pathPoly(ctx, panelShape(1, 1, w - 2, h - 2, c));
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = COLOR.frame;
+        pathPoly(ctx, panelShape(1, 1, w - 2, h - 2, c));
+        ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        pathPoly(ctx, panelShape(4, 4, w - 8, h - 8, Math.max(2, c - 3)));
+        ctx.stroke();
+        dirty(this.bitmap);
+    };
+    Sprite_NovaPanel.prototype.update = function() {
+        Sprite.prototype.update.call(this);
+        var win = this._win;
+        if (win.width !== this._w || win.height !== this._h) this.redraw(win.width, win.height);
+        var open = win.openness / 255;
+        this.visible = win.visible && open > 0 && !!win.parent;
+        this.x = win.x;
+        this.y = win.y + win.height * (1 - open) / 2;
+        this.scale.y = open;
+    };
+
+    function skinWindows(scene) {
+        if (!scene._windowLayer) return;
+        if (!scene._novaPanelLayer) {
+            scene._novaPanelLayer = new Sprite();
+            scene.addChildAt(scene._novaPanelLayer, scene.children.indexOf(scene._windowLayer));
+        }
+        scene._windowLayer.children.forEach(function(win) {
+            if (!(win instanceof Window) || win._novaSkinned || win._novaNoPanel) return;
+            win._novaSkinned = true;
+            if (win.opacity === 0 && win.backOpacity === 0) return;
+            if (win instanceof Window_NovaMenuCommand || win instanceof Window_NovaMenuStatus) return;
+            win.opacity = 0;
+            scene._novaPanelLayer.addChild(new Sprite_NovaPanel(win));
+        });
+    }
+
+    var _MenuBase_createBackground = Scene_MenuBase.prototype.createBackground;
+    Scene_MenuBase.prototype.createBackground = function() {
+        _MenuBase_createBackground.call(this);
+        if (this instanceof Scene_Menu) return;            // Scene_Menu draws its own
+        var bmp = new Bitmap(Graphics.width, Graphics.height);
+        drawBackdrop(bmp);
+        this._novaBackdropSprite = new Sprite(bmp);
+        this.addChild(this._novaBackdropSprite);
+    };
+
+    var _MenuBase_update = Scene_MenuBase.prototype.update;
+    Scene_MenuBase.prototype.update = function() {
+        skinWindows(this);                                  // also catches windows created later
+        _MenuBase_update.call(this);
+    };
+
+    //=========================================================================
+    // Status screen: full-body portrait on the left, details on the right,
+    // left/right (or Q/W, or the on-screen arrows) to change character.
+    //=========================================================================
+    var FULL_PREFIX = 'Full_';
+
+    function Window_NovaStatus() { this.initialize.apply(this, arguments); }
+    Window_NovaStatus.prototype = Object.create(Window_Status.prototype);
+    Window_NovaStatus.prototype.constructor = Window_NovaStatus;
+
+    Window_NovaStatus.prototype.initialize = function(x, y, w, h) {
+        Window_Selectable.prototype.initialize.call(this, x, y, w, h);
+        this._actor = null;
+        this.refresh();
+        this.activate();
+    };
+    // shared drawing helpers from the menu cards
+    Window_NovaStatus.prototype.drawGaugeBar = Window_NovaMenuStatus.prototype.drawGaugeBar;
+    Window_NovaStatus.prototype.drawStatRow = Window_NovaMenuStatus.prototype.drawStatRow;
+
+    Window_NovaStatus.prototype.processHandling = function() {
+        Window_Status.prototype.processHandling.call(this);
+        if (!this.isOpenAndActive()) return;
+        if (Input.isRepeated('right') && this.isHandled('pagedown')) this.processPagedown();
+        else if (Input.isRepeated('left') && this.isHandled('pageup')) this.processPageup();
+    };
+
+    Window_NovaStatus.prototype.refresh = function() {
+        this.contents.clear();
+        var a = this._actor;
+        if (!a) return;
+        var w = this.contentsWidth(), lh = this.lineHeight();
+        // name block
+        this.contents.fontSize = 40;
+        this.changeTextColor('#ffffff');
+        // face image in a small framed box, name block beside it
+        var FS = 96, fx = 2, fy = 2, tx = FS + 18;
+        this.drawNovaFace(a, fx, fy, FS);
+        this.contents.fontSize = 40;
+        this.changeTextColor('#ffffff');
+        this.contents.drawText(a.name(), tx, 0, w * 0.5, 52, 'left');
+        this.contents.fontSize = 18;
+        this.changeTextColor(COLOR.accent);
+        this.contents.drawText(a.nickname(), tx + 2, 46, w * 0.45, 26, 'left');
+        this.changeTextColor(COLOR.dim);
+        this.contents.drawText(a.currentClass().name, tx + 2, 70, w * 0.45, 26, 'left');
+        // level
+        this.contents.fontSize = 18;
+        this.contents.drawText(TextManager.levelA, w - 170, 8, 50, 30, 'left');
+        this.contents.fontSize = 48;
+        this.changeTextColor(COLOR.accent);
+        this.contents.drawText(a.level, w - 130, -4, 126, 60, 'right');
+        this.contents.fontSize = 16;
+        this.changeTextColor(COLOR.dim);
+        var next = a.isMaxLevel() ? 'MAX' : a.nextRequiredExp() + ' EXP';
+        this.contents.drawText('Next', w - 250, 60, 80, 22, 'left');
+        this.changeTextColor('#ffffff');
+        this.contents.drawText(next, w - 200, 60, 196, 22, 'right');
+        var rate = 1;
+        if (!a.isMaxLevel()) rate = (a.currentExp() - a.currentLevelExp()) / Math.max(1, a.nextLevelExp() - a.currentLevelExp());
+        this.drawGaugeBar(w - 250, 86, 246, rate, COLOR.exp);
+
+        var y = 110;
+        this.drawDivider(y); y += 12;
+        // HP / MP
+        var half = Math.floor((w - 24) / 2);
+        this.drawStatRow(4, y, half, TextManager.hpA, a.hp, a.mhp, COLOR.hp, a.isDying());
+        this.drawStatRow(half + 20, y, half, TextManager.mpA, a.mp, a.mmp, COLOR.mp, false);
+        y += 44;
+        this.drawDivider(y); y += 12;
+        // parameters (left) and equipment (right)
+        this.contents.fontSize = 16;
+        this.changeTextColor(COLOR.accent);
+        this.contents.drawText('PARAMETERS', 4, y, half, 24, 'left');
+        this.contents.drawText('EQUIPMENT', half + 20, y, half, 24, 'left');
+        y += 28;
+        var py = y;
+        for (var i = 2; i < 8; i++) {
+            this.contents.fontSize = 18;
+            this.changeTextColor(COLOR.dim);
+            this.contents.drawText(TextManager.param(i), 8, py, 160, 30, 'left');
+            this.changeTextColor('#ffffff');
+            this.contents.fontSize = 22;
+            this.contents.drawText(a.param(i), 8, py, half - 16, 30, 'right');
+            var ctx = ctxOf(this.contents);
+            ctx.fillStyle = 'rgba(140, 190, 230, 0.15)';
+            ctx.fillRect(8, py + 30, half - 16, 1);
+            py += 34;
+        }
+        var ey = y, slots = a.equipSlots(), equips = a.equips();
+        for (var k = 0; k < slots.length; k++) {
+            this.contents.fontSize = 14;
+            this.changeTextColor(COLOR.dim);
+            this.contents.drawText($dataSystem.equipTypes[slots[k]], half + 24, ey, 120, 16, 'left');
+            var item = equips[k];
+            if (item) {
+                this.drawIcon(item.iconIndex, half + 22, ey + 14);
+                this.contents.fontSize = 18;
+                this.changeTextColor('#ffffff');
+                this.contents.drawText(item.name, half + 58, ey + 16, half - 40, 28, 'left');
+            } else {
+                this.contents.fontSize = 18;
+                this.changeTextColor('rgba(200,220,240,0.35)');
+                this.contents.drawText('-----', half + 58, ey + 16, half - 40, 28, 'left');
+            }
+            ey += 46;
+        }
+        y = Math.max(py, ey) + 6;
+        this.drawDivider(y); y += 14;
+        // profile
+        this.contents.fontSize = 17;
+        this.changeTextColor('#d6e8f7');
+        var lines = String(a.profile() || '').split('\n');
+        for (var n = 0; n < lines.length && y + 26 <= this.contentsHeight(); n++) {
+            this.contents.drawText(lines[n], 6, y, w - 12, 26, 'left');
+            y += 26;
+        }
+        this.resetFontSettings();
+    };
+
+    Window_NovaStatus.prototype.drawNovaFace = function(actor, x, y, size) {
+        var ctx = ctxOf(this.contents), c = 8;
+        var shape = panelShape(x, y, size, size, c);
+        ctx.save();
+        ctx.fillStyle = 'rgba(8, 18, 40, 0.9)';
+        pathPoly(ctx, shape); ctx.fill();
+        pathPoly(ctx, shape); ctx.clip();
+        var bmp = ImageManager.loadFace(actor.faceName());
+        if (bmp.isReady()) {
+            var fw = Window_Base._faceWidth, fh = Window_Base._faceHeight, i = actor.faceIndex();
+            ctx.imageSmoothingEnabled = true;
+            if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(bmp._canvas || bmp._image, i % 4 * fw, Math.floor(i / 4) * fh, fw, fh, x, y, size, size);
+        } else {
+            bmp.addLoadListener(this.refresh.bind(this));
+        }
+        ctx.restore();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = COLOR.accent;
+        pathPoly(ctx, shape); ctx.stroke();
+        dirty(this.contents);
+    };
+
+    Window_NovaStatus.prototype.drawDivider = function(y) {
+        var ctx = ctxOf(this.contents), w = this.contentsWidth();
+        var g = ctx.createLinearGradient(0, 0, w, 0);
+        g.addColorStop(0, 'rgba(98, 214, 255, 0.55)');
+        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, y, w, 1.5);
+        dirty(this.contents);
+    };
+
+    Scene_Status.prototype.create = function() {
+        Scene_MenuBase.prototype.create.call(this);
+        var w = Graphics.boxWidth, h = Graphics.boxHeight;
+        // header
+        var head = new Bitmap(w, HEADER_H), ctx = ctxOf(head);
+        var g = ctx.createLinearGradient(0, 0, w, 0);
+        g.addColorStop(0, 'rgba(98, 214, 255, 0.28)');
+        g.addColorStop(0.45, 'rgba(98, 214, 255, 0.06)');
+        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, w, HEADER_H);
+        ctx.fillStyle = COLOR.accent; ctx.fillRect(16, HEADER_H - 8, w * 0.42, 2);
+        dirty(head);
+        head.fontSize = 34; head.textColor = '#eaf7ff'; head.outlineColor = 'rgba(0, 40, 80, 0.8)'; head.outlineWidth = 5;
+        head.drawText('STATUS', 24, 10, 400, 44, 'left');
+        head.fontSize = 18; head.textColor = COLOR.dim; head.outlineWidth = 3;
+        head.drawText('◀  ▶   Change character', w - 360, 18, 340, 30, 'right');
+        // portrait area (left) and details (right)
+        var split = Math.floor(w * 0.40);
+        this._novaGlow = new Sprite(new Bitmap(split, h - HEADER_H));
+        this._novaGlow.y = HEADER_H;
+        this.addChild(this._novaGlow);
+        this._novaPortrait = new Sprite();
+        this._novaPortrait.anchor.x = 0.5; this._novaPortrait.anchor.y = 1;
+        this._novaPortraitHome = { x: Math.floor(split / 2), y: h - 4 };
+        this.addChild(this._novaPortrait);
+        this.addChild(new Sprite(head));
+        this._statusWindow = new Window_NovaStatus(split, HEADER_H + 4, w - split - 12, h - HEADER_H - 16);
+        this._statusWindow.setHandler('cancel', this.popScene.bind(this));
+        this._statusWindow.setHandler('pagedown', this.nextActor.bind(this));
+        this._statusWindow.setHandler('pageup', this.previousActor.bind(this));
+        this.addWindow(this._statusWindow);
+        // on-screen arrows
+        this._novaArrows = [];
+        [['◀', 18, -1], ['▶', split - 54, 1]].forEach(function(spec) {
+            var b = new Bitmap(40, 60);
+            b.fontSize = 40; b.textColor = '#eaf7ff'; b.outlineColor = 'rgba(0, 60, 120, 0.9)'; b.outlineWidth = 6;
+            b.drawText(spec[0], 0, 0, 40, 60, 'center');
+            var s = new Sprite(b);
+            s.x = spec[1]; s.y = Math.floor(h / 2) - 30; s._dir = spec[2]; s.opacity = 200;
+            this.addChild(s);
+            this._novaArrows.push(s);
+        }, this);
+        this._novaSlide = 0;
+    };
+
+    Scene_Status.prototype.refreshActor = function() {
+        var actor = this.actor();
+        this._statusWindow.setActor(actor);
+        this.refreshNovaPortrait(actor);
+    };
+
+    Scene_Status.prototype.nextActor = function() { this._novaDir = 1; Scene_MenuBase.prototype.nextActor.call(this); };
+    Scene_Status.prototype.previousActor = function() { this._novaDir = -1; Scene_MenuBase.prototype.previousActor.call(this); };
+
+    Scene_Status.prototype.refreshNovaPortrait = function(actor) {
+        var name = FULL_PREFIX + actor.name();
+        var sprite = this._novaPortrait, home = this._novaPortraitHome, scene = this;
+        if (!pictureExists(name)) name = portraitName(actor);
+        if (!pictureExists(name)) { sprite.bitmap = null; return; }
+        var bmp = ImageManager.loadPicture(name);
+        bmp.addLoadListener(function() {
+            sprite.bitmap = bmp;
+            var maxH = Graphics.boxHeight - HEADER_H - 8, maxW = home.x * 2 - 70;
+            var s = Math.min(1, maxH / bmp.height, maxW / bmp.width);
+            sprite.scale.x = sprite.scale.y = s;
+            sprite.y = home.y;
+            scene._novaSlide = scene._novaDir ? 14 : 0;
+            sprite.x = home.x + (scene._novaDir || 0) * 60;
+            sprite.opacity = scene._novaDir ? 0 : 255;
+        });
+        this.drawNovaGlow(actor);
+    };
+
+    Scene_Status.prototype.drawNovaGlow = function(actor) {
+        var b = this._novaGlow.bitmap, ctx = ctxOf(b);
+        b.clear();
+        var tint = { 1: '170,90,255', 2: '120,200,255', 3: '240,150,220', 4: '120,200,110', 5: '255,210,120', 6: '255,110,60' }[actor.actorId()] || '120,200,255';
+        var cx = b.width / 2, cy = b.height * 0.45;
+        var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, b.width * 0.62);
+        g.addColorStop(0, 'rgba(' + tint + ',0.42)');
+        g.addColorStop(0.6, 'rgba(' + tint + ',0.10)');
+        g.addColorStop(1, 'rgba(' + tint + ',0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, b.width, b.height);
+        dirty(b);
+    };
+
+    var _Scene_Status_update = Scene_Status.prototype.update;
+    Scene_Status.prototype.update = function() {
+        _Scene_Status_update.call(this);
+        var sprite = this._novaPortrait, home = this._novaPortraitHome;
+        if (this._novaSlide > 0) {
+            this._novaSlide--;
+            sprite.x += (home.x - sprite.x) * 0.3;
+            sprite.opacity = Math.min(255, sprite.opacity + 24);
+            if (this._novaSlide === 0) { sprite.x = home.x; sprite.opacity = 255; }
+        }
+        // touch / click on the arrows
+        if (TouchInput.isTriggered() && this._statusWindow.active) {
+            this._novaArrows.forEach(function(a) {
+                if (TouchInput.x >= a.x && TouchInput.x < a.x + 40 && TouchInput.y >= a.y && TouchInput.y < a.y + 60) {
+                    SoundManager.playCursor();
+                    if (a._dir > 0) this.nextActor(); else this.previousActor();
+                }
+            }, this);
+        }
+        this._novaArrows.forEach(function(a) { a.opacity = 160 + Math.round(Math.sin(Graphics.frameCount / 15) * 60); });
     };
 
     window.Window_NovaMenuCommand = Window_NovaMenuCommand;
     window.Window_NovaMenuStatus = Window_NovaMenuStatus;
+    window.Window_NovaStatus = Window_NovaStatus;
 })();

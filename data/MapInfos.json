@@ -1,5 +1,20 @@
 [
 null,
 {"id":1,"expanded":false,"name":"MAP001","order":1,"parentId":0,"scrollX":819,"scrollY":478},
-{"id":2,"expanded":false,"name":"Royal Capital - Baker's Lane","order":2,"parentId":0,"scrollX":0,"scrollY":0}
+{"id":2,"expanded":false,"name":"Nova - Baker's Lane","order":8,"parentId":3,"scrollX":811,"scrollY":478},
+{"id":3,"expanded":true,"name":"Royal Kingdom of Nova","order":3,"parentId":0,"scrollX":811,"scrollY":470},
+{"id":4,"expanded":true,"name":"Nova - Market District","order":4,"parentId":3,"scrollX":811,"scrollY":470},
+{"id":5,"expanded":false,"name":"Nova - Residential Quarter","order":5,"parentId":3,"scrollX":811,"scrollY":470},
+{"id":6,"expanded":false,"name":"Nova - Harbor","order":6,"parentId":3,"scrollX":811,"scrollY":470},
+{"id":7,"expanded":false,"name":"Nova - Castle Approach","order":7,"parentId":3,"scrollX":811,"scrollY":470},
+{"id":8,"expanded":false,"name":"Nova - Weapon Shop","order":8,"parentId":4,"scrollX":819,"scrollY":478},
+{"id":9,"expanded":false,"name":"Nova - Armor Shop","order":9,"parentId":4,"scrollX":0,"scrollY":0},
+{"id":10,"expanded":false,"name":"Nova - Magic Shop","order":10,"parentId":4,"scrollX":0,"scrollY":0},
+{"id":11,"expanded":false,"name":"Nova - Pet Shop","order":11,"parentId":4,"scrollX":0,"scrollY":0},
+{"id":12,"expanded":false,"name":"Nova - Tavern","order":12,"parentId":2,"scrollX":0,"scrollY":0},
+{"id":13,"expanded":false,"name":"Nova - Inn","order":13,"parentId":2,"scrollX":0,"scrollY":0},
+{"id":14,"expanded":false,"name":"Nova - Barracks","order":14,"parentId":7,"scrollX":0,"scrollY":0},
+{"id":15,"expanded":false,"name":"Nova - Bakery","order":15,"parentId":2,"scrollX":0,"scrollY":0},
+{"id":16,"expanded":false,"name":"Nova - Townhouse 1F","order":16,"parentId":5,"scrollX":0,"scrollY":0},
+{"id":17,"expanded":false,"name":"Nova - Townhouse 2F","order":17,"parentId":5,"scrollX":0,"scrollY":0}
 ]
