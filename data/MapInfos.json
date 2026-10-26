@@ -19,5 +19,7 @@ null,
 {"id":17,"expanded":false,"name":"Nova - Townhouse 2F","order":17,"parentId":5,"scrollX":459,"scrollY":323.5},
 {"id":18,"expanded":false,"name":"Nova - Ashveil House 1F","order":18,"parentId":5,"scrollX":557,"scrollY":404.5},
 {"id":19,"expanded":false,"name":"Nova - Ashveil House 2F","order":19,"parentId":5,"scrollX":549,"scrollY":315.5},
-{"id":20,"expanded":false,"name":"Nova - Ashveil House 3F","order":20,"parentId":5,"scrollX":459,"scrollY":323.5}
+{"id":20,"expanded":false,"name":"Nova - Ashveil House 3F","order":20,"parentId":5,"scrollX":459,"scrollY":323.5},
+{"id":21,"expanded":false,"name":"Nova - Royal Prison 1F","order":21,"parentId":7,"scrollX":459,"scrollY":323.5},
+{"id":22,"expanded":false,"name":"Nova - Royal Prison Cells","order":22,"parentId":7,"scrollX":459,"scrollY":323.5}
 ]
