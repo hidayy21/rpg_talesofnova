@@ -1,0 +1,1473 @@
+Outside_A1:0:Water A (Meadow)
+Outside_A1:1:Deep Water
+Outside_A1:2:Lotus Pads
+Outside_A1:3:Swamp Grass
+Outside_A1:4:Water B (Snow)
+Outside_A1:5:Waterfall A (Stone Wall)
+Outside_A1:6:Canal
+Outside_A1:7:Waterfall B (Dirt Wall)
+Outside_A1:8:Water C (Dirt)
+Outside_A1:9:Waterfall C (Cliff)
+Outside_A1:10:Water D (Sand)
+Outside_A1:11:Waterfall D (Boulder)
+Outside_A1:12:Water E (Port)
+Outside_A1:13:Waterfall E (Stone Wall)
+Outside_A1:14:Poison Swamp
+Outside_A1:15:Dead Tree
+Outside_A2:0:Meadow
+Outside_A2:1:Dirt (Meadow)
+Outside_A2:2:Road (Meadow)
+Outside_A2:3:Cobblestones A
+Outside_A2:4:Bush
+Outside_A2:5:Road Edging
+Outside_A2:6:Fencepost A (Wood)
+Outside_A2:7:Fissures
+Outside_A2:8:Dirt
+Outside_A2:9:Grass (Dirt)
+Outside_A2:10:Road (Dirt)
+Outside_A2:11:Cobblestones A (Snow)
+Outside_A2:12:Bush (Dead)
+Outside_A2:13:Road Edging (Snow)
+Outside_A2:14:Fencepost B (Metal)
+Outside_A2:15:Soil
+Outside_A2:16:Sand
+Outside_A2:17:Grass (Sand)
+Outside_A2:18:Road (Sand)
+Outside_A2:19:Cobblestones B
+Outside_A2:20:Bush (Sand)
+Outside_A2:21:Hole
+Outside_A2:22:Fencepost C (Stone)
+Outside_A2:23:Moss
+Outside_A2:24:Snow
+Outside_A2:25:Dirt (Snow)
+Outside_A2:26:Road (Snow)
+Outside_A2:27:Carpet
+Outside_A2:28:Bush (Snow)
+Outside_A2:29:Hole
+Outside_A2:30:Fencepost A (Wood, Snow)
+Outside_A2:31:Poison Swamp
+Outside_A4:0:Wall A (Stone)
+Outside_A4:1:Wall B (Brick)
+Outside_A4:2:Wall C (Stone)
+Outside_A4:3:Wall D (Stone)
+Outside_A4:4:Wall E (Stone)
+Outside_A4:5:Wall F (Marble)
+Outside_A4:6:Wall G (Hedge)
+Outside_A4:7:Wall G (Frozen)
+Outside_A4:8:Wall A (Stone)
+Outside_A4:9:Wall B (Brick)
+Outside_A4:10:Wall C (Stone)
+Outside_A4:11:Wall D (Stone)
+Outside_A4:12:Wall E (Stone)
+Outside_A4:13:Wall F (Marble)
+Outside_A4:14:Wall G (Hedge)
+Outside_A4:15:Wall G (Frozen)
+Outside_A4:16:Building A (Urban)
+Outside_A4:17:Building B (Dirt Wall)
+Outside_A4:18:Building C (Desert)
+Outside_A4:19:Building D (Temple, Snow)
+Outside_A4:20:Building E (Castle)
+Outside_A4:21:Building F (Castle, Snow)
+Outside_A4:22:Building G (Fort)
+Outside_A4:23:Building H (Fort, Snow)
+Outside_A4:24:Building A (Urban)
+Outside_A4:25:Building B (Dirt Wall)
+Outside_A4:26:Building C (Desert)
+Outside_A4:27:Building D (Temple, Snow)
+Outside_A4:28:Building E (Castle)
+Outside_A4:29:Building F (Castle, Snow)
+Outside_A4:30:Building G (Fort)
+Outside_A4:31:Building H (Fort, Snow)
+Outside_A4:32:Ledge A (Meadow)
+Outside_A4:33:Ledge B (Dirt)
+Outside_A4:34:Ledge C (Desert)
+Outside_A4:35:Ledge D (Snow)
+Outside_A4:36:Ledge E (Paved)
+Outside_A4:37:Forest A
+Outside_A4:38:Forest B (Snow)
+Outside_A4:39:Demon Castle
+Outside_A4:40:Cliff A (Meadow)
+Outside_A4:41:Cliff B (Dirt)
+Outside_A4:42:Cliff C (Desert)
+Outside_A4:43:Cliff D (Snow)
+Outside_A4:44:Wall (Paved)
+Outside_A4:45:Forest A
+Outside_A4:46:Forest B (Snow)
+Outside_A4:47:Demon Castle
+Outside_A5:0:Darkness
+Outside_A5:1:Wire Mesh
+Outside_A5:2:Large Bridge (V, Left)
+Outside_A5:3:Large Bridge (V, Center)
+Outside_A5:4:Large Bridge (V, Right)
+Outside_A5:5:Large Bridge (H, Top)
+Outside_A5:6:Large Bridge (H, Center)
+Outside_A5:7:Large Bridge (Snow, H, Top)
+Outside_A5:8:Transparent
+Outside_A5:9:Wire Mesh
+Outside_A5:10:Large Bridge (Snow, V, Left)
+Outside_A5:11:Large Bridge (Snow, V, Center)
+Outside_A5:12:Large Bridge (Snow, V, Right)
+Outside_A5:13:Large Bridge (H, Bottom)
+Outside_A5:14:Large Bridge (Snow, H, Center)
+Outside_A5:15:Large Bridge (Snow, H, Bottom)
+Outside_A5:16:Meadow A
+Outside_A5:17:Dirt A
+Outside_A5:18:Desert A
+Outside_A5:19:Snow A
+Outside_A5:20:Meadow
+Outside_A5:21:Dirt B
+Outside_A5:22:Desert B
+Outside_A5:23:Snow B
+Outside_A5:24:Stairs (Meadow, Left)
+Outside_A5:25:Stairs (Meadow, Center)
+Outside_A5:26:Stairs (Meadow, Right)
+Outside_A5:27:Stairs (Meadow)
+Outside_A5:28:Stairs (Dirt, Left)
+Outside_A5:29:Stairs (Dirt, Center)
+Outside_A5:30:Stairs (Dirt, Right)
+Outside_A5:31:Stairs (Dirt)
+Outside_A5:32:Cobblestones A
+Outside_A5:33:Cobblestones B
+Outside_A5:34:Cobblestones C
+Outside_A5:35:Cobblestones D
+Outside_A5:36:Cobblestones A (Ruins)
+Outside_A5:37:Cobblestones B (Ruins)
+Outside_A5:38:Cobblestones C (Ruins)
+Outside_A5:39:Cobblestones D (Ruins)
+Outside_A5:40:Stairs (Desert, Left)
+Outside_A5:41:Stairs (Desert, Center)
+Outside_A5:42:Stairs (Desert, Right)
+Outside_A5:43:Stairs (Desert)
+Outside_A5:44:Stairs (Snow, Left)
+Outside_A5:45:Stairs (Snow, Center)
+Outside_A5:46:Stairs (Snow, Right)
+Outside_A5:47:Stairs (Snow)
+Outside_A5:48:Cobblestones E
+Outside_A5:49:Cobblestones F
+Outside_A5:50:Cobblestones G
+Outside_A5:51:Ice Floor A
+Outside_A5:52:Cobblestones E (Ruins)
+Outside_A5:53:Cobblestones F (Ruins)
+Outside_A5:54:Cobblestones G (Ruins)
+Outside_A5:55:Ice Floor B
+Outside_A5:56:Stairs (Paved, Left)
+Outside_A5:57:Stairs (Paved, Center)
+Outside_A5:58:Stairs (Paved, Right)
+Outside_A5:59:Stairs (Paved)
+Outside_A5:60:Stairs (Ruins, Left)
+Outside_A5:61:Stairs (Ruins, Center)
+Outside_A5:62:Stairs (Ruins, Right)
+Outside_A5:63:Stairs (Ruins)
+Outside_A5:64:Ledge (Port, Left)
+Outside_A5:65:Ledge (Port, Center)
+Outside_A5:66:Ledge (Port, Right)
+Outside_A5:67:Ledge (Port)
+Outside_A5:68:Cobblestones H
+Outside_A5:69:Cobblestones I
+Outside_A5:70:Cloud A
+Outside_A5:71:Cloud B
+Outside_A5:72:Farm Field A (Top)
+Outside_A5:73:Farm Field A (Center)
+Outside_A5:74:Farm Field B (Snow, Top)
+Outside_A5:75:Farm Field B (Snow, Center)
+Outside_A5:76:Large Relief Floor Tile A
+Outside_A5:77:Large Relief Floor Tile A
+Outside_A5:78:Large Relief Floor Tile B
+Outside_A5:79:Large Relief Floor Tile B
+Outside_A5:80:Farm Field A (Bottom)
+Outside_A5:81:Farm Field A
+Outside_A5:82:Farm Field B (Snow, Bottom)
+Outside_A5:83:Farm Field B (Snow)
+Outside_A5:84:Large Relief Floor Tile A
+Outside_A5:85:Large Relief Floor Tile A
+Outside_A5:86:Large Relief Floor Tile B
+Outside_A5:87:Large Relief Floor Tile B
+Outside_A5:88:Ledge (Meadow)
+Outside_A5:89:Ledge (Meadow)
+Outside_A5:90:Ledge (Meadow)
+Outside_A5:91:Garden A
+Outside_A5:92:Garden B (Snow)
+Outside_A5:93:Ledge (Dirt)
+Outside_A5:94:Ledge (Dirt)
+Outside_A5:95:Ledge (Dirt)
+Outside_A5:96:Ledge (Meadow)
+Outside_A5:97:Ledge (Meadow)
+Outside_A5:98:Ledge (Meadow)
+Outside_A5:99:Ledge (Meadow)
+Outside_A5:100:Ledge (Meadow)
+Outside_A5:101:Ledge (Dirt)
+Outside_A5:102:Ledge (Dirt)
+Outside_A5:103:Ledge (Dirt)
+Outside_A5:104:Ledge (Meadow)
+Outside_A5:105:Ledge (Meadow)
+Outside_A5:106:Ledge (Meadow)
+Outside_A5:107:Ledge (Meadow)
+Outside_A5:108:Ledge (Meadow)
+Outside_A5:109:Ledge (Dirt)
+Outside_A5:110:Ledge (Dirt)
+Outside_A5:111:Ledge (Dirt)
+Outside_A5:112:Cliff
+Outside_A5:113:Cliff
+Outside_A5:114:Cliff
+Outside_A5:115:Ledge (Dirt)
+Outside_A5:116:Ledge (Dirt)
+Outside_A5:117:Cliff
+Outside_A5:118:Cliff
+Outside_A5:119:Cliff
+Outside_A5:120:Cliff (Meadow)
+Outside_A5:121:Cliff (Meadow)
+Outside_A5:122:Cliff (Meadow)
+Outside_A5:123:Ledge (Dirt)
+Outside_A5:124:Ledge (Dirt)
+Outside_A5:125:Cliff (Dirt)
+Outside_A5:126:Cliff (Dirt)
+Outside_A5:127:Cliff (Dirt)
+Inside_A1:0:Canal A
+Inside_A1:1:Deep Canal
+Inside_A1:2:Lotus Pads (Flowers)
+Inside_A1:3:Junk
+Inside_A1:4:Pool A (Stone Lined)
+Inside_A1:5:Waterfall A (Stone Wall)
+Inside_A1:6:Pool B (Wood Lined)
+Inside_A1:7:Waterfall B (Stone Wall)
+Inside_A1:8:Canal B
+Inside_A1:9:Waterfall C (Stone Wall)
+Inside_A1:10:Pool C (Stone Lined)
+Inside_A1:11:Waterfall D (Stone Wall)
+Inside_A1:12:Bathing Spot
+Inside_A1:13:Waterfall E (Dirt Wall)
+Inside_A1:14:Open Bath
+Inside_A1:15:Waterfall F (Demon Castle)
+Inside_A2:0:Wood Floor A
+Inside_A2:1:Cobblestones A
+Inside_A2:2:Rug A
+Inside_A2:3:Straw Mat
+Inside_A2:4:Hole A (Wood Floor)
+Inside_A2:5:Raised Stone A
+Inside_A2:6:Ground Cracks
+Inside_A2:7:Table A
+Inside_A2:8:Wood Floor B
+Inside_A2:9:Cobblestones B
+Inside_A2:10:Rug B
+Inside_A2:11:Rug C
+Inside_A2:12:Hole B (Wood Floor)
+Inside_A2:13:Raised Stone B
+Inside_A2:14:Soil on Ground
+Inside_A2:15:Table B
+Inside_A2:16:Cobblestones C
+Inside_A2:17:Cobblestones D
+Inside_A2:18:Rug D
+Inside_A2:19:Demon Castle Floor
+Inside_A2:20:Hole C (Stone Floor)
+Inside_A2:21:Raised Stone C
+Inside_A2:22:Moss on Ground
+Inside_A2:23:Table C
+Inside_A2:24:Cobblestones E
+Inside_A2:25:Cobblestones F
+Inside_A2:26:Rug E
+Inside_A2:27:Rug F
+Inside_A2:28:Hole D
+Inside_A2:29:Raised Stone D
+Inside_A2:30:Wire mesh
+Inside_A2:31:Table D
+Inside_A4:0:Wall A (Stone)
+Inside_A4:1:Wall B (Brick)
+Inside_A4:2:Wall C (Brick)
+Inside_A4:3:Wall D (Stone)
+Inside_A4:4:Wall E (Stone)
+Inside_A4:5:Wall F (Castle)
+Inside_A4:6:Wall G (Fort)
+Inside_A4:7:Wall H (Demon Castle)
+Inside_A4:8:Wall A (Stone)
+Inside_A4:9:Wall B (Brick)
+Inside_A4:10:Wall C (Brick)
+Inside_A4:11:Wall D (Stone)
+Inside_A4:12:Wall E (Stone)
+Inside_A4:13:Wall F (Castle)
+Inside_A4:14:Wall G (Fort)
+Inside_A4:15:Wall H (Demon Castle)
+Inside_A4:16:Wall I (Wood)
+Inside_A4:17:Wall J (Log)
+Inside_A4:18:Wall K (Wood)
+Inside_A4:19:Interior Wall A (Wood)
+Inside_A4:20:Interior Wall (Stone)
+Inside_A4:21:Wall L (Stone)
+Inside_A4:22:Wall M (Marble)
+Inside_A4:23:Wall N (Concrete)
+Inside_A4:24:Wall I (Wood)
+Inside_A4:25:Wall J (Log)
+Inside_A4:26:Wall K (Wood)
+Inside_A4:27:Interior Wall A (Wood)
+Inside_A4:28:Interior Wall (Stone)
+Inside_A4:29:Wall L (Stone)
+Inside_A4:30:Wall M (Marble)
+Inside_A4:31:Wall N (Concrete)
+Inside_A4:32:Interior Wall C (Stone)
+Inside_A4:33:Interior Wall D (Brick)
+Inside_A4:34:Interior Wall E (Stone)
+Inside_A4:35:Interior Wall F (Desert)
+Inside_A4:36:Interior Wall G (Mansion)
+Inside_A4:37:Interior Wall H (Temple)
+Inside_A4:38:Wall O (Tent)
+Inside_A4:39:Wall P (Stage)
+Inside_A4:40:Interior Wall C (Stone)
+Inside_A4:41:Interior Wall D (Brick)
+Inside_A4:42:Interior Wall E (Stone)
+Inside_A4:43:Interior Wall F (Desert)
+Inside_A4:44:Interior Wall G (Mansion)
+Inside_A4:45:Interior Wall H (Temple)
+Inside_A4:46:Wall O (Tent)
+Inside_A4:47:Wall P (Stage)
+Inside_A5:0:Darkness
+Inside_A5:1:Wire Mesh
+Inside_A5:2:Stone Bridge (V, Left)
+Inside_A5:3:Stone Bridge (V Center)
+Inside_A5:4:Stone Bridge (V, Riight)
+Inside_A5:5:Stone Bridge (H, Top)
+Inside_A5:6:Stone Bridge (H Center)
+Inside_A5:7:Broken Bridge (H, Top)
+Inside_A5:8:Transparent
+Inside_A5:9:Wire Mesh
+Inside_A5:10:Broken Bridge (V, Left)
+Inside_A5:11:Broken Bridge (V Center)
+Inside_A5:12:Broken Bridge (V, Riight)
+Inside_A5:13:Stone Bridge (H, Bottom)
+Inside_A5:14:Broken Bridge (H Center)
+Inside_A5:15:Broken Bridge (H, Bottom)
+Inside_A5:16:Wood Floor A
+Inside_A5:17:Wood Floor B
+Inside_A5:18:Wood Floor C
+Inside_A5:19:Wood Floor D
+Inside_A5:20:Cobblestones A
+Inside_A5:21:Cobblestones B
+Inside_A5:22:Cobblestones C
+Inside_A5:23:Cobblestones D
+Inside_A5:24:Ledge A (Wood)
+Inside_A5:25:Ledge B (Wood)
+Inside_A5:26:Ledge C (Log)
+Inside_A5:27:Ledge D (Log)
+Inside_A5:28:Ledge E (Brick)
+Inside_A5:29:Ledge F (Stone)
+Inside_A5:30:Ledge G (Stone)
+Inside_A5:31:Ledge H (Stone)
+Inside_A5:32:Cobblestones E
+Inside_A5:33:Cobblestones F
+Inside_A5:34:Wood Floor E
+Inside_A5:35:Wood Floor F
+Inside_A5:36:Cobblestones G
+Inside_A5:37:Cobblestones H
+Inside_A5:38:Cobblestones I
+Inside_A5:39:Cobblestones J
+Inside_A5:40:Ledge I (Brick)
+Inside_A5:41:Ledge J (Castle)
+Inside_A5:42:Ledge K (Fort)
+Inside_A5:43:Ledge L (Wood)
+Inside_A5:44:Ledge M (Stone)
+Inside_A5:45:Ledge N (Stone)
+Inside_A5:46:Ledge O (Marble)
+Inside_A5:47:Ledge P (Stone)
+Inside_A5:48:Interior Floor A (Wood)
+Inside_A5:49:Interior Floor B (Brick)
+Inside_A5:50:Interior Floor C (Temple)
+Inside_A5:51:Interior Floor D (Stone)
+Inside_A5:52:Interior Floor E (Demon Castle)
+Inside_A5:53:Interior Floor F (Tent)
+Inside_A5:54:Interior Floor G (Concrete)
+Inside_A5:55:Interior Floor H (Dirt)
+Inside_A5:56:Ledge Q (Wood)
+Inside_A5:57:Ledge R (Desert)
+Inside_A5:58:Ledge S (Temple)
+Inside_A5:59:Ledge T (Stone)
+Inside_A5:60:Ledge U (Demon Castle)
+Inside_A5:61:Ledge V (Tent)
+Inside_A5:62:Ledge W (Concrete)
+Inside_A5:63:Ledge X (Dirt)
+Inside_A5:64:Stairs A (Wood, Left)
+Inside_A5:65:Stairs A (Wood, Center)
+Inside_A5:66:Stairs A (Wood)
+Inside_A5:67:Stairs A (Wood)
+Inside_A5:68:Stairs B (Stone, Left)
+Inside_A5:69:Stairs B (Stone, Center)
+Inside_A5:70:Stairs B (Stone, Right)
+Inside_A5:71:Stairs B (Stone)
+Inside_A5:72:Stairs C (Stone, Left)
+Inside_A5:73:Stairs C (Stone, Center)
+Inside_A5:74:Stairs C (Stone, Right)
+Inside_A5:75:Stairs C (Stone)
+Inside_A5:76:Stairs C (Stone, Ruins, Left)
+Inside_A5:77:Stairs C (Stone, Ruins, Center)
+Inside_A5:78:Stairs C (Stone, Ruins, Right)
+Inside_A5:79:Stairs C (Stone, Ruins)
+Inside_A5:80:Stairs D (Carpet, Left)
+Inside_A5:81:Stairs D (Carpet, Center)
+Inside_A5:82:Stairs D (Carpet, Right)
+Inside_A5:83:Stairs D (Carpet)
+Inside_A5:84:Stairs E (Carpet, Left)
+Inside_A5:85:Stairs E (Carpet, Center)
+Inside_A5:86:Stairs E (Carpet, Right)
+Inside_A5:87:Stairs E (Carpet)
+Inside_A5:88:Wood Floor A (Ruins)
+Inside_A5:89:Wood Floor B (Ruins)
+Inside_A5:90:Wood Floor C (Ruins)
+Inside_A5:91:Wood Floor D (Ruins)
+Inside_A5:92:Cobblestones A (Ruins)
+Inside_A5:93:Cobblestones B (Ruins)
+Inside_A5:94:Cobblestones C (Ruins)
+Inside_A5:95:Cobblestones D (Ruins)
+Inside_A5:96:Cobblestones E (Ruins)
+Inside_A5:97:Cobblestones F (Ruins)
+Inside_A5:98:Wood Floor E (Ruins)
+Inside_A5:99:Wood Floor F (Ruins)
+Inside_A5:100:Cobblestones G (Ruins)
+Inside_A5:101:Cobblestones H (Ruins)
+Inside_A5:102:Cobblestones I (Ruins)
+Inside_A5:103:Cobblestones J (Ruins)
+Inside_A5:104:Interior Floor A (Wood, Ruins)
+Inside_A5:105:Interior Floor B (Brick, Ruins)
+Inside_A5:106:Interior Floor C (Temple, Ruins)
+Inside_A5:107:Interior Floor D (Stone, Ruins)
+Inside_A5:108:Interior Floor E (Demon Castle, Ruins)
+Inside_A5:109:Interior Floor F (Concrete, Ruins)
+Inside_A5:110:Interior Floor G (Tent, Ruins)
+Inside_A5:111:Interior Floor H (Dirt, Ruins)
+Inside_A5:112:Large Relief Floor Tile A
+Inside_A5:113:Large Relief Floor Tile A
+Inside_A5:114:Large Relief Floor Tile B
+Inside_A5:115:Large Relief Floor Tile B
+Inside_A5:116:Relief Floor Tile A (Silver)
+Inside_A5:117:Relief Floor Tile B (Silver)
+Inside_A5:118:Relief Floor Tile C (Gold)
+Inside_A5:119:Relief Floor Tile D (Gold)
+Inside_A5:120:Large Relief Floor Tile A
+Inside_A5:121:Large Relief Floor Tile A
+Inside_A5:122:Large Relief Floor Tile B
+Inside_A5:123:Large Relief Floor Tile B
+Inside_A5:124:Relief Floor Tile E (Silver, Ruins)
+Inside_A5:125:Relief Floor Tile F (Silver)
+Inside_A5:126:Relief Floor Tile G (Gold, Ruins)
+Inside_A5:127:Relief Floor Tile H (Gold)
+Inside_A5:128:
+Inside_B:0:Transparent
+Inside_B:1:Stairs A (Up)
+Inside_B:2:Stairs B (Up)
+Inside_B:3:Stairs C (Up)
+Inside_B:4:Stairs D (Up)
+Inside_B:5:Metal Ladder
+Inside_B:6:Rope Ladder
+Inside_B:7:Rope
+Inside_B:8:Hole
+Inside_B:9:Stairs A (Down)
+Inside_B:10:Stairs B (Down)
+Inside_B:11:Stairs C (Down)
+Inside_B:12:Stairs D (Down)
+Inside_B:13:Metal Ladder
+Inside_B:14:Rope Ladder
+Inside_B:15:Rope
+Inside_B:16:Middle Window A
+Inside_B:17:Middle Window B
+Inside_B:18:Middle Window C
+Inside_B:19:Middle Window D (Ruins)
+Inside_B:20:Window (Demon Castle)
+Inside_B:21:Metal Ladder
+Inside_B:22:Rope Ladder
+Inside_B:23:Rope
+Inside_B:24:Middle Window A
+Inside_B:25:Middle Window B
+Inside_B:26:Middle Window C
+Inside_B:27:Middle Window D (Ruins)
+Inside_B:28:Window (Demon Castle)
+Inside_B:29:Hole A (Metal Ladder)
+Inside_B:30:Hole B (Rope Ladder)
+Inside_B:31:Hole C (Rope)
+Inside_B:32:Large Window A
+Inside_B:33:Large Window B
+Inside_B:34:Large Window C
+Inside_B:35:Stained Glass Window
+Inside_B:36:Large Window D
+Inside_B:37:Window A
+Inside_B:38:Window B
+Inside_B:39:Window C
+Inside_B:40:Large Window A
+Inside_B:41:Large Window B
+Inside_B:42:Large Window C
+Inside_B:43:Stained Glass Window
+Inside_B:44:Large Window D
+Inside_B:45:Window A
+Inside_B:46:Window B
+Inside_B:47:Window C
+Inside_B:48:Chest A
+Inside_B:49:Cabinet
+Inside_B:50:Closet
+Inside_B:51:Chest of Drawers
+Inside_B:52:Dish Cabinet
+Inside_B:53:Wine Rack
+Inside_B:54:Bottle Shelf A
+Inside_B:55:Bottle Shelf B
+Inside_B:56:Chest B
+Inside_B:57:Chest C
+Inside_B:58:Closet
+Inside_B:59:Chest of Drawers
+Inside_B:60:Dish Cabinet
+Inside_B:61:Wine Rack
+Inside_B:62:Bottle Shelf A
+Inside_B:63:Bottle Shelf B
+Inside_B:64:Bread Shelf
+Inside_B:65:Sundries Shelf A
+Inside_B:66:Sundries Shelf A
+Inside_B:67:Sundries Shelf B
+Inside_B:68:Medicine Shelf
+Inside_B:69:Bookshelf A
+Inside_B:70:Bookshelf B
+Inside_B:71:Bookshelf B
+Inside_B:72:Bread Shelf
+Inside_B:73:Sundries Shelf A
+Inside_B:74:Sundries Shelf A
+Inside_B:75:Sundries Shelf B
+Inside_B:76:Medicine Shelf
+Inside_B:77:Bookshelf A
+Inside_B:78:Bookshelf B
+Inside_B:79:Bookshelf B
+Inside_B:80:Bed
+Inside_B:81:Large Bed
+Inside_B:82:Large Bed
+Inside_B:83:Cheap Bed A
+Inside_B:84:Cheap Bed B
+Inside_B:85:Straw Bed
+Inside_B:86:Bed (Ruins)
+Inside_B:87:Tipped Shelf
+Inside_B:88:Bed
+Inside_B:89:Large Bed
+Inside_B:90:Large Bed
+Inside_B:91:Cheap Bed A
+Inside_B:92:Cheap Bed B
+Inside_B:93:Straw Bed
+Inside_B:94:Bed (Ruins)
+Inside_B:95:Tipped Shelf
+Inside_B:96:Table A
+Inside_B:97:Table B
+Inside_B:98:Table C
+Inside_B:99:Fortuneteller's Table A
+Inside_B:100:Mini Table A
+Inside_B:101:Piano
+Inside_B:102:Piano
+Inside_B:103:Piano
+Inside_B:104:Stool A
+Inside_B:105:Stool B
+Inside_B:106:Stool C
+Inside_B:107:Fortuneteller's Table B (Crystal)
+Inside_B:108:Mini Table B (Flower)
+Inside_B:109:Piano
+Inside_B:110:Piano
+Inside_B:111:Piano
+Inside_B:112:Oven
+Inside_B:113:Sink
+Inside_B:114:Kitchen Counter A
+Inside_B:115:Kitchen Counter B
+Inside_B:116:Dresser
+Inside_B:117:Pipe Organ
+Inside_B:118:Pipe Organ
+Inside_B:119:Pipe Organ
+Inside_B:120:Simple Shelf A
+Inside_B:121:Simple Shelf B (Jars)
+Inside_B:122:Simple Shelf C (Books)
+Inside_B:123:Simple Shelf D (Sacks)
+Inside_B:124:Simple Shelf E (Bottles)
+Inside_B:125:Pipe Organ
+Inside_B:126:Pipe Organ
+Inside_B:127:Pipe Organ
+Inside_B:128:Large Fireplace
+Inside_B:129:Large Fireplace
+Inside_B:130:Large Fireplace
+Inside_B:131:Fireplace A (Stone)
+Inside_B:132:Fireplace B (Brick)
+Inside_B:133:Fireplace C (Iron)
+Inside_B:134:Tapestry A
+Inside_B:135:Tapestry A (Ruins)
+Inside_B:136:Large Fireplace
+Inside_B:137:Large Fireplace
+Inside_B:138:Large Fireplace
+Inside_B:139:Fireplace A (Stone)
+Inside_B:140:Fireplace B (Brick)
+Inside_B:141:Fireplace C (Iron)
+Inside_B:142:Tapestry A
+Inside_B:143:Tapestry A (Ruins)
+Inside_B:144:Curtains A
+Inside_B:145:Curtains B
+Inside_B:146:Curtains C
+Inside_B:147:Curtains D
+Inside_B:148:Curtains A (Ruins)
+Inside_B:149:Curtains B (Ruins)
+Inside_B:150:Curtains C (Ruins)
+Inside_B:151:Curtains D (Ruins)
+Inside_B:152:Curtains A
+Inside_B:153:Curtains B
+Inside_B:154:Curtains C
+Inside_B:155:Curtains D
+Inside_B:156:Curtains A (Ruins)
+Inside_B:157:Curtains B (Ruins)
+Inside_B:158:Curtains C (Ruins)
+Inside_B:159:Curtains D (Ruins)
+Inside_B:160:Clock
+Inside_B:161:Mirror
+Inside_B:162:Posted Notice
+Inside_B:163:Posted Notice (Ruins)
+Inside_B:164:World Map
+Inside_B:165:World Map
+Inside_B:166:Painting
+Inside_B:167:Painting
+Inside_B:168:Clock
+Inside_B:169:Mirror
+Inside_B:170:Stone Tablet
+Inside_B:171:Stone Tablet (Ruins)
+Inside_B:172:Portrait A
+Inside_B:173:Portrait B
+Inside_B:174:Painting A
+Inside_B:175:Painting B
+Inside_B:176:Chair A (Wood)
+Inside_B:177:Chair B (Stone)
+Inside_B:178:Throne A
+Inside_B:179:Throne A
+Inside_B:180:Throne A
+Inside_B:181:Throne B (Demon Castle)
+Inside_B:182:Throne B (Demon Castle)
+Inside_B:183:Throne B (Demon Castle)
+Inside_B:184:Chair A (Wood)
+Inside_B:185:Chair B (Stone)
+Inside_B:186:Throne A
+Inside_B:187:Throne A
+Inside_B:188:Throne A
+Inside_B:189:Throne B (Demon Castle)
+Inside_B:190:Throne B (Demon Castle)
+Inside_B:191:Throne B (Demon Castle)
+Inside_B:192:Shield
+Inside_B:193:Swords A
+Inside_B:194:Swords B
+Inside_B:195:Entrance A
+Inside_B:196:Entrance A (Extend)
+Inside_B:197:Entrance A (Top Half A)
+Inside_B:198:Entrance B
+Inside_B:199:Entrance A (Top Half B)
+Inside_B:200:Pot A
+Inside_B:201:Pot B
+Inside_B:202:Pot C (Ruins)
+Inside_B:203:Table A (Ruins)
+Inside_B:204:Stone Pillar A
+Inside_B:205:Stone Pillar B
+Inside_B:206:Fort Pillar
+Inside_B:207:Rubble
+Inside_B:208:Basin
+Inside_B:209:Barrel 
+Inside_B:210:Barrel (Ruins)
+Inside_B:211:Stool (Ruins)
+Inside_B:212:Stone Pillar A
+Inside_B:213:Stone Pillar B
+Inside_B:214:Fort Pillar
+Inside_B:215:Rubble
+Inside_B:216:Basin
+Inside_B:217:Tub A
+Inside_B:218:Tub B
+Inside_B:219:Crate A (Ruins)
+Inside_B:220:Broken Stone Pillar A
+Inside_B:221:Broken Stone Pillar B
+Inside_B:222:Broken Fort Pillar
+Inside_B:223:Scrap Wood
+Inside_B:224:Crate B
+Inside_B:225:Crate C
+Inside_B:226:Stacked Crates
+Inside_B:227:Stacked Crates
+Inside_B:228:Fissures A
+Inside_B:229:Fissures B
+Inside_B:230:Fissures C
+Inside_B:231:Fissures D
+Inside_B:232:Crate D
+Inside_B:233:Crate E
+Inside_B:234:Stacked Crates
+Inside_B:235:Stacked Crates
+Inside_B:236:Fissures A
+Inside_B:237:Fissures B
+Inside_B:238:Fissures C
+Inside_B:239:Fissures D
+Inside_B:240:Crate F
+Inside_B:241:Crate G
+Inside_B:242:Sacks C
+Inside_B:243:Large Crate
+Inside_B:244:Jail Bar
+Inside_B:245:Jail Bar
+Inside_B:246:Jail Bar
+Inside_B:247:Jail Bar
+Inside_B:248:Sack A
+Inside_B:249:Sack B
+Inside_B:250:Sacks C
+Inside_B:251:Large Crate
+Inside_B:252:Jail Bar
+Inside_B:253:Jail Bar
+Inside_B:254:Jail Bar
+Inside_B:255:Jail Bar
+Inside_C:0:Cup & Teapot A (Bottom)
+Inside_C:1:Cup & Teapot B (Top)
+Inside_C:2:Cup & Teapot C (Left)
+Inside_C:3:Cup & Teapot D (Right)
+Inside_C:4:Cup A (Bottom)
+Inside_C:5:Cup B (Top)
+Inside_C:6:Cup C (Left)
+Inside_C:7:Cup D (Right)
+Inside_C:8:Glass & Bottle A (Bottom)
+Inside_C:9:Glass & Bottle B (Top)
+Inside_C:10:Glass & Bottle C (Left)
+Inside_C:11:Glass & Bottle D (Right)
+Inside_C:12:Glass A (Bottom)
+Inside_C:13:Glass B (Top)
+Inside_C:14:Glass C (Left)
+Inside_C:15:Glass D (Right)
+Inside_C:16:Pint Mug & Ale Bottle A (Bottom)
+Inside_C:17:Pint Mug & Ale Bottles B (Top)
+Inside_C:18:Pint Mug & Ale Bottles C (Left)
+Inside_C:19:Pint Mug & Ale Bottle D (Right)
+Inside_C:20:Pint Mug A (Bottom)
+Inside_C:21:Pint Mug B (Top)
+Inside_C:22:Pint Mug C (Left)
+Inside_C:23:Pint Mug D (Right)
+Inside_C:24:Teapot
+Inside_C:25:Bottle A
+Inside_C:26:Bottles B
+Inside_C:27:Bottles C
+Inside_C:28:Broken Bottle
+Inside_C:29:Ale Bottle A
+Inside_C:30:Ale Bottles B
+Inside_C:31:Ale Bottles C
+Inside_C:32:Meal (Fish)
+Inside_C:33:Meal (Meat)
+Inside_C:34:Side Dishes
+Inside_C:35:Fruit Bowl
+Inside_C:36:Roast Pig
+Inside_C:37:Cake
+Inside_C:38:Pizza
+Inside_C:39:Meal (Fish)
+Inside_C:40:Dinner Set A (Bottom)
+Inside_C:41:Dinner Set B (Top)
+Inside_C:42:Dinner Set C (Left)
+Inside_C:43:Dinner Set D (Right)
+Inside_C:44:Pie
+Inside_C:45:Fried Rice
+Inside_C:46:Mystery Dishes
+Inside_C:47:Cooking Disaster
+Inside_C:48:Breakfast Set A (Bottom)
+Inside_C:49:Breakfast Set B (Top)
+Inside_C:50:Breakfast Set C (Left)
+Inside_C:51:Breakfast Set D (Right)
+Inside_C:52:Plate A
+Inside_C:53:Bowl
+Inside_C:54:Plates B
+Inside_C:55:Plates C
+Inside_C:56:Closed Book A (Bottom)
+Inside_C:57:Closed Book B (Top)
+Inside_C:58:Closed Book C (Left)
+Inside_C:59:Closed Book D (Right)
+Inside_C:60:Open Book A (Bottom)
+Inside_C:61:Open Book B (Top)
+Inside_C:62:Open Book C (Left)
+Inside_C:63:Open Book D (Right)
+Inside_C:64:Closed Old Book A (Bottom)
+Inside_C:65:Closed Old Book B (Top)
+Inside_C:66:Closed Old Book C (Left)
+Inside_C:67:Closed Old Book D (Right)
+Inside_C:68:Open Old Book A (Bottom)
+Inside_C:69:Open Old Book B (Top)
+Inside_C:70:Open Old Book C (Left)
+Inside_C:71:Open Old Book D (Right)
+Inside_C:72:Notes & Pen A (Bottom)
+Inside_C:73:Notes & Pen B (Top)
+Inside_C:74:Notes & Pen C (Left)
+Inside_C:75:Notes & Pen D (Right)
+Inside_C:76:Map A (Bottom)
+Inside_C:77:Map B (Top)
+Inside_C:78:Map C (Left)
+Inside_C:79:Map D (Right)
+Inside_C:80:Envelope & Letter
+Inside_C:81:Envelope
+Inside_C:82:Scrolls A
+Inside_C:83:Scrolls B
+Inside_C:84:Vase
+Inside_C:85:Potted Plant A
+Inside_C:86:Potted Plant B
+Inside_C:87:Planter
+Inside_C:88:Case A
+Inside_C:89:Case B
+Inside_C:90:Letter Case
+Inside_C:91:Cutting Board
+Inside_C:92:Small Box A
+Inside_C:93:Small Box B
+Inside_C:94:Small Box C
+Inside_C:95:Small Box D
+Inside_C:96:Sack A
+Inside_C:97:Sacks B
+Inside_C:98:Sacks C
+Inside_C:99:Medicine Bottle A
+Inside_C:100:Medicine Bottles B
+Inside_C:101:Medicine Bottles C
+Inside_C:102:Potion A
+Inside_C:103:Potions B
+Inside_C:104:Basket A
+Inside_C:105:Basket B
+Inside_C:106:Basket C
+Inside_C:107:Basket D
+Inside_C:108:Rugs A
+Inside_C:109:Rugs B
+Inside_C:110:Rugs C
+Inside_C:111:Lab Equipment
+Inside_C:112:Stuffed Doll A
+Inside_C:113:Stuffed Doll B
+Inside_C:114:Stuffed Doll C
+Inside_C:115:Stuffed Doll D
+Inside_C:116:Doll A
+Inside_C:117:Doll B
+Inside_C:118:Gifts A
+Inside_C:119:Gifts B
+Inside_C:120:Shovel
+Inside_C:121:Pickax
+Inside_C:122:Rope A
+Inside_C:123:Rope B
+Inside_C:124:Pendant
+Inside_C:125:Jewelry Case A
+Inside_C:126:Necklace
+Inside_C:127:Jewelry Case B
+Inside_C:128:Sword A
+Inside_C:129:Swords B
+Inside_C:130:Swords C
+Inside_C:131:Axes
+Inside_C:132:Spears A
+Inside_C:133:Spears B
+Inside_C:134:Whip
+Inside_C:135:Knives
+Inside_C:136:Cooking Utensils
+Inside_C:137:Dry Flowers
+Inside_C:138:Shield A
+Inside_C:139:Shield B
+Inside_C:140:Men's Clothing A (Hanging)
+Inside_C:141:Men's Clothing B (Hanging)
+Inside_C:142:Women's Clothing A (Hanging)
+Inside_C:143:Women's Clothing B (Hanging)
+Inside_C:144:Sword Rack A
+Inside_C:145:Sword Rack B
+Inside_C:146:Hammers
+Inside_C:147:Bows & Arrows
+Inside_C:148:Blacksmith's Table A
+Inside_C:149:Blacksmith's Table B
+Inside_C:150:Large Basin
+Inside_C:151:Scrap Metal
+Inside_C:152:Helmet A
+Inside_C:153:Helmet B
+Inside_C:154:Helmet C
+Inside_C:155:Hat A (Stand)
+Inside_C:156:Hat B (Stand)
+Inside_C:157:Hat C (Stand)
+Inside_C:158:Women's Clothing (Stand)
+Inside_C:159:Dress (Stand)
+Inside_C:160:Armor A (Stand)
+Inside_C:161:Armor B (Stand)
+Inside_C:162:Armor C (Stand)
+Inside_C:163:Armor D (Stand)
+Inside_C:164:Men's Clothing (Stand)
+Inside_C:165:Cape (Stand)
+Inside_C:166:Robe A (Stand)
+Inside_C:167:Robe B (Stand)
+Inside_C:168:Church Symbol
+Inside_C:169:Angel Statue A
+Inside_C:170:Angel Statue B
+Inside_C:171:Goddess Statue
+Inside_C:172:Statue
+Inside_C:173:Dais
+Inside_C:174:Repository of Swords
+Inside_C:175:Repository of Spears
+Inside_C:176:Church Symbol
+Inside_C:177:Angel Statue A
+Inside_C:178:Angel Statue B
+Inside_C:179:Goddess Statue
+Inside_C:180:Statue
+Inside_C:181:Broken Statue
+Inside_C:182:Repository of Swords
+Inside_C:183:Repository of Spears
+Inside_C:184:Church Table A
+Inside_C:185:Church Table A
+Inside_C:186:Church Table A
+Inside_C:187:Church Table B
+Inside_C:188:Decorative Pillar A
+Inside_C:189:Decorative Pillar B
+Inside_C:190:Decorative Pillar A (Ruins)
+Inside_C:191:Decorative Pillar B (Ruins)
+Inside_C:192:Church Table A
+Inside_C:193:Church Table A
+Inside_C:194:Church Table A
+Inside_C:195:Church Table B
+Inside_C:196:Decorative Pillar A
+Inside_C:197:Decorative Pillar B
+Inside_C:198:Decorative Pillar A (Ruins)
+Inside_C:199:Decorative Pillar B (Ruins)
+Inside_C:200:Gold Bricks A
+Inside_C:201:Gold Bricks B
+Inside_C:202:Silver Bricks A
+Inside_C:203:Silver Bricks B
+Inside_C:204:Decorative Pillar A
+Inside_C:205:Decorative Pillar B
+Inside_C:206:Decorative Pillar A (Ruins)
+Inside_C:207:Decorative Pillar B (Ruins)
+Inside_C:208:Monument A
+Inside_C:209:Monument B
+Inside_C:210:Demon Statue
+Inside_C:211:Dragon Statue
+Inside_C:212:Dragon Statue
+Inside_C:213:Large Monument
+Inside_C:214:Large Monument
+Inside_C:215:Large Monument
+Inside_C:216:Monument A
+Inside_C:217:Monument C
+Inside_C:218:Demon Statue
+Inside_C:219:Dragon Statue
+Inside_C:220:Dragon Statue
+Inside_C:221:Large Monument
+Inside_C:222:Large Monument
+Inside_C:223:Large Monument
+Inside_C:224:Railings (Wood)
+Inside_C:225:Railings (Wood)
+Inside_C:226:Railings (Wood)
+Inside_C:227:Railings (Wood)
+Inside_C:228:Railings (Wood)
+Inside_C:229:Railings (Wood)
+Inside_C:230:Railings (Wood)
+Inside_C:231:Railings (Wood)
+Inside_C:232:Banister A (Wood)
+Inside_C:233:Banister A (Wood)
+Inside_C:234:Banister B (Stone)
+Inside_C:235:Banister B (Stone)
+Inside_C:236:Banister C (Temple)
+Inside_C:237:Banister C (Temple)
+Inside_C:238:Banister D (Castle)
+Inside_C:239:Banister D (Castle)
+Inside_C:240:Banister A (Wood)
+Inside_C:241:Banister A (Wood)
+Inside_C:242:Banister B (Stone)
+Inside_C:243:Banister B (Stone)
+Inside_C:244:Banister C (Temple)
+Inside_C:245:Banister C (Temple)
+Inside_C:246:Banister D (Castle)
+Inside_C:247:Banister D (Castle)
+Inside_C:248:Banister A (Wood)
+Inside_C:249:Banister A (Wood)
+Inside_C:250:Banister B (Stone)
+Inside_C:251:Banister B (Stone)
+Inside_C:252:Banister C (Temple)
+Inside_C:253:Banister C (Temple)
+Inside_C:254:Banister D (Castle)
+Inside_C:255:Banister D (Castle)
+Outside_B:0:Transparent
+Outside_B:1:Shop Sign (Sword)
+Outside_B:2:Shop Sign (Sword & Shield)
+Outside_B:3:Shop Sign (Armor)
+Outside_B:4:Shop Sign (Sack)
+Outside_B:5:Shop Sign (Teapot)
+Outside_B:6:Shop Sign (Inn)
+Outside_B:7:Shop Sign (Pub)
+Outside_B:8:Shop Sign (Eatery)
+Outside_B:9:Shop Sign (Hexagram)
+Outside_B:10:Shop Sign (Staves)
+Outside_B:11:Shop Sign (Coin)
+Outside_B:12:Shop Sign (Necklace)
+Outside_B:13:Shop Sign (Hammer)
+Outside_B:14:Shop Sign (Crest)
+Outside_B:15:Shop Sign (Blank)
+Outside_B:16:Log Bridge (V)
+Outside_B:17:Log Bridge (H)
+Outside_B:18:Wood Bridge (V)
+Outside_B:19:Wood Bridge (H)
+Outside_B:20:Stone Bridge (V)
+Outside_B:21:Stone Bridge (H)
+Outside_B:22:Wood Bridge (V)
+Outside_B:23:Wood Bridge (H)
+Outside_B:24:Bridge Spar (Wood, Center A)
+Outside_B:25:Bridge Spar (Wood, Left)
+Outside_B:26:Bridge Spar (Wood, Center B)
+Outside_B:27:Bridge Spar (Wood, Right)
+Outside_B:28:Bridge Spar (Stone, Center A)
+Outside_B:29:Bridge Spar (Stone, Left)
+Outside_B:30:Bridge Spar (Stone, Center B)
+Outside_B:31:Bridge Spar (Stone, Right)
+Outside_B:32:Window A
+Outside_B:33:Window B
+Outside_B:34:Window C
+Outside_B:35:Window D
+Outside_B:36:Middle Window A
+Outside_B:37:Middle Window B
+Outside_B:38:Middle Window C
+Outside_B:39:Middle Window D
+Outside_B:40:Window E
+Outside_B:41:Window F
+Outside_B:42:Window G
+Outside_B:43:Stained Glass Window A
+Outside_B:44:Middle Window A
+Outside_B:45:Middle Window E
+Outside_B:46:Middle Window C
+Outside_B:47:Middle Window D
+Outside_B:48:Large Window A
+Outside_B:49:Large Window B
+Outside_B:50:Large Window C
+Outside_B:51:Stained Glass Window B
+Outside_B:52:Large Window D
+Outside_B:53:Middle Window F
+Outside_B:54:Middle Window G
+Outside_B:55:Middle Window H
+Outside_B:56:Large Window A
+Outside_B:57:Large Window E
+Outside_B:58:Large Window C
+Outside_B:59:Stained Glass Window B
+Outside_B:60:Large Window D
+Outside_B:61:Middle Window F
+Outside_B:62:Middle Window G
+Outside_B:63:Middle Window H
+Outside_B:64:Chimney A
+Outside_B:65:Mooring Bollard A
+Outside_B:66:Mooring Bollard B (Rope)
+Outside_B:67:Entrance A
+Outside_B:68:Entrance A (Extend)
+Outside_B:69:Entrance A (Top Half A)
+Outside_B:70:Entrance B
+Outside_B:71:Entrance A (Top Half B)
+Outside_B:72:Chimney B
+Outside_B:73:Sign A
+Outside_B:74:Sign B
+Outside_B:75:Well
+Outside_B:76:Stepping Stones
+Outside_B:77:Barrel
+Outside_B:78:Grave A
+Outside_B:79:Grave B
+Outside_B:80:Pot
+Outside_B:81:Basin A
+Outside_B:82:Basin B
+Outside_B:83:Rock Fire Pit A
+Outside_B:84:Rock Fire Pit B
+Outside_B:85:Barricade (H)
+Outside_B:86:Barricade (V)
+Outside_B:87:Beanstalk
+Outside_B:88:Grass A
+Outside_B:89:Grass B
+Outside_B:90:Grass C
+Outside_B:91:Grass D
+Outside_B:92:Stump
+Outside_B:93:Tree
+Outside_B:94:Tree
+Outside_B:95:Boulder A
+Outside_B:96:Flowers A
+Outside_B:97:Flowers B
+Outside_B:98:Flowers C
+Outside_B:99:Flowers D
+Outside_B:100:Fallen Log
+Outside_B:101:Tree
+Outside_B:102:Bush
+Outside_B:103:Boulder B
+Outside_B:104:Scarecrow
+Outside_B:105:Hole
+Outside_B:106:Firewood
+Outside_B:107:Rocks
+Outside_B:108:Crops A
+Outside_B:109:Crops B
+Outside_B:110:Crops C
+Outside_B:111:Crops D
+Outside_B:112:Large Tree
+Outside_B:113:Large Tree
+Outside_B:114:Large Tree
+Outside_B:115:Large Tree
+Outside_B:116:Large Crate
+Outside_B:117:Crate A
+Outside_B:118:Crate B
+Outside_B:119:Crate C
+Outside_B:120:Large Tree
+Outside_B:121:Large Tree
+Outside_B:122:Large Tree
+Outside_B:123:Large Tree
+Outside_B:124:Large Crate
+Outside_B:125:Crate D
+Outside_B:126:Crate E
+Outside_B:127:Crate F
+Outside_B:128:Conifer Tree (Snow)
+Outside_B:129:Conifer Tree (Snow)
+Outside_B:130:Conifer Tree (Snow)
+Outside_B:131:Conifer Tree (Snow)
+Outside_B:132:Scarecrow (Snow)
+Outside_B:133:Pot (Snow)
+Outside_B:134:Bucket (Snow)
+Outside_B:135:Crate (Snow)
+Outside_B:136:Large Conifer Tree (Snow)
+Outside_B:137:Large Conifer Tree (Snow)
+Outside_B:138:Large Conifer Tree (Snow)
+Outside_B:139:Large Conifer Tree (Snow)
+Outside_B:140:Mooring Bollard (Snow)
+Outside_B:141:Barricade (H, Snow)
+Outside_B:142:Barricade (H, Snow)
+Outside_B:143:Beanstalk (Snow)
+Outside_B:144:Chimney (Snow)
+Outside_B:145:Sign A (Snow)
+Outside_B:146:Sign B (Snow)
+Outside_B:147:Well (Snow)
+Outside_B:148:Stepping Stones (Snow)
+Outside_B:149:Barrel (Snow)
+Outside_B:150:Grave A (Snow)
+Outside_B:151:Grave B (Snow)
+Outside_B:152:Grass A (Snow)
+Outside_B:153:Grass B (Snow)
+Outside_B:154:Grass C (Snow)
+Outside_B:155:Grass D (Snow)
+Outside_B:156:Stump (Snow)
+Outside_B:157:Conifer Tree (Snow)
+Outside_B:158:Conifer Tree (Snow)
+Outside_B:159:Boulder A (Snow)
+Outside_B:160:Snowman
+Outside_B:161:Hole (Snow)
+Outside_B:162:Firewood (Snow)
+Outside_B:163:Rocks (Snow)
+Outside_B:164:Fallen Log (Snow)
+Outside_B:165:Conifer Tree (Snow)
+Outside_B:166:Bush (Snow)
+Outside_B:167:Boulder B (Snow)
+Outside_B:168:Dead Tree
+Outside_B:169:Dead Tree
+Outside_B:170:Mushrooms A
+Outside_B:171:Mushrooms B
+Outside_B:172:Palm Tree
+Outside_B:173:Palm Tree
+Outside_B:174:Cactus
+Outside_B:175:Dead Grass A
+Outside_B:176:Dead Tree
+Outside_B:177:Dead Tree (Shrub)
+Outside_B:178:Rafflesia
+Outside_B:179:Stump (Moss)
+Outside_B:180:Palm Tree
+Outside_B:181:Bush (Flowers)
+Outside_B:182:Fern
+Outside_B:183:Dead Grass B
+Outside_B:184:Hay
+Outside_B:185:Hay (Snow)
+Outside_B:186:Floral Patch
+Outside_B:187:Susuki Grass
+Outside_B:188:Fallen Leaves
+Outside_B:189:Lotus Pads A
+Outside_B:190:Lotus Pads B (Flowers)
+Outside_B:191:Lotus Pads C
+Outside_B:192:Wall Vines A
+Outside_B:193:Wall Vines B
+Outside_B:194:Wall Vines C
+Outside_B:195:Wall Fern
+Outside_B:196:Fissures A
+Outside_B:197:Fissures B
+Outside_B:198:Fissures C
+Outside_B:199:Fissures D
+Outside_B:200:Wall Vines A
+Outside_B:201:Wall Vines B
+Outside_B:202:Wall Vines C
+Outside_B:203:Wall Moss
+Outside_B:204:Fissures A
+Outside_B:205:Fissures B
+Outside_B:206:Fissures C
+Outside_B:207:Fissures D
+Outside_B:208:Tent A
+Outside_B:209:Tent A
+Outside_B:210:Tent A
+Outside_B:211:Streetlight A
+Outside_B:212:Stairs A (Up)
+Outside_B:213:Stairs B (Up)
+Outside_B:214:Stairs C (Up)
+Outside_B:215:Stairs D (Up)
+Outside_B:216:Tent A
+Outside_B:217:Tent A
+Outside_B:218:Tent A
+Outside_B:219:Streetlight A
+Outside_B:220:Stairs A (Down)
+Outside_B:221:Stairs B (Down)
+Outside_B:222:Stairs C (Down)
+Outside_B:223:Stairs D (Down)
+Outside_B:224:Tent A
+Outside_B:225:Tent A (Entrance)
+Outside_B:226:Tent A
+Outside_B:227:Streetlight A
+Outside_B:228:Metal Ladder
+Outside_B:229:Rope Ladder
+Outside_B:230:Rope
+Outside_B:231:Vines A
+Outside_B:232:Tent B (Snow)
+Outside_B:233:Tent B (Snow)
+Outside_B:234:Tent B (Snow)
+Outside_B:235:Streetlight B (Snow)
+Outside_B:236:Metal Ladder
+Outside_B:237:Rope Ladder
+Outside_B:238:Rope
+Outside_B:239:Vines A
+Outside_B:240:Tent B (Snow)
+Outside_B:241:Tent B (Snow)
+Outside_B:242:Tent B (Snow)
+Outside_B:243:Streetlight B (Snow)
+Outside_B:244:Metal Ladder
+Outside_B:245:Rope Ladder
+Outside_B:246:Rope
+Outside_B:247:Vines B (Down)
+Outside_B:248:Tent B (Snow)
+Outside_B:249:Tent B (Entrance, Snow)
+Outside_B:250:Tent B (Snow)
+Outside_B:251:Streetlight B (Snow)
+Outside_B:252:Hole A (Metal Ladder)
+Outside_B:253:Hole B (Rope Ladder)
+Outside_B:254:Hole C (Rope)
+Outside_B:255:Hole D
+Outside_C:0:Stone Pillar A
+Outside_C:1:Stone Pillar B
+Outside_C:2:Stone Pillar C
+Outside_C:3:Stone Pillar C (Moss)
+Outside_C:4:Stone Pillar C (Snow)
+Outside_C:5:Wood Pillar
+Outside_C:6:Stone Pillar D
+Outside_C:7:Demon Castle Pillar
+Outside_C:8:Stone Pillar A
+Outside_C:9:Stone Pillar B
+Outside_C:10:Stone Pillar C
+Outside_C:11:Stone Pillar C (Moss)
+Outside_C:12:Stone Pillar C (Snow)
+Outside_C:13:Wood Pillar
+Outside_C:14:Stone Pillar D
+Outside_C:15:Demon Castle Pillar
+Outside_C:16:Broken Stone Pillar
+Outside_C:17:Broken Stone Pillar
+Outside_C:18:Broken Stone Pillar
+Outside_C:19:Broken Stone Pillar C (Moss)
+Outside_C:20:Broken Stone Pillar C (Snow)
+Outside_C:21:Broken Wood Pillar
+Outside_C:22:Broken Stone Pillar F
+Outside_C:23:Broken Demon Castle Pillar
+Outside_C:24:Bones A
+Outside_C:25:Bones B
+Outside_C:26:Rubble
+Outside_C:27:Rubble B (Moss)
+Outside_C:28:Rubble C (Snow)
+Outside_C:29:Broken Wood Pillar
+Outside_C:30:Rubble D
+Outside_C:31:Rubble E (Demon Castle)
+Outside_C:32:Tapestry A
+Outside_C:33:Tapestry A (Ruins)
+Outside_C:34:Tapestry B
+Outside_C:35:Tapestry B (Ruins)
+Outside_C:36:Tapestry C
+Outside_C:37:Tapestry C (Ruins)
+Outside_C:38:Tapestry D
+Outside_C:39:Tapestry D (Ruins)
+Outside_C:40:Tapestry A
+Outside_C:41:Tapestry A (Ruins)
+Outside_C:42:Tapestry B
+Outside_C:43:Tapestry B (Ruins)
+Outside_C:44:Tapestry C
+Outside_C:45:Tapestry C (Ruins)
+Outside_C:46:Tapestry D
+Outside_C:47:Tapestry D (Ruins)
+Outside_C:48:Monument A
+Outside_C:49:Monument B
+Outside_C:50:Large Monument
+Outside_C:51:Large Monument
+Outside_C:52:Large Monument
+Outside_C:53:Large Monument (Lit)
+Outside_C:54:Large Monument (Lit)
+Outside_C:55:Large Monument (Lit)
+Outside_C:56:Monument A
+Outside_C:57:Monument C
+Outside_C:58:Large Monument
+Outside_C:59:Large Monument
+Outside_C:60:Large Monument
+Outside_C:61:Large Monument (Lit)
+Outside_C:62:Large Monument (Lit)
+Outside_C:63:Large Monument (Lit)
+Outside_C:64:Monument A (Snow)
+Outside_C:65:Monument B (Snow)
+Outside_C:66:Large Monument (Snow)
+Outside_C:67:Large Monument (Snow)
+Outside_C:68:Large Monument (Snow)
+Outside_C:69:Large Monument (Ruins)
+Outside_C:70:Large Monument (Ruins)
+Outside_C:71:Large Monument (Ruins)
+Outside_C:72:Monument A (Snow)
+Outside_C:73:Monument B (Snow)
+Outside_C:74:Large Monument (Snow)
+Outside_C:75:Large Monument (Snow)
+Outside_C:76:Large Monument (Snow)
+Outside_C:77:Large Monument (Ruins)
+Outside_C:78:Large Monument (Ruins)
+Outside_C:79:Large Monument (Ruins)
+Outside_C:80:Statue A
+Outside_C:81:Angel Statue A
+Outside_C:82:Angel Statue B
+Outside_C:83:Demon Statue
+Outside_C:84:Dais
+Outside_C:85:Dragon Statue
+Outside_C:86:Dragon Statue
+Outside_C:87:Statue B
+Outside_C:88:Statue A
+Outside_C:89:Angel Statue A
+Outside_C:90:Angel Statue B
+Outside_C:91:Demon Statue
+Outside_C:92:Dais
+Outside_C:93:Dragon Statue
+Outside_C:94:Dragon Statue
+Outside_C:95:Statue B
+Outside_C:96:Statue A (Snow)
+Outside_C:97:Angel Statue A (Snow)
+Outside_C:98:Angel Statue B (Snow)
+Outside_C:99:Demon Statue (Snow)
+Outside_C:100:Dais (Snow)
+Outside_C:101:Dragon Statue (Snow)
+Outside_C:102:Dragon Statue (Snow)
+Outside_C:103:Ice Statue
+Outside_C:104:Statue A (Snow)
+Outside_C:105:Angel Statue A (Snow)
+Outside_C:106:Angel Statue B (Snow)
+Outside_C:107:Demon Statue (Snow)
+Outside_C:108:Dais (Snow)
+Outside_C:109:Dragon Statue (Snow)
+Outside_C:110:Dragon Statue (Snow)
+Outside_C:111:Ice Statue
+Outside_C:112:Window A (Demon Castle)
+Outside_C:113:Window B (Demon Castle)
+Outside_C:114:Window C (Demon Castle)
+Outside_C:115:Gravel Mound (Dirt)
+Outside_C:116:Large Gravel Mound (Dirt)
+Outside_C:117:Large Gravel Mound (Dirt)
+Outside_C:118:Cave Entrance
+Outside_C:119:Mine Entrance
+Outside_C:120:Window A (Demon Castle)
+Outside_C:121:Window B (Demon Castle)
+Outside_C:122:Window D (Demon Castle)
+Outside_C:123:Gravel Mound B (Dirt, Snow)
+Outside_C:124:Large Gravel Mound (Dirt)
+Outside_C:125:Large Gravel Mound (Dirt)
+Outside_C:126:Cave Entrance
+Outside_C:127:Mine Entrance
+Outside_C:128:Roof A (Red Tile)
+Outside_C:129:Roof A (Red Tile)
+Outside_C:130:Roof A (Red Tile)
+Outside_C:131:Roof A (Red Tile)
+Outside_C:132:Roof A (Red Tile)
+Outside_C:133:Roof B (Snow)
+Outside_C:134:Roof B (Snow)
+Outside_C:135:Roof B (Snow)
+Outside_C:136:Roof A (Red Tile)
+Outside_C:137:Roof A (Red Tile)
+Outside_C:138:Roof A (Red Tile)
+Outside_C:139:Roof A (Red Tile)
+Outside_C:140:Roof A (Red Tile)
+Outside_C:141:Roof B (Snow)
+Outside_C:142:Roof B (Snow)
+Outside_C:143:Roof B (Snow)
+Outside_C:144:Roof A (Red Tile)
+Outside_C:145:Roof A (Red Tile)
+Outside_C:146:Roof A (Red Tile)
+Outside_C:147:Roof B (Snow)
+Outside_C:148:Roof B (Snow)
+Outside_C:149:Roof B (Snow)
+Outside_C:150:Roof B (Snow)
+Outside_C:151:Roof B (Snow)
+Outside_C:152:Roof C (Indigo Tile)
+Outside_C:153:Roof C (Indigo Tile)
+Outside_C:154:Roof C (Indigo Tile)
+Outside_C:155:Roof B (Snow)
+Outside_C:156:Roof B (Snow)
+Outside_C:157:Roof D (Wood)
+Outside_C:158:Roof D (Wood)
+Outside_C:159:Roof D (Wood)
+Outside_C:160:Roof C (Indigo Tile)
+Outside_C:161:Roof C (Indigo Tile)
+Outside_C:162:Roof C (Indigo Tile)
+Outside_C:163:Roof C (Indigo Tile)
+Outside_C:164:Roof C (Indigo Tile)
+Outside_C:165:Roof D (Wood)
+Outside_C:166:Roof D (Wood)
+Outside_C:167:Roof D (Wood)
+Outside_C:168:Roof C (Indigo Tile)
+Outside_C:169:Roof C (Indigo Tile)
+Outside_C:170:Roof C (Indigo Tile)
+Outside_C:171:Roof C (Indigo Tile)
+Outside_C:172:Roof C (Indigo Tile)
+Outside_C:173:Roof D (Wood)
+Outside_C:174:Roof D (Wood)
+Outside_C:175:Roof D (Wood)
+Outside_C:176:Round Tower A (Castle)
+Outside_C:177:Round Tower A (Castle)
+Outside_C:178:Roof Detail A (Red Tile)
+Outside_C:179:Roof Detail B (Snow)
+Outside_C:180:Roof D (Wood)
+Outside_C:181:Roof D (Wood)
+Outside_C:182:Round Tower B (Fort)
+Outside_C:183:Round Tower B (Fort)
+Outside_C:184:Round Tower A (Castle)
+Outside_C:185:Round Tower A (Castle)
+Outside_C:186:Roof Detail C (Indigo Tile)
+Outside_C:187:Roof Detail D (Wood)
+Outside_C:188:Roof D (Wood)
+Outside_C:189:Roof D (Wood)
+Outside_C:190:Round Tower B (Fort)
+Outside_C:191:Round Tower B (Fort)
+Outside_C:192:Round Tower A (Castle)
+Outside_C:193:Round Tower A (Castle)
+Outside_C:194:Round Tower A (Castle's Spire)
+Outside_C:195:Round Tower A (Castle's Spire)
+Outside_C:196:Round Tower B (Fort)
+Outside_C:197:Round Tower B (Fort)
+Outside_C:198:Round Tower B (Fort)
+Outside_C:199:Round Tower B (Fort)
+Outside_C:200:Round Tower A (Castle)
+Outside_C:201:Round Tower A (Castle)
+Outside_C:202:Round Tower A (Castle's Spire)
+Outside_C:203:Round Tower A (Castle's Spire)
+Outside_C:204:Round Tower C (Demon Castle)
+Outside_C:205:Round Tower C (Demon Castle)
+Outside_C:206:Round Tower B (Fort)
+Outside_C:207:Round Tower B (Fort)
+Outside_C:208:Round Tower A (Castle)
+Outside_C:209:Round Tower A (Castle)
+Outside_C:210:Round Tower A (Castle's Spire)
+Outside_C:211:Round Tower A (Castle's Spire)
+Outside_C:212:Round Tower C (Demon Castle)
+Outside_C:213:Round Tower C (Demon Castle)
+Outside_C:214:Round Tower B (Fort)
+Outside_C:215:Round Tower B (Fort)
+Outside_C:216:Round Tower A (Castle, Snow)
+Outside_C:217:Round Tower A (Castle, Snow)
+Outside_C:218:Round Tower A (Castle)
+Outside_C:219:Round Tower A (Castle)
+Outside_C:220:Round Tower C (Demon Castle)
+Outside_C:221:Round Tower C (Demon Castle)
+Outside_C:222:Round Tower B (Fort, Snow)
+Outside_C:223:Round Tower B (Fort, Snow)
+Outside_C:224:Round Tower A (Castle, Snow)
+Outside_C:225:Round Tower A (Castle, Snow)
+Outside_C:226:Round Tower A (Castle's Spire, Snow)
+Outside_C:227:Round Tower A (Castle's Spire, Snow)
+Outside_C:228:Round Tower C (Demon Castle)
+Outside_C:229:Round Tower C (Demon Castle)
+Outside_C:230:Round Tower B (Fort, Snow)
+Outside_C:231:Round Tower B (Fort, Snow)
+Outside_C:232:Round Tower A (Castle, Snow)
+Outside_C:233:Round Tower A (Castle, Snow)
+Outside_C:234:Round Tower A (Castle's Spire, Snow)
+Outside_C:235:Round Tower A (Castle's Spire, Snow)
+Outside_C:236:Round Tower C (Demon Castle)
+Outside_C:237:Round Tower C (Demon Castle)
+Outside_C:238:Round Tower B (Fort, Snow)
+Outside_C:239:Round Tower B (Fort, Snow)
+Outside_C:240:Round Tower A (Castle, Snow)
+Outside_C:241:Round Tower A (Castle, Snow)
+Outside_C:242:Round Tower A (Castle's Spire, Snow)
+Outside_C:243:Round Tower A (Castle's Spire, Snow)
+Outside_C:244:Round Tower C (Demon Castle)
+Outside_C:245:Round Tower C (Demon Castle)
+Outside_C:246:Round Tower B (Fort, Snow)
+Outside_C:247:Round Tower B (Fort, Snow)
+Outside_C:248:Round Tower A (Castle, Snow)
+Outside_C:249:Round Tower A (Castle, Snow)
+Outside_C:250:Round Tower A (Castle, Snow)
+Outside_C:251:Round Tower A (Castle, Snow)
+Outside_C:252:Round Tower B (Fort, Snow)
+Outside_C:253:Round Tower B (Fort, Snow)
+Outside_C:254:Round Tower B (Fort, Snow)
+Outside_C:255:Round Tower B (Fort, Snow)
