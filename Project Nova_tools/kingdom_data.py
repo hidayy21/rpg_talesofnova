@@ -1,6 +1,7 @@
 # Database additions for the Royal Kingdom of Nova maps:
-#  - food items (fishmonger, bakery, tavern), companion accessories (pet shop)
-#  - common events: magic shop, pet shop, fishmonger, bakery, inn (rest), tavern
+#  - food items (fishmonger, bakery, tavern), companion armors (each pet's party bonus, see pet_data.py)
+#  - common events: magic shop, pet adoption, fishmonger, bakery, inn (rest), tavern
+#  - pets: class, skills and actors for the NovaPets plugin (pet_data.py)
 #  - Nova_Market_D registered as slot D of the Outside tileset, with flags copied from the Inside tileset
 #  - Baker's Lane: doors lead into the Bakery / Tavern / Inn, street ends connect to the Plaza and Residential
 # Idempotent: re-running updates the same ids instead of appending.
@@ -9,6 +10,7 @@ sys.path.insert(0, 'D:/RPG Maker MV/Project Nova_tools')
 import data_ids as DI
 import kingdom as K
 import nova_maplib as L
+import pet_data
 from make_town_tiles import build as build_props
 
 DATA = L.DATA
@@ -49,14 +51,15 @@ def main():
     food(DI.ITEM_BUN, 'Sweet Bun', 267, 40, 'From the Golden Crust bakery. Restores 250 HP.', [hp(0, 250)])
     food(DI.ITEM_HONEY_BREAD, 'Honey Bread', 266, 150, 'The royal kitchens\' favourite. Restores 500 HP and 40 MP.', [hp(0, 500), mp(0, 40)])
 
-    # ---------------------------------------------------------------- companions (pet shop accessories)
+    # ---------------------------------------------------------------- companions: no longer sold, each one is the
+    # party bonus of its pet (<pet passive: id>), so they are kept out of the item book
     def companion(idx, name, icon, price, desc, params, traits):
         a = copy.deepcopy(ARMOR_T)
         p = [0] * 8
         for k, v in params.items(): p[['mhp', 'mmp', 'atk', 'def', 'mat', 'mdf', 'agi', 'luk'].index(k)] = v
         a.update({'name': name, 'iconIndex': icon, 'price': price, 'description': desc, 'params': p,
                   'atypeId': 1, 'etypeId': 5, 'traits': [{'code': 22, 'dataId': 1, 'value': 0}] + traits,
-                  'note': '<companion>'})
+                  'note': '<companion>\n<book:no>'})
         put(Armors, idx, a)
     xp = lambda i, v: {'code': 22, 'dataId': i, 'value': v}
     companion(DI.PET_CAT, 'Companion: Alley Cat', 135, 3000, 'A clever street cat that warns you of danger.\nAGI +12, Evasion +5%.', {'agi': 12}, [xp(1, 0.05)])
@@ -72,7 +75,6 @@ def main():
     ITEM, WEAPON, ARMOR = 0, 1, 2
     magic = ([(WEAPON, w) for w in (17, 12, 18, 13, 42, 43, 19, 14, 44)] +
              [(ITEM, i) for i in (2, 7, 8, 36)] + [(ARMOR, a) for a in (39, 44, 46, 52, 56)])
-    pets = [(ARMOR, a) for a in (DI.PET_CAT, DI.PET_HOUND, DI.PET_OWL, DI.PET_CHICK)]
     fish = [(ITEM, i) for i in (DI.ITEM_TROUT, DI.ITEM_EEL, DI.ITEM_CHOWDER)]
     bakery = [(ITEM, i) for i in (DI.ITEM_BUN, DI.ITEM_HONEY_BREAD, 21)]
     tavern = [(ITEM, i) for i in (21, 33, 34, 35, DI.ITEM_TROUT, DI.ITEM_CHOWDER, 1)]
@@ -101,7 +103,7 @@ def main():
         cmd(404, []),
     ]
     events = {DI.CE_MAGIC: ('Shop: Magic (Starlit Grimoire)', shop_list(magic)),
-              DI.CE_PETS: ('Shop: Companions (Whisker & Paw)', shop_list(pets)),
+              DI.CE_PETS: ('Shop: Companions (Whisker & Paw)', pet_data.adoption_event()),
               DI.CE_FISH: ('Shop: Fishmonger', shop_list(fish)),
               DI.CE_BAKERY: ('Shop: Bakery', shop_list(bakery)),
               DI.CE_INN: ('Inn: Silver Swan (%d G)' % P, inn),
@@ -117,6 +119,7 @@ def main():
 
     save('Items', Items); save('Armors', Armors); save('CommonEvents', CE); save('Tilesets', Tilesets)
     print('items', len(Items) - 1, 'armors', len(Armors) - 1, 'common events', len(CE) - 1, 'D props', len(ids))
+    pet_data.main()
 
 
 def patch_bakers_lane():

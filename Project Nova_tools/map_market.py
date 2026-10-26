@@ -121,6 +121,10 @@ m.critter('Pen Chicken', 44, 10, 'Nature', 2, None, 'Bawk!', pen='R')
 m.critter('Market Cat', 21, 27, 'Nature', 1, 'Cat', 'The cat is guarding the well. Or sleeping.', move=0)
 m.npc('Pet Shop Girl', 41, 11, 'People1', 3, ('Pet Shop Girl:', 'Come inside! We have cats, hounds and an owl', 'that can read. Allegedly.'), direction=4)
 
+# ---------------------------------------------------------------- touch-ups made by hand in the editor (Oct 2026)
+m.put(20, 3, 0, 2); m.put(20, 3, 116, 3)
+m.put(20, 4, 124, 3)
+
 if __name__ == '__main__':
     out = sys.argv[1] if len(sys.argv) > 1 else None
     if out: m.render(out, scale=0.5, grid='--grid' in sys.argv)

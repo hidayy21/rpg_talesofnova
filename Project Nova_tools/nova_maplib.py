@@ -8,10 +8,10 @@
 import json, os, re
 from PIL import Image, ImageDraw
 
-# the game folder sits next to this tools folder ('rpg_talesofnova' on the Mac, 'Project Nova' on Windows)
+# the game folder holds this tools folder, or sits next to it ('rpg_talesofnova' on the Mac, 'Project Nova' on Windows)
 _HERE = os.path.dirname(os.path.abspath(__file__))
-PROJ = os.environ.get('NOVA_PROJ') or next(p for p in (os.path.join(_HERE, '..', n) for n in ('rpg_talesofnova', 'Project Nova'))
-                                            if os.path.isdir(p)).replace('\\', '/') + '/'
+PROJ = os.environ.get('NOVA_PROJ') or next(p for p in [os.path.join(_HERE, '..')] + [os.path.join(_HERE, '..', n) for n in ('rpg_talesofnova', 'Project Nova')]
+                                            if os.path.isfile(os.path.join(p, 'Game.rpgproject'))).replace('\\', '/') + '/'
 DATA = PROJ + 'data/'
 
 A1, A2, A3, A4, A5 = 2048, 2816, 4352, 5888, 1536
@@ -60,6 +60,14 @@ def is_wall_kind(sheet, kind):
 BASE = {'A1': A1, 'A2': A2, 'A3': A3, 'A4': A4}
 
 
+def _kind_of(v):
+    """A raw ('ID', tile) autotile still counts as its kind for its neighbours' shapes."""
+    if v and v[0] == 'ID' and v[1] >= A1:
+        for sheet, base in (('A4', A4), ('A3', A3), ('A2', A2), ('A1', A1)):
+            if v[1] >= base: return (sheet, (v[1] - base) // 48)
+    return v
+
+
 class MapBuilder:
     def __init__(self, w, h, tileset_id, name, display=''):
         self.w, self.h, self.tileset_id, self.name, self.display = w, h, tileset_id, name, display
@@ -105,7 +113,7 @@ class MapBuilder:
                         out[L][y * w + x] = A5 + k; continue
                     if sheet == 'ID':
                         out[L][y * w + x] = k; continue
-                    same = lambda xx, yy, v=v: (lambda g: g == v or g == 'edge')(self.get(xx, yy, L))
+                    same = lambda xx, yy, v=v: (lambda g: g == 'edge' or _kind_of(g) == v)(self.get(xx, yy, L))
                     if sheet == 'A1' and k >= 5 and k % 2 == 1:   # waterfall: only left/right neighbours matter
                         shape = (0 if same(x - 1, y) else 1) + (0 if same(x + 1, y) else 2)
                     else:

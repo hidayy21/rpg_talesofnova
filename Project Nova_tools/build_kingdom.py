@@ -1,6 +1,8 @@
 # Builds every Royal Kingdom of Nova map, validates the whole set, and (with --apply) writes it to the project.
 #   python build_kingdom.py            -> validate only
 #   python build_kingdom.py --apply    -> back up data/, write database additions + maps (editor must be closed)
+# --apply rewrites EVERY map from these scripts: changes made by hand in the editor are lost unless they were
+# copied into the map's script first. To rebuild a single map, run its own script with --save instead.
 import sys, json, copy, shutil, datetime, subprocess, importlib
 sys.path.insert(0, 'D:/RPG Maker MV/Project Nova_tools')
 import nova_maplib as L
@@ -20,8 +22,8 @@ def collect():
     built = {}
     for mod, mid, parent in EXTERIORS:
         built[mid] = (importlib.import_module(mod).m, parent)
-    import map_interiors
-    for mid, (room, parent) in map_interiors.build_all().items():
+    import map_interiors, map_prison
+    for mid, (room, parent) in list(map_interiors.build_all().items()) + list(map_prison.build_all().items()):
         built[mid] = (room, parent)
     return built
 
@@ -46,8 +48,10 @@ def bakers_lane_preview():
 
 
 def editor_running():
-    out = subprocess.run(['tasklist', '/FI', 'IMAGENAME eq RPGMV.exe'], capture_output=True, text=True).stdout
-    return 'RPGMV.exe' in out
+    if sys.platform == 'win32':
+        out = subprocess.run(['tasklist', '/FI', 'IMAGENAME eq RPGMV.exe'], capture_output=True, text=True).stdout
+        return 'RPGMV.exe' in out
+    return subprocess.run(['pgrep', '-if', 'RPG Maker MV'], capture_output=True).returncode == 0
 
 
 if __name__ == '__main__':
@@ -61,7 +65,7 @@ if __name__ == '__main__':
         if problems: sys.exit('not applying: fix the problems above first')
         if editor_running(): sys.exit('not applying: RPG Maker MV is open - save and close it first')
         stamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        bk = 'D:/RPG Maker MV/Project Nova_backups/data_' + stamp
+        bk = L.PROJ + '../Project Nova_backups/data_' + stamp     # outside the game folder, so it is not committed
         shutil.copytree(L.DATA, bk)
         print('backup:', bk)
         import kingdom_data

@@ -152,6 +152,23 @@ m.npc('Old Woman', 27, 45, 'People2', 2, ('Old Woman:', 'Ember Lane, they call i
 m.npc('Boy', 38, 46, 'People4', 0, ('Boy:', 'When I grow up I\'m going to be a knight', 'like the Ashveil girl!'), move=1, speed=4, freq=4)
 m.critter('Cat', 30, 49, 'Nature', 1, 'Cat', 'The cat is asleep in the flowerbed.', move=0)
 
+# ---------------------------------------------------------------- touch-ups made by hand in the editor (Oct 2026)
+m.put(15, 4, 0, 2); m.put(15, 4, 32, 3); m.put(17, 4, 0, 2); m.put(17, 4, 32, 3)
+m.put(15, 6, 0, 2); m.put(15, 6, 32, 3); m.put(17, 6, 0, 2); m.put(17, 6, 32, 3)
+m.put(15, 8, 0, 2); m.put(15, 8, 32, 3); m.put(17, 8, 0, 2); m.put(17, 8, 32, 3)
+m.put(17, 20, 112, 3); m.put(18, 20, 113, 3)
+m.put(19, 21, 113, 3); m.put(24, 21, 112, 3); m.put(25, 21, 113, 3); m.put(41, 21, 112, 3); m.put(42, 21, 113, 3)
+m.put(19, 22, 121, 3); m.put(23, 22, 112, 3); m.put(26, 22, 211, 2); m.put(26, 22, 113, 3); m.put(40, 22, 112, 3); m.put(43, 22, 113, 3)
+m.put(17, 23, 120, 3); m.put(18, 23, 121, 3); m.put(23, 23, 120, 3); m.put(26, 23, 219, 2); m.put(26, 23, 121, 3); m.put(40, 23, 120, 3); m.put(43, 23, 121, 3)
+m.put(24, 24, 120, 3); m.put(25, 24, 121, 3); m.put(41, 24, 120, 3); m.put(42, 24, 121, 3)
+m.put(25, 32, 93, 3)
+m.put(26, 33, 93, 3)
+m.put(25, 34, 101, 3); m.put(26, 34, 101, 3)
+m.put(17, 47, 112, 3); m.put(18, 47, 113, 3)
+m.put(16, 48, 112, 3); m.put(19, 48, 113, 3)
+m.put(16, 49, 120, 3); m.put(19, 49, 121, 3)
+m.put(17, 50, 120, 3); m.put(18, 50, 121, 3)
+
 if __name__ == '__main__':
     out = sys.argv[1] if len(sys.argv) > 1 else None
     if out: m.render(out, scale=0.5, grid='--grid' in sys.argv)

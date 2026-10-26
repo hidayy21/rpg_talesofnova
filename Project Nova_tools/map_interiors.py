@@ -123,6 +123,27 @@ def pet_shop():
              'They\'re small, but they\'ll fight beside you - in their own way.'), common_event(DI.CE_PETS))
     r.npc('Old Breeder', 12, 7, 'People2', 2, ('Old Breeder:', 'I bred hounds for the royal hunt for thirty years.',
           'Now I breed them for heroes. Better company.'), direction=4)
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.cell(4, 4, ('A4', 16))
+    r.cell(9, 4, ('A4', 16))
+    r.cell(4, 5, ('A4', 24))
+    r.cell(9, 5, ('A4', 24))
+    r.cell(3, 6, ('A2', 8))
+    r.cell(4, 6, ('A4', 24))
+    r.cell(5, 6, ('A2', 8))
+    r.cell(8, 6, ('A2', 8))
+    r.cell(9, 6, ('A4', 24))
+    r.cell(10, 6, ('A2', 8))
+    r.cell(3, 7, ('A2', 8))
+    r.cell(4, 7, ('A2', 8))
+    r.cell(5, 7, ('A2', 8))
+    r.cell(8, 7, ('A2', 8))
+    r.cell(9, 7, ('A2', 8))
+    r.cell(10, 7, ('A2', 8))
+    r.put(1, 5, 0, 2); r.put(1, 5, 244, 3); r.put(2, 5, 245, 2); r.put(2, 5, 246, 3); r.put(3, 5, 245, 2); r.put(3, 5, 247, 3); r.put(4, 5, 0, 2); r.put(5, 5, 0, 2); r.put(5, 5, 245, 3); r.put(6, 5, 0, 2); r.put(6, 5, 246, 3); r.put(7, 5, 0, 2); r.put(7, 5, 247, 3); r.put(8, 5, 0, 2); r.put(8, 5, 244, 3); r.put(10, 5, 0, 2); r.put(10, 5, 245, 3); r.put(11, 5, 0, 2); r.put(11, 5, 246, 3); r.put(12, 5, 0, 2); r.put(12, 5, 247, 3); r.put(13, 5, 0, 2); r.put(13, 5, 244, 3)
+    r.put(1, 6, 252, 3); r.put(2, 6, 252, 2); r.put(2, 6, 254, 3); r.put(3, 6, 252, 2); r.put(3, 6, 255, 3); r.put(5, 6, 252, 2); r.put(5, 6, 253, 3); r.put(6, 6, 252, 2); r.put(6, 6, 254, 3); r.put(7, 6, 252, 2); r.put(7, 6, 255, 3); r.put(8, 6, 252, 3); r.put(10, 6, 252, 2); r.put(10, 6, 253, 3); r.put(11, 6, 252, 2); r.put(11, 6, 254, 3); r.put(12, 6, 252, 2); r.put(12, 6, 255, 3); r.put(13, 6, 252, 3)
+    r.shadow[6][5] = 5
+    r.shadow[6][10] = 5
     return r
 
 
@@ -185,6 +206,10 @@ def tavern():
           'One day I\'ll take a Class 3 contract.'), direction=6)
     r.npc('Young Mage', 25, 11, 'People2', 2, ('Young Mage:', 'Just got my Class 5 license this spring.',
           'Mother still thinks I work in a library.'), direction=8)
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.cell(20, 8, ('A4', 17))
+    r.cell(20, 9, ('A4', 25))
+    r.cell(20, 10, ('A4', 25))
     return r
 
 
@@ -215,6 +240,16 @@ def inn():
     r.npc('Guest', 13, 7, 'People4', 5, ('Traveller:', 'Best beds this side of the mountains.', 'The soup is... well, the beds are good.'), direction=2)
     r.npc('Maid', 15, 10, 'People2', 5, ('Maid:', 'I change the sheets every morning.', 'The Dragonslayer\'s room I change twice.'), move=1)
     r.npc('Old Guest', 3, 11, 'People2', 2, ('Old Guest:', 'I have lived at this inn for eleven years.', 'I keep meaning to leave.'), direction=6)
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.cell(10, 6, ('A4', 19))
+    r.cell(10, 7, ('A4', 27))
+    r.cell(10, 8, ('A4', 27))
+    r.put(7, 1, 34, 3); r.put(8, 1, 0, 2); r.put(9, 1, 132, 3); r.put(12, 1, 0, 2); r.put(12, 1, 17, 3); r.put(15, 1, 0, 2); r.put(15, 1, 17, 3)
+    r.put(4, 2, 50, 3); r.put(5, 2, 51, 3); r.put(6, 2, 65, 3); r.put(7, 2, 42, 3); r.put(8, 2, 0, 3); r.put(9, 2, 140, 3); r.put(12, 2, 25, 3); r.put(15, 2, 25, 3)
+    r.put(4, 3, 58, 3); r.put(5, 3, 59, 3); r.put(6, 3, 0, 2); r.put(6, 3, 73, 3); r.put(8, 3, 0, 2)
+    r.put(4, 9, 104, 3)
+    r.put(3, 10, 0, 2); r.put(3, 10, 104, 3); r.put(5, 10, 0, 2); r.put(5, 10, 104, 3)
+    r.put(4, 11, 104, 3)
     return r
 
 
@@ -242,7 +277,7 @@ def barracks():
     r.put(5, 12, NOTICE)
     for bx in (6, 10):
         r.obj('Brazier', bx, 12, '!Other2', 7, None, step=True)
-    r.exit_door(8, K.CASTLE_APPROACH, 7, 22, 2)
+    r.exit_door(8, K.CASTLE_APPROACH, 21, 22, 2)
     r.npc('Commander Vale', 8, 3, 'People3', 7, ('Commander Vale:', 'You walk like a soldier, whoever you are.',
           'Roland of the Shield trained under me. Tell him', 'old Vale still keeps his bunk made.'), direction=2)
     r.npc('Soldier', 4, 7, 'People3', 6, ('Soldier:', 'Off duty. Don\'t tell the Sergeant.'), direction=6)
@@ -289,6 +324,9 @@ def townhouse_1f():
     r.npc('Lady Mirelle', 4, 9, 'People3', 3, ('Lady Mirelle:', 'Visitors! How delightful.',
           'My late husband was a captain of the Royal Navy.', 'Do look around - the view from upstairs is lovely.'), direction=8)
     r.npc('Butler', 9, 6, 'People2', 7, ('Butler:', 'Tea will be served at four, as always.'), direction=2)
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.put(6, 1, 167, 3); r.put(11, 1, 0, 3)
+    r.put(7, 2, 25, 3)
     return r
 
 
@@ -306,6 +344,10 @@ def townhouse_2f():
     r.look('Telescope Window', 7, 2, ['Through the window: the harbor, the lighthouse,', 'and far away, the snowy mountains of the north.'])
     r.npc('Young Mirelle', 4, 7, 'People1', 1, ('Young Mirelle:', 'Grandmother says Father\'s ship will come home.', 'I watch the harbor every evening.'), direction=8)
     r.look('Diary', 9, 7, ['"Day 312. Still no word from the Morning Star."', '"The harbormaster says the northern sea froze over."'])
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.put(7, 1, 0, 2); r.put(7, 1, 33, 3)
+    r.put(1, 2, 40, 3); r.put(7, 2, 41, 3)
+    r.put(8, 7, 0, 2); r.put(8, 7, 104, 3); r.put(10, 7, 104, 3)
     return r
 
 
@@ -337,10 +379,25 @@ def ashveil_1f():
     # bathroom
     r.put(15, 10, DRESSER); r.two(16, 8, MIRROR); r.put(18, 10, TUB_A); r.put(19, 10, TUB_B); r.put(19, 13, PLANT_B)
     r.exit_door(11, K.RESIDENTIAL, 11, 44, 2)
-    r.add_event('Stairs Up', 14, 2, [L.exit_page(K.ASHVEIL_2F, 10, 10, 6)])
+    r.add_event('Stairs Up', 14, 3, [L.exit_page(K.ASHVEIL_2F, 10, 10, 6)])
     r.npc('Mother', 3, 4, 'People1', 1, ('Mother:', 'Wipe your boots, Kael.', 'And if you are going to practise fire spells,', 'do it OUTSIDE this time.'), direction=2)
     r.look('Family Portrait', 16, 1, ['A family portrait. Six Ashveils, all with the', 'same stubborn look in their eyes.'])
     r.look('Bath', 18, 10, ['A wooden tub, still warm.', 'Fire mages never have to wait for hot water.'])
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.cell(8, 7, ('A4', 34))
+    r.cell(8, 8, ('A4', 40))
+    r.cell(14, 8, ('A4', 34))
+    r.cell(15, 8, ('A4', 42))
+    r.cell(8, 9, ('A4', 40))
+    r.cell(14, 9, ('A4', 40))
+    r.cell(15, 9, ('A4', 42))
+    r.cell(14, 10, ('A4', 40))
+    r.put(4, 1, 0, 2); r.put(4, 1, 38, 3)
+    r.put(4, 2, 46, 3); r.put(14, 2, 0, 2); r.put(17, 2, 25, 3); r.put(19, 2, 25, 3)
+    r.put(14, 3, 4, 3)
+    r.put(4, 6, 104, 3); r.put(10, 6, 0, 2); r.put(11, 6, 0, 2); r.put(11, 6, 0, 3); r.put(12, 6, 0, 2); r.put(12, 6, 0, 3); r.put(13, 6, 0, 2)
+    r.put(4, 9, 104, 3)
+    r.cell(15, 8, ('ID', 7906)); r.cell(15, 9, ('ID', 7912))   # the editor's own wall-corner shapes
     return r
 
 
@@ -363,12 +420,24 @@ def ashveil_2f():
     r.put(15, 1, WIN_MID[1]); r.put(18, 1, WIN_MID[1]); r.two(17, 1, MIRROR)
     r.put(19, 3, ARMOR_STANDS[1]); r.put(19, 7, SWORD_RACK_A); r.put(19, 8, SHIELD_A)
     r.put(14, 6, DOLL_BEAR); r.put(14, 7, DOLL_BLUE); r.put(14, 11, FLOWER_TABLE); r.rect(15, 7, 18, 9, RUG_F)
-    r.add_event('Stairs Down', 9, 10, [L.exit_page(K.ASHVEIL_1F, 14, 3, 2)])
-    r.add_event('Stairs Up', 11, 2, [L.exit_page(K.ASHVEIL_3F, 8, 4, 2)])
+    r.add_event('Stairs Down', 10, 3, [L.exit_page(K.ASHVEIL_1F, 14, 3, 2)])
+    r.add_event('Stairs Up', 12, 3, [L.exit_page(K.ASHVEIL_3F, 8, 4, 2)])
     r.npc('Little Sister', 16, 8, 'People1', 2, ('Little Sister:', 'Brother! When you go adventuring,', 'you have to bring me something from every town.', 'Promise!'), direction=2)
     r.look('Knight\'s Bed', 18, 3, ['Your older sister\'s bed, made with military', 'precision. It has not been slept in for weeks.'])
     r.look('Armor Stand', 19, 3, ['Spare armor, polished to a mirror shine.', 'She serves the Crown now.'])
     r.look('Parents\' Bed', 2, 3, ['Your parents\' bed. Father\'s side is cold.', 'He is off on another journey.'])
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.cell(7, 6, ('A4', 34))
+    r.cell(13, 6, ('A4', 34))
+    r.cell(7, 7, ('A4', 40))
+    r.cell(13, 7, ('A4', 40))
+    r.cell(7, 8, ('A4', 40))
+    r.cell(13, 8, ('A4', 40))
+    r.put(2, 2, 41, 3); r.put(3, 2, 41, 3); r.put(11, 2, 0, 2); r.put(15, 2, 25, 3); r.put(16, 2, 116, 3); r.put(18, 2, 25, 3)
+    r.put(10, 3, 12, 3); r.put(12, 3, 3, 3); r.put(14, 3, 80, 3); r.put(15, 3, 0, 3); r.put(16, 3, 0, 2)
+    r.put(14, 4, 88, 3); r.put(15, 4, 0, 2)
+    r.put(4, 10, 0, 2); r.put(4, 10, 104, 3); r.put(9, 10, 0, 2)
+    r.put(15, 11, 104, 3)
     return r
 
 
@@ -392,6 +461,10 @@ def ashveil_3f():
     r.look('Crystal Ball', 1, 8, ['Your old practice crystal.', 'A thin wisp of shadow still curls inside.'])
     r.look('Sea Chart', 11, 7, ['Your elder brother\'s sea chart. He circled ports', 'you have never heard of.'])
     r.look('Brother\'s Bed', 15, 3, ['Your elder brother\'s bed. It still smells', 'faintly of salt and tar.'])
+    # ------------------------------------------------------------ touch-ups made by hand in the editor (Oct 2026)
+    r.put(2, 1, 0, 2); r.put(2, 1, 38, 3); r.put(14, 1, 0, 2); r.put(14, 1, 38, 3)
+    r.put(2, 2, 46, 3); r.put(14, 2, 46, 3)
+    r.put(5, 8, 0, 2); r.put(5, 8, 104, 3); r.put(11, 8, 0, 2); r.put(11, 8, 104, 3)
     return r
 
 

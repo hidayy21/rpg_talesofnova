@@ -5,6 +5,7 @@ PLAZA, MARKET, RESIDENTIAL, HARBOR, CASTLE_APPROACH = 3, 4, 5, 6, 7
 WEAPON_SHOP, ARMOR_SHOP, MAGIC_SHOP, PET_SHOP = 8, 9, 10, 11
 TAVERN, INN, BARRACKS, BAKERY, TOWNHOUSE_1F, TOWNHOUSE_2F = 12, 13, 14, 15, 16, 17
 ASHVEIL_1F, ASHVEIL_2F, ASHVEIL_3F = 18, 19, 20
+PRISON_1F, PRISON_CELLS = 21, 22
 
 NAMES = {
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
@@ -25,6 +26,8 @@ NAMES = {
     ASHVEIL_1F: ('Nova - Ashveil House 1F', 'Ashveil Residence'),
     ASHVEIL_2F: ('Nova - Ashveil House 2F', 'Ashveil Residence - 2F'),
     ASHVEIL_3F: ('Nova - Ashveil House 3F', 'Ashveil Residence - 3F'),
+    PRISON_1F: ('Nova - Royal Prison 1F', 'Royal Prison'),
+    PRISON_CELLS: ('Nova - Royal Prison Cells', 'Royal Prison - Cells'),
 }
 
 # Arrival points, filled in by the map scripts' layouts (kept here so both sides of a link use one source).

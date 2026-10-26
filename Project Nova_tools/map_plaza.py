@@ -95,26 +95,37 @@ m.exit('To Baker\'s Lane', [(0, 0), (1, 0)], *K.ARRIVE['bakers_from_plaza'])
 m.exit('To Residential', [(0, y) for y in range(15, 19)], K.RESIDENTIAL, 42, 15, 4)
 m.exit('To Market', [(W - 1, y) for y in range(15, 19)], K.MARKET, 1, 15, 6)
 m.exit('To Harbor', [(x, H - 1) for x in range(19, 25)], K.HARBOR, 19, 1, 2)
-m.exit('To Castle', [(x, 0) for x in range(19, 25)], K.CASTLE_APPROACH, 17, 32, 8)
+m.exit('To Castle', [(x, 0) for x in range(19, 25)], K.CASTLE_APPROACH, 31, 32, 8)
 # people
-m.obj('Carriage', 26, 3, 'Vehicle', 5, ["A noble's carriage, waiting for its owner."], step=False, direction=4)
-m.obj('Carriage Horse', 26, 2, 'Nature', 3, ['The horse snorts and stamps a hoof.'], step=False, direction=2)
+m.obj('Carriage', 18, 7, 'Vehicle', 5, ["A noble's carriage, waiting for its owner."], step=False, direction=4)
+m.obj('Carriage Horse', 19, 7, 'Nature', 3, ['The horse snorts and stamps a hoof.'], step=False, direction=2)
 m.npc('Avenue Guard', 19, 4, 'People3', 6, ('Royal Guard:', 'The Royal Avenue leads to the castle gate.'), direction=6)
 m.npc('Avenue Guard', 24, 4, 'People3', 7, ('Royal Guard:', "Sheathe your weapons in the King's presence."), direction=4)
-m.npc('Coachman', 27, 4, 'People1', 6, ('Coachman:', 'Lady Evelyn is at the bank again.', 'I could wait here all day, and often do.'), direction=4)
+m.npc('Coachman', 25, 7, 'People1', 6, ('Coachman:', 'Lady Evelyn is at the bank again.', 'I could wait here all day, and often do.'), direction=4)
 m.npc('Plaza Guard', 18, 12, 'People3', 6, ('Royal Guard:', 'The castle lies north along the Royal Avenue.',
       'The market is east, the harbor south.'), direction=2)
 m.npc('Plaza Guard', 25, 12, 'People3', 7, ('Royal Guard:', 'Keep the peace in the King\'s square.'), direction=2)
 m.npc('Bard', 16, 19, 'People2', 6, ('Bard:', '♪ Oh the Snowblade came from the East... ♪', 'Spare a coin for a song?'), direction=6)
 m.npc('Flower Girl', 36, 22, 'People1', 3, ('Flower Girl:', 'Fresh lilies from the valley!', 'They say the Queen loves white roses.'), direction=8)
 m.npc('Flower Seller', 39, 22, 'People4', 1, ('Flower Seller:', 'Every bloom here was cut this morning.'), direction=8)
-m.npc('Old Scholar', 8, 23, 'People2', 2, ('Old Scholar:', 'Aurelian founded Nova on a fishing village.',
+m.npc('Old Scholar', 8, 22, 'People2', 2, ('Old Scholar:', 'Aurelian founded Nova on a fishing village.',
       'The harbor is older than the crown itself.'), direction=8)
 m.npc('Townsman', 27, 17, 'People1', 0, ('Townsman:', 'Have you tried the Golden Crust bakery?', 'Through the alley at the north-west corner.'), move=1)
 m.npc('Child', 17, 14, 'People4', 3, ('Child:', 'I threw a coin in the fountain and wished for a dragon!'), move=1, speed=4)
 m.npc('Merchant', 34, 16, 'People2', 3, ('Traveling Merchant:', 'The Market District is just east of here.', 'Best prices in the kingdom - or so they say.'), move=1, freq=2)
 m.critter('Stray Cat', 4, 17, 'Nature', 1, 'Cat', 'Meow?', move=1)
 m.npc('Lady', 21, 20, 'People3', 3, ('Noble Lady:', 'The square is lovely at dusk, when the lamps are lit.'), direction=8)
+
+# ---------------------------------------------------------------- touch-ups made by hand in the editor (Oct 2026)
+m.put(27, 4, 0, 2); m.put(27, 4, 32, 3); m.put(29, 4, 0, 2); m.put(29, 4, 32, 3); m.put(30, 4, 0, 2); m.put(30, 4, 32, 3); m.put(32, 4, 0, 2); m.put(32, 4, 32, 3)
+m.put(2, 19, 112, 3); m.put(3, 19, 113, 3); m.put(10, 19, 112, 3); m.put(11, 19, 113, 3)
+m.put(1, 20, 112, 3); m.put(4, 20, 113, 3); m.put(9, 20, 112, 3); m.put(12, 20, 113, 3)
+m.put(1, 21, 120, 3); m.put(4, 21, 121, 3); m.put(9, 21, 120, 3); m.put(12, 21, 121, 3)
+m.put(2, 22, 120, 3); m.put(3, 22, 121, 3); m.put(10, 22, 120, 3); m.put(11, 22, 121, 3)
+m.put(4, 29, 71, 3)
+ev049 = page(char('!Door1', 2))                   # door placed in the editor, not wired up yet
+ev049['moveRoute']['skippable'] = False
+m.add_event('EV049', 4, 29, [ev049])
 
 if __name__ == '__main__':
     out = sys.argv[1] if len(sys.argv) > 1 else None

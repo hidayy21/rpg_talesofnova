@@ -4,10 +4,10 @@
 import json, os
 from PIL import Image
 
-# the game folder sits next to this tools folder ('rpg_talesofnova' on the Mac, 'Project Nova' on Windows)
+# the game folder holds this tools folder, or sits next to it ('rpg_talesofnova' on the Mac, 'Project Nova' on Windows)
 _HERE = os.path.dirname(os.path.abspath(__file__))
-PROJ = os.environ.get('NOVA_PROJ') or next(p for p in (os.path.join(_HERE, '..', n) for n in ('rpg_talesofnova', 'Project Nova'))
-                                            if os.path.isdir(p)).replace('\\', '/') + '/'
+PROJ = os.environ.get('NOVA_PROJ') or next(p for p in [os.path.join(_HERE, '..')] + [os.path.join(_HERE, '..', n) for n in ('rpg_talesofnova', 'Project Nova')]
+                                            if os.path.isfile(os.path.join(p, 'Game.rpgproject'))).replace('\\', '/') + '/'
 TS = PROJ + 'img/tilesets/'
 OUT_NAME = 'Nova_Market_D'
 
