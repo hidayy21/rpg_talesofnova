@@ -60,12 +60,18 @@
     var MENU_NAME = String(params['Menu Command'] || 'Pets');
     var ASSIST_MSG = String(params['Assist Message'] || '%1 jumps in!');
 
+    var UI = window.NovaUI;   // NovaMenu's look (colors, Cinzel titles), when it is on
     var COLOR = {
-        accent: '#62d6ff',
-        dim: '#a9c4dc',
-        locked: 'rgba(200, 220, 240, 0.4)',
+        accent: UI ? UI.COLOR.accent : '#9cc0ec',
+        text: UI ? UI.COLOR.text : '#eaf0f8',
+        dim: UI ? UI.COLOR.dim : '#9fb1c9',
+        locked: 'rgba(200, 215, 235, 0.4)',
         active: '#ffd27a'
     };
+    function titleFont(bitmap, size, bold) {
+        if (UI) UI.titleFont(bitmap, size, bold);
+        else bitmap.fontSize = size;
+    }
 
     //=========================================================================
     // Pet data from actor notes
@@ -527,10 +533,11 @@
         if (!bmp.isReady()) { bmp.addLoadListener(this.refresh.bind(this)); return; }
         this.drawCharacter(pet.characterName(), pet.characterIndex(), rect.x + 30, rect.y + rect.height - 8);
         this.resetFontSettings();
-        this.contents.fontSize = 22;
-        this.changeTextColor('#ffffff');
+        titleFont(this.contents, 20);
+        this.changeTextColor(COLOR.text);
         this.drawText(pet.name(), rect.x + 64, rect.y + 4, rect.width - 64, 'left');
-        this.contents.fontSize = 15;
+        this.resetFontSettings();
+        this.contents.fontSize = 16;
         this.changeTextColor(isActive ? COLOR.active : COLOR.dim);
         this.drawText(isActive ? 'With you' : 'At home', rect.x + 64, rect.y + 30, rect.width - 64, 'left');
         this.resetFontSettings();
@@ -555,10 +562,11 @@
     Window_NovaPetInfo.prototype.drawDivider = function(y) {
         var ctx = ctxOf(this.contents), w = this.contentsWidth();
         var g = ctx.createLinearGradient(0, 0, w, 0);
-        g.addColorStop(0, 'rgba(98, 214, 255, 0.55)');
-        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
+        g.addColorStop(0, 'rgba(156, 192, 236, 0.6)');
+        g.addColorStop(1, 'rgba(156, 192, 236, 0)');
         ctx.fillStyle = g;
-        ctx.fillRect(0, y, w, 1.5);
+        ctx.fillRect(6, y, w - 6, 1);
+        if (UI) UI.diamond(ctx, 4, y + 0.5, 4, COLOR.accent);
         dirty(this.contents);
     };
 
@@ -569,12 +577,15 @@
         NovaPets.syncLevel(pet);
         var w = this.contentsWidth(), textW = w - 200;
         var isActive = pet === $gameParty.novaActivePet();
-        this.contents.fontSize = 40;
-        this.changeTextColor('#ffffff');
+        titleFont(this.contents, 36);
+        this.changeTextColor(COLOR.text);
         this.drawText(pet.name(), 4, 0, textW, 'left');
+        this.resetFontSettings();
         this.contents.fontSize = 18;
+        this.contents.fontItalic = true;
         this.changeTextColor(COLOR.accent);
         this.drawText(pet.nickname(), 6, 50, textW, 'left');
+        this.contents.fontItalic = false;
         this.changeTextColor(isActive ? COLOR.active : COLOR.dim);
         this.drawText(isActive ? 'Walking with you' : 'Waiting at home', 6, 78, textW, 'left');
 
@@ -583,7 +594,7 @@
         this.changeTextColor(COLOR.dim);
         this.drawText(TextManager.levelA, 6, y, 80, 'left');
         this.drawText('Helps in battle', w / 2, y, w / 2 - 6, 'left');
-        this.changeTextColor('#ffffff');
+        this.changeTextColor(COLOR.text);
         this.contents.fontSize = 24;
         this.drawText(pet.level, 60, y - 2, 100, 'left');
         this.drawText(NovaPets.assistChance(pet.actorId()) + '%', w / 2, y - 2, w / 2 - 10, 'right');
@@ -595,9 +606,10 @@
         y += 64;
         this.drawDivider(y);
         y += 12;
-        this.contents.fontSize = 16;
+        titleFont(this.contents, 16);
         this.changeTextColor(COLOR.accent);
         this.drawText('SKILLS', 6, y, 200, 'left');
+        this.resetFontSettings();
         y += 34;
         NovaPets.skillList(pet.actorId()).forEach(function(entry) {
             var skill = $dataSkills[entry.skillId];
@@ -605,7 +617,7 @@
             this.changePaintOpacity(known);
             this.drawIcon(skill.iconIndex, 4, y);
             this.contents.fontSize = 20;
-            this.changeTextColor('#ffffff');
+            this.changeTextColor(COLOR.text);
             this.drawText(skill.name, 42, y - 2, w / 2, 'left');
             this.contents.fontSize = 15;
             this.changeTextColor(known ? COLOR.dim : COLOR.locked);
@@ -620,16 +632,17 @@
             y += 4;
             this.drawDivider(y);
             y += 12;
-            this.contents.fontSize = 16;
+            titleFont(this.contents, 16);
             this.changeTextColor(COLOR.accent);
             this.drawText('PARTY BONUS', 6, y, 300, 'left');
+            this.resetFontSettings();
             this.contents.fontSize = 14;
             this.changeTextColor(COLOR.dim);
             this.drawText(isActive ? 'active now' : 'while walking with you', 160, y, w - 166, 'right');
             y += 34;
             this.contents.fontSize = 18;
             String(bonus.description || '').split('\n').forEach(function(line, i) {
-                this.changeTextColor(i === 0 ? '#d6e8f7' : '#ffffff');
+                this.changeTextColor(i === 0 ? '#d3deec' : COLOR.text);
                 this.drawText(line, 6, y, w - 12, 'left');
                 y += 26;
             }, this);
@@ -638,8 +651,8 @@
         y += 4;
         this.drawDivider(y);
         y += 14;
-        this.contents.fontSize = 17;
-        this.changeTextColor('#d6e8f7');
+        this.contents.fontSize = 18;
+        this.changeTextColor('#d3deec');
         String(pet.profile() || '').split('\n').forEach(function(line) {
             if (y + 26 > this.contentsHeight()) return;
             this.drawText(line, 6, y, w - 12, 'left');
@@ -705,17 +718,15 @@
 
     Scene_NovaPets.prototype.createHeader = function(w) {
         var head = new Bitmap(w, HEADER_H), ctx = ctxOf(head);
-        var g = ctx.createLinearGradient(0, 0, w, 0);
-        g.addColorStop(0, 'rgba(98, 214, 255, 0.28)');
-        g.addColorStop(0.45, 'rgba(98, 214, 255, 0.06)');
-        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, w, HEADER_H);
-        ctx.fillStyle = COLOR.accent;
-        ctx.fillRect(16, HEADER_H - 8, w * 0.42, 2);
-        dirty(head);
-        head.fontSize = 34; head.textColor = '#eaf7ff'; head.outlineColor = 'rgba(0, 40, 80, 0.8)'; head.outlineWidth = 5;
-        head.drawText(MENU_NAME.toUpperCase(), 24, 10, 400, 44, 'left');
+        if (UI) {
+            UI.drawHeader(head, MENU_NAME.toUpperCase());
+        } else {
+            ctx.fillStyle = COLOR.accent;
+            ctx.fillRect(16, HEADER_H - 8, w * 0.42, 2);
+            dirty(head);
+            head.fontSize = 34;
+            head.drawText(MENU_NAME.toUpperCase(), 24, 10, 400, 44, 'left');
+        }
         head.fontSize = 18; head.textColor = COLOR.dim; head.outlineWidth = 3;
         head.drawText('OK: take along / send home', w - 420, 18, 400, 30, 'right');
         this.addChild(new Sprite(head));
@@ -748,4 +759,5 @@
     };
 
     window.Scene_NovaPets = Scene_NovaPets;
+    window.Sprite_NovaPet = Sprite_NovaPet;   // NovaFormation moves the pet's spot
 })();

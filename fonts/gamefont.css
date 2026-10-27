@@ -1,6 +1,14 @@
+/* Body text everywhere: Alegreya Sans. (The old M+ 1m file is still in this folder.) */
 @font-face {
     font-family: GameFont;
-    src: url("mplus-1m-regular.ttf");
+    src: url("AlegreyaSans-Regular.ttf");
+}
+
+/* Titles, names and commands (Nova plugins): Cinzel, a variable font, so bold works. */
+@font-face {
+    font-family: NovaTitle;
+    src: url("Cinzel.ttf");
+    font-weight: 400 900;
 }
 
 .IIV::-webkit-media-controls-play-button,

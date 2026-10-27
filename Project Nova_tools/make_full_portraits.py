@@ -27,7 +27,7 @@ MANUAL_REGIONS = {
     'Yuki': [(760, 360, 822, 452)],                   # left of the chin, between hair and scarf
     'Diana': [(812, 292, 876, 425)],                  # between hair and cheek
 }
-ALIASES = {}                       # file name -> actor name, if they differ
+ALIASES = {'Succubus': 'Lysandre'}  # file name -> actor name, if they differ
 # NovaMenu's portrait area at 1280x720 (4 cards). The card is rendered at 2x and reduced here with a good
 # filter, so the game draws it 1:1 - the runtime canvas downscale in MV's Chromium is what made it soft.
 CARD = (231, 294)
@@ -132,7 +132,7 @@ def card(name, bust):
     a[..., 3] = (a[..., 3].astype(np.float32) * ramp[:, None]).astype(np.uint8)
     b = Image.fromarray(a, 'RGBA')
     theme = IP.THEMES.get(name, IP.DEFAULT_THEME)
-    seed = {'Kael': 1, 'Yuki': 2, 'Mira': 3, 'Diana': 4, 'Roland': 5, 'Barion': 6}.get(name, 7) * 97
+    seed = {'Kael': 1, 'Yuki': 2, 'Mira': 3, 'Diana': 4, 'Roland': 5, 'Barion': 6, 'Lysandre': 8}.get(name, 7) * 97
     c = Image.alpha_composite(IP.background(theme, seed), IP.rim(b, theme[3]))
     return IP.vignette(Image.alpha_composite(c, b)), b
 

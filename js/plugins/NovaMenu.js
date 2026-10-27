@@ -2,8 +2,8 @@
 // NovaMenu.js
 //=============================================================================
 /*:
- * @plugindesc Final Fantasy-style main menu: slanted command bars on the left and
- * tall portrait cards for the party on the right.
+ * @plugindesc Final Fantasy-style main menu: command list on the left and tall
+ * portrait cards for the party on the right. Medieval blue look (Cinzel titles).
  * @author Project Nova
  *
  * @param Portrait Prefix
@@ -46,20 +46,75 @@
     var TITLE = String(params['Title Text'] || 'MAIN MENU');
     var GOLD_ICON = Number(params['Gold Icon'] || 208);
 
+    // Medieval blue: night-blue panels, steel-blue and silver trim, Cinzel titles.
     var COLOR = {
-        accent: '#62d6ff',
-        accentSoft: 'rgba(98, 214, 255, 0.35)',
-        frame: 'rgba(170, 215, 240, 0.55)',
-        panelTop: 'rgba(16, 30, 54, 0.88)',
-        panelBottom: 'rgba(6, 12, 26, 0.94)',
-        text: '#ffffff',
-        dim: '#a9c4dc',
-        hp: ['#5ff08c', '#23a356'],
-        mp: ['#62b8ff', '#2a62d6'],
-        exp: ['#ffe08a', '#d9a227']
+        accent: '#9cc0ec',                      // steel blue: trim, highlights
+        accentLit: '#d8e8fb',                   // silver: whatever is selected
+        accentSoft: 'rgba(156, 192, 236, 0.35)',
+        frame: '#6f93c9',
+        frameSoft: 'rgba(185, 212, 245, 0.22)',
+        panelTop: 'rgba(26, 36, 64, 0.94)',
+        panelBottom: 'rgba(12, 18, 34, 0.96)',
+        ink: '#0b1120',
+        barBack: '#060a14',
+        banner: ['#24447e', '#16294f'],
+        pending: '#e8cf8f',
+        text: '#eaf0f8',
+        dim: '#9fb1c9',
+        hp: ['#8fc27f', '#3f7a3a'],
+        mp: ['#8fb0e0', '#34548f'],
+        exp: ['#e8cf8f', '#a7802f']
     };
+    var TITLE_FONT = 'NovaTitle';   // Cinzel, see fonts/gamefont.css; body text is GameFont (Alegreya Sans)
     var HEADER_H = 64;
     var FOOTER_H = 48;
+
+    //=========================================================================
+    // Fonts
+    //=========================================================================
+    // MV's font string has no weight; Cinzel is a variable font, so 'bold' picks its bold.
+    var _makeFontNameText = Bitmap.prototype._makeFontNameText;
+    Bitmap.prototype._makeFontNameText = function() {
+        return (this.fontBold ? 'bold ' : '') + _makeFontNameText.call(this);
+    };
+
+    function titleFont(bitmap, size, bold) {
+        bitmap.fontFace = TITLE_FONT;
+        bitmap.fontSize = size;
+        bitmap.fontBold = bold !== false;
+    }
+
+    function bodyFont(bitmap, size) {
+        bitmap.fontFace = 'GameFont';
+        bitmap.fontBold = false;
+        if (size) bitmap.fontSize = size;
+    }
+
+    var _Window_Base_resetFontSettings = Window_Base.prototype.resetFontSettings;
+    Window_Base.prototype.resetFontSettings = function() {
+        _Window_Base_resetFontSettings.call(this);
+        this.contents.fontBold = false;
+        this.contents.fontItalic = false;
+    };
+
+    Window_Base.prototype.normalColor = function() { return COLOR.text; };
+    Window_Base.prototype.systemColor = function() { return COLOR.accent; };
+    Window_Base.prototype.hpGaugeColor1 = function() { return COLOR.hp[1]; };
+    Window_Base.prototype.hpGaugeColor2 = function() { return COLOR.hp[0]; };
+    Window_Base.prototype.mpGaugeColor1 = function() { return COLOR.mp[1]; };
+    Window_Base.prototype.mpGaugeColor2 = function() { return COLOR.mp[0]; };
+    Window_Base.prototype.gaugeBackColor = function() { return COLOR.barBack; };
+
+    // Wait for the title font too (at most a few seconds, then fall back).
+    var _Scene_Boot_isGameFontLoaded = Scene_Boot.prototype.isGameFontLoaded;
+    Scene_Boot.prototype.isGameFontLoaded = function() {
+        if (!this._novaFontRequested) {
+            this._novaFontRequested = true;
+            Graphics._createFontLoader(TITLE_FONT);
+        }
+        return _Scene_Boot_isGameFontLoaded.call(this) &&
+               (Graphics.isFontLoaded(TITLE_FONT) || Date.now() - this._startDate > 5000);
+    };
 
     function portraitName(actor) {
         var meta = actor.actor().meta.portrait;
@@ -72,12 +127,60 @@
         else if (bitmap._baseTexture) bitmap._baseTexture.update();
     }
 
-    // Parallelogram / bevelled shapes drawn straight on the canvas.
+    // Bevelled shapes drawn straight on the canvas.
     function pathPoly(ctx, pts) {
         ctx.beginPath();
         ctx.moveTo(pts[0][0], pts[0][1]);
         for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
         ctx.closePath();
+    }
+
+    // The small diamond used as an ornament and as the selection marker.
+    function diamond(ctx, cx, cy, r, color) {
+        pathPoly(ctx, [[cx, cy - r], [cx + r, cy], [cx, cy + r], [cx - r, cy]]);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+
+    // A straight gauge with a thin steel-blue rim.
+    function drawBar(ctx, x, y, w, h, rate, colors) {
+        ctx.fillStyle = COLOR.barBack;
+        ctx.fillRect(x, y, w, h);
+        var fw = Math.max(0, Math.min(1, rate)) * (w - 2);
+        if (fw > 0) {
+            var g = ctx.createLinearGradient(x, 0, x + fw, 0);
+            g.addColorStop(0, colors[1]);
+            g.addColorStop(1, colors[0]);
+            ctx.fillStyle = g;
+            ctx.fillRect(x + 1, y + 1, fw, h - 2);
+        }
+        ctx.strokeStyle = 'rgba(156, 192, 236, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+    }
+
+    // Header band shared by the menu screens: title in Cinzel over a blue band.
+    function drawHeader(bmp, title) {
+        var w = bmp.width, ctx = ctxOf(bmp), ly = HEADER_H - 8, lw = w * 0.42;
+        var g = ctx.createLinearGradient(0, 0, w, 0);
+        g.addColorStop(0, 'rgba(36, 68, 126, 0.55)');
+        g.addColorStop(0.5, 'rgba(36, 68, 126, 0.12)');
+        g.addColorStop(1, 'rgba(36, 68, 126, 0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, HEADER_H);
+        var line = ctx.createLinearGradient(16, 0, 16 + lw, 0);
+        line.addColorStop(0, COLOR.accent);
+        line.addColorStop(1, 'rgba(156, 192, 236, 0)');
+        ctx.fillStyle = line;
+        ctx.fillRect(16, ly, lw, 1);
+        diamond(ctx, 16, ly + 0.5, 4, COLOR.accent);
+        dirty(bmp);
+        titleFont(bmp, 30);
+        bmp.textColor = COLOR.text;
+        bmp.outlineColor = 'rgba(6, 10, 20, 0.85)';
+        bmp.outlineWidth = 4;
+        bmp.drawText(title, 28, 10, w * 0.6, 44, 'left');
+        bodyFont(bmp);
     }
 
     //=========================================================================
@@ -124,23 +227,8 @@
     };
 
     Scene_Menu.prototype.createNovaBackdrop = function() {
-        var w = Graphics.boxWidth, h = Graphics.boxHeight;
-        var bmp = new Bitmap(w, h);
-        var ctx = ctxOf(bmp);
-        var g = ctx.createLinearGradient(0, 0, w, h);
-        g.addColorStop(0, 'rgba(4, 10, 26, 0.92)');
-        g.addColorStop(0.55, 'rgba(10, 28, 58, 0.80)');
-        g.addColorStop(1, 'rgba(2, 6, 16, 0.95)');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, w, h);
-        // diagonal light streaks
-        for (var i = 0; i < 6; i++) {
-            var x0 = w * (0.15 + i * 0.16), sw = 18 + (i % 3) * 22;
-            ctx.fillStyle = 'rgba(120, 200, 255, ' + (0.035 + (i % 2) * 0.02) + ')';
-            pathPoly(ctx, [[x0, 0], [x0 + sw, 0], [x0 + sw - h * 0.45, h], [x0 - h * 0.45, h]]);
-            ctx.fill();
-        }
-        dirty(bmp);
+        var bmp = new Bitmap(Graphics.boxWidth, Graphics.boxHeight);
+        drawBackdrop(bmp);
         this._novaBackdrop = new Sprite(bmp);
         this.addChildAt(this._novaBackdrop, this.children.indexOf(this._windowLayer));
     };
@@ -148,23 +236,7 @@
     Scene_Menu.prototype.createNovaHeader = function() {
         var w = Graphics.boxWidth;
         var bmp = new Bitmap(w, HEADER_H);
-        var ctx = ctxOf(bmp);
-        var g = ctx.createLinearGradient(0, 0, w, 0);
-        g.addColorStop(0, 'rgba(98, 214, 255, 0.28)');
-        g.addColorStop(0.45, 'rgba(98, 214, 255, 0.06)');
-        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, w, HEADER_H);
-        ctx.fillStyle = COLOR.accent;
-        ctx.fillRect(16, HEADER_H - 8, w * 0.42, 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.6)';
-        ctx.fillRect(16, HEADER_H - 5, w * 0.24, 1);
-        dirty(bmp);
-        bmp.fontSize = 34;
-        bmp.textColor = '#eaf7ff';
-        bmp.outlineColor = 'rgba(0, 40, 80, 0.8)';
-        bmp.outlineWidth = 5;
-        bmp.drawText(TITLE, 24, 10, w * 0.6, 44, 'left');
+        drawHeader(bmp, TITLE);
         this._novaHeader = new Sprite(bmp);
         this.addChild(this._novaHeader);
 
@@ -178,18 +250,20 @@
         var bmp = this._novaGold.bitmap;
         bmp.clear();
         var ctx = ctxOf(bmp);
-        ctx.fillStyle = 'rgba(6, 18, 40, 0.75)';
-        pathPoly(ctx, [[30, 14], [254, 14], [242, 50], [18, 50]]);
-        ctx.fill();
+        ctx.fillStyle = 'rgba(12, 18, 34, 0.85)';
+        ctx.fillRect(18, 14, 236, 36);
         ctx.strokeStyle = COLOR.frame;
         ctx.lineWidth = 1;
-        ctx.stroke();
+        ctx.strokeRect(18.5, 14.5, 235, 35);
+        diamond(ctx, 18.5, 32, 4, COLOR.accent);
+        diamond(ctx, 253.5, 32, 4, COLOR.accent);
         dirty(bmp);
         var iconSet = ImageManager.loadSystem('IconSet');
         var iw = Window_Base._iconWidth, ih = Window_Base._iconHeight;
         bmp.blt(iconSet, GOLD_ICON % 16 * iw, Math.floor(GOLD_ICON / 16) * ih, iw, ih, 36, 16);
-        bmp.fontSize = 24;
-        bmp.textColor = '#ffffff';
+        titleFont(bmp, 21);   // Cinzel's figures: Alegreya's old-style 0 reads like an o
+        bmp.textColor = COLOR.text;
+        bmp.outlineColor = 'rgba(6, 10, 20, 0.8)';
         bmp.outlineWidth = 4;
         bmp.drawText($gameParty.gold() + ' ' + TextManager.currencyUnit, 70, 14, 166, 36, 'right');
     };
@@ -215,16 +289,15 @@
         ctx.fillStyle = COLOR.accentSoft;
         ctx.fillRect(0, 8, w, 1);
         dirty(bmp);
-        bmp.fontSize = 20;
+        var where = $gameMap.displayName() || ($dataMapInfos[$gameMap.mapId()] || {}).name || '';
         bmp.outlineWidth = 3;
+        titleFont(bmp, 15);
         bmp.textColor = COLOR.dim;
         bmp.drawText('TIME', 20, 12, 60, 32, 'left');
-        bmp.textColor = '#ffffff';
-        bmp.drawText($gameSystem.playtimeText(), 74, 12, 120, 32, 'left');
-        var where = $gameMap.displayName() || ($dataMapInfos[$gameMap.mapId()] || {}).name || '';
-        bmp.textColor = COLOR.dim;
         bmp.drawText('LOCATION', w - 380, 12, 110, 32, 'left');
-        bmp.textColor = '#ffffff';
+        bodyFont(bmp, 20);
+        bmp.textColor = COLOR.text;
+        bmp.drawText($gameSystem.playtimeText(), 74, 12, 120, 32, 'left');
         bmp.drawText(where, w - 270, 12, 256, 32, 'left');
     };
 
@@ -239,7 +312,7 @@
     };
 
     //=========================================================================
-    // Window_NovaMenuCommand - slanted bars
+    // Window_NovaMenuCommand - straight rows, a diamond marks the selection
     //=========================================================================
     function Window_NovaMenuCommand() { this.initialize.apply(this, arguments); }
     Window_NovaMenuCommand.prototype = Object.create(Window_MenuCommand.prototype);
@@ -282,36 +355,26 @@
         var selected = index === this.index();
         var lit = selected && this.active;
         var ctx = ctxOf(this.contents);
-        var x = rect.x + 14, y = rect.y + 5, w = rect.width - 18, h = rect.height - 10, skew = 10;
-        var g = ctx.createLinearGradient(x, 0, x + w, 0);
+        var x = rect.x + 6, y = rect.y + 5, w = rect.width - 10, h = rect.height - 10;
         if (selected) {
-            g.addColorStop(0, lit ? 'rgba(98, 214, 255, 0.95)' : 'rgba(98, 214, 255, 0.55)');
-            g.addColorStop(0.55, lit ? 'rgba(40, 120, 200, 0.55)' : 'rgba(40, 120, 200, 0.3)');
-            g.addColorStop(1, 'rgba(20, 60, 120, 0.05)');
+            var g = ctx.createLinearGradient(x, 0, x + w, 0);
+            g.addColorStop(0, lit ? 'rgba(156, 192, 236, 0.36)' : 'rgba(156, 192, 236, 0.18)');
+            g.addColorStop(1, 'rgba(156, 192, 236, 0)');
+            ctx.fillStyle = g;
+            ctx.fillRect(x, y, w, h);
+            ctx.fillStyle = lit ? 'rgba(156, 192, 236, 0.75)' : 'rgba(156, 192, 236, 0.45)';
+            ctx.fillRect(x, y + h - 1, w, 1);
+            diamond(ctx, x + 13, y + h / 2, 5, lit ? COLOR.accentLit : COLOR.accent);
         } else {
-            g.addColorStop(0, 'rgba(30, 60, 100, 0.75)');
-            g.addColorStop(1, 'rgba(20, 40, 80, 0.10)');
+            ctx.fillStyle = 'rgba(156, 192, 236, 0.16)';
+            ctx.fillRect(x, y + h - 1, w, 1);
         }
-        ctx.fillStyle = g;
-        pathPoly(ctx, [[x + skew, y], [x + w, y], [x + w - skew, y + h], [x, y + h]]);
-        ctx.fill();
-        ctx.strokeStyle = selected ? 'rgba(220, 250, 255, 0.9)' : 'rgba(140, 190, 230, 0.35)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(x + skew, y + 0.5); ctx.lineTo(x + w, y + 0.5);
-        ctx.moveTo(x, y + h - 0.5); ctx.lineTo(x + w - skew, y + h - 0.5);
-        ctx.stroke();
         dirty(this.contents);
 
-        if (selected) {
-            this.contents.fontSize = 22;
-            this.changeTextColor(COLOR.accent);
-            this.contents.drawText('»', rect.x - 2, rect.y, 20, rect.height, 'left');
-        }
-        this.contents.fontSize = 22;
-        this.changeTextColor(selected ? '#ffffff' : '#d6e8f7');
+        titleFont(this.contents, 20, selected);
+        this.changeTextColor(selected ? COLOR.accentLit : '#d3deec');
         this.changePaintOpacity(this.isCommandEnabled(index));
-        this.contents.drawText(this.commandName(index), x + skew + 12, rect.y, w - skew - 20, rect.height, 'left');
+        this.contents.drawText(this.commandName(index), x + 28, rect.y, w - 32, rect.height, 'left');
         this.changePaintOpacity(true);
         this.resetFontSettings();
     };
@@ -379,6 +442,7 @@
         var g = ctx.createLinearGradient(0, rect.y, 0, rect.y + rect.height);
         g.addColorStop(0, COLOR.panelTop);
         g.addColorStop(1, COLOR.panelBottom);
+        var edge = pending ? COLOR.pending : (selected ? COLOR.accentLit : COLOR.frame);
         ctx.save();
         if (selected) { ctx.shadowColor = COLOR.accent; ctx.shadowBlur = 14; }
         ctx.fillStyle = g;
@@ -386,15 +450,19 @@
         ctx.fill();
         ctx.restore();
         ctx.lineWidth = selected ? 2.5 : 1.5;
-        ctx.strokeStyle = pending ? '#ffd27a' : (selected ? COLOR.accent : COLOR.frame);
+        ctx.strokeStyle = edge;
         pathPoly(ctx, shape);
         ctx.stroke();
         // inner hairline
         ctx.lineWidth = 1;
-        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.strokeStyle = COLOR.frameSoft;
         var inner = this.cardShape({ x: rect.x + 4, y: rect.y + 4, width: rect.width - 8, height: rect.height - 8 });
         pathPoly(ctx, inner);
         ctx.stroke();
+        // diamonds on the top and bottom edge
+        var cx = rect.x + rect.width / 2;
+        diamond(ctx, cx, rect.y + 1.5, 5, edge);
+        diamond(ctx, cx, rect.y + rect.height - 1.5, 5, edge);
         if (!active) {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
             pathPoly(ctx, shape);
@@ -432,8 +500,8 @@
         ctx.imageSmoothingEnabled = true;
         // fade the portrait into the card body
         var g = ctx.createLinearGradient(0, py + ph * 0.62, 0, py + ph);
-        g.addColorStop(0, 'rgba(8, 16, 34, 0)');
-        g.addColorStop(1, 'rgba(8, 16, 34, 0.96)');
+        g.addColorStop(0, 'rgba(14, 20, 38, 0)');
+        g.addColorStop(1, 'rgba(14, 20, 38, 0.97)');
         ctx.fillStyle = g;
         ctx.fillRect(px, py + ph * 0.62, pw, ph * 0.38 + 1);
         ctx.restore();
@@ -441,19 +509,7 @@
     };
 
     Window_NovaMenuStatus.prototype.drawGaugeBar = function(x, y, w, rate, colors) {
-        var ctx = ctxOf(this.contents);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        pathPoly(ctx, [[x + 4, y], [x + w, y], [x + w - 4, y + 7], [x, y + 7]]);
-        ctx.fill();
-        var fw = Math.max(0, Math.min(1, rate)) * w;
-        if (fw > 0) {
-            var g = ctx.createLinearGradient(x, 0, x + fw, 0);
-            g.addColorStop(0, colors[1]);
-            g.addColorStop(1, colors[0]);
-            ctx.fillStyle = g;
-            pathPoly(ctx, [[x + 4, y], [x + fw, y], [x + Math.max(0, fw - 4), y + 7], [x, y + 7]]);
-            ctx.fill();
-        }
+        drawBar(ctxOf(this.contents), x, y, w, 7, rate, colors);
         dirty(this.contents);
     };
 
@@ -464,30 +520,32 @@
         this.resetFontSettings();
 
         // Level
-        this.contents.fontSize = 16;
+        titleFont(this.contents, 15, false);
         this.changeTextColor(COLOR.dim);
         this.contents.drawText(TextManager.levelA, x, y, 40, 30, 'left');
-        this.contents.fontSize = 32;
+        titleFont(this.contents, 32);
         this.changeTextColor(COLOR.accent);
         this.contents.drawText(actor.level, x + 26, y - 6, 70, 40, 'left');
         y += 30;
 
         // Name + class
-        this.contents.fontSize = 22;
-        this.changeTextColor('#ffffff');
+        titleFont(this.contents, 22);
+        this.changeTextColor(COLOR.text);
         this.contents.drawText(actor.name(), x, y, w, lh, 'left');
         y += lh - 2;
-        this.contents.fontSize = 15;
+        bodyFont(this.contents, 16);
+        this.contents.fontItalic = true;
         this.changeTextColor(COLOR.dim);
         this.contents.drawText(actor.currentClass().name, x, y, w, 20, 'left');
+        this.contents.fontItalic = false;
         y += 22;
 
         // EXP to next level
         this.contents.fontSize = 15;
         this.changeTextColor(COLOR.dim);
         this.contents.drawText('Next', x, y, w, 20, 'left');
-        this.changeTextColor('#ffffff');
-        this.contents.fontSize = 14;
+        this.changeTextColor(COLOR.text);
+        this.contents.fontSize = 15;
         var next = actor.isMaxLevel() ? 'MAX' : actor.nextRequiredExp() + ' EXP';
         this.contents.drawText(next, x + 36, y, w - 36, 20, 'right');
         y += 20;
@@ -508,9 +566,9 @@
         // Weapon
         var weapon = actor.weapons()[0];
         if (weapon) {
-            this.contents.fontSize = 15;
+            this.contents.fontSize = 16;
             this.drawIcon(weapon.iconIndex, x - 2, y);
-            this.changeTextColor('#e8f2fb');
+            this.changeTextColor(COLOR.text);
             this.contents.drawText(weapon.name, x + 32, y + 2, w - 32, 28, 'left');
         }
         y += 34;
@@ -522,18 +580,16 @@
     };
 
     Window_NovaMenuStatus.prototype.drawStatRow = function(x, y, w, label, value, max, colors, crisis) {
-        this.contents.fontSize = 16;
+        titleFont(this.contents, 15);
         this.changeTextColor(colors[0]);
         this.contents.drawText(label, x, y, 40, 22, 'left');
-        this.contents.fontSize = 20;
-        this.changeTextColor(crisis ? this.crisisColor() : '#ffffff');
         var maxText = '/' + max;
-        this.contents.fontSize = 14;
+        bodyFont(this.contents, 14);
         var mw = this.textWidth(maxText);
         this.changeTextColor(COLOR.dim);
         this.contents.drawText(maxText, x, y + 3, w, 22, 'right');
-        this.contents.fontSize = 20;
-        this.changeTextColor(crisis ? this.crisisColor() : '#ffffff');
+        this.contents.fontSize = 21;
+        this.changeTextColor(crisis ? this.crisisColor() : COLOR.text);
         this.contents.drawText(value, x, y, w - mw - 2, 22, 'right');
         this.drawGaugeBar(x, y + 24, w, value / Math.max(1, max), colors);
     };
@@ -595,20 +651,20 @@
         return true;
     }
 
+    // Night blue over the map, darker towards the edges.
     function drawBackdrop(bmp) {
         var w = bmp.width, h = bmp.height, ctx = ctxOf(bmp);
-        var g = ctx.createLinearGradient(0, 0, w, h);
-        g.addColorStop(0, 'rgba(4, 10, 26, 0.92)');
-        g.addColorStop(0.55, 'rgba(10, 28, 58, 0.80)');
-        g.addColorStop(1, 'rgba(2, 6, 16, 0.95)');
+        var g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, 'rgba(10, 16, 32, 0.93)');
+        g.addColorStop(0.5, 'rgba(18, 28, 54, 0.84)');
+        g.addColorStop(1, 'rgba(6, 10, 20, 0.95)');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, h);
-        for (var i = 0; i < 6; i++) {
-            var x0 = w * (0.15 + i * 0.16), sw = 18 + (i % 3) * 22;
-            ctx.fillStyle = 'rgba(120, 200, 255, ' + (0.035 + (i % 2) * 0.02) + ')';
-            pathPoly(ctx, [[x0, 0], [x0 + sw, 0], [x0 + sw - h * 0.45, h], [x0 - h * 0.45, h]]);
-            ctx.fill();
-        }
+        var v = ctx.createRadialGradient(w / 2, h * 0.45, h * 0.25, w / 2, h * 0.45, w * 0.75);
+        v.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        v.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
+        ctx.fillStyle = v;
+        ctx.fillRect(0, 0, w, h);
         dirty(bmp);
     }
 
@@ -617,7 +673,7 @@
                 [x + c, y + h], [x, y + h - c], [x, y + c]];
     }
 
-    // A blue card drawn behind a window (the window's own frame/back are hidden).
+    // A night-blue card with a steel-blue rim drawn behind a window (the window's own frame/back are hidden).
     function Sprite_NovaPanel() { this.initialize.apply(this, arguments); }
     Sprite_NovaPanel.prototype = Object.create(Sprite.prototype);
     Sprite_NovaPanel.prototype.constructor = Sprite_NovaPanel;
@@ -641,9 +697,13 @@
         pathPoly(ctx, panelShape(1, 1, w - 2, h - 2, c));
         ctx.stroke();
         ctx.lineWidth = 1;
-        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.strokeStyle = COLOR.frameSoft;
         pathPoly(ctx, panelShape(4, 4, w - 8, h - 8, Math.max(2, c - 3)));
         ctx.stroke();
+        if (w > 120) {
+            diamond(ctx, w / 2, 1.5, 4, COLOR.frame);
+            diamond(ctx, w / 2, h - 1.5, 4, COLOR.frame);
+        }
         dirty(this.bitmap);
     };
     Sprite_NovaPanel.prototype.update = function() {
@@ -721,31 +781,30 @@
         var a = this._actor;
         if (!a) return;
         var w = this.contentsWidth(), lh = this.lineHeight();
-        // name block
-        this.contents.fontSize = 40;
-        this.changeTextColor('#ffffff');
         // face image in a small framed box, name block beside it
         var FS = 96, fx = 2, fy = 2, tx = FS + 18;
         this.drawNovaFace(a, fx, fy, FS);
-        this.contents.fontSize = 40;
-        this.changeTextColor('#ffffff');
+        titleFont(this.contents, 36);
+        this.changeTextColor(COLOR.text);
         this.contents.drawText(a.name(), tx, 0, w * 0.5, 52, 'left');
-        this.contents.fontSize = 18;
+        bodyFont(this.contents, 18);
+        this.contents.fontItalic = true;
         this.changeTextColor(COLOR.accent);
         this.contents.drawText(a.nickname(), tx + 2, 46, w * 0.45, 26, 'left');
+        this.contents.fontItalic = false;
         this.changeTextColor(COLOR.dim);
         this.contents.drawText(a.currentClass().name, tx + 2, 70, w * 0.45, 26, 'left');
         // level
-        this.contents.fontSize = 18;
+        titleFont(this.contents, 18, false);
         this.contents.drawText(TextManager.levelA, w - 170, 8, 50, 30, 'left');
-        this.contents.fontSize = 48;
+        titleFont(this.contents, 44);
         this.changeTextColor(COLOR.accent);
         this.contents.drawText(a.level, w - 130, -4, 126, 60, 'right');
-        this.contents.fontSize = 16;
+        bodyFont(this.contents, 16);
         this.changeTextColor(COLOR.dim);
         var next = a.isMaxLevel() ? 'MAX' : a.nextRequiredExp() + ' EXP';
         this.contents.drawText('Next', w - 250, 60, 80, 22, 'left');
-        this.changeTextColor('#ffffff');
+        this.changeTextColor(COLOR.text);
         this.contents.drawText(next, w - 200, 60, 196, 22, 'right');
         var rate = 1;
         if (!a.isMaxLevel()) rate = (a.currentExp() - a.currentLevelExp()) / Math.max(1, a.nextLevelExp() - a.currentLevelExp());
@@ -760,38 +819,40 @@
         y += 44;
         this.drawDivider(y); y += 12;
         // parameters (left) and equipment (right)
-        this.contents.fontSize = 16;
+        titleFont(this.contents, 16);
         this.changeTextColor(COLOR.accent);
         this.contents.drawText('PARAMETERS', 4, y, half, 24, 'left');
         this.contents.drawText('EQUIPMENT', half + 20, y, half, 24, 'left');
+        bodyFont(this.contents);
         y += 28;
         var py = y;
         for (var i = 2; i < 8; i++) {
-            this.contents.fontSize = 18;
+            this.contents.fontSize = 19;
             this.changeTextColor(COLOR.dim);
             this.contents.drawText(TextManager.param(i), 8, py, 160, 30, 'left');
-            this.changeTextColor('#ffffff');
+            this.changeTextColor(COLOR.text);
             this.contents.fontSize = 22;
             this.contents.drawText(a.param(i), 8, py, half - 16, 30, 'right');
             var ctx = ctxOf(this.contents);
-            ctx.fillStyle = 'rgba(140, 190, 230, 0.15)';
+            ctx.fillStyle = 'rgba(156, 192, 236, 0.15)';
             ctx.fillRect(8, py + 30, half - 16, 1);
             py += 34;
         }
         var ey = y, slots = a.equipSlots(), equips = a.equips();
         for (var k = 0; k < slots.length; k++) {
-            this.contents.fontSize = 14;
+            titleFont(this.contents, 13, false);
             this.changeTextColor(COLOR.dim);
             this.contents.drawText($dataSystem.equipTypes[slots[k]], half + 24, ey, 120, 16, 'left');
+            bodyFont(this.contents);
             var item = equips[k];
             if (item) {
                 this.drawIcon(item.iconIndex, half + 22, ey + 14);
-                this.contents.fontSize = 18;
-                this.changeTextColor('#ffffff');
+                this.contents.fontSize = 19;
+                this.changeTextColor(COLOR.text);
                 this.contents.drawText(item.name, half + 58, ey + 16, half - 40, 28, 'left');
             } else {
-                this.contents.fontSize = 18;
-                this.changeTextColor('rgba(200,220,240,0.35)');
+                this.contents.fontSize = 19;
+                this.changeTextColor('rgba(200, 215, 235, 0.35)');
                 this.contents.drawText('-----', half + 58, ey + 16, half - 40, 28, 'left');
             }
             ey += 46;
@@ -799,8 +860,8 @@
         y = Math.max(py, ey) + 6;
         this.drawDivider(y); y += 14;
         // profile
-        this.contents.fontSize = 17;
-        this.changeTextColor('#d6e8f7');
+        this.contents.fontSize = 19;
+        this.changeTextColor('#d3deec');
         var lines = String(a.profile() || '').split('\n');
         for (var n = 0; n < lines.length && y + 26 <= this.contentsHeight(); n++) {
             this.contents.drawText(lines[n], 6, y, w - 12, 26, 'left');
@@ -813,7 +874,7 @@
         var ctx = ctxOf(this.contents), c = 8;
         var shape = panelShape(x, y, size, size, c);
         ctx.save();
-        ctx.fillStyle = 'rgba(8, 18, 40, 0.9)';
+        ctx.fillStyle = COLOR.ink;
         pathPoly(ctx, shape); ctx.fill();
         pathPoly(ctx, shape); ctx.clip();
         var bmp = ImageManager.loadFace(actor.faceName());
@@ -827,7 +888,7 @@
         }
         ctx.restore();
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = COLOR.accent;
+        ctx.strokeStyle = COLOR.frame;
         pathPoly(ctx, shape); ctx.stroke();
         dirty(this.contents);
     };
@@ -835,10 +896,11 @@
     Window_NovaStatus.prototype.drawDivider = function(y) {
         var ctx = ctxOf(this.contents), w = this.contentsWidth();
         var g = ctx.createLinearGradient(0, 0, w, 0);
-        g.addColorStop(0, 'rgba(98, 214, 255, 0.55)');
-        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
+        g.addColorStop(0, 'rgba(156, 192, 236, 0.6)');
+        g.addColorStop(1, 'rgba(156, 192, 236, 0)');
         ctx.fillStyle = g;
-        ctx.fillRect(0, y, w, 1.5);
+        ctx.fillRect(6, y, w - 6, 1);
+        diamond(ctx, 4, y + 0.5, 4, COLOR.accent);
         dirty(this.contents);
     };
 
@@ -846,16 +908,8 @@
         Scene_MenuBase.prototype.create.call(this);
         var w = Graphics.boxWidth, h = Graphics.boxHeight;
         // header
-        var head = new Bitmap(w, HEADER_H), ctx = ctxOf(head);
-        var g = ctx.createLinearGradient(0, 0, w, 0);
-        g.addColorStop(0, 'rgba(98, 214, 255, 0.28)');
-        g.addColorStop(0.45, 'rgba(98, 214, 255, 0.06)');
-        g.addColorStop(1, 'rgba(98, 214, 255, 0)');
-        ctx.fillStyle = g; ctx.fillRect(0, 0, w, HEADER_H);
-        ctx.fillStyle = COLOR.accent; ctx.fillRect(16, HEADER_H - 8, w * 0.42, 2);
-        dirty(head);
-        head.fontSize = 34; head.textColor = '#eaf7ff'; head.outlineColor = 'rgba(0, 40, 80, 0.8)'; head.outlineWidth = 5;
-        head.drawText('STATUS', 24, 10, 400, 44, 'left');
+        var head = new Bitmap(w, HEADER_H);
+        drawHeader(head, 'STATUS');
         head.fontSize = 18; head.textColor = COLOR.dim; head.outlineWidth = 3;
         head.drawText('◀  ▶   Change character', w - 360, 18, 340, 30, 'right');
         // portrait area (left) and details (right)
@@ -877,7 +931,7 @@
         this._novaArrows = [];
         [['◀', 18, -1], ['▶', split - 54, 1]].forEach(function(spec) {
             var b = new Bitmap(40, 60);
-            b.fontSize = 40; b.textColor = '#eaf7ff'; b.outlineColor = 'rgba(0, 60, 120, 0.9)'; b.outlineWidth = 6;
+            b.fontSize = 40; b.textColor = COLOR.accentLit; b.outlineColor = 'rgba(11, 17, 32, 0.9)'; b.outlineWidth = 6;
             b.drawText(spec[0], 0, 0, 40, 60, 'center');
             var s = new Sprite(b);
             s.x = spec[1]; s.y = Math.floor(h / 2) - 30; s._dir = spec[2]; s.opacity = 200;
@@ -951,6 +1005,24 @@
         this._novaArrows.forEach(function(a) { a.opacity = 160 + Math.round(Math.sin(Graphics.frameCount / 15) * 60); });
     };
 
+    //=========================================================================
+    // Skills: one "Skill" entry with every skill type the actor has, instead
+    // of one entry per type (NovaBattle does the same for the battle command)
+    //=========================================================================
+    Window_SkillType.prototype.makeCommandList = function() {
+        if (this._actor && this._actor.addedSkillTypes().length > 0) {
+            this.addCommand(TextManager.skill, 'skill', true, 'all');
+        }
+    };
+
+    var _Window_SkillList_includes = Window_SkillList.prototype.includes;
+    Window_SkillList.prototype.includes = function(item) {
+        if (this._stypeId === 'all') {
+            return !!item && !!this._actor && this._actor.addedSkillTypes().contains(item.stypeId);
+        }
+        return _Window_SkillList_includes.call(this, item);
+    };
+
     window.Window_NovaMenuCommand = Window_NovaMenuCommand;
     window.Window_NovaMenuStatus = Window_NovaMenuStatus;
     window.Window_NovaStatus = Window_NovaStatus;
@@ -962,6 +1034,11 @@
         dirty: dirty,
         pathPoly: pathPoly,
         panelShape: panelShape,
+        diamond: diamond,
+        drawBar: drawBar,
+        drawHeader: drawHeader,
+        titleFont: titleFont,
+        bodyFont: bodyFont,
         skinWindows: skinWindows
     };
 })();

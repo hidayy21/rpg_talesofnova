@@ -45,10 +45,12 @@
  *           ATB timeline - every battler's icon (heroes cyan, enemies red)
  *           slides along it and acts when it reaches ACT.
  *   Bottom left:  the command list of the hero whose turn it is, two columns,
- *                 as tall as the cards (more than 6 commands scroll); also
+ *                 as tall as the cards (more than 8 commands scroll); also
  *                 the enemy target list.
  *   Bottom right: a card per hero: the actor's face on the left; name, HP,
  *                 MP, TP and the ATB gauge on the right; states on the face.
+ *   Battlefield:  the hero choosing a command stays in place, marked by an
+ *                 arrow over the head and a pulsing white outline.
  */
 
 (function() {
@@ -65,11 +67,12 @@
     var FILL = Math.max(30, Number(params['Fill Time'] || 150));
 
     var COLOR = UI.COLOR, ctxOf = UI.ctxOf, dirty = UI.dirty, pathPoly = UI.pathPoly, panelShape = UI.panelShape;
+    var diamond = UI.diamond, gaugeBar = UI.drawBar, titleFont = UI.titleFont, bodyFont = UI.bodyFont;
     var ENEMY = '#ff7088';
     var TARGET = '#ffd27a';
-    var ATB_FILL = ['#eef8ff', '#6f8fb4'];
-    var ATB_READY = COLOR.exp;
-    var TP_COLORS = ['#ffb070', '#d0602a'];
+    var ATB_FILL = ['#a9c6ec', '#4f78b8'];
+    var ATB_READY = ['#f2f7ff', '#8fb4e3'];
+    var TP_COLORS = ['#e0a36a', '#a8602a'];
     var TOP_H = 52;
     var STATUS_H = 150;
     var CMD_X = 12, CMD_W = 230;
@@ -80,22 +83,6 @@
     function removeFrom(list, item) {
         var i = list ? list.indexOf(item) : -1;
         if (i >= 0) list.splice(i, 1);
-    }
-
-    function slantBar(ctx, x, y, w, h, rate, colors) {
-        var k = Math.min(4, h * 0.6);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        pathPoly(ctx, [[x + k, y], [x + w, y], [x + w - k, y + h], [x, y + h]]);
-        ctx.fill();
-        var fw = Math.max(0, Math.min(1, rate)) * w;
-        if (fw > 0) {
-            var g = ctx.createLinearGradient(x, 0, x + fw, 0);
-            g.addColorStop(0, colors[1]);
-            g.addColorStop(1, colors[0]);
-            ctx.fillStyle = g;
-            pathPoly(ctx, [[x + k, y], [x + fw, y], [x + Math.max(0, fw - k), y + h], [x, y + h]]);
-            ctx.fill();
-        }
     }
 
     //=========================================================================
@@ -536,18 +523,17 @@
         ctx.save();
         if (ready) {
             var glow = 0.5 + 0.5 * Math.sin(pulse / 20 * Math.PI * 2);
-            ctx.shadowColor = 'rgba(255, 224, 138, ' + (0.35 + 0.65 * glow) + ')';
+            ctx.shadowColor = 'rgba(216, 232, 251, ' + (0.35 + 0.65 * glow) + ')';
             ctx.shadowBlur = 8;
         }
-        slantBar(ctx, 3, 5, w - 6, 8, rate, ready ? ATB_READY : ATB_FILL);
+        gaugeBar(ctx, 3, 4, w - 6, 10, rate, ready ? ATB_READY : ATB_FILL);
         ctx.restore();
         dirty(b);
         if (ready) {
-            b.fontSize = 12;
-            b.textColor = '#fff6d8';
-            b.outlineColor = 'rgba(90, 55, 0, 0.95)';
-            b.outlineWidth = 3;
-            b.drawText('READY', 0, 0, w - 8, 18, 'right');
+            titleFont(b, 10);
+            b.textColor = '#0b1830';
+            b.outlineWidth = 0;
+            b.drawText('READY', 0, 0, w - 10, 18, 'right');
         }
     };
 
@@ -569,7 +555,7 @@
     Window_BattleStatus.prototype.spacing = function() { return 8; };
     Window_BattleStatus.prototype.itemHeight = function() { return this.contentsHeight(); };
     Window_BattleStatus.prototype.updateCursor = function() { this.setCursorRect(0, 0, 0, 0); };
-    Window_BattleStatus.prototype.novaLitColor = function() { return COLOR.accent; };
+    Window_BattleStatus.prototype.novaLitColor = function() { return COLOR.accentLit; };
     Window_BattleActor.prototype.novaLitColor = function() { return TARGET; };
 
     // Fewer heroes than slots: keep the cards centred.
@@ -618,8 +604,8 @@
         ctx.restore();
         if (lit) {
             var hl = ctx.createLinearGradient(0, rect.y, 0, rect.y + rect.height);
-            hl.addColorStop(0, lc === TARGET ? 'rgba(255, 210, 122, 0.22)' : 'rgba(98, 214, 255, 0.22)');
-            hl.addColorStop(0.7, 'rgba(98, 214, 255, 0)');
+            hl.addColorStop(0, lc === TARGET ? 'rgba(255, 210, 122, 0.22)' : 'rgba(156, 192, 236, 0.22)');
+            hl.addColorStop(0.7, 'rgba(156, 192, 236, 0)');
             ctx.fillStyle = hl;
             pathPoly(ctx, shape);
             ctx.fill();
@@ -644,7 +630,7 @@
         var ctx = ctxOf(this.contents);
         var shape = panelShape(r.x, r.y, r.width, r.height, 8);
         ctx.save();
-        ctx.fillStyle = 'rgba(8, 18, 40, 0.9)';
+        ctx.fillStyle = COLOR.ink;
         pathPoly(ctx, shape); ctx.fill();
         pathPoly(ctx, shape); ctx.clip();
         if (actor.isDead() && 'filter' in ctx) ctx.filter = 'grayscale(1) brightness(0.55)';
@@ -655,7 +641,7 @@
         pathPoly(ctx, shape); ctx.stroke();
         dirty(this.contents);
         if (actor.isDead()) {
-            this.contents.fontSize = 24;
+            titleFont(this.contents, 24);
             this.changeTextColor('#ff8a9a');
             this.contents.drawText('K.O.', r.x, r.y + r.height / 2 - 16, r.width, 32, 'center');
         }
@@ -670,18 +656,18 @@
     };
 
     Window_BattleStatus.prototype.novaStatRow = function(x, y, w, label, value, max, colors, crisis) {
-        this.contents.fontSize = 14;
+        titleFont(this.contents, 13);
         this.changeTextColor(colors[0]);
         this.contents.drawText(label, x, y, 40, 18, 'left');
         var maxText = max === null ? '' : '/' + max;
-        this.contents.fontSize = 12;
+        bodyFont(this.contents, 13);
         var mw = maxText ? this.textWidth(maxText) + 2 : 0;
         this.changeTextColor(COLOR.dim);
         if (maxText) this.contents.drawText(maxText, x, y + 2, w, 18, 'right');
-        this.contents.fontSize = 17;
-        this.changeTextColor(crisis ? this.crisisColor() : '#ffffff');
+        this.contents.fontSize = 18;
+        this.changeTextColor(crisis ? this.crisisColor() : COLOR.text);
         this.contents.drawText(value, x, y, w - mw, 18, 'right');
-        slantBar(ctxOf(this.contents), x, y + 18, w, 4, value / Math.max(1, max || 100), colors);
+        gaugeBar(ctxOf(this.contents), x, y + 18, w, 5, value / Math.max(1, max || 100), colors);
         dirty(this.contents);
     };
 
@@ -689,22 +675,23 @@
         var col = this.novaInfoColumn(rect), x = col.x, w = col.width;
         var tp = $dataSystem.optDisplayTp;
         this.resetFontSettings();
-        this.contents.fontSize = 20;
-        this.changeTextColor(actor.isDead() ? '#ff8a9a' : '#ffffff');
+        titleFont(this.contents, 18);
+        this.changeTextColor(actor.isDead() ? '#ff8a9a' : COLOR.text);
         this.contents.drawText(actor.name(), x, rect.y + 2, w, 26, 'left');
         var y = rect.y + 30, step = tp ? 24 : 28;
         this.novaStatRow(x, y, w, TextManager.hpA, actor.hp, actor.mhp, COLOR.hp, actor.isDying());
         this.novaStatRow(x, y + step, w, TextManager.mpA, actor.mp, actor.mmp, COLOR.mp, false);
         if (tp) this.novaStatRow(x, y + step * 2, w, TextManager.tpA, actor.tp, null, TP_COLORS, false);
-        this.contents.fontSize = 12;
+        titleFont(this.contents, 11);
         this.changeTextColor(COLOR.dim);
         this.contents.drawText('ATB', x, rect.y + rect.height - 25, 28, 18, 'left');
         this.resetFontSettings();
     };
 
     //=========================================================================
-    // Command list (bottom left): slanted bars like the main menu, name tag on
-    // top, as tall as the party cards; longer lists scroll.
+    // Command list (bottom left): straight rows like the main menu on a dark
+    // panel, a banner with the name on top, as tall as the party cards;
+    // longer lists scroll.
     //=========================================================================
     var TAG_H = 26;
 
@@ -718,14 +705,30 @@
         this._novaTag = new Sprite(new Bitmap(CMD_W, TAG_H));
         this._novaTag.y = -TAG_H - 2;
         this.addChild(this._novaTag);
+        this._novaBack = new Sprite(this.novaBackBitmap());
+        this.addChildToBack(this._novaBack);
+    };
+
+    Window_ActorCommand.prototype.novaBackBitmap = function() {
+        var w = this.windowWidth(), h = this.windowHeight(), b = new Bitmap(w, h), ctx = ctxOf(b);
+        var g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, COLOR.panelTop);
+        g.addColorStop(1, COLOR.panelBottom);
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = COLOR.frame;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+        dirty(b);
+        return b;
     };
     Window_ActorCommand.prototype.windowWidth = function() { return CMD_W; };
     Window_ActorCommand.prototype.windowHeight = function() { return STATUS_H - TAG_H - 2; };
     Window_ActorCommand.prototype.standardPadding = function() { return 4; };
-    // Two columns, so the usual six commands all fit in the card height without scrolling.
+    // Two columns of short rows, so up to eight commands fit in the card height without scrolling.
     Window_ActorCommand.prototype.maxCols = function() { return 2; };
     Window_ActorCommand.prototype.spacing = function() { return 4; };
-    Window_ActorCommand.prototype.itemHeight = function() { return 38; };
+    Window_ActorCommand.prototype.itemHeight = function() { return 28; };
     Window_ActorCommand.prototype.numVisibleRows = function() {
         return Math.floor((this.windowHeight() - this.standardPadding() * 2) / this.itemHeight());
     };
@@ -735,36 +738,36 @@
         var selected = index === this.index();
         var lit = selected && this.active;
         var ctx = ctxOf(this.contents);
-        var skew = 7, x = rect.x + 2, y = rect.y + 3, w = rect.width - 4, h = rect.height - 6;
-        var g = ctx.createLinearGradient(x, 0, x + w, 0);
+        var x = rect.x + 2, y = rect.y + 3, w = rect.width - 4, h = rect.height - 6;
         if (selected) {
-            g.addColorStop(0, lit ? 'rgba(98, 214, 255, 0.95)' : 'rgba(98, 214, 255, 0.55)');
-            g.addColorStop(0.6, lit ? 'rgba(40, 120, 200, 0.6)' : 'rgba(40, 120, 200, 0.3)');
-            g.addColorStop(1, 'rgba(20, 60, 120, 0.15)');
+            var g = ctx.createLinearGradient(x, 0, x + w, 0);
+            g.addColorStop(0, lit ? 'rgba(156, 192, 236, 0.34)' : 'rgba(156, 192, 236, 0.16)');
+            g.addColorStop(1, 'rgba(156, 192, 236, 0)');
+            ctx.fillStyle = g;
+            ctx.fillRect(x, y, w, h);
+            ctx.fillStyle = lit ? 'rgba(156, 192, 236, 0.7)' : 'rgba(156, 192, 236, 0.4)';
+            ctx.fillRect(x, y + h - 1, w, 1);
+            diamond(ctx, x + 9, y + h / 2, 4.5, lit ? COLOR.accentLit : COLOR.accent);
         } else {
-            g.addColorStop(0, 'rgba(30, 60, 100, 0.8)');
-            g.addColorStop(1, 'rgba(20, 40, 80, 0.25)');
+            ctx.fillStyle = 'rgba(156, 192, 236, 0.16)';
+            ctx.fillRect(x, y + h - 1, w, 1);
         }
-        ctx.fillStyle = g;
-        pathPoly(ctx, [[x + skew, y], [x + w, y], [x + w - skew, y + h], [x, y + h]]);
-        ctx.fill();
-        ctx.strokeStyle = selected ? 'rgba(220, 250, 255, 0.9)' : 'rgba(140, 190, 230, 0.35)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(x + skew, y + 0.5); ctx.lineTo(x + w, y + 0.5);
-        ctx.moveTo(x, y + h - 0.5); ctx.lineTo(x + w - skew, y + h - 0.5);
-        ctx.stroke();
         dirty(this.contents);
         this.changePaintOpacity(this.isCommandEnabled(index));
-        this.contents.fontSize = 19;
-        this.changeTextColor(selected ? '#ffffff' : '#d6e8f7');
-        this.contents.drawText(this.commandName(index), x + skew + 5, rect.y, w - skew * 2 - 8, rect.height, 'left');
+        titleFont(this.contents, 17, selected);
+        this.changeTextColor(selected ? COLOR.accentLit : '#d3deec');
+        this.contents.drawText(this.commandName(index), x + 20, rect.y, w - 22, rect.height, 'left');
         this.changePaintOpacity(true);
         this.resetFontSettings();
     };
     Window_ActorCommand.prototype.select = Window_NovaMenuCommand.prototype.select;
     Window_ActorCommand.prototype.activate = Window_NovaMenuCommand.prototype.activate;
     Window_ActorCommand.prototype.deactivate = Window_NovaMenuCommand.prototype.deactivate;
+
+    // One "Skill" command with every skill type (the list is filtered in NovaMenu).
+    Window_ActorCommand.prototype.addSkillCommands = function() {
+        if (this._actor.addedSkillTypes().length > 0) this.addCommand(TextManager.skill, 'skill', true, 'all');
+    };
 
     var _Window_ActorCommand_makeCommandList = Window_ActorCommand.prototype.makeCommandList;
     Window_ActorCommand.prototype.makeCommandList = function() {
@@ -784,24 +787,25 @@
         var b = this._novaTag.bitmap, ctx = ctxOf(b), w = b.width, h = b.height, actor = this._actor;
         b.clear();
         if (!actor) return;
-        var g = ctx.createLinearGradient(0, 0, w, 0);
-        g.addColorStop(0, 'rgba(98, 214, 255, 0.85)');
-        g.addColorStop(0.6, 'rgba(40, 120, 200, 0.45)');
-        g.addColorStop(1, 'rgba(20, 60, 120, 0)');
+        // a blue banner with a notched end
+        var g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, COLOR.banner[0]);
+        g.addColorStop(1, COLOR.banner[1]);
         ctx.fillStyle = g;
-        pathPoly(ctx, [[12, 1], [w, 1], [w - 12, h - 1], [0, h - 1]]);
+        pathPoly(ctx, [[0, 0], [w, 0], [w - 14, h / 2], [w, h], [0, h]]);
         ctx.fill();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.fillRect(12, 1, w * 0.6, 1);
+        ctx.fillStyle = COLOR.accent;
+        ctx.fillRect(0, h - 1, w - 2, 1);
         dirty(b);
-        b.fontSize = 19;
-        b.textColor = '#ffffff';
-        b.outlineColor = 'rgba(0, 40, 80, 0.85)';
-        b.outlineWidth = 4;
-        b.drawText(actor.name(), 18, 0, w - 90, h, 'left');
-        b.fontSize = 14;
-        b.textColor = '#eaf7ff';
-        b.drawText(TextManager.levelA + ' ' + actor.level, w - 84, 0, 64, h, 'right');
+        titleFont(b, 17);
+        b.textColor = '#e3eefc';
+        b.outlineColor = 'rgba(8, 14, 30, 0.8)';
+        b.outlineWidth = 3;
+        b.drawText(actor.name(), 10, 0, w - 90, h, 'left');
+        titleFont(b, 13, false);
+        b.textColor = '#c4d6ee';
+        b.drawText(TextManager.levelA + ' ' + actor.level, w - 90, 0, 64, h, 'right');
+        bodyFont(b);
     };
 
     var _Window_ActorCommand_update = Window_ActorCommand.prototype.update;
@@ -823,10 +827,10 @@
         if (!enemy) return;
         var rect = this.itemRectForText(index);
         this.resetFontSettings();
-        this.contents.fontSize = 20;
-        this.changeTextColor('#ffffff');
+        titleFont(this.contents, 16);
+        this.changeTextColor(COLOR.text);
         this.contents.drawText(enemy.name(), rect.x, rect.y, rect.width - 64, rect.height, 'left');
-        slantBar(ctxOf(this.contents), rect.x + rect.width - 56, rect.y + rect.height / 2 - 3, 56, 6,
+        gaugeBar(ctxOf(this.contents), rect.x + rect.width - 56, rect.y + rect.height / 2 - 3, 56, 6,
                  enemy.hp / Math.max(1, enemy.mhp), ['#ff8a8a', '#c0304a']);
         dirty(this.contents);
         this.resetFontSettings();
@@ -864,7 +868,7 @@
         b.clear();
         var shape = panelShape(bx, by, size, size, 6);
         ctx.save();
-        ctx.fillStyle = 'rgba(8, 18, 40, 0.92)';
+        ctx.fillStyle = COLOR.ink;
         pathPoly(ctx, shape); ctx.fill();
         pathPoly(ctx, shape); ctx.clip();
         drawBattlerPicture(ctx, battler, bx + 1, by + 1, size - 2, this.redraw.bind(this));
@@ -876,9 +880,7 @@
         ctx.lineWidth = this._lit ? 3 : 2;
         ctx.strokeStyle = color;
         pathPoly(ctx, shape); ctx.stroke();
-        ctx.fillStyle = color;
-        pathPoly(ctx, [[cx - 5, by + size], [cx + 5, by + size], [cx, by + size + 5]]);
-        ctx.fill();
+        diamond(ctx, cx, by + size + 1, 4, color);
         dirty(b);
         if (battler.isEnemy() && battler._plural && battler._letter) {
             b.fontSize = 12;
@@ -913,9 +915,9 @@
     Sprite_NovaTurnHud.prototype.createBand = function() {
         var w = Graphics.boxWidth, h = TOP_H + 12, b = new Bitmap(w, h), ctx = ctxOf(b);
         var v = ctx.createLinearGradient(0, 0, 0, h);
-        v.addColorStop(0, 'rgba(2, 8, 20, 0.8)');
-        v.addColorStop(0.7, 'rgba(2, 8, 20, 0.35)');
-        v.addColorStop(1, 'rgba(2, 8, 20, 0)');
+        v.addColorStop(0, 'rgba(6, 10, 22, 0.8)');
+        v.addColorStop(0.7, 'rgba(6, 10, 22, 0.35)');
+        v.addColorStop(1, 'rgba(6, 10, 22, 0)');
         ctx.fillStyle = v;
         ctx.fillRect(0, 0, w, h);
         dirty(b);
@@ -932,29 +934,29 @@
         var pad = 30, w = this._trackW + pad + 44, h = 16;
         var b = new Bitmap(w, h), ctx = ctxOf(b);
         var x0 = pad, x1 = pad + this._trackW, cy = h / 2;
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
-        pathPoly(ctx, [[x0 + 4, cy - 3], [x1, cy - 3], [x1 - 4, cy + 3], [x0, cy + 3]]);
-        ctx.fill();
+        ctx.fillStyle = 'rgba(6, 10, 20, 0.7)';
+        ctx.fillRect(x0, cy - 3, this._trackW, 6);
+        ctx.strokeStyle = 'rgba(156, 192, 236, 0.35)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x0 + 0.5, cy - 2.5, this._trackW - 1, 5);
         var g = ctx.createLinearGradient(x0, 0, x1, 0);
-        g.addColorStop(0, 'rgba(98, 214, 255, 0.10)');
-        g.addColorStop(0.75, 'rgba(98, 214, 255, 0.45)');
-        g.addColorStop(1, 'rgba(255, 224, 138, 0.85)');
+        g.addColorStop(0, 'rgba(156, 192, 236, 0.10)');
+        g.addColorStop(0.75, 'rgba(156, 192, 236, 0.45)');
+        g.addColorStop(1, 'rgba(216, 232, 251, 0.9)');
         ctx.fillStyle = g;
         ctx.fillRect(x0 + 2, cy - 1, this._trackW - 2, 2);
-        ctx.fillStyle = 'rgba(200, 230, 255, 0.35)';
+        ctx.fillStyle = 'rgba(185, 212, 245, 0.35)';
         for (var i = 1; i < 10; i++) ctx.fillRect(Math.round(x0 + this._trackW * i / 10), cy - 4, 1, 8);
         ctx.save();
-        ctx.shadowColor = 'rgba(255, 224, 138, 0.9)';
+        ctx.shadowColor = 'rgba(216, 232, 251, 0.9)';
         ctx.shadowBlur = 6;
-        ctx.fillStyle = '#ffe08a';
-        pathPoly(ctx, [[x1, cy - 6], [x1 + 6, cy], [x1, cy + 6], [x1 - 6, cy]]);
-        ctx.fill();
+        diamond(ctx, x1, cy, 6, COLOR.accentLit);
         ctx.restore();
         dirty(b);
-        b.fontSize = 12;
         b.outlineWidth = 3;
         b.outlineColor = 'rgba(0, 0, 0, 0.9)';
-        b.textColor = '#ffe08a';
+        titleFont(b, 12);
+        b.textColor = COLOR.accentLit;
         b.drawText('ACT', x1 + 9, 0, 36, h, 'left');
         b.textColor = COLOR.dim;
         b.drawText('ATB', 0, 0, pad - 2, h, 'left');
@@ -1052,7 +1054,7 @@
         if (battler) {
             var face = panelShape(ix, iy, size, size, 6);
             ctx.save();
-            ctx.fillStyle = 'rgba(8, 18, 40, 0.92)';
+            ctx.fillStyle = COLOR.ink;
             pathPoly(ctx, face); ctx.fill();
             pathPoly(ctx, face); ctx.clip();
             var self = this;
@@ -1063,18 +1065,19 @@
             pathPoly(ctx, face); ctx.stroke();
         }
         dirty(b);
-        b.outlineColor = 'rgba(0, 40, 80, 0.8)';
+        b.outlineColor = 'rgba(8, 14, 30, 0.8)';
         b.outlineWidth = 4;
-        b.fontSize = 11;
+        titleFont(b, 11);
         b.textColor = COLOR.dim;
         b.drawText('TURN', 0, py + 2, 62, 14, 'center');
-        b.fontSize = 24;
+        titleFont(b, 24);
         b.textColor = COLOR.accent;
         b.drawText(Math.max(1, $gameTroop.turnCount()), 0, py + 12, 62, 28, 'center');
         if (!battler) {
-            b.fontSize = 18;
-            b.textColor = '#ffffff';
+            titleFont(b, 18);
+            b.textColor = COLOR.text;
             b.drawText('Battle Start', 74, py, w - 86, ph, 'left');
+            bodyFont(b);
             return;
         }
         var label = {
@@ -1085,12 +1088,84 @@
             next: 'NEXT UP'
         }[mode];
         var tx = ix + size + 10, tw = w - tx - 10;
-        b.fontSize = 18;
-        b.textColor = mode === 'enemy' ? '#ffd0d8' : '#ffffff';
+        titleFont(b, 17);
+        b.textColor = mode === 'enemy' ? '#ffd0d8' : COLOR.text;
         b.drawText(battler.name(), tx, py + 1, tw, 22, 'left');
-        b.fontSize = 13;
+        titleFont(b, 12);
         b.textColor = mode === 'next' ? COLOR.dim : tone;
         b.drawText(label, tx, py + 21, tw, 18, 'left');
+        bodyFont(b);
+    };
+
+    //=========================================================================
+    // The hero choosing a command stays in place: an arrow over the head and
+    // a pulsing white outline mark them instead. Acting still steps forward.
+    //=========================================================================
+    Sprite_Actor.prototype.updateTargetPosition = function() {
+        if (this._actor.isActing()) {
+            this.stepForward();
+        } else if (this._actor.canMove() && BattleManager.isEscaped()) {
+            this.retreat();
+        } else if (!this.inHomePosition()) {
+            this.stepBack();
+        }
+    };
+
+    var turnArrow = null;
+    function turnArrowBitmap() {
+        if (turnArrow) return turnArrow;
+        var b = turnArrow = new Bitmap(30, 24), ctx = ctxOf(b);
+        ctx.beginPath();
+        ctx.moveTo(4, 4); ctx.lineTo(26, 4); ctx.lineTo(15, 20); ctx.closePath();
+        ctx.shadowColor = COLOR.accent;
+        ctx.shadowBlur = 6;
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = COLOR.accent;
+        ctx.stroke();
+        dirty(b);
+        return b;
+    }
+
+    // Four white silhouettes, 2px off in each direction, behind the hero = outline.
+    var _Sprite_Actor_createMainSprite = Sprite_Actor.prototype.createMainSprite;
+    Sprite_Actor.prototype.createMainSprite = function() {
+        this._novaOutline = [[-2, 0], [2, 0], [0, -2], [0, 2]].map(function(d) {
+            var s = new Sprite();
+            s.anchor.x = 0.5;
+            s.anchor.y = 1;
+            s.x = d[0];
+            s.y = d[1];
+            s.setBlendColor([255, 255, 255, 255]);
+            s.visible = false;
+            this.addChild(s);
+            return s;
+        }, this);
+        _Sprite_Actor_createMainSprite.call(this);
+        this._novaArrow = new Sprite(turnArrowBitmap());
+        this._novaArrow.anchor.x = 0.5;
+        this._novaArrow.anchor.y = 1;
+        this._novaArrow.visible = false;
+        this.addChild(this._novaArrow);
+    };
+
+    var _Sprite_Actor_updateFrame = Sprite_Actor.prototype.updateFrame;
+    Sprite_Actor.prototype.updateFrame = function() {
+        _Sprite_Actor_updateFrame.call(this);
+        var main = this._mainSprite, frame = main._frame;
+        var lit = !!this._actor && this._actor.isInputting() && BattleManager.isInputting() && main.bitmap;
+        var pulse = Math.sin(Graphics.frameCount / 8);
+        this._novaOutline.forEach(function(s) {
+            s.visible = !!lit;
+            if (!lit) return;
+            if (s.bitmap !== main.bitmap) s.bitmap = main.bitmap;
+            s.setFrame(frame.x, frame.y, frame.width, frame.height);
+            s.opacity = 150 + Math.round(pulse * 70);
+        });
+        this._novaArrow.visible = !!lit;
+        if (lit) this._novaArrow.y = -(main.height || 64) - 4 + Math.round(Math.sin(Graphics.frameCount / 10) * 4);
     };
 
     //=========================================================================
@@ -1142,16 +1217,16 @@
         var b = this.bitmap, ctx = ctxOf(b), w = b.width, isEnemy = target.isEnemy();
         var color = isEnemy ? ENEMY : TARGET;
         b.clear();
-        b.fontSize = 16;
+        titleFont(b, 15);
         var tagW = Math.min(w - 4, Math.max(90, b.measureTextWidth(target.name()) + 28));
         var tx = (w - tagW) / 2, th = isEnemy ? 32 : 24;
         var shape = panelShape(tx, 2, tagW, th, 6);
-        ctx.fillStyle = 'rgba(6, 12, 26, 0.88)';
+        ctx.fillStyle = 'rgba(12, 18, 34, 0.92)';
         pathPoly(ctx, shape); ctx.fill();
         ctx.lineWidth = 1.5;
         ctx.strokeStyle = color;
         pathPoly(ctx, shape); ctx.stroke();
-        if (isEnemy) slantBar(ctx, tx + 10, 25, tagW - 20, 5, target.hp / Math.max(1, target.mhp), ['#ff8a8a', '#c0304a']);
+        if (isEnemy) gaugeBar(ctx, tx + 10, 25, tagW - 20, 5, target.hp / Math.max(1, target.mhp), ['#ff8a8a', '#c0304a']);
         ctx.save();
         ctx.shadowColor = color;
         ctx.shadowBlur = 6;
@@ -1160,7 +1235,7 @@
         ctx.fill();
         ctx.restore();
         dirty(b);
-        b.textColor = '#ffffff';
+        b.textColor = COLOR.text;
         b.outlineWidth = 3;
         b.outlineColor = 'rgba(0, 0, 0, 0.8)';
         b.drawText(target.name(), tx, 3, tagW, 20, 'center');
