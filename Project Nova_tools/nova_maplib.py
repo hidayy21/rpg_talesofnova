@@ -17,6 +17,49 @@ DATA = PROJ + 'data/'
 A1, A2, A3, A4, A5 = 2048, 2816, 4352, 5888, 1536
 B, C, D, E = 0, 256, 512, 768
 
+# ---------------------------------------------------------------- extra sheets (NovaTilesetEx plugin)
+# Any map can use object tiles from every sheet listed in the plugin: id = 20000 + slot * 1000 + n.
+EXT_BASE, EXT_SPAN = 20000, 1000
+_EXT = None
+
+
+def ext_sheets():
+    """{slot: (sheet name, flags tileset id or 0)} from NovaTilesetEx's "Extra Sheets" in js/plugins.js."""
+    global _EXT
+    if _EXT is None:
+        plugins = json.loads(re.search(r'var \$plugins =\s*(\[.*\]);', open(PROJ + 'js/plugins.js', encoding='utf8').read(), re.S).group(1))
+        entry = next((p for p in plugins if p['name'] == 'NovaTilesetEx' and p['status']), None)
+        text = json.loads(entry['parameters']['Extra Sheets']) if entry else ''
+        _EXT = {}
+        for line in text.splitlines():
+            m = re.match(r'\s*(\d+)\s*:\s*([^@]+?)\s*(?:@\s*(\d+))?\s*$', line)
+            if m: _EXT[int(m.group(1))] = (m.group(2), int(m.group(3) or 0))
+    return _EXT
+
+
+def ext(sheet, n):
+    """Tile id of tile n (RPG Maker numbering) on any registered sheet, usable on every map: ext('Inside_B', 49)."""
+    for slot, (name, _) in ext_sheets().items():
+        if name == sheet: return EXT_BASE + slot * EXT_SPAN + n
+    raise KeyError('%s is not in NovaTilesetEx "Extra Sheets" (js/plugins.js)' % sheet)
+
+
+def tileset_flags(tileset_id):
+    """The tileset's flags extended with the extra sheets, indexed by tile id (same rules as the plugin)."""
+    tilesets = json.load(open(DATA + 'Tilesets.json', encoding='utf8'))
+    flags = list(tilesets[tileset_id]['flags'])
+    sheets = ext_sheets()
+    if sheets: flags += [0] * (EXT_BASE + (max(sheets) + 1) * EXT_SPAN - len(flags))
+    for slot, (name, src_id) in sheets.items():
+        for ts in ([tilesets[src_id]] if src_id else tilesets):
+            if not ts: continue
+            s = next((i for i in range(4, 9) if ts['tilesetNames'][i] == name), None)
+            if s is None: continue
+            first, count = (A5, 128) if s == 4 else ((s - 5) * 256, 256)
+            for n in range(count): flags[EXT_BASE + slot * EXT_SPAN + n] = ts['flags'][first + n]
+            break
+    return flags
+
 _core = open(PROJ + 'js/rpg_core.js', encoding='utf8').read()
 def _table(name):
     return json.loads(re.search(r'Tilemap\.' + name + r' = (\[.*?\]);', _core, re.S).group(1))
@@ -274,6 +317,14 @@ def tileset_images(tileset_id):
 
 
 def _draw_tile(dst, sets, tid, dx, dy):
+    if tid >= EXT_BASE:
+        sheet = ext_sheets().get((tid - EXT_BASE) // EXT_SPAN)
+        s = sheet and _img(PROJ + 'img/tilesets/%s.png' % sheet[0])
+        if not s: return
+        n = (tid - EXT_BASE) % EXT_SPAN
+        sx, sy = ((n // 128) % 2 * 8 + n % 8) * 48, ((n % 256) // 8 % 16) * 48
+        dst.alpha_composite(s.crop((sx, sy, sx + 48, sy + 48)), (dx, dy))
+        return
     if tid <= 0 or tid >= 8192: return
     if tid < A1:
         if tid >= A5: s = sets[4]

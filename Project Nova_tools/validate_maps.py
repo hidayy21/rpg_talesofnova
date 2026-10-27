@@ -1,7 +1,7 @@
 # Checks the Royal Kingdom of Nova maps before/after saving: transfers land on walkable tiles, doors have a
 # walkable doorstep, no two events share a tile, every map's exits point to maps that exist.
-import sys, json
-sys.path.insert(0, 'D:/RPG Maker MV/Project Nova_tools')
+import sys, json, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import nova_maplib as L
 from make_town_tiles import build as build_props
 
@@ -10,7 +10,7 @@ _, D_FLAGS = build_props(write=False)
 
 
 def flags_for(ts_id):
-    f = list(TILESETS[ts_id]['flags'])
+    f = L.tileset_flags(ts_id)          # includes NovaTilesetEx extra sheets
     if ts_id == 2:
         for tid, fl in D_FLAGS.items(): f[tid] = fl
     return f
