@@ -954,4 +954,14 @@
     window.Window_NovaMenuCommand = Window_NovaMenuCommand;
     window.Window_NovaMenuStatus = Window_NovaMenuStatus;
     window.Window_NovaStatus = Window_NovaStatus;
+
+    // Shared look for other Nova plugins (e.g. NovaBattle).
+    window.NovaUI = {
+        COLOR: COLOR,
+        ctxOf: ctxOf,
+        dirty: dirty,
+        pathPoly: pathPoly,
+        panelShape: panelShape,
+        skinWindows: skinWindows
+    };
 })();
