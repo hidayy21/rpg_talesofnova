@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Nova Tileset Wizard</title>
+<style>
+  :root {
+    --bg: #07101f; --panel: #0e1c33; --panel2: #13284a; --line: #2b4a72; --text: #e6f2ff; --dim: #93acc8;
+    --accent: #62d6ff; --warn: #ffb35c; --bad: #ff7088; --good: #6ff0a0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px 16px;
+           background: linear-gradient(90deg, rgba(98,214,255,.18), rgba(98,214,255,0) 60%), var(--panel); border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 18px; margin: 0 12px 0 0; letter-spacing: .5px; }
+  label { color: var(--dim); font-size: 12px; display: flex; flex-direction: column; gap: 3px; }
+  input, select { background: #08162b; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  button { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; font: inherit; cursor: pointer; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  button.primary { background: #1677b8; border-color: #3fa8ff; font-weight: 600; }
+  #status { flex: 1; min-width: 200px; color: var(--dim); }
+  #status.ok { color: var(--good); } #status.err { color: var(--bad); }
+  main { display: flex; gap: 12px; padding: 12px 16px; align-items: flex-start; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  #browser { flex: 1 1 auto; min-width: 0; }
+  #slots { flex: 0 0 430px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 90px); overflow: auto; position: sticky; top: 12px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 0 0 8px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tab { padding: 4px 10px; border-radius: 14px; font-size: 13px; }
+  .tab small { color: var(--dim); margin-left: 4px; }
+  .tab.on { background: #1677b8; border-color: var(--accent); }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .tools .sep { width: 1px; height: 22px; background: var(--line); }
+  #selInfo { color: var(--dim); min-width: 220px; }
+  #sheetWrap { overflow: auto; max-height: calc(100vh - 210px); border: 1px solid var(--line); border-radius: 6px;
+               background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 24px 24px; }
+  canvas { display: block; image-rendering: pixelated; }
+  #sheet { cursor: crosshair; }
+  .slot { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+  .slot.warn { border-color: var(--warn); }
+  .slot-head { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .slot-head b { width: 26px; font-size: 16px; color: var(--accent); }
+  .slot-head .cap { margin-left: auto; color: var(--dim); font-size: 12px; }
+  .slot canvas { background: #08162b; border-radius: 4px; cursor: pointer; }
+  .slot .msg { color: var(--warn); font-size: 12px; margin-top: 4px; }
+  .hint { color: var(--dim); font-size: 12px; }
+  #ack { color: var(--warn); }
+  label.row { flex-direction: row; gap: 6px; align-items: center; color: var(--text); font-size: 13px; }
+  kbd { background: #08162b; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Nova Tileset Wizard</h1>
+  <label>Nama tileset <input id="name" list="names" placeholder="mis. Town Plus" size="22"></label>
+  <datalist id="names"></datalist>
+  <label>Lantai/dinding (A1–A4) dari <select id="base"></select></label>
+  <button id="create" class="primary">Buat Tileset</button>
+  <span id="status">Memuat…</span>
+</header>
+<main>
+  <section id="browser" class="panel">
+    <h2>Semua sheet objek</h2>
+    <div class="tabs" id="tabs"></div>
+    <div class="tools">
+      <span id="selInfo">Klik tile, atau drag untuk memilih furniture beberapa tile.</span>
+      <span class="sep"></span>
+      <span class="hint">Tambah ke:</span>
+      <span id="addBtns"></span>
+      <span class="sep"></span>
+      <label style="flex-direction:row;align-items:center;gap:4px"><input type="checkbox" id="showFlags"> passability</label>
+      <select id="zoom"><option value="0.5">50%</option><option value="0.75" selected>75%</option><option value="1">100%</option></select>
+    </div>
+    <div id="sheetWrap"><canvas id="sheet"></canvas></div>
+  </section>
+  <aside id="slots">
+    <div class="panel">
+      <h2>Tileset baru</h2>
+      <div id="target" class="hint"></div>
+      <div id="riskBox" style="display:none;margin-top:8px">
+        <label class="row"><input type="checkbox" id="remap" checked> Sesuaikan map yang memakai tileset ini otomatis (disarankan)</label>
+        <div id="impact" class="hint" style="margin:4px 0 0 22px"></div>
+        <label class="row" id="ackWrap" style="display:none"><input type="checkbox" id="ack"> <span id="ackText"></span></label>
+      </div>
+    </div>
+    <div id="slotList"></div>
+    <div class="hint">Klik tile di pratinjau slot untuk menghapusnya dari daftar pilihan.
+      Pilihan diisi dari kiri atas; tile 0 dibiarkan kosong seperti sheet B bawaan.</div>
+  </aside>
+</main>
+<script>
+'use strict';
+const SLOTS = ['A5', 'B', 'C', 'D', 'E'];
+const SLOT_INDEX = { A5: 4, B: 5, C: 6, D: 7, E: 8 };
+const T = 48;
+const $ = id => document.getElementById(id);
+const S = { state: null, images: {}, sheet: null, sel: null, drag: null, zoom: 0.75,
+            name: '', base: 2, slots: {} };
+
+function img(name) {
+  if (!S.images[name]) {
+    const im = new Image();
+    im.onload = () => { drawSheet(); drawSlots(); };
+    im.src = '/tileset/' + encodeURIComponent(name) + '.png';
+    S.images[name] = im;
+  }
+  return S.images[name];
+}
+const sheetInfo = name => S.state.sheets.find(s => s.name === name);
+const tilesetById = id => S.state.tilesets.find(t => t.id === id);
+const tilesetByName = name => S.state.tilesets.find(t => t.name === name);
+const halvesOf = name => (sheetInfo(name) && sheetInfo(name).kind === 'A5') ? 1 : 2;
+
+// RPG Maker numbering: left half (8 columns) top to bottom, then the right half.
+const num = (half, col, row) => half * 128 + row * 8 + col;
+const cellOf = n => ({ half: Math.floor(n / 128), col: n % 8, row: Math.floor((n % 128) / 8) });
+const tileXY = n => { const c = cellOf(n); return [(c.half * 8 + c.col) * T, c.row * T]; };
+
+function flagOf(sheet, n) {
+  const info = sheetInfo(sheet); if (!info) return 0;
+  return tilesetById(info.tilesetId).flags[info.first + n] || 0;
+}
+function flagMark(f) { return (f & 0x10) ? '☆' : ((f & 0x0f) === 0x0f ? '✕' : '○'); }
+
+// Same first-fit packing as compose_tileset.py, so the preview matches the result.
+function pack(picks, halves) {
+  const used = Array.from({ length: halves }, () => Array.from({ length: 16 }, () => Array(8).fill(false)));
+  used[0][0][0] = true;
+  const spots = [];
+  for (const p of picks) {
+    let spot = null;
+    search: for (let h = 0; h < halves; h++)
+      for (let r = 0; r <= 16 - p.h; r++)
+        for (let c = 0; c <= 8 - p.w; c++) {
+          let free = true;
+          for (let j = 0; j < p.h && free; j++) for (let i = 0; i < p.w && free; i++) free = !used[h][r + j][c + i];
+          if (free) {
+            for (let j = 0; j < p.h; j++) for (let i = 0; i < p.w; i++) used[h][r + j][c + i] = true;
+            spot = { half: h, col: c, row: r }; break search;
+          }
+        }
+    if (!spot) return null;
+    spots.push(spot);
+  }
+  return spots;
+}
+
+// ---------------------------------------------------------------- state / recipe
+function defaultSlots() { const o = {}; SLOTS.forEach(k => o[k] = { mode: 'base', sheet: '', picks: [] }); return o; }
+
+function loadRecipe(r) {
+  S.slots = defaultSlots();
+  SLOTS.forEach(k => {
+    const v = r[k];
+    if (v === undefined) return;
+    if (typeof v === 'string') { S.slots[k] = { mode: v ? 'sheet' : 'empty', sheet: v, picks: [] }; return; }
+    const picks = [];
+    v.forEach(entry => entry.slice(1).forEach(item => {
+      const m = String(item).match(/^(\d+)(?::(\d+)x(\d+))?$/);
+      if (m) picks.push({ sheet: entry[0], n: +m[1], w: +(m[2] || 1), h: +(m[3] || 1) });
+    }));
+    S.slots[k] = { mode: 'picks', sheet: '', picks };
+  });
+}
+
+function buildRecipe() {
+  const r = { name: S.name.trim(), base: S.base };
+  SLOTS.forEach(k => {
+    const s = S.slots[k];
+    if (s.mode === 'empty') r[k] = '';
+    else if (s.mode === 'sheet') r[k] = s.sheet;
+    else if (s.mode === 'picks') r[k] = s.picks.map(p => [p.sheet, p.w > 1 || p.h > 1 ? `${p.n}:${p.w}x${p.h}` : p.n]);
+  });
+  return r;
+}
+
+function onName() {
+  S.name = $('name').value;
+  const existing = tilesetByName(S.name.trim());
+  const recipe = S.state.recipes[S.name.trim()];
+  if (recipe) loadRecipe(recipe);
+  else if (existing && S.lastName !== S.name) S.slots = defaultSlots();
+  if (existing) S.base = existing.id;
+  else if (recipe) S.base = recipe.base;
+  S.lastName = S.name;
+  $('ack').checked = false;
+  render();
+}
+
+// ---------------------------------------------------------------- UI
+function render() {
+  $('base').innerHTML = S.state.tilesets.map(t => `<option value="${t.id}">${t.id}: ${t.name}</option>`).join('');
+  $('base').value = S.base;
+  const existing = tilesetByName(S.name.trim());
+  $('base').disabled = !!existing;
+  $('target').innerHTML = !S.name.trim() ? 'Isi nama tileset di atas (nama baru = tileset baru).' :
+    existing ? `Memperbarui tileset <b>#${existing.id} ${existing.name}</b>` +
+      (existing.maps.length ? ` — dipakai ${existing.maps.length} map.` : ' — belum dipakai map.') :
+    `Tileset baru <b>${S.name.trim()}</b> akan ditambahkan di Database.`;
+  renderSlots();
+  updateCreate();
+}
+
+function renderSlots() {
+  const base = tilesetById(S.base);
+  $('slotList').innerHTML = '';
+  SLOTS.forEach(k => {
+    const s = S.slots[k], halves = k === 'A5' ? 1 : 2;
+    const baseName = base.names[SLOT_INDEX[k]];
+    const kinds = S.state.sheets.filter(x => (k === 'A5') === (x.kind === 'A5'));
+    const div = document.createElement('div');
+    div.className = 'slot';
+    div.innerHTML = `
+      <div class="slot-head"><b>${k}</b>
+        <select class="mode">
+          <option value="base">Bawaan: ${baseName || '(kosong)'}</option>
+          <option value="sheet">Sheet utuh…</option>
+          <option value="picks">Pilihan tile</option>
+          <option value="empty">Kosong</option>
+        </select>
+        <select class="sheet" style="display:${s.mode === 'sheet' ? '' : 'none'}">
+          ${kinds.map(x => `<option ${x.name === s.sheet ? 'selected' : ''}>${x.name}</option>`).join('')}
+        </select>
+        <span class="cap"></span></div>
+      <canvas width="${halves * 8 * 24}" height="${16 * 24}" style="display:${s.mode === 'picks' || s.mode === 'sheet' ? '' : 'none'};width:${s.mode === 'sheet' ? halves * 8 * 12 + 'px' : ''}"></canvas>
+      <div class="msg"></div>`;
+    div.querySelector('.mode').value = s.mode;
+    div.querySelector('.mode').onchange = e => {
+      s.mode = e.target.value;
+      if (s.mode === 'sheet' && !s.sheet) s.sheet = kinds[0] ? kinds[0].name : '';
+      render();
+    };
+    div.querySelector('.sheet').onchange = e => { s.sheet = e.target.value; drawSlots(); updateCreate(); };
+    div.querySelector('canvas').onclick = e => removePickAt(k, e);
+    $('slotList').appendChild(div);
+    s.el = div;
+  });
+  drawSlots();
+}
+
+function drawSlots() {
+  if (!S.state) return;
+  const base = tilesetById(S.base);
+  SLOTS.forEach(k => {
+    const s = S.slots[k]; if (!s.el) return;
+    const cv = s.el.querySelector('canvas'), g = cv.getContext('2d'), halves = k === 'A5' ? 1 : 2;
+    g.clearRect(0, 0, cv.width, cv.height);
+    g.imageSmoothingEnabled = true;
+    let cap = '';
+    if (s.mode === 'base' || s.mode === 'sheet') {
+      const name = s.mode === 'base' ? base.names[SLOT_INDEX[k]] : s.sheet;
+      if (name) { const im = img(name); if (im.complete) g.drawImage(im, 0, 0, im.width / 2, im.height / 2); }
+      cap = name ? 'sheet utuh' : 'kosong';
+    } else if (s.mode === 'picks') {
+      const spots = pack(s.picks, halves);
+      const tiles = s.picks.reduce((a, p) => a + p.w * p.h, 0);
+      cap = `${tiles} / ${halves * 128 - 1} tile`;
+      g.strokeStyle = 'rgba(98,214,255,.15)';
+      for (let x = 0; x <= halves * 8; x++) { g.beginPath(); g.moveTo(x * 24 + .5, 0); g.lineTo(x * 24 + .5, cv.height); g.stroke(); }
+      for (let y = 0; y <= 16; y++) { g.beginPath(); g.moveTo(0, y * 24 + .5); g.lineTo(cv.width, y * 24 + .5); g.stroke(); }
+      if (spots) s.picks.forEach((p, i) => {
+        const im = img(p.sheet); if (!im.complete) return;
+        const sp = spots[i], src = cellOf(p.n);
+        for (let j = 0; j < p.h; j++) for (let ii = 0; ii < p.w; ii++) {
+          const [sx, sy] = tileXY(num(src.half, src.col + ii, src.row + j));
+          g.drawImage(im, sx, sy, T, T, ((sp.half * 8) + sp.col + ii) * 24, (sp.row + j) * 24, 24, 24);
+        }
+      });
+      else cap = 'PENUH — hapus beberapa pilihan';
+    } else cap = 'kosong';
+    s.el.querySelector('.cap').textContent = cap;
+  });
+  updateCreate();
+}
+
+function removePickAt(k, e) {
+  const s = S.slots[k]; if (s.mode !== 'picks') return;
+  const r = e.target.getBoundingClientRect();
+  const x = Math.floor((e.clientX - r.left) / 24), y = Math.floor((e.clientY - r.top) / 24);
+  const spots = pack(s.picks, k === 'A5' ? 1 : 2); if (!spots) return;
+  const i = spots.findIndex((sp, idx) => {
+    const p = s.picks[idx], px = sp.half * 8 + sp.col;
+    return x >= px && x < px + p.w && y >= sp.row && y < sp.row + p.h;
+  });
+  if (i < 0) return;
+  const p = s.picks[i];
+  if (!confirm(`Hapus ${p.sheet} #${p.n}${p.w * p.h > 1 ? ` (${p.w}x${p.h})` : ''} dari slot ${k}?`)) return;
+  s.picks.splice(i, 1);
+  drawSlots();
+}
+
+function updateCreate() {
+  const remap = $('remap').checked;
+  const existing = tilesetByName(S.name.trim());
+  const risky = existing ? SLOTS.filter(k => S.slots[k].mode !== 'base' && existing.usedSlots.includes(k)) : [];
+  SLOTS.forEach(k => {
+    const s = S.slots[k]; if (!s.el) return;
+    const bad = risky.includes(k);
+    s.el.classList.toggle('warn', bad);
+    s.el.querySelector('.msg').textContent = !bad ? '' : remap
+      ? `Slot ${k} dipakai di map: tile di map akan dipindahkan otomatis ke posisi barunya.`
+      : `Slot ${k} sudah dipakai di map. Mengganti sheet, menghapus, atau mengubah urutan pilihan akan mengubah tile di map itu. Menambah pilihan di akhir aman.`;
+  });
+  $('riskBox').style.display = risky.length ? '' : 'none';
+  $('ackWrap').style.display = risky.length && !remap ? 'flex' : 'none';
+  $('ackText').textContent = `Saya mengerti risiko untuk slot ${risky.join(', ')} tanpa penyesuaian map`;
+  const full = SLOTS.some(k => S.slots[k].mode === 'picks' && !pack(S.slots[k].picks, k === 'A5' ? 1 : 2));
+  const anyChange = SLOTS.some(k => S.slots[k].mode !== 'base');
+  $('create').disabled = !S.name.trim() || full || !anyChange || (risky.length && !remap && !$('ack').checked);
+  if (risky.length && remap && !full) scheduleCheck(); else { S.checked = ''; $('impact').textContent = ''; }
+}
+
+// ---------------------------------------------------------------- sheet browser
+function renderTabs() {
+  const groups = {};
+  S.state.sheets.forEach(s => (groups[s.tileset] = groups[s.tileset] || []).push(s));
+  $('tabs').innerHTML = Object.keys(groups).map(g => groups[g].map(s =>
+    `<button class="tab ${S.sheet === s.name ? 'on' : ''}" data-name="${s.name}">${s.name}<small>${s.kind === 'A5' ? 'A5' : ''}</small></button>`
+  ).join('')).join('');
+  $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => openSheet(b.dataset.name));
+}
+
+function openSheet(name) {
+  S.sheet = name; S.sel = null;
+  renderTabs(); renderAddButtons(); drawSheet();
+}
+
+function drawSheet() {
+  if (!S.sheet) return;
+  const im = img(S.sheet), cv = $('sheet');
+  if (!im.complete || !im.width) return;
+  cv.width = im.width; cv.height = im.height;
+  cv.style.width = im.width * S.zoom + 'px'; cv.style.height = im.height * S.zoom + 'px';
+  const g = cv.getContext('2d');
+  g.clearRect(0, 0, cv.width, cv.height);
+  g.drawImage(im, 0, 0);
+  g.strokeStyle = 'rgba(255,255,255,.12)';
+  for (let x = 0; x <= im.width; x += T) { g.beginPath(); g.moveTo(x + .5, 0); g.lineTo(x + .5, im.height); g.stroke(); }
+  for (let y = 0; y <= im.height; y += T) { g.beginPath(); g.moveTo(0, y + .5); g.lineTo(im.width, y + .5); g.stroke(); }
+  if (im.width > 8 * T) { g.strokeStyle = 'rgba(98,214,255,.6)'; g.beginPath(); g.moveTo(8 * T + .5, 0); g.lineTo(8 * T + .5, im.height); g.stroke(); }
+  if ($('showFlags').checked) {
+    g.font = 'bold 14px sans-serif'; g.textAlign = 'right';
+    const halves = im.width / (8 * T);
+    for (let h = 0; h < halves; h++) for (let r = 0; r < 16; r++) for (let c = 0; c < 8; c++) {
+      const mark = flagMark(flagOf(S.sheet, num(h, c, r)));
+      g.fillStyle = mark === '✕' ? '#ff7088' : mark === '☆' ? '#ffe08a' : '#6ff0a0';
+      g.strokeStyle = 'rgba(0,0,0,.8)'; g.lineWidth = 3;
+      const x = (h * 8 + c + 1) * T - 3, y = r * T + 15;
+      g.strokeText(mark, x, y); g.fillText(mark, x, y); g.lineWidth = 1;
+    }
+  }
+  const sel = S.drag ? dragRect() : S.sel;
+  if (sel) {
+    const c = cellOf(sel.n), x = (c.half * 8 + c.col) * T, y = c.row * T;
+    g.fillStyle = 'rgba(98,214,255,.25)'; g.fillRect(x, y, sel.w * T, sel.h * T);
+    g.strokeStyle = '#62d6ff'; g.lineWidth = 3; g.strokeRect(x + 1.5, y + 1.5, sel.w * T - 3, sel.h * T - 3); g.lineWidth = 1;
+  }
+}
+
+function cellAt(e) {
+  const r = $('sheet').getBoundingClientRect();
+  const x = Math.floor((e.clientX - r.left) / S.zoom / T), y = Math.floor((e.clientY - r.top) / S.zoom / T);
+  return { x: Math.max(0, Math.min(x, $('sheet').width / T - 1)), y: Math.max(0, Math.min(y, 15)) };
+}
+function dragRect() {
+  const a = S.drag.a, b = S.drag.b, half = Math.floor(a.x / 8);
+  const bx = Math.max(half * 8, Math.min(b.x, half * 8 + 7));       // a block stays inside one half
+  const x0 = Math.min(a.x, bx), x1 = Math.max(a.x, bx), y0 = Math.min(a.y, b.y), y1 = Math.max(a.y, b.y);
+  return { sheet: S.sheet, n: num(half, x0 - half * 8, y0), w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
+$('sheet').onmousedown = e => { const c = cellAt(e); S.drag = { a: c, b: c }; drawSheet(); };
+window.addEventListener('mousemove', e => { if (S.drag) { S.drag.b = cellAt(e); drawSheet(); } });
+window.addEventListener('mouseup', () => {
+  if (!S.drag) return;
+  S.sel = dragRect(); S.drag = null;
+  const f = S.sel.w * S.sel.h === 1 ? ' · ' + flagMark(flagOf(S.sheet, S.sel.n)) : '';
+  $('selInfo').textContent = `${S.sheet} #${S.sel.n}` + (S.sel.w * S.sel.h > 1 ? ` (${S.sel.w}x${S.sel.h} tile)` : '') + f;
+  drawSheet(); renderAddButtons();
+});
+
+function renderAddButtons() {
+  const isA5 = S.sheet && sheetInfo(S.sheet).kind === 'A5';
+  $('addBtns').innerHTML = SLOTS.map(k =>
+    `<button data-k="${k}" ${!S.sel || (k === 'A5' && !isA5) ? 'disabled' : ''}>${k}</button>`).join(' ');
+  $('addBtns').querySelectorAll('button').forEach(b => b.onclick = () => addPick(b.dataset.k));
+}
+
+function addPick(k) {
+  const s = S.slots[k];
+  if (s.mode !== 'picks') {
+    if (s.mode !== 'base' && s.mode !== 'empty' && !confirm(`Slot ${k} berisi sheet utuh. Ganti dengan daftar pilihan?`)) return;
+    s.mode = 'picks'; s.picks = [];
+  }
+  const dup = s.picks.some(p => p.sheet === S.sel.sheet && p.n === S.sel.n && p.w === S.sel.w && p.h === S.sel.h);
+  if (dup) { status(`Sudah ada di slot ${k}.`); return; }
+  s.picks.push(Object.assign({}, S.sel));
+  if (!pack(s.picks, k === 'A5' ? 1 : 2)) { s.picks.pop(); status(`Slot ${k} penuh.`, 'err'); return; }
+  status(`Ditambahkan ke slot ${k}.`);
+  renderSlots(); updateCreate();
+}
+
+function status(text, cls) { $('status').textContent = text; $('status').className = cls || ''; }
+
+// What the automatic map adjustment would change, asked from the server without writing anything.
+function scheduleCheck() {
+  const recipe = buildRecipe(), key = JSON.stringify(recipe);
+  if (key === S.checked) return;
+  S.checked = key;
+  clearTimeout(S.checkTimer);
+  $('impact').textContent = 'Menghitung dampak…';
+  S.checkTimer = setTimeout(async () => {
+    const res = await fetch('/api/compose', { method: 'POST', body: JSON.stringify({ recipe, remap: true, check: true }) });
+    const out = await res.json();
+    if (S.checked !== key) return;                  // the recipe changed meanwhile
+    $('impact').textContent = res.ok ? 'Dampak: ' + out.text + '.' : out.error;
+  }, 400);
+}
+
+function risky() {
+  const existing = tilesetByName(S.name.trim());
+  return existing ? SLOTS.filter(k => S.slots[k].mode !== 'base' && existing.usedSlots.includes(k)) : [];
+}
+
+async function create() {
+  const recipe = buildRecipe(), remap = risky().length > 0 && $('remap').checked;
+  status('Menyimpan…');
+  const res = await fetch('/api/compose', { method: 'POST', body: JSON.stringify({ recipe, remap }) });
+  const out = await res.json();
+  if (!res.ok) { status(out.error, 'err'); return; }
+  S.checked = '';
+  await reload();
+  status(`Tileset #${out.id} "${recipe.name}" tersimpan.` + (out.text ? ' ' + out.text + '.' : '') +
+         ' Buka editor → Database → Tilesets.', 'ok');
+}
+
+async function reload() {
+  S.state = await (await fetch('/api/state')).json();
+  $('names').innerHTML = [...new Set([...S.state.tilesets.map(t => t.name), ...Object.keys(S.state.recipes)])]
+    .map(n => `<option value="${n}">`).join('');
+  if (!S.slots.B) S.slots = defaultSlots();
+  render();
+}
+
+$('name').oninput = onName;
+$('base').onchange = e => { S.base = +e.target.value; render(); };
+$('create').onclick = create;
+$('ack').onchange = updateCreate;
+$('remap').onchange = updateCreate;
+$('showFlags').onchange = drawSheet;
+$('zoom').onchange = e => { S.zoom = +e.target.value; drawSheet(); };
+
+reload().then(() => {
+  openSheet(S.state.sheets.find(s => s.name === 'Inside_B') ? 'Inside_B' : S.state.sheets[0].name);
+  status('Pilih tile di kiri, tambahkan ke slot di kanan, beri nama, lalu Buat Tileset.');
+});
+</script>
+</body>
+</html>

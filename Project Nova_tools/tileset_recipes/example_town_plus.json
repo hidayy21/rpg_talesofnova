@@ -1,0 +1,12 @@
+{
+  "name": "Town Plus",
+  "base": 2,
+  "B": "Outside_B",
+  "C": [
+    ["Inside_B", "69:1x2", "70:1x2", "81:2x2", 200, 201, 208, 209],
+    ["Inside_C", 39, 32, 33],
+    ["Dungeon_C", 5, 6]
+  ],
+  "D": "Nova_Market_D",
+  "note": "Outside floors and walls, Outside_B, Inside furniture in C, market props in D"
+}
