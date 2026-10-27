@@ -76,7 +76,9 @@
  *   zero, it skips its next turn and takes 50% more damage (the Broken
  *   state's traits). When that turn has passed its Guard is full again.
  *   Weapon type weaknesses count for physical actions of the hero holding
- *   the weapon.
+ *   the weapon. A skill whose formula picks the target's weakest element
+ *   (Math.max(b.elementRate(2), b.elementRate(9)) ...) hits with each
+ *   element it names, so it breaks a target weak to any of them.
  *
  * TP
  *   Heroes gain TP by hitting weaknesses and breaking enemies; taking
@@ -157,6 +159,9 @@
     }
 
     // What an action hits with: its element(s) and, for a hero's physical action, the weapon types.
+    // A formula that picks the target's weakest element, like
+    //   ... * Math.max(b.elementRate(8), b.elementRate(9))
+    // hits with every element it names.
     function hitKeys(action) {
         var subject = action.subject(), item = action.item(), keys = [];
         var elementId = item.damage.elementId;
@@ -165,6 +170,8 @@
         } else if (elementId > 0) {
             keys.push('e' + elementId);
         }
+        var re = /b\.elementRate\((\d+)\)/g, m;
+        while ((m = re.exec(item.damage.formula))) keys.push('e' + m[1]);
         if (subject.isActor() && action.isPhysical()) {
             subject.weapons().forEach(function(w) { keys.push('w' + w.wtypeId); });
         }

@@ -67,7 +67,10 @@
  *   - Physical damage taken is 40% lower. Magic is not affected.
  *   - A hero holding a cane attacks with magic instead (M.ATK against
  *     M.DEF, the Magic Attack Skill). The command is still "Attack":
- *     the row and the weapon decide which kind of hit it is.
+ *     the row and the weapon decide which kind of hit it is. It looks
+ *     like a spell too: a casting pose, and the "One 1" animation of the
+ *     cane's attack element (Fire, Ice ... Darkness; Neutral without one).
+ *     A cane can pick its own with <magic animation: 101> in its note.
  *
  * Row command
  *   Swaps rows with an ally in the other row and uses the turn. The swap
@@ -191,6 +194,35 @@
             return MAGIC_ATTACK;
         }
         return _attackSkillId.call(this);
+    };
+
+    // ...and looks like a spell: a casting pose instead of a swing, and a magic
+    // animation in the colour of the weapon's element.
+    var ELEMENT_ANIMS = { 2: 66, 3: 71, 4: 76, 5: 81, 6: 86, 7: 91, 8: 96, 9: 101 };   // Fire ... Darkness "One 1"
+    var NEUTRAL_ANIM = 106;                                                               // Neutral One 1
+
+    function isMagicAttack(action) {
+        return !!action && !!$dataSkills[MAGIC_ATTACK] && action.item() === $dataSkills[MAGIC_ATTACK];
+    }
+
+    Game_Actor.prototype.novaMagicAttackAnimation = function() {
+        var cane = this.weapons().filter(function(w) { return CANES.contains(w.wtypeId); })[0];
+        if (cane && cane.meta['magic animation']) return Number(cane.meta['magic animation']);
+        var elements = this.attackElements().filter(function(id) { return ELEMENT_ANIMS[id]; });
+        return elements.length ? ELEMENT_ANIMS[elements[elements.length - 1]] : NEUTRAL_ANIM;
+    };
+
+    var _performAction = Game_Actor.prototype.performAction;
+    Game_Actor.prototype.performAction = function(action) {
+        if (!isMagicAttack(action)) return _performAction.call(this, action);
+        Game_Battler.prototype.performAction.call(this, action);
+        this.requestMotion('spell');
+    };
+
+    var _showAnimation = Window_BattleLog.prototype.showAnimation;
+    Window_BattleLog.prototype.showAnimation = function(subject, targets, animationId) {
+        if (subject.isActor() && isMagicAttack(BattleManager._action)) animationId = subject.novaMagicAttackAnimation();
+        _showAnimation.call(this, subject, targets, animationId);
     };
 
     //=========================================================================
