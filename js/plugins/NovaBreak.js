@@ -56,6 +56,20 @@
  * @type animation
  * @default 52
  *
+ * @param Weakness Critical
+ * @type boolean
+ * @desc Every hit on an enemy's weakness is a critical hit (spells too).
+ * @default true
+ *
+ * @param Critical Damage
+ * @type number
+ * @desc Damage of a critical hit in percent (RPG Maker's own is 300). Counts for every critical.
+ * @default 150
+ *
+ * @param Critical Text
+ * @desc Shown over the damage number of a critical hit. Empty: none.
+ * @default CRITICAL!
+ *
  * @help
  * Place below NovaMenu, NovaBattle and NovaFormation.
  *
@@ -88,6 +102,12 @@
  *   Battle command, costs 25 TP and does not use the turn: the hero's next
  *   action deals 50% more damage or healing (and takes 2 Guard per hit).
  *   The TP comes back if the turn is passed on, or the battle ends first.
+ *
+ * Critical hits
+ *   A hit on a weakness is always critical, physical or magic (Weakness
+ *   Critical). A critical hit does 150% damage instead of RPG Maker's 300%
+ *   (Critical Damage) and shows "CRITICAL!" over its number. Ordinary
+ *   critical hits (the CRI rate, skills with Critical on) still happen too.
  */
 
 (function() {
@@ -111,6 +131,9 @@
     var EMPOWER_RATE = Number(params['Empower Rate'] || 150) / 100;
     var BREAK_ANIM = Number(params['Break Animation'] || 21);
     var EMPOWER_ANIM = Number(params['Empower Animation'] || 52);
+    var WEAK_CRITICAL = String(params['Weakness Critical'] || 'true') === 'true';
+    var CRIT_RATE = Number(params['Critical Damage'] || 150) / 100;
+    var CRIT_TEXT = params['Critical Text'] === undefined ? 'CRITICAL!' : String(params['Critical Text']);
 
     var COLOR = UI.COLOR, ctxOf = UI.ctxOf, dirty = UI.dirty, pathPoly = UI.pathPoly;
     var BREAK_COLOR = '#ff7088';
@@ -242,6 +265,49 @@
             target.novaBreak();
             if (subject.isActor()) subject.gainSilentTp(BREAK_TP);
         }
+    };
+
+    //=========================================================================
+    // Critical hits: a weakness hit is always critical
+    //=========================================================================
+    Game_Action.prototype.novaHitsWeakness = function(target) {
+        if (!target.isEnemy() || !this.isHpEffect() || this.isRecover()) return false;
+        var weak = weaknessesOf(target.enemyId());
+        return hitKeys(this).some(function(k) { return weak.contains(k); });
+    };
+
+    var _itemCri = Game_Action.prototype.itemCri;
+    Game_Action.prototype.itemCri = function(target) {
+        if (WEAK_CRITICAL && this.novaHitsWeakness(target)) return 1;
+        return _itemCri.call(this, target);
+    };
+
+    Game_Action.prototype.applyCritical = function(damage) {
+        return damage * CRIT_RATE;
+    };
+
+    // "CRITICAL!" over the number; it stays put while the digits bounce.
+    var _setupCriticalEffect = Sprite_Damage.prototype.setupCriticalEffect;
+    Sprite_Damage.prototype.setupCriticalEffect = function() {
+        _setupCriticalEffect.call(this);
+        if (!CRIT_TEXT) return;
+        var bmp = new Bitmap(200, 32);
+        UI.titleFont(bmp, 20);
+        bmp.textColor = '#ffe08a';
+        bmp.outlineColor = 'rgba(70, 12, 18, 0.95)';
+        bmp.outlineWidth = 4;
+        bmp.drawText(CRIT_TEXT, 0, 0, 200, 32, 'center');
+        var label = new Sprite(bmp);
+        label.anchor.x = 0.5;
+        label.anchor.y = 1;
+        label.y = -this.digitHeight() - 2;
+        label._novaCritLabel = true;
+        this.addChild(label);
+    };
+
+    var _updateChild = Sprite_Damage.prototype.updateChild;
+    Sprite_Damage.prototype.updateChild = function(sprite) {
+        if (!sprite._novaCritLabel) _updateChild.call(this, sprite);
     };
 
     //=========================================================================

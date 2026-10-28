@@ -55,7 +55,8 @@
  * Map note tags
  *   <ambient: #rrggbb>        Constant ambient light (interiors, caves).
  *                             #ffffff = fully lit, #000000 = pitch black.
- *   <outdoor>                 Follows the day/night switch.
+ *   <outdoor>                 Follows the day/night switch, or the clock
+ *                             of NovaDayNight when that plugin is on.
  *   <night ambient: #rrggbb>  Night colour for this outdoor map only.
  *   <no player light>         No lantern around the party on this map.
  *   <glow: 0.4>               Strength of the glow around lights on this map.
@@ -134,6 +135,8 @@
         if ($gameSystem._novaAmbient) return hex($gameSystem._novaAmbient);
         var meta = $dataMap ? $dataMap.meta : {};
         if (meta.ambient) return hex(meta.ambient);
+        // NovaDayNight: outdoor maps follow the clock (dawn, day, sunset, night)
+        if (meta.outdoor && window.NovaDayNight) return NovaDayNight.ambient(hex(meta['night ambient'] || NIGHT_COLOR));
         if (meta.outdoor && isNight()) return hex(meta['night ambient'] || NIGHT_COLOR);
         return null;
     }
@@ -229,14 +232,16 @@
         var night = isNight(), t = this._time, self = this;
         var darkness = 1 - (a[0] + a[1] + a[2]) / 765;
 
+        // under NovaDayNight's clock, outdoor lamps and fires only burn between Lights On and Lights Off
+        var daylight = meta0.outdoor && window.NovaDayNight && !night;
         this._tileLights.forEach(function(L) {
-            if (L.light.night && !night) return;
+            if (daylight || (L.light.night && !night)) return;
             var sx = ($gameMap.adjustX(L.x) + 0.5) * tw, sy = ($gameMap.adjustY(L.y) + 0.5) * th + L.light.offsetY;
             self.drawLight(ctx, sx, sy, L.light, t + L.seed * 3);
         });
         $gameMap.events().forEach(function(ev) {
             var light = ev.novaLight();
-            if (!light || ev._erased || ev.isTransparent()) return;
+            if (!light || daylight || ev._erased || ev.isTransparent()) return;
             self.drawLight(ctx, ev.screenX(), ev.screenY() - 24 + light.offsetY, light, t + ev.eventId() * 11);
         });
         var meta = $dataMap ? $dataMap.meta : {};

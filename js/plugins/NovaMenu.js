@@ -293,11 +293,16 @@
         bmp.outlineWidth = 3;
         titleFont(bmp, 15);
         bmp.textColor = COLOR.dim;
-        bmp.drawText('TIME', 20, 12, 60, 32, 'left');
+        // with NovaDayNight: TIME is the in-game clock, PLAYTIME the real time played
+        var clock = window.NovaDayNight;
+        var playX = clock ? 330 : 20;
+        if (clock) bmp.drawText('TIME', 20, 12, 60, 32, 'left');
+        bmp.drawText(clock ? 'PLAYTIME' : 'TIME', playX, 12, 110, 32, 'left');
         bmp.drawText('LOCATION', w - 380, 12, 110, 32, 'left');
         bodyFont(bmp, 20);
         bmp.textColor = COLOR.text;
-        bmp.drawText($gameSystem.playtimeText(), 74, 12, 120, 32, 'left');
+        if (clock) bmp.drawText('Day ' + clock.day() + '  ' + clock.timeText() + '  ' + clock.phase(), 74, 12, 250, 32, 'left');
+        bmp.drawText($gameSystem.playtimeText(), playX + (clock ? 104 : 54), 12, 120, 32, 'left');
         bmp.drawText(where, w - 270, 12, 256, 32, 'left');
     };
 

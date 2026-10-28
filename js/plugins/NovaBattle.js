@@ -51,6 +51,12 @@
  *                 MP, TP and the ATB gauge on the right; states on the face.
  *   Battlefield:  the hero choosing a command stays in place, marked by an
  *                 arrow over the head and a pulsing white outline.
+ *
+ * Battle speed
+ *   The SPEED button under the timeline (top right) switches between x1,
+ *   x1.5 and x2; Shift does the same. Everything runs faster: gauges,
+ *   animations, movement, damage numbers. The choice is kept in the
+ *   game's config, so it stays for the next battles and next sessions.
  */
 
 (function() {
@@ -1330,6 +1336,126 @@
                 !$gameMessage.isBusy() && !$gameTroop.isEventRunning()) {
             BattleManager.novaTick();
         }
+    };
+
+    //=========================================================================
+    // Battle speed: x1 / x1.5 / x2 (SPEED button or Shift)
+    //=========================================================================
+    var SPEEDS = [1, 1.5, 2];
+
+    ConfigManager.novaBattleSpeed = 1;
+    var _makeData = ConfigManager.makeData;
+    ConfigManager.makeData = function() {
+        var config = _makeData.call(this);
+        config.novaBattleSpeed = this.novaBattleSpeed;
+        return config;
+    };
+    var _applyData = ConfigManager.applyData;
+    ConfigManager.applyData = function(config) {
+        _applyData.call(this, config);
+        var speed = Number(config.novaBattleSpeed);
+        this.novaBattleSpeed = SPEEDS.contains(speed) ? speed : 1;
+    };
+
+    function cycleSpeed() {
+        var i = SPEEDS.indexOf(ConfigManager.novaBattleSpeed);
+        ConfigManager.novaBattleSpeed = SPEEDS[(i + 1) % SPEEDS.length];
+        ConfigManager.save();
+        SoundManager.playCursor();
+    }
+
+    // Extra updates see no key presses or clicks, so nothing is handled twice.
+    function withoutInput(fn, self) {
+        var t = TouchInput, latest = Input._latestButton;
+        var touch = [t._triggered, t._cancelled, t._moved, t._released, t._wheelX, t._wheelY];
+        Input._latestButton = null;
+        t._triggered = t._cancelled = t._moved = t._released = false;
+        t._wheelX = t._wheelY = 0;
+        try {
+            fn.call(self);
+        } finally {
+            Input._latestButton = latest;
+            t._triggered = touch[0]; t._cancelled = touch[1]; t._moved = touch[2];
+            t._released = touch[3]; t._wheelX = touch[4]; t._wheelY = touch[5];
+        }
+    }
+
+    // x2 = the whole battle scene updates twice per frame; x1.5 = every other frame.
+    var _speedUpdate = Scene_Battle.prototype.update;
+    Scene_Battle.prototype.update = function() {
+        _speedUpdate.call(this);
+        this._novaSpeedCarry = (this._novaSpeedCarry || 0) + ConfigManager.novaBattleSpeed - 1;
+        while (this._novaSpeedCarry >= 1) {
+            this._novaSpeedCarry -= 1;
+            if (!this.isActive() || SceneManager.isSceneChanging()) {
+                this._novaSpeedCarry = 0;
+                break;
+            }
+            withoutInput(_speedUpdate, this);
+        }
+    };
+
+    function Sprite_NovaSpeed() { this.initialize.apply(this, arguments); }
+    Sprite_NovaSpeed.prototype = Object.create(Sprite.prototype);
+    Sprite_NovaSpeed.prototype.constructor = Sprite_NovaSpeed;
+
+    Sprite_NovaSpeed.prototype.initialize = function() {
+        Sprite.prototype.initialize.call(this, new Bitmap(118, 30));
+        this.x = Graphics.boxWidth - this.bitmap.width - 12;
+        this.y = TOP_H + 8;
+        this._shown = 0;
+    };
+
+    Sprite_NovaSpeed.prototype.update = function() {
+        Sprite.prototype.update.call(this);
+        if (Input.isTriggered('shift') || (TouchInput.isTriggered() && this.isTouched())) cycleSpeed();
+        if (this._shown !== ConfigManager.novaBattleSpeed) {
+            this._shown = ConfigManager.novaBattleSpeed;
+            this.redraw();
+        }
+    };
+
+    Sprite_NovaSpeed.prototype.isTouched = function() {
+        var x = TouchInput.x - this.x, y = TouchInput.y - this.y;
+        return x >= 0 && y >= 0 && x < this.bitmap.width && y < this.bitmap.height;
+    };
+
+    //   SPEED  >>  x2
+    Sprite_NovaSpeed.prototype.redraw = function() {
+        var bmp = this.bitmap, ctx = ctxOf(bmp), w = bmp.width, h = bmp.height, speed = this._shown, fast = speed > 1;
+        bmp.clear();
+        var g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, COLOR.panelTop);
+        g.addColorStop(1, COLOR.panelBottom);
+        ctx.fillStyle = g;
+        pathPoly(ctx, panelShape(1, 1, w - 2, h - 2, 7));
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = fast ? COLOR.pending : COLOR.frame;
+        pathPoly(ctx, panelShape(1, 1, w - 2, h - 2, 7));
+        ctx.stroke();
+        ctx.fillStyle = fast ? COLOR.pending : COLOR.accent;
+        for (var i = 0, n = SPEEDS.indexOf(speed) + 1; i < n; i++) {
+            pathPoly(ctx, [[58 + i * 7, 9], [65 + i * 7, 15], [58 + i * 7, 21]]);
+            ctx.fill();
+        }
+        dirty(bmp);
+        bmp.outlineColor = 'rgba(6, 10, 20, 0.85)';
+        bmp.outlineWidth = 3;
+        UI.titleFont(bmp, 12);
+        bmp.textColor = COLOR.dim;
+        bmp.drawText('SPEED', 10, 0, 50, h, 'left');
+        UI.titleFont(bmp, 17);
+        bmp.textColor = fast ? COLOR.pending : COLOR.text;
+        bmp.drawText('×' + speed, 0, 0, w - 10, h, 'right');
+        UI.bodyFont(bmp);
+    };
+
+    var _speedCreateAllWindows = Scene_Battle.prototype.createAllWindows;
+    Scene_Battle.prototype.createAllWindows = function() {
+        _speedCreateAllWindows.call(this);
+        this._novaSpeedSprite = new Sprite_NovaSpeed();
+        this.addChild(this._novaSpeedSprite);
     };
 
     window.Sprite_NovaTurnHud = Sprite_NovaTurnHud;
