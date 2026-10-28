@@ -21,8 +21,9 @@
  *  - Title images are scaled to cover the whole screen (kept centred).
  *  - Battlebacks are scaled to cover the screen instead of tiling,
  *    aligned to the bottom in side-view battles.
- *  - Enemies keep the layout from the Troops editor, centred horizontally
- *    and kept at the same distance from the bottom of the screen.
+ *  - Enemies keep the layout from the Troops editor at the same distance
+ *    from the bottom of the screen. Horizontally they are centred in
+ *    front view; in side view they keep their distance from the left edge.
  *  - Side-view party members keep their place on the right-hand side.
  * Has no effect when the screen is 816x624.
  */
@@ -84,9 +85,11 @@
     };
 
     // ---------------------------------------------------------------- battle positions
+    // Side view: enemies keep their distance from the left edge, as the party does from
+    // the right one, so the wider screen opens up the gap between the two sides.
     var _Game_Enemy_screenX = Game_Enemy.prototype.screenX;
     Game_Enemy.prototype.screenX = function() {
-        return _Game_Enemy_screenX.call(this) + offsetX();
+        return _Game_Enemy_screenX.call(this) + ($gameSystem.isSideView() ? 0 : offsetX());
     };
     var _Game_Enemy_screenY = Game_Enemy.prototype.screenY;
     Game_Enemy.prototype.screenY = function() {
