@@ -39,10 +39,14 @@
 ### Keluarga Ashveil
 
 - **Ayah** — juga berpetualang.
-- **Kakak laki-laki** — berpetualang di laut.
-- **Kakak perempuan** — mengabdi pada kerajaan sebagai kesatria.
-- **Adik perempuan**.
+- **Kallum Ashveil** (anak pertama, kakak laki-laki) — berpetualang di laut. Rambut merah, aptitude utama **Fire**.
+- **Seraphine Ashveil** (anak kedua, kakak perempuan) — mengabdi pada kerajaan sebagai kesatria. Rambut merah, aptitude utama **Fire**.
+- **Kaelen Ashveil** (Kael, anak ketiga) — protagonis.
+- **Selene Ashveil** (anak bungsu, adik perempuan) — rambut hitam. Seperti Kael, aptitude utamanya **Shadow**.
 - **Ibu** — keturunan Jeanne Ignatia.
+- Semua anak memiliki kedua aptitude; yang berbeda hanya elemen utamanya. Rambut merah mengikuti garis Jeanne (api), rambut hitam mengikuti garis Ashborn (kegelapan).
+- Nama keempat anak berselang-seling huruf awalnya: **K – S – K – S**.
+- Wajah: `family1` (Selene = 0, Seraphine = 1, Kallum = 2).
 
 ### Guru Kael
 
