@@ -1,10 +1,10 @@
 [
 null,
-{"id":1,"expanded":false,"name":"MAP001","order":1,"parentId":0,"scrollX":596.25,"scrollY":395.25},
+{"id":1,"expanded":false,"name":"MAP001","order":1,"parentId":0,"scrollX":819,"scrollY":478},
 {"id":2,"expanded":true,"name":"Nova - Baker's Lane","order":8,"parentId":3,"scrollX":811,"scrollY":478},
 {"id":3,"expanded":true,"name":"Royal Kingdom of Nova","order":3,"parentId":0,"scrollX":811,"scrollY":1066},
 {"id":4,"expanded":true,"name":"Nova - Market District","order":4,"parentId":3,"scrollX":811,"scrollY":470},
-{"id":5,"expanded":true,"name":"Nova - Residential Quarter","order":5,"parentId":3,"scrollX":1301,"scrollY":470},
+{"id":5,"expanded":true,"name":"Nova - Residential Quarter","order":5,"parentId":3,"scrollX":1285,"scrollY":1730},
 {"id":6,"expanded":false,"name":"Nova - Harbor","order":6,"parentId":3,"scrollX":879,"scrollY":470},
 {"id":7,"expanded":true,"name":"Nova - Castle Approach","order":7,"parentId":3,"scrollX":1781,"scrollY":1162},
 {"id":8,"expanded":false,"name":"Nova - Weapon Shop","order":8,"parentId":4,"scrollX":819,"scrollY":478},
