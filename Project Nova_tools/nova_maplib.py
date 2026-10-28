@@ -192,8 +192,7 @@ class MapBuilder:
                   'autoplayBgs': bool(self.bgs), 'bgs': self.bgs or {'name': '', 'pan': 0, 'pitch': 100, 'volume': 90},
                   'scrollType': 0, 'encounterList': encounter or [], 'encounterStep': 30, 'specifyBattleback': False,
                   'parallaxName': self.parallax, 'parallaxShow': bool(self.parallax), 'disableDashing': False})
-        with open(DATA + 'Map%03d.json' % map_id, 'w', encoding='utf8', newline='') as f:
-            json.dump(m, f, ensure_ascii=False, separators=(',', ':'))
+        write_map(map_id, m)
         infos = json.load(open(DATA + 'MapInfos.json', encoding='utf8'))
         while len(infos) <= map_id: infos.append(None)
         infos[map_id] = {'id': map_id, 'expanded': expanded, 'name': self.name,
@@ -216,6 +215,15 @@ class MapBuilder:
         if scale != 1: img = img.resize((int(img.width * scale), int(img.height * scale)), Image.LANCZOS)
         img.save(path)
         return img
+
+
+def write_map(map_id, m):
+    """MapXXX.json in the editor's own layout (header line, data line, one event per line), so diffs stay small."""
+    j = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
+    head = ','.join('%s:%s' % (j(k), j(m[k])) for k in sorted(m) if k not in ('data', 'events'))
+    text = '{\n' + head + ',\n"data":' + j(m['data']) + ',\n"events":[\n' + ',\n'.join(j(e) for e in m['events']) + '\n]\n}'
+    with open(DATA + 'Map%03d.json' % map_id, 'w', encoding='utf8', newline='') as f:
+        f.write(text)
 
 
 # ====================================================================== events

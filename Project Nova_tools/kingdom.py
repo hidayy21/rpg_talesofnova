@@ -1,5 +1,6 @@
 # Map ids and connection points for the Royal Kingdom of Nova. Every map script imports this so exits and doors
 # always agree. (x, y, direction) = where the player arrives.
+WORLD = 1
 BAKERS_LANE = 2
 PLAZA, MARKET, RESIDENTIAL, HARBOR, CASTLE_APPROACH = 3, 4, 5, 6, 7
 WEAPON_SHOP, ARMOR_SHOP, MAGIC_SHOP, PET_SHOP = 8, 9, 10, 11
@@ -8,6 +9,7 @@ ASHVEIL_1F, ASHVEIL_2F, ASHVEIL_3F = 18, 19, 20
 PRISON_1F, PRISON_CELLS = 21, 22
 
 NAMES = {
+    WORLD: ('World Map', 'Western Continent'),
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
     MARKET: ('Nova - Market District', 'Royal Capital - Market District'),
     RESIDENTIAL: ('Nova - Residential Quarter', 'Royal Capital - Lantern Row'),
@@ -43,4 +45,9 @@ ARRIVE = {
     'bakers_from_residential': (BAKERS_LANE, 1, 17, 6),
     # Residential Quarter (south end of the market alley)
     'residential_from_market': (RESIDENTIAL, 33, 54, 8),
+    # City gates <-> World Map (map_world.py draws the capital at these points)
+    'residential_from_world': (RESIDENTIAL, 1, 16, 6),   # West Gate, Lantern Row's west road
+    'market_from_world': (MARKET, 44, 15, 4),            # East Gate, the Market District's main road
+    'world_from_west_gate': (WORLD, 59, 36, 4),
+    'world_from_east_gate': (WORLD, 66, 36, 6),
 }
