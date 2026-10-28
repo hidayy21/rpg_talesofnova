@@ -27,9 +27,15 @@
  *     <pet passive: 58>           while active, every party member gets the
  *                                 params and traits of armor 58 (optional)
  *     <pet sound: Dog>            sound effect when it is chosen (optional)
+ *     <pet side view>             its walking sheet only has left/right
+ *                                 frames: it never turns up or down
  *
  *   The actor's Nickname is shown as its title and the Profile as its
  *   description on the Pets screen.
+ *
+ *   With a [SV] Battler (img/sv_actors) the pet stands in battle with that
+ *   sheet's motions (waiting, stepping in to attack or cast, victory) and is
+ *   shown with it on the Pets screen; without one it uses its walking sprite.
  *
  *   Pets have no EXP of their own: their level always matches the highest
  *   level in the party, so they grow with you. Pet skills normally cost
@@ -119,6 +125,16 @@
         var data = $dataActors[actorId];
         var id = data && Number(data.meta['pet passive']);
         return id ? $dataArmors[id] || null : null;
+    };
+
+    NovaPets.isSideView = function(actorId) {
+        var data = $dataActors[actorId];
+        return !!(data && data.meta['pet side view']);
+    };
+
+    // The [SV] battler; the database's when the saved actor predates it.
+    NovaPets.battlerName = function(pet) {
+        return pet.battlerName() || pet.actor().battlerName || '';
     };
 
     window.NovaPets = NovaPets;
@@ -229,6 +245,16 @@
     Game_NovaPetFollower.prototype.refresh = function() {
         var pet = this.isVisible() ? this.pet() : null;
         this.setImage(pet ? pet.characterName() : '', pet ? pet.characterIndex() : 0);
+        this.setDirection(this.direction());
+    };
+    // A side-view pet keeps facing left or right while it walks up and down.
+    Game_NovaPetFollower.prototype.setDirection = function(d) {
+        var pet = this.pet();
+        if (pet && NovaPets.isSideView(pet.actorId()) && (d === 2 || d === 8)) {
+            if (this._direction === 4 || this._direction === 6) return;
+            d = 4;
+        }
+        Game_Follower.prototype.setDirection.call(this, d);
     };
     window.Game_NovaPetFollower = Game_NovaPetFollower;  // JsonEx needs it global for save files
 
@@ -398,7 +424,8 @@
         _Window_BattleLog_displayAction.call(this, subject, item);
     };
 
-    // The pet stands at the end of the party line, facing the enemy.
+    // The pet stands at the end of the party line, facing the enemy: its [SV] battler with
+    // the actor motions, or its walking sprite hopping in when it has none.
     function Sprite_NovaPet() { this.initialize.apply(this, arguments); }
     Sprite_NovaPet.prototype = Object.create(Sprite.prototype);
     Sprite_NovaPet.prototype.constructor = Sprite_NovaPet;
@@ -410,7 +437,10 @@
         this._petId = 0;
         this._tick = 0;
         this._hop = 0;
-        this._shadow = new Sprite(ImageManager.loadSystem('Shadow1'));
+        this._sv = false;
+        this._motion = 'wait';
+        this._motionTick = 0;
+        this._shadow = new Sprite(ImageManager.loadSystem('Shadow2'));   // the heroes' shadow, centred on the feet
         this._shadow.anchor.x = 0.5;
         this._shadow.anchor.y = 0.5;
         this._shadow.y = -2;
@@ -438,31 +468,57 @@
         if (!this.visible) return;
         if (pet.actorId() !== this._petId) {
             this._petId = pet.actorId();
-            this._body.bitmap = ImageManager.loadCharacter(pet.characterName());
+            var sv = NovaPets.battlerName(pet);
+            this._sv = !!sv;
+            this._body.bitmap = sv ? ImageManager.loadSvActor(sv) : ImageManager.loadCharacter(pet.characterName());
             this._bigSheet = ImageManager.isBigCharacter(pet.characterName());
             this._charIndex = pet.characterIndex();
+            this.startMotion('wait');
         }
-        if (BattleManager.isNovaPetAssisting() && BattleManager._subject === pet && this._hop === 0) {
-            this._hop = 24;
+        var hopTime = this._sv ? 36 : 24;   // a battler steps in for its whole attack motion
+        var assisting = BattleManager.isNovaPetAssisting() && BattleManager._subject === pet;
+        if (assisting && !this._assisting) {   // once per assist, however long its animation runs
+            this._hop = hopTime;
+            if (this._sv) this.startMotion(this.actionMotion());
+        }
+        this._assisting = assisting;
+        if (this._sv && this._motion === 'wait' && BattleManager._phase === 'battleEnd' && $gameTroop.isAllDead()) {
+            this.startMotion('victory');
         }
         this._tick++;
+        this._motionTick++;
         var home = this.homePosition();
         var lift = 0, step = 0;
         if (this._hop > 0) {
-            var t = (24 - this._hop) / 24;
-            lift = Math.sin(t * Math.PI) * 22;
-            step = Math.sin(t * Math.PI) * 28;
+            var t = (hopTime - this._hop) / hopTime;
+            lift = this._sv ? 0 : Math.sin(t * Math.PI) * 22;
+            step = Math.sin(t * Math.PI) * (this._sv ? 48 : 28);
             this._hop--;
         }
         this.x = home.x - step;
         this.y = home.y;
         this._body.y = -lift;
         this.updateFrame();
+        this.updateShadowSize();
+    };
+
+    Sprite_NovaPet.prototype.startMotion = function(name) {
+        this._motion = name;
+        this._motionTick = 0;
+    };
+
+    // Like a hero's: thrust for physical skills, spell for magic, skill for the rest.
+    Sprite_NovaPet.prototype.actionMotion = function() {
+        var action = BattleManager._action, item = action && action.item();
+        if (!item) return 'skill';
+        return item.hitType === Game_Action.HITTYPE_PHYSICAL ? 'thrust' :
+               item.hitType === Game_Action.HITTYPE_MAGICAL ? 'spell' : 'skill';
     };
 
     Sprite_NovaPet.prototype.updateFrame = function() {
         var bmp = this._body.bitmap;
         if (!bmp || !bmp.isReady()) return;
+        if (this._sv) return this.updateSvFrame(bmp);
         var pw = bmp.width / (this._bigSheet ? 3 : 12);
         var ph = bmp.height / (this._bigSheet ? 4 : 8);
         var index = this._bigSheet ? 0 : this._charIndex;
@@ -472,6 +528,32 @@
         var sy = (Math.floor(index / 4) * 4 + dirRow) * ph;
         this._body.setFrame(sx, sy, pw, ph);
     };
+
+    Sprite_NovaPet.prototype.updateSvFrame = function(bmp) {
+        var f = svFrame(bmp, this._motion, this._motionTick);
+        if (f.done) {
+            this.startMotion('wait');
+            f = svFrame(bmp, 'wait', 0);
+        }
+        this._body.setFrame(f.x, f.y, f.w, f.h);
+    };
+
+    // A hero's shadow fits a 64 px frame: smaller pets get a smaller one, the golem a bigger one.
+    Sprite_NovaPet.prototype.updateShadowSize = function() {
+        var w = this._body.width;
+        if (w) this._shadow.scale.x = this._shadow.scale.y = Math.max(0.6, Math.min(1.4, w / 64));
+    };
+
+    // One frame of an [SV] battler sheet (9 x 6 frames, motions as in Sprite_Actor.MOTIONS);
+    // done once a motion that does not loop has played its three frames.
+    function svFrame(bmp, motion, tick) {
+        var m = Sprite_Actor.MOTIONS[motion] || Sprite_Actor.MOTIONS.wait;
+        var step = Math.floor(tick / 12);
+        var pattern = m.loop ? [0, 1, 2, 1][step % 4] : Math.min(step, 2);
+        var w = bmp.width / 9, h = bmp.height / 6;
+        return { x: (Math.floor(m.index / 6) * 3 + pattern) * w, y: (m.index % 6) * h, w: w, h: h,
+                 done: !m.loop && step >= 3 };
+    }
 
     var _Spriteset_Battle_createActors = Spriteset_Battle.prototype.createActors;
     Spriteset_Battle.prototype.createActors = function() {
@@ -531,7 +613,13 @@
         var isActive = pet === $gameParty.novaActivePet();
         var bmp = ImageManager.loadCharacter(pet.characterName());
         if (!bmp.isReady()) { bmp.addLoadListener(this.refresh.bind(this)); return; }
-        this.drawCharacter(pet.characterName(), pet.characterIndex(), rect.x + 30, rect.y + rect.height - 8);
+        // like drawCharacter, but a sheet taller than the row is shrunk to fit it
+        var big = ImageManager.isBigCharacter(pet.characterName());
+        var pw = bmp.width / (big ? 3 : 12), ph = bmp.height / (big ? 4 : 8);
+        var n = big ? 0 : pet.characterIndex();
+        var s = Math.min(1, (rect.height - 8) / ph), dw = pw * s, dh = ph * s;
+        this.contents.blt(bmp, ((n % 4) * 3 + 1) * pw, Math.floor(n / 4) * 4 * ph, pw, ph,
+                          rect.x + 30 - dw / 2, rect.y + rect.height - 8 - dh, dw, dh);
         this.resetFontSettings();
         titleFont(this.contents, 20);
         this.changeTextColor(COLOR.text);
@@ -661,7 +749,8 @@
         this.resetFontSettings();
     };
 
-    // A large walking pet in the top-right of the info panel.
+    // A large pet in the top-right of the info panel: its battler waiting, or its walking sprite.
+    var PORTRAIT_H = 160;
     function Sprite_NovaPetPortrait() { this.initialize.apply(this, arguments); }
     Sprite_NovaPetPortrait.prototype = Object.create(Sprite.prototype);
     Sprite_NovaPetPortrait.prototype.constructor = Sprite_NovaPetPortrait;
@@ -678,7 +767,9 @@
     Sprite_NovaPetPortrait.prototype.setPet = function(pet) {
         if (this._pet === pet) return;
         this._pet = pet;
-        this.bitmap = pet ? ImageManager.loadCharacter(pet.characterName()) : null;
+        var sv = pet ? NovaPets.battlerName(pet) : '';
+        this._sv = !!sv;
+        this.bitmap = !pet ? null : sv ? ImageManager.loadSvActor(sv) : ImageManager.loadCharacter(pet.characterName());
         if (this.bitmap) this.bitmap.smooth = false;
     };
 
@@ -687,6 +778,13 @@
         this._tick++;
         var pet = this._pet, bmp = this.bitmap;
         if (!pet || !bmp || !bmp.isReady()) return;
+        if (this._sv) {
+            var f = svFrame(bmp, 'wait', this._tick);
+            this.scale.x = this.scale.y = PORTRAIT_H / f.h;
+            this.setFrame(f.x, f.y, f.w, f.h);
+            return;
+        }
+        this.scale.x = this.scale.y = 3;
         var big = ImageManager.isBigCharacter(pet.characterName());
         var pw = bmp.width / (big ? 3 : 12), ph = bmp.height / (big ? 4 : 8);
         var index = big ? 0 : pet.characterIndex();
