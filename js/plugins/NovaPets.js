@@ -29,6 +29,11 @@
  *     <pet sound: Dog>            sound effect when it is chosen (optional)
  *     <pet side view>             its walking sheet only has left/right
  *                                 frames: it never turns up or down
+ *     <pet stepping>              keeps animating while it stands still on
+ *                                 the map (wings of a bird, bat or fairy)
+ *     <pet breathe>               gently rises and sinks while waiting in
+ *                                 battle, for a battler whose wait frames
+ *                                 do not move
  *
  *   The actor's Nickname is shown as its title and the Profile as its
  *   description on the Pets screen.
@@ -131,6 +136,21 @@
         var data = $dataActors[actorId];
         return !!(data && data.meta['pet side view']);
     };
+
+    // <pet stepping>: keeps flapping (or floating) while it stands still on the map.
+    NovaPets.isStepping = function(actorId) {
+        var data = $dataActors[actorId];
+        return !!(data && data.meta['pet stepping']);
+    };
+
+    // <pet breathe>: its battler has no idle animation of its own, so it gently rises and sinks.
+    NovaPets.breathes = function(actorId) {
+        var data = $dataActors[actorId];
+        return !!(data && data.meta['pet breathe']);
+    };
+
+    // Height scale of a breathing pet at this tick: a slow 2-second breath.
+    NovaPets.breath = function(tick) { return 1 + 0.025 * Math.sin(tick * Math.PI / 60); };
 
     // The [SV] battler; the database's when the saved actor predates it.
     NovaPets.battlerName = function(pet) {
@@ -255,6 +275,12 @@
             d = 4;
         }
         Game_Follower.prototype.setDirection.call(this, d);
+    };
+    // Followers copy the player's stepping; a flying pet always keeps its wings going.
+    Game_NovaPetFollower.prototype.update = function() {
+        Game_Follower.prototype.update.call(this);
+        var pet = this.pet();
+        if (pet && NovaPets.isStepping(pet.actorId())) this.setStepAnime(true);
     };
     window.Game_NovaPetFollower = Game_NovaPetFollower;  // JsonEx needs it global for save files
 
@@ -440,6 +466,7 @@
         this._sv = false;
         this._motion = 'wait';
         this._motionTick = 0;
+        this._enter = 300;   // walks in from the right like the heroes (Sprite_Actor.moveToStartPosition)
         this._shadow = new Sprite(ImageManager.loadSystem('Shadow2'));   // the heroes' shadow, centred on the feet
         this._shadow.anchor.x = 0.5;
         this._shadow.anchor.y = 0.5;
@@ -471,9 +498,11 @@
             var sv = NovaPets.battlerName(pet);
             this._sv = !!sv;
             this._body.bitmap = sv ? ImageManager.loadSvActor(sv) : ImageManager.loadCharacter(pet.characterName());
+            this._body._refreshFrame = false;   // never show the whole sheet: updateFrame picks the frame
+            this._body.setFrame(0, 0, 0, 0);
             this._bigSheet = ImageManager.isBigCharacter(pet.characterName());
             this._charIndex = pet.characterIndex();
-            this.startMotion('wait');
+            this.startMotion(this._enter > 0 ? 'walk' : 'wait');
         }
         var hopTime = this._sv ? 36 : 24;   // a battler steps in for its whole attack motion
         var assisting = BattleManager.isNovaPetAssisting() && BattleManager._subject === pet;
@@ -485,6 +514,17 @@
         if (this._sv && this._motion === 'wait' && BattleManager._phase === 'battleEnd' && $gameTroop.isAllDead()) {
             this.startMotion('victory');
         }
+        // The party got away: the pet runs off with the heroes (300 px in half a second, like them).
+        if (BattleManager.isEscaped() && pet.canMove() && !this._fleeing) {
+            this._fleeing = true;
+            this._flee = 0;
+            if (this._sv) this.startMotion('escape');
+        }
+        if (this._fleeing) this._flee = Math.min(300, this._flee + 10);
+        if (this._enter > 0) {
+            this._enter = Math.max(0, this._enter - 10);
+            if (!this._enter && this._motion === 'walk') this.startMotion('wait');
+        }
         this._tick++;
         this._motionTick++;
         var home = this.homePosition();
@@ -495,9 +535,11 @@
             step = Math.sin(t * Math.PI) * (this._sv ? 48 : 28);
             this._hop--;
         }
-        this.x = home.x - step;
+        this.x = home.x - step + (this._flee || 0) + this._enter;
         this.y = home.y;
         this._body.y = -lift;
+        var idle = !this._hop && !this._fleeing && !this._enter && (!this._sv || this._motion === 'wait');
+        this._body.scale.y = idle && NovaPets.breathes(pet.actorId()) ? NovaPets.breath(this._tick) : 1;
         this.updateFrame();
         this.updateShadowSize();
     };
@@ -523,7 +565,7 @@
         var ph = bmp.height / (this._bigSheet ? 4 : 8);
         var index = this._bigSheet ? 0 : this._charIndex;
         var pattern = [0, 1, 2, 1][Math.floor(this._tick / 12) % 4];
-        var dirRow = 1;  // facing left
+        var dirRow = this._fleeing ? 2 : 1;  // facing left, or right when running away
         var sx = ((index % 4) * 3 + pattern) * pw;
         var sy = (Math.floor(index / 4) * 4 + dirRow) * ph;
         this._body.setFrame(sx, sy, pw, ph);
@@ -771,16 +813,25 @@
         this._sv = !!sv;
         this.bitmap = !pet ? null : sv ? ImageManager.loadSvActor(sv) : ImageManager.loadCharacter(pet.characterName());
         if (this.bitmap) this.bitmap.smooth = false;
+        // A new bitmap would otherwise be drawn whole (every pet on the sheet, at the old scale)
+        // until the next update: pick its frame now, or show nothing while it loads.
+        this._refreshFrame = false;
+        this.updateFrame();
     };
 
     Sprite_NovaPetPortrait.prototype.update = function() {
         Sprite.prototype.update.call(this);
         this._tick++;
+        this.updateFrame();
+    };
+
+    Sprite_NovaPetPortrait.prototype.updateFrame = function() {
         var pet = this._pet, bmp = this.bitmap;
-        if (!pet || !bmp || !bmp.isReady()) return;
+        if (!pet || !bmp || !bmp.isReady()) { this.setFrame(0, 0, 0, 0); return; }
         if (this._sv) {
             var f = svFrame(bmp, 'wait', this._tick);
             this.scale.x = this.scale.y = PORTRAIT_H / f.h;
+            if (NovaPets.breathes(pet.actorId())) this.scale.y *= NovaPets.breath(this._tick);
             this.setFrame(f.x, f.y, f.w, f.h);
             return;
         }

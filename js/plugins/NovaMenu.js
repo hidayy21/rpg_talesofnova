@@ -193,7 +193,7 @@
         this.createNovaHeader();
         this.createNovaFooter();
         $gameParty.members().forEach(function(actor) {
-            ImageManager.loadPicture(portraitName(actor));
+            if (pictureExists(portraitName(actor))) ImageManager.loadPicture(portraitName(actor));
             ImageManager.loadSvActor(actor.battlerName());
             ImageManager.loadFace(actor.faceName());
         });
@@ -476,7 +476,8 @@
     Window_NovaMenuStatus.prototype.drawPortrait = function(actor, rect) {
         var ph = this.portraitHeight(rect);
         var px = rect.x + 5, py = rect.y + 5, pw = rect.width - 10;
-        var pic = ImageManager.loadPicture(portraitName(actor));
+        var name = portraitName(actor);
+        var pic = pictureExists(name) ? ImageManager.loadPicture(name) : null;
         var ctx = ctxOf(this.contents);
         ctx.save();
         pathPoly(ctx, this.cardShape({ x: px - 1, y: py - 1, width: pw + 2, height: ph + 40 }));
@@ -484,7 +485,7 @@
         // Cover the area but never enlarge: upscaling is what makes small art blurry.
         // Large art (e.g. high-res illustrations) is reduced with high-quality smoothing.
         var src, sx0 = 0, sy0 = 0, sw0, sh0;
-        if (pic.isReady() && pic.width > 0) {
+        if (pic && pic.isReady() && pic.width > 0) {
             src = pic._canvas || pic._image; sw0 = pic.width; sh0 = pic.height;
         } else {
             var face = ImageManager.loadFace(actor.faceName());
