@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Nova Tools - Map Editor</title>
+<style>
+  :root {
+    --bg: #07101f; --panel: #0e1c33; --panel2: #13284a; --line: #2b4a72; --text: #e6f2ff; --dim: #93acc8;
+    --accent: #62d6ff; --warn: #ffb35c; --bad: #ff7088; --good: #6ff0a0;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.4 "Segoe UI", system-ui, sans-serif;
+         display: flex; flex-direction: column; overflow: hidden; }
+  header { display: flex; gap: 10px; align-items: center; padding: 8px 12px; flex-wrap: wrap;
+           background: linear-gradient(90deg, rgba(98,214,255,.18), rgba(98,214,255,0) 60%), var(--panel); border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; margin: 0; letter-spacing: .5px; }
+  nav a { color: var(--dim); text-decoration: none; padding: 4px 10px; border-radius: 14px; border: 1px solid transparent; }
+  nav a.on { color: var(--text); background: #1677b8; border-color: var(--accent); }
+  nav a:hover { border-color: var(--accent); }
+  #mapTitle { font-weight: 600; }
+  #status { flex: 1; min-width: 160px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #status.ok { color: var(--good); } #status.err { color: var(--bad); }
+  button, select, input, textarea { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; font: inherit; }
+  button { cursor: pointer; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  button.on { background: #1677b8; border-color: var(--accent); }
+  button.primary { background: #1677b8; border-color: #3fa8ff; font-weight: 600; }
+  #app { flex: 1; display: flex; min-height: 0; }
+  aside { width: 420px; flex: none; display: flex; flex-direction: column; background: var(--panel); min-height: 0; }
+  #mapsBox { height: 30%; min-height: 80px; display: flex; flex-direction: column; }
+  .split { flex: none; background: var(--line); }
+  .split:hover, .split.drag { background: var(--accent); }
+  #splitSide { width: 5px; cursor: col-resize; }
+  #splitMaps { height: 5px; cursor: row-resize; }
+  body.resizing { user-select: none; }
+  body.resizing.col { cursor: col-resize; } body.resizing.row { cursor: row-resize; }
+  #mapFilter { margin: 6px; }
+  #mapList { overflow: auto; flex: 1; padding: 0 4px 6px; }
+  .mi { padding: 2px 6px; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+  .mi:hover { background: var(--panel2); }
+  .mi.on { background: #1677b8; }
+  .mi .tw { display: inline-block; width: 14px; color: var(--dim); }
+  .mi small { color: var(--dim); }
+  #palBox { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .tabs { display: flex; gap: 4px; padding: 6px; flex-wrap: wrap; align-items: center; }
+  .tabs button { padding: 3px 10px; }
+  #palWrap { overflow: auto; flex: 1; padding: 0 6px 6px;
+             background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 24px 24px; }
+  #pal { display: block; cursor: pointer; }
+  .palfoot { display: flex; gap: 6px; align-items: center; padding: 4px 8px; border-top: 1px solid var(--line); }
+  #brushInfo { flex: 1; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .toolbar { display: flex; gap: 6px; padding: 6px 10px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid var(--line); background: var(--panel); }
+  .toolbar .sep { width: 1px; height: 22px; background: var(--line); margin: 0 2px; }
+  .toolbar label { color: var(--dim); display: flex; gap: 4px; align-items: center; }
+  #viewport { flex: 1; overflow: auto; position: relative; background: #050a14; }
+  #stage { position: relative; transform-origin: 0 0; }
+  #stage canvas { position: absolute; left: 0; top: 0; }
+  #cursor { position: absolute; border: 2px solid var(--accent); pointer-events: none; box-shadow: 0 0 0 1px rgba(0,0,0,.6); display: none; }
+  #cursor.erase { border-color: var(--bad); }
+  footer { padding: 4px 10px; color: var(--dim); border-top: 1px solid var(--line); background: var(--panel); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .empty { color: var(--dim); padding: 40px; }
+  /* events */
+  #evBox { flex: 1; display: none; flex-direction: column; gap: 8px; min-height: 0; overflow: auto; padding: 8px; }
+  body.evmode #palBox { display: none; } body.evmode #evBox { display: flex; }
+  #evBox > * { flex: none; }
+  .evsec { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; background: rgba(19,40,74,.5); }
+  .evsec h3 { margin: 0 0 4px; font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: .6px; }
+  .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 3px 0; }
+  .row > .k { width: 74px; color: var(--dim); }
+  .row label { display: flex; gap: 4px; align-items: center; }
+  .row input[type=text], .row textarea { flex: 1; min-width: 120px; }
+  .row select { max-width: 100%; }
+  .hint { color: var(--dim); line-height: 1.6; }
+  .pages button { padding: 2px 9px; }
+  .cmds { font: 12px/1.55 Consolas, "Courier New", monospace; white-space: pre; overflow: auto; max-height: 300px;
+          background: #050a14; border-radius: 6px; padding: 6px 8px; }
+  .cmds .t { color: #fff; } .cmds .f { color: #ffb35c; } .cmds .m { color: #62d6ff; } .cmds .d { color: var(--dim); }
+  canvas.prev { width: 72px; height: 72px; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 6px;
+                background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 12px 12px; }
+  .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 20; }
+  .modal.on { display: flex; }
+  .modal .box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
+                width: 980px; max-width: 94vw; max-height: 92vh; display: flex; flex-direction: column; gap: 10px; }
+  .modal h2 { margin: 0; font-size: 15px; }
+  .modal .body { overflow: auto; min-height: 0; flex: 1; }
+  .modal .foot { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+  .modal .foot .grow { flex: 1; color: var(--dim); }
+  .tpls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .tpls button { padding: 12px; text-align: left; line-height: 1.5; }
+  .tpls button b { display: block; font-size: 14px; margin-bottom: 2px; }
+  .tpls button span { color: var(--dim); }
+  .picker { display: flex; gap: 10px; height: 62vh; }
+  .picker .list { width: 190px; display: flex; flex-direction: column; gap: 6px; }
+  .picker .list > div { overflow: auto; flex: 1; }
+  .view { flex: 1; overflow: auto; position: relative; border-radius: 6px;
+          background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 24px 24px; }
+  .view canvas { display: block; cursor: pointer; }
+  .mark { position: absolute; border: 3px solid #ffe08a; box-shadow: 0 0 0 1px #000; pointer-events: none; display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Nova Tools</h1>
+  <nav><a href="/" class="on">Map Editor</a> <a href="/wizard">Tileset Wizard</a></nav>
+  <span class="sep"></span>
+  <span id="mapTitle">-</span>
+  <button id="save" class="primary" disabled title="Ctrl+S">Simpan</button>
+  <button id="undo" disabled title="Ctrl+Z">Undo</button>
+  <button id="redo" disabled title="Ctrl+Y">Redo</button>
+  <span id="status">Memuat…</span>
+</header>
+<div id="app">
+  <aside>
+    <div id="mapsBox">
+      <input id="mapFilter" placeholder="Cari map…">
+      <div id="mapList"></div>
+    </div>
+    <div class="split" id="splitMaps" title="Geser untuk mengubah tinggi daftar map (klik 2x: ukuran awal)"></div>
+    <div id="palBox">
+      <div class="tabs" id="palTabs"></div>
+      <div id="palWrap"><canvas id="pal"></canvas></div>
+      <div class="palfoot"><span id="brushInfo">Pilih tile di palet.</span>
+        <select id="palZoom" title="Ukuran palet"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option></select></div>
+    </div>
+    <div id="evBox"></div>
+  </aside>
+  <div class="split" id="splitSide" title="Geser untuk mengubah lebar panel (klik 2x: ukuran awal)"></div>
+  <main>
+    <div class="toolbar">
+      <span id="tools"></span>
+      <span class="sep"></span>
+      <label>Lantai/dinding <select id="layerA"><option value="auto">Auto</option><option value="0">Bawah</option><option value="1">Atas</option></select></label>
+      <label>Objek <select id="layerO"><option value="auto">Auto</option><option value="2">Layer 2</option><option value="3">Layer 3</option></select></label>
+      <span class="sep"></span>
+      <label><input type="checkbox" id="showGrid" checked> grid</label>
+      <label><input type="checkbox" id="showPass"> passability</label>
+      <label><input type="checkbox" id="showEvents" checked> event</label>
+      <label><input type="checkbox" id="showRegions"> region</label>
+      <span class="sep"></span>
+      <select id="zoom"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.5">150%</option></select>
+    </div>
+    <div id="viewport"><div class="empty" id="emptyMsg">Pilih map di kiri.</div>
+      <div id="stage"><canvas id="mapCanvas"></canvas><canvas id="overlay"></canvas><div id="cursor"></div></div>
+    </div>
+    <footer id="info">-</footer>
+  </main>
+</div>
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+<script>
+'use strict';
+// ---------------------------------------------------------------- constants (same as rpg_core.js)
+const T = 48, HT = 24;
+const A1 = 2048, A2 = 2816, A3 = 4352, A4 = 5888, A5 = 1536, TILE_MAX = 8192;
+const TOOLS = [['pen', 'Pena', 'P'], ['rect', 'Kotak', 'R'], ['fill', 'Isi', 'F'], ['pick', 'Pipet', 'I'], ['erase', 'Hapus', 'E'], ['shadow', 'Bayangan', 'S'], ['event', 'Event', 'V']];
+const $ = id => document.getElementById(id);
+const S = {
+  setup: null, maps: [], cur: null, images: {}, tool: 'pen', zoom: 1,
+  tab: 'A', extSheet: null, palZoom: 0.75, palCols: 8, brush: null, palSel: null, palDrag: null,
+  undo: [], redo: [], stroke: null, rect: null, hover: null, dirty: false,
+  sel: null, page: 0, evDrag: null, evClip: null,
+};
+
+// ---------------------------------------------------------------- tile id helpers
+const isAuto = id => id >= A1 && id < TILE_MAX;
+const kindOf = id => Math.floor((id - A1) / 48);
+const shapeOf = id => (id - A1) % 48;
+const isA2 = id => id >= A2 && id < A3;
+const isA5 = id => id >= A5 && id < A1;
+const isExt = id => S.setup && id >= S.setup.extBase;
+function sheetOfKind(k) { return k < 16 ? ['A1', k] : k < 48 ? ['A2', k - 16] : k < 80 ? ['A3', k - 48] : ['A4', k - 80]; }
+function isWallKind(k) { const [s, l] = sheetOfKind(k); return s === 'A3' || (s === 'A4' && l % 16 >= 8); }
+function isWaterfallKind(k) { const [s, l] = sheetOfKind(k); return s === 'A1' && l >= 5 && l % 2 === 1; }
+function extInfo(id) {
+  const slot = Math.floor((id - S.setup.extBase) / S.setup.extSpan);
+  return { sheet: S.setup.ext.find(e => e.slot === slot), n: (id - S.setup.extBase) % S.setup.extSpan };
+}
+const extId = (slot, n) => S.setup.extBase + slot * S.setup.extSpan + n;
+function flagOf(id) {
+  if (!id) return 0;
+  if (isExt(id)) { const e = extInfo(id); return e.sheet ? (e.sheet.flags[e.n] || 0) : 0; }
+  return S.cur.tileset.flags[id] || 0;
+}
+
+// ---------------------------------------------------------------- images
+function img(name) {
+  if (!name) return null;
+  if (!S.images[name]) {
+    const im = new Image();
+    im.src = (name.startsWith('char:') ? '/character/' + encodeURIComponent(name.slice(5)) : '/tileset/' + encodeURIComponent(name)) + '.png';
+    S.images[name] = im;
+  }
+  return S.images[name];
+}
+const ready = im => im && im.complete && im.naturalWidth > 0;
+function loadAll(names) {
+  return Promise.all(names.filter(Boolean).map(n => new Promise(res => {
+    const im = img(n); if (im.complete) res(); else { im.onload = res; im.onerror = res; }
+  })));
+}
+
+// ---------------------------------------------------------------- drawing (ported from rpg_core.js Tilemap)
+function drawNormal(g, id, dx, dy) {
+  let im, n;
+  if (isExt(id)) { const e = extInfo(id); if (!e.sheet) return; im = img(e.sheet.name); n = e.n; }
+  else { im = img(S.cur.tileset.tilesetNames[isA5(id) ? 4 : 5 + Math.floor(id / 256)]); n = id; }
+  if (!ready(im)) return;
+  g.drawImage(im, (Math.floor(n / 128) % 2 * 8 + n % 8) * T, (Math.floor(n % 256 / 8) % 16) * T, T, T, dx, dy, T, T);
+}
+
+function autoSource(id) {
+  const kind = kindOf(id), tx = kind % 8, ty = Math.floor(kind / 8);
+  let bx = 0, by = 0, set = 0, table = S.setup.floor;
+  if (id < A2) {
+    if (kind === 0) { bx = 0; by = 0; } else if (kind === 1) { bx = 0; by = 3; }
+    else if (kind === 2) { bx = 6; by = 0; } else if (kind === 3) { bx = 6; by = 3; }
+    else {
+      bx = Math.floor(tx / 4) * 8; by = ty * 6 + Math.floor(tx / 2) % 2 * 3;
+      if (kind % 2 === 1) { bx += 6; table = S.setup.waterfall; }
+    }
+  } else if (id < A3) { set = 1; bx = tx * 2; by = (ty - 2) * 3; }
+  else if (id < A4) { set = 2; bx = tx * 2; by = (ty - 6) * 2; table = S.setup.wall; }
+  else { set = 3; bx = tx * 2; by = Math.floor((ty - 10) * 2.5 + (ty % 2 === 1 ? 0.5 : 0)); if (ty % 2 === 1) table = S.setup.wall; }
+  return { bx, by, set, table };
+}
+
+function drawAuto(g, id, dx, dy) {
+  const src = autoSource(id), quarters = src.table[shapeOf(id)];
+  const im = img(S.cur.tileset.tilesetNames[src.set]);
+  if (!quarters || !ready(im)) return;
+  const isTable = isA2(id) && (flagOf(id) & 0x80);
+  for (let i = 0; i < 4; i++) {
+    const qsx = quarters[i][0], qsy = quarters[i][1];
+    const sx1 = (src.bx * 2 + qsx) * HT, sy1 = (src.by * 2 + qsy) * HT;
+    const dx1 = dx + (i % 2) * HT; let dy1 = dy + Math.floor(i / 2) * HT;
+    if (isTable && (qsy === 1 || qsy === 5)) {
+      const qsx2 = qsy === 1 ? [0, 3, 2, 1][qsx] : qsx;
+      g.drawImage(im, (src.bx * 2 + qsx2) * HT, (src.by * 2 + 3) * HT, HT, HT, dx1, dy1, HT, HT);
+      dy1 += HT / 2;
+      g.drawImage(im, sx1, sy1, HT, HT / 2, dx1, dy1, HT, HT / 2);
+    } else {
+      g.drawImage(im, sx1, sy1, HT, HT, dx1, dy1, HT, HT);
+    }
+  }
+}
+
+function drawTableEdge(g, id, dx, dy) {
+  const src = autoSource(id), quarters = S.setup.floor[shapeOf(id)], im = img(S.cur.tileset.tilesetNames[1]);
+  if (!quarters || !ready(im)) return;
+  for (let i = 0; i < 2; i++) {
+    const qsx = quarters[2 + i][0], qsy = quarters[2 + i][1];
+    g.drawImage(im, (src.bx * 2 + qsx) * HT, (src.by * 2 + qsy) * HT + HT / 2, HT, HT / 2, dx + i * HT, dy, HT, HT / 2);
+  }
+}
+
+function drawTile(g, id, dx, dy) {
+  if (!id) return;
+  if (isAuto(id)) drawAuto(g, id, dx, dy);
+  else if (id < TILE_MAX || isExt(id)) drawNormal(g, id, dx, dy);
+}
+
+const W = () => S.cur.map.width, H = () => S.cur.map.height;
+const idx = (x, y, z) => (z * H() + y) * W() + x;
+const inMap = (x, y) => x >= 0 && y >= 0 && x < W() && y < H();
+const at = (x, y, z) => S.cur.map.data[idx(x, y, z)];
+
+function renderCell(x, y) {
+  const g = S.mapCtx, dx = x * T, dy = y * T;
+  g.fillStyle = '#000'; g.fillRect(dx, dy, T, T);
+  drawTile(g, at(x, y, 0), dx, dy);
+  drawTile(g, at(x, y, 1), dx, dy);
+  const sh = at(x, y, 4);
+  if (sh) {
+    g.fillStyle = 'rgba(0,0,0,0.5)';
+    for (let i = 0; i < 4; i++) if (sh & (1 << i)) g.fillRect(dx + (i % 2) * HT, dy + Math.floor(i / 2) * HT, HT, HT);
+  }
+  if (y > 0) {
+    const up = at(x, y - 1, 1), here = at(x, y, 1);
+    const table = t => isA2(t) && (flagOf(t) & 0x80);
+    if (table(up) && !table(here) && !(at(x, y, 0) >= A3 && at(x, y, 0) < TILE_MAX)) drawTableEdge(g, up, dx, dy);
+  }
+  drawTile(g, at(x, y, 2), dx, dy);
+  drawTile(g, at(x, y, 3), dx, dy);
+}
+
+function renderAll() {
+  for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) renderCell(x, y);
+  renderOverlay();
+}
+
+// passability of a cell, like Game_Map.checkPassage: returns {dirs: [down,left,right,up] passable, star}
+function passage(x, y) {
+  const bits = [1, 2, 4, 8], out = [];
+  for (const bit of bits) {
+    let res = false;
+    for (let z = 3; z >= 0; z--) {
+      const id = at(x, y, z); if (!id) continue;
+      const f = flagOf(id);
+      if (f & 0x10) continue;
+      res = (f & bit) === 0; break;
+    }
+    out.push(res);
+  }
+  return out;
+}
+
+// Passability mark for one cell: circle = passable, cross = blocked, red bar = blocked from that side only
+// (dirs: down, left, right, up), star = drawn above characters (does not block).
+function passMark(g, dirs, star, dx, dy) {
+  const cx = dx + HT, cy = dy + HT;
+  const stroke = (color, path) => {
+    g.lineWidth = 5; g.strokeStyle = 'rgba(0,0,0,.55)'; g.beginPath(); path(); g.stroke();
+    g.lineWidth = 3; g.strokeStyle = color; g.beginPath(); path(); g.stroke(); g.lineWidth = 1;
+  };
+  if (star) {
+    g.font = 'bold 20px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.lineWidth = 4; g.strokeStyle = 'rgba(0,0,0,.7)'; g.strokeText('☆', cx, cy);
+    g.fillStyle = '#ffe08a'; g.fillText('☆', cx, cy); g.lineWidth = 1;
+  } else if (dirs.every(v => v)) {
+    stroke('rgba(111,240,160,.95)', () => g.arc(cx, cy, 7, 0, Math.PI * 2));
+  } else if (dirs.every(v => !v)) {
+    stroke('rgba(255,112,136,.95)', () => { g.moveTo(cx - 7, cy - 7); g.lineTo(cx + 7, cy + 7); g.moveTo(cx + 7, cy - 7); g.lineTo(cx - 7, cy + 7); });
+  } else {
+    g.fillStyle = 'rgba(255,112,136,.95)';
+    if (!dirs[0]) g.fillRect(dx + 4, dy + T - 5, T - 8, 4);
+    if (!dirs[1]) g.fillRect(dx + 1, dy + 4, 4, T - 8);
+    if (!dirs[2]) g.fillRect(dx + T - 5, dy + 4, 4, T - 8);
+    if (!dirs[3]) g.fillRect(dx + 4, dy + 1, T - 8, 4);
+  }
+}
+
+function renderOverlay() {
+  const g = S.overCtx, w = W() * T, h = H() * T;
+  g.clearRect(0, 0, w, h);
+  if ($('showRegions').checked || S.tab === 'R') {
+    g.font = 'bold 13px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) {
+      const r = at(x, y, 5); if (!r) continue;
+      g.fillStyle = `hsla(${(r * 47) % 360},80%,55%,0.35)`; g.fillRect(x * T, y * T, T, T);
+      g.fillStyle = '#fff'; g.fillText(r, x * T + HT, y * T + HT);
+    }
+  }
+  if ($('showPass').checked) {
+    for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) passMark(g, passage(x, y), false, x * T, y * T);
+  }
+  const evMode = S.tool === 'event';
+  if ($('showEvents').checked || evMode) S.cur.map.events.forEach(ev => { if (ev) drawEvent(g, ev); });
+  if (evMode && S.sel) {
+    g.lineWidth = 3; g.strokeStyle = '#000'; g.strokeRect(S.sel.x * T + 1.5, S.sel.y * T + 1.5, T - 3, T - 3);
+    g.lineWidth = 2; g.strokeStyle = '#ffe08a'; g.strokeRect(S.sel.x * T + 1, S.sel.y * T + 1, T - 2, T - 2); g.lineWidth = 1;
+  }
+  if ($('showGrid').checked) {
+    g.strokeStyle = 'rgba(255,255,255,0.12)';
+    g.beginPath();
+    for (let x = 0; x <= W(); x++) { g.moveTo(x * T + .5, 0); g.lineTo(x * T + .5, h); }
+    for (let y = 0; y <= H(); y++) { g.moveTo(0, y * T + .5); g.lineTo(w, y * T + .5); }
+    g.stroke();
+  }
+}
+
+function drawEvent(g, ev) {
+  const dx = ev.x * T, dy = ev.y * T, page = ev.pages[0];
+  g.fillStyle = 'rgba(30,60,120,0.25)'; g.fillRect(dx + 2, dy + 2, T - 4, T - 4);
+  if (page) drawEventImage(g, page.image, dx, dy);
+  g.strokeStyle = 'rgba(98,214,255,0.9)'; g.lineWidth = 2; g.strokeRect(dx + 2, dy + 2, T - 4, T - 4); g.lineWidth = 1;
+}
+
+// big characters: the leading !/$ signs contain '$' (ImageManager.isBigCharacter)
+const isBigChar = name => /^[!$]*\$/.test(name);
+function drawEventImage(g, im, dx, dy) {
+  if (!im) return;
+  if (im.tileId) { drawTile(g, im.tileId, dx, dy); return; }
+  if (!im.characterName) return;
+  const sheet = img('char:' + im.characterName);
+  if (!ready(sheet)) {
+    if (!sheet.waiting) { sheet.waiting = true; sheet.addEventListener('load', () => { renderOverlay(); drawEvPreview(); }); }
+    return;
+  }
+  const big = isBigChar(im.characterName);
+  const pw = sheet.naturalWidth / (big ? 3 : 12), ph = sheet.naturalHeight / (big ? 4 : 8);
+  const ci = big ? 0 : im.characterIndex, row = Math.max(0, im.direction / 2 - 1);
+  const sx = ((ci % 4) * 3 + im.pattern) * pw, sy = (Math.floor(ci / 4) * 4 + row) * ph;
+  const s = Math.min(1, T / pw, T / ph), w = pw * s, h = ph * s;
+  g.drawImage(sheet, sx, sy, pw, ph, dx + (T - w) / 2, dy + T - h, w, h);
+}
+
+// ---------------------------------------------------------------- editing
+// Every change goes through set(); the stroke keeps the first old value of each index for undo.
+function set(x, y, z, v) {
+  if (!inMap(x, y)) return;
+  const i = idx(x, y, z), old = S.cur.map.data[i];
+  if (old === v) return;
+  if (S.stroke && !S.stroke.has(i)) S.stroke.set(i, old);
+  S.cur.map.data[i] = v;
+  const key = x + ',' + y;
+  S.touched.add(key);                      // redraw
+  if (z <= 1) S.touchedAuto.add(key);      // autotile shapes around it may change
+  if (z === 0) S.touchedGround.add(key);   // the editor's wall shadows may change
+}
+
+// Autotile shape from the neighbours of the same kind (map edge counts as same), like the editor.
+const FQ = [{ in: [2, 4], corner: [2, 0], side: [0, 4], tb: [2, 2], out: [0, 2] },
+            { in: [1, 4], corner: [3, 0], side: [3, 4], tb: [1, 2], out: [3, 2] },
+            { in: [2, 3], corner: [2, 1], side: [0, 3], tb: [2, 5], out: [0, 5] },
+            { in: [1, 3], corner: [3, 1], side: [3, 3], tb: [1, 5], out: [3, 5] }];
+const WQ = [{ in: [2, 2], side: [0, 2], tb: [2, 0], out: [0, 0] },
+            { in: [1, 2], side: [3, 2], tb: [1, 0], out: [3, 0] },
+            { in: [2, 1], side: [0, 1], tb: [2, 3], out: [0, 3] },
+            { in: [1, 1], side: [3, 1], tb: [1, 3], out: [3, 3] }];
+const QN = [[[0, -1], [-1, 0], [-1, -1]], [[0, -1], [1, 0], [1, -1]], [[0, 1], [-1, 0], [-1, 1]], [[0, 1], [1, 0], [1, 1]]];
+let shapeIndex = null;
+function shapeFor(x, y, z, kind) {
+  const same = (xx, yy) => !inMap(xx, yy) || (isAuto(at(xx, yy, z)) && kindOf(at(xx, yy, z)) === kind);
+  if (isWaterfallKind(kind)) return (same(x - 1, y) ? 0 : 1) + (same(x + 1, y) ? 0 : 2);
+  const floor = !isWallKind(kind), qs = floor ? FQ : WQ, st = [];
+  for (let q = 0; q < 4; q++) {
+    const [[vx, vy], [hx, hy], [dx, dy]] = QN[q];
+    const v = same(x + vx, y + vy), h = same(x + hx, y + hy);
+    st.push(v && h ? (!floor || same(x + dx, y + dy) ? 'in' : 'corner') : v ? 'side' : h ? 'tb' : 'out');
+  }
+  const want = floor && st.every(s => s === 'out') ? [[0, 0], [1, 0], [0, 1], [1, 1]] : st.map((s, q) => qs[q][s]);
+  if (!shapeIndex) {
+    shapeIndex = { floor: new Map(), wall: new Map() };
+    S.setup.floor.forEach((t, i) => shapeIndex.floor.set(JSON.stringify(t), i));
+    S.setup.wall.forEach((t, i) => shapeIndex.wall.set(JSON.stringify(t), i));
+  }
+  const i = (floor ? shapeIndex.floor : shapeIndex.wall).get(JSON.stringify(want));
+  return i === undefined ? 0 : i;
+}
+
+// After painting: reshape autotiles around the touched cells and redo the editor's automatic wall shadows.
+function settle() {
+  const cells = [...S.touchedAuto].map(s => s.split(',').map(Number));
+  const around = new Set();
+  cells.forEach(([x, y]) => { for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (inMap(x + i, y + j)) around.add((x + i) + ',' + (y + j)); });
+  around.forEach(s => {
+    const [x, y] = s.split(',').map(Number);
+    for (const z of [0, 1]) {
+      const id = at(x, y, z);
+      if (isAuto(id)) set(x, y, z, A1 + kindOf(id) * 48 + shapeFor(x, y, z, kindOf(id)));
+    }
+  });
+  const ground = id => (id >= A1 && id < A3) || isA5(id), wall = id => id >= A3 && id < TILE_MAX;
+  const shadowCells = new Set();
+  [...S.touchedGround].forEach(s => { const [x, y] = s.split(',').map(Number); shadowCells.add(s); shadowCells.add((x + 1) + ',' + y); shadowCells.add((x + 1) + ',' + (y + 1)); });
+  shadowCells.forEach(s => {
+    const [x, y] = s.split(',').map(Number);
+    if (!inMap(x, y) || x === 0) return;
+    const cur = at(x, y, 4);
+    if (cur !== 0 && cur !== 4 && cur !== 5) return;          // hand-made shadow: keep
+    let v = 0;
+    if (ground(at(x, y, 0)) && wall(at(x - 1, y, 0))) v = (y > 0 && wall(at(x - 1, y - 1, 0))) ? 5 : 4;
+    set(x, y, 4, v);
+  });
+  const redraw = new Set();
+  S.touched.forEach(s => { const [x, y] = s.split(',').map(Number); redraw.add(s); redraw.add(x + ',' + (y + 1)); });
+  around.forEach(s => redraw.add(s));
+  redraw.forEach(s => { const [x, y] = s.split(',').map(Number); if (inMap(x, y)) renderCell(x, y); });
+  S.touched.clear(); S.touchedAuto.clear(); S.touchedGround.clear();
+}
+
+function upperA2(kind) {
+  const [s, l] = sheetOfKind(kind);
+  return s === 'A2' && l % 8 >= 4 && S.cur.tileset.mode === 1;   // A2 right half = decoration over the ground (Area tilesets)
+}
+
+function applyBrushAt(x, y, ox, oy) {
+  const b = S.brush; if (!b) return;
+  if (b.type === 'region') { set(x, y, 5, b.value); return; }
+  if (b.type === 'auto') {
+    const mode = $('layerA').value;
+    const z = mode === 'auto' ? (upperA2(b.kind) ? 1 : 0) : +mode;
+    set(x, y, z, A1 + b.kind * 48);
+    if (mode === 'auto' && z === 0) set(x, y, 1, 0);
+    return;
+  }
+  const id = b.ids[((oy % b.h) + b.h) % b.h][((ox % b.w) + b.w) % b.w];
+  if (b.ground) { set(x, y, 0, id); if ($('layerA').value === 'auto') set(x, y, 1, 0); return; }
+  const mode = $('layerO').value;
+  let z = mode === 'auto' ? 2 : +mode;
+  if (mode === 'auto') { const under = at(x, y, 2); z = (!under || under === id) ? 2 : 3; }
+  set(x, y, z, id);
+}
+
+function stamp(x, y) {
+  const b = S.brush; if (!b) return;
+  const w = b.w || 1, h = b.h || 1;
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (inMap(x + i, y + j)) applyBrushAt(x + i, y + j, i, j);
+}
+
+function eraseAt(x, y) {
+  for (const z of [3, 2, 1]) if (at(x, y, z)) { set(x, y, z, 0); return; }
+}
+
+function fillFrom(x, y) {
+  const b = S.brush; if (!b) return;
+  const key = b.type === 'region' ? (xx, yy) => at(xx, yy, 5)
+            : (b.type === 'auto' || b.ground) ? (xx, yy) => (isAuto(at(xx, yy, 0)) ? 'k' + kindOf(at(xx, yy, 0)) : at(xx, yy, 0)) + '/' + (isAuto(at(xx, yy, 1)) ? 'k' + kindOf(at(xx, yy, 1)) : at(xx, yy, 1))
+            : (xx, yy) => at(xx, yy, 2) + '/' + at(xx, yy, 3);
+  const target = key(x, y), seen = new Set([x + ',' + y]), queue = [[x, y]];
+  while (queue.length) {
+    const [cx, cy] = queue.pop();
+    applyBrushAt(cx, cy, cx - x, cy - y);
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = cx + dx, ny = cy + dy, k = nx + ',' + ny;
+      if (inMap(nx, ny) && !seen.has(k) && key(nx, ny) === target) { seen.add(k); queue.push([nx, ny]); }
+    }
+  }
+}
+
+function pickAt(x, y) {
+  for (const z of [3, 2]) {
+    const id = at(x, y, z);
+    if (id) { setBrush({ type: 'tiles', ids: [[id]], w: 1, h: 1, label: describe(id) }); return; }
+  }
+  for (const z of [1, 0]) {
+    const id = at(x, y, z);
+    if (isAuto(id)) { setBrush({ type: 'auto', kind: kindOf(id), w: 1, h: 1, label: describe(id) }); return; }
+    if (id) { setBrush({ type: 'tiles', ids: [[id]], w: 1, h: 1, ground: true, label: describe(id) }); return; }
+  }
+}
+
+function toggleShadow(x, y, qx, qy, on) {
+  const bit = 1 << (qy * 2 + qx), cur = at(x, y, 4);
+  set(x, y, 4, on ? (cur | bit) : (cur & ~bit));
+}
+
+function beginStroke() { S.stroke = new Map(); }
+function endStroke() {
+  if (!S.stroke) return;
+  if (S.stroke.size) {
+    const changes = [...S.stroke].map(([i, old]) => [i, old, S.cur.map.data[i]]);
+    S.undo.push(changes); S.redo = [];
+    if (S.undo.length > 300) S.undo.shift();
+    markDirty(true);
+  }
+  S.stroke = null;
+  renderOverlay();
+}
+
+// An undo step is either a list of tile changes or {events: [before, after]} (the event list as JSON).
+function replay(list, back) {
+  if (list.events) { S.cur.map.events = JSON.parse(list.events[back ? 0 : 1]); renderOverlay(); renderEventPanel(); return; }
+  const d = S.cur.map.data, w = W(), h = H();
+  list.forEach(c => { d[c[0]] = back ? c[1] : c[2]; });
+  const cells = new Set(list.map(c => { const i = c[0] % (w * h); return (i % w) + ',' + Math.floor(i / w); }));
+  cells.forEach(s => { const [x, y] = s.split(',').map(Number); renderCell(x, y); if (inMap(x, y + 1)) renderCell(x, y + 1); });
+  renderOverlay();
+}
+function undo() { const c = S.undo.pop(); if (!c) return; replay(c, true); S.redo.push(c); markDirty(true); }
+function redo() { const c = S.redo.pop(); if (!c) return; replay(c, false); S.undo.push(c); markDirty(true); }
+
+function markDirty(v) {
+  S.dirty = v;
+  $('save').disabled = !S.cur || !v;
+  $('save').textContent = v ? 'Simpan*' : 'Simpan';
+  $('undo').disabled = !S.undo.length; $('redo').disabled = !S.redo.length;
+}
+
+// ---------------------------------------------------------------- map mouse
+function cellFromEvent(e) {
+  const r = $('stage').getBoundingClientRect();
+  const px = (e.clientX - r.left) / S.zoom, py = (e.clientY - r.top) / S.zoom;
+  return { x: Math.floor(px / T), y: Math.floor(py / T), qx: Math.floor((px % T) / HT), qy: Math.floor((py % T) / HT) };
+}
+
+$('overlay').addEventListener('contextmenu', e => e.preventDefault());
+$('overlay').addEventListener('mousedown', e => {
+  if (!S.cur) return;
+  const c = cellFromEvent(e); if (!inMap(c.x, c.y)) return;
+  if (S.tool === 'event') {
+    if (e.button !== 0) return;
+    selectCell(c.x, c.y);
+    const ev = eventAt(c.x, c.y);
+    if (ev) S.evDrag = { ev, before: JSON.stringify(evs()), moved: false };
+    return;
+  }
+  if (e.button === 2) { pickAt(c.x, c.y); return; }                  // right click picks, like the editor
+  if (e.button !== 0) return;
+  S.down = c;
+  const tool = S.tool;
+  if (tool === 'pick') { pickAt(c.x, c.y); return; }
+  beginStroke();
+  if (tool === 'rect') { S.rect = { a: c, b: c }; updateCursor(c); return; }
+  if (tool === 'fill') { fillFrom(c.x, c.y); settle(); endStroke(); return; }
+  if (tool === 'shadow') { S.shadowOn = !(at(c.x, c.y, 4) & (1 << (c.qy * 2 + c.qx))); toggleShadow(c.x, c.y, c.qx, c.qy, S.shadowOn); settle(); return; }
+  if (tool === 'erase') { eraseAt(c.x, c.y); settle(); return; }
+  stamp(c.x, c.y); settle();
+});
+window.addEventListener('mousemove', e => {
+  if (!S.cur) return;
+  const c = cellFromEvent(e);
+  if (!S.hover || S.hover.x !== c.x || S.hover.y !== c.y) { S.hover = c; showInfo(c); }
+  updateCursor(c);
+  if (S.evDrag) {
+    const ev = S.evDrag.ev;
+    if (inMap(c.x, c.y) && (ev.x !== c.x || ev.y !== c.y) && !eventAt(c.x, c.y)) {
+      ev.x = c.x; ev.y = c.y; S.sel = { x: c.x, y: c.y }; S.evDrag.moved = true; renderOverlay();
+    }
+    return;
+  }
+  if (!S.stroke || !S.down) return;
+  if (!inMap(c.x, c.y)) return;
+  if (S.tool === 'rect') { S.rect.b = c; updateCursor(c); return; }
+  if (S.tool === 'shadow') { toggleShadow(c.x, c.y, c.qx, c.qy, S.shadowOn); settle(); return; }
+  if (S.last && S.last.x === c.x && S.last.y === c.y) return;
+  S.last = c;
+  if (S.tool === 'erase') { eraseAt(c.x, c.y); settle(); return; }
+  if (S.tool === 'pen') {
+    const w = S.brush ? S.brush.w || 1 : 1, h = S.brush ? S.brush.h || 1 : 1;
+    const dx = c.x - S.down.x, dy = c.y - S.down.y;
+    if (((dx % w) + w) % w === 0 && ((dy % h) + h) % h === 0) { stamp(c.x, c.y); settle(); }   // big stamps tile on their own grid
+  }
+});
+window.addEventListener('mouseup', () => {
+  if (S.palDrag) finishPalDrag();
+  if (S.evDrag) {
+    if (S.evDrag.moved) { pushEventUndo(S.evDrag.before); renderEventPanel(); }
+    S.evDrag = null;
+  }
+  if (!S.stroke) return;
+  if (S.tool === 'rect' && S.rect) {
+    const x0 = Math.min(S.rect.a.x, S.rect.b.x), x1 = Math.max(S.rect.a.x, S.rect.b.x);
+    const y0 = Math.min(S.rect.a.y, S.rect.b.y), y1 = Math.max(S.rect.a.y, S.rect.b.y);
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (inMap(x, y)) applyBrushAt(x, y, x - x0, y - y0);
+    settle(); S.rect = null;
+  }
+  S.down = null; S.last = null;
+  endStroke();
+});
+
+function updateCursor(c) {
+  const cur = $('cursor');
+  if (!S.cur || !inMap(c.x, c.y) && !S.rect) { cur.style.display = 'none'; return; }
+  let x = c.x, y = c.y, w = 1, h = 1;
+  if (S.rect) {
+    x = Math.min(S.rect.a.x, S.rect.b.x); y = Math.min(S.rect.a.y, S.rect.b.y);
+    w = Math.abs(S.rect.a.x - S.rect.b.x) + 1; h = Math.abs(S.rect.a.y - S.rect.b.y) + 1;
+  } else if (S.tool === 'pen' && S.brush) { w = S.brush.w || 1; h = S.brush.h || 1; }
+  let px = x * T, py = y * T, pw = w * T, ph = h * T;
+  if (S.tool === 'shadow') { px += c.qx * HT; py += c.qy * HT; pw = ph = HT; }
+  Object.assign(cur.style, { display: 'block', left: px + 'px', top: py + 'px', width: pw + 'px', height: ph + 'px' });
+  cur.className = S.tool === 'erase' ? 'erase' : '';
+}
+
+function describe(id) {
+  if (!id) return '-';
+  if (isExt(id)) { const e = extInfo(id); return (e.sheet ? e.sheet.name : '?') + ' #' + e.n + ' (+)'; }
+  const names = S.cur.tileset.tilesetNames;
+  if (isAuto(id)) { const [s, l] = sheetOfKind(kindOf(id)); return s + ' ' + l; }
+  if (isA5(id)) return names[4] + ' #' + (id - A5);
+  return names[5 + Math.floor(id / 256)] + ' #' + (id % 256);
+}
+
+function showInfo(c) {
+  if (!S.cur || !inMap(c.x, c.y)) { $('info').textContent = S.cur ? '-' : ''; return; }
+  const p = passage(c.x, c.y), ev = eventAt(c.x, c.y);
+  $('info').textContent = (ev ? `[EV${String(ev.id).padStart(3, '0')} ${ev.name}]   ` : '') + `(${c.x}, ${c.y})   L0: ${describe(at(c.x, c.y, 0))}   L1: ${describe(at(c.x, c.y, 1))}   ` +
+    `L2: ${describe(at(c.x, c.y, 2))}   L3: ${describe(at(c.x, c.y, 3))}   region: ${at(c.x, c.y, 5)}   ` +
+    `lewat: ${p.every(v => v) ? 'ya' : p.every(v => !v) ? 'tidak' : 'sebagian'}`;
+}
+
+// ---------------------------------------------------------------- palette
+// B-E sheets are shown like the editor: 8 columns, the left half first, then the right half - or, when the panel
+// is wide enough, 16 columns with both halves side by side like the sheet image.
+function palSheets() {
+  const names = S.cur.tileset.tilesetNames, tabs = [['A', 'A']];
+  ['B', 'C', 'D', 'E'].forEach((k, i) => { if (names[5 + i]) tabs.push([k, k]); });
+  tabs.push(['X', '+ Sheet lain'], ['R', 'Region']);
+  return tabs;
+}
+
+function renderTabs() {
+  $('palTabs').innerHTML = palSheets().map(([k, label]) => `<button data-k="${k}" class="${S.tab === k ? 'on' : ''}">${label}</button>`).join('') +
+    (S.tab === 'X' ? ` <select id="extSel">${S.setup.ext.filter(e => !S.cur.tileset.tilesetNames.includes(e.name))
+      .map(e => `<option value="${e.slot}" ${S.extSheet === e.slot ? 'selected' : ''}>${e.name}</option>`).join('')}</select>` : '');
+  $('palTabs').querySelectorAll('button').forEach(b => b.onclick = () => { S.tab = b.dataset.k; S.palSel = null; renderTabs(); renderPalette(); renderOverlay(); });
+  const sel = $('extSel');
+  if (sel) {
+    if (S.extSheet === null || ![...sel.options].some(o => +o.value === S.extSheet)) S.extSheet = sel.options.length ? +sel.value : null;
+    sel.value = S.extSheet;
+    sel.onchange = () => { S.extSheet = +sel.value; S.palSel = null; renderPalette(); };
+  }
+}
+
+// Palette layout for the current tab: list of {x, y, draw(g), brush} cells on a grid of 48px.
+function palLayout() {
+  const names = S.cur.tileset.tilesetNames, cells = [], cols = S.palCols, wide = cols >= 16;
+  let row = 0;
+  const sheetGrid = (sheetName, idOf, a5) => {
+    const halves = a5 ? 1 : 2;
+    for (let h = 0; h < halves; h++) for (let r = 0; r < 16; r++) for (let c = 0; c < 8; c++) {
+      const n = h * 128 + r * 8 + c;
+      cells.push({ x: (wide ? h * 8 : 0) + c, y: row + (wide ? 0 : h * 16) + r, n, half: h, id: idOf(n), sheet: sheetName, a5 });
+    }
+    row += (wide ? 1 : halves) * 16;
+  };
+  if (S.tab === 'A') {
+    const sections = [['A1', 0, 16, 0], ['A2', 16, 32, 1], ['A3', 48, 32, 2], ['A4', 80, 48, 3]];
+    sections.forEach(([s, base, count, set]) => {
+      if (!names[set]) return;
+      for (let k = 0; k < count; k++) cells.push({ x: k % cols, y: row + Math.floor(k / cols), kind: base + k, set });
+      row += Math.ceil(count / cols);
+    });
+    if (names[4]) { const start = row; sheetGrid(names[4], n => A5 + n, true); cells.filter(c => c.y >= start).forEach(c => c.ground = true); }
+  } else if ('BCDE'.includes(S.tab)) {
+    const i = 'BCDE'.indexOf(S.tab);
+    sheetGrid(names[5 + i], n => i * 256 + n, false);
+  } else if (S.tab === 'X') {
+    const e = S.setup.ext.find(x => x.slot === S.extSheet);
+    if (e) { sheetGrid(e.name, n => extId(e.slot, n), e.a5); if (e.a5) cells.forEach(c => c.ground = true); }
+  } else if (S.tab === 'R') {
+    for (let v = 0; v < 256; v++) cells.push({ x: v % cols, y: Math.floor(v / cols), region: v });
+  }
+  return cells;
+}
+
+// 16 columns when they fit in the panel at the current palette size, 8 otherwise.
+function palColsFit() {
+  const wrap = $('palWrap');
+  return wrap.clientWidth - 12 >= 16 * T * S.palZoom ? 16 : 8;
+}
+
+function renderPalette() {
+  if (!S.cur) return;
+  const cols = palColsFit();
+  if (cols !== S.palCols) { S.palCols = cols; S.palSel = null; }   // selection coordinates belong to the old layout
+  const cells = palLayout(), rows = cells.reduce((m, c) => Math.max(m, c.y + 1), 1);
+  const cv = $('pal'); cv.width = cols * T; cv.height = rows * T;
+  cv.style.width = cv.width * S.palZoom + 'px'; cv.style.height = cv.height * S.palZoom + 'px';
+  const g = cv.getContext('2d');
+  g.clearRect(0, 0, cv.width, cv.height);
+  const names = S.cur.tileset.tilesetNames, pending = [];
+  cells.forEach(c => {
+    const dx = c.x * T, dy = c.y * T;
+    if (c.kind !== undefined) {
+      const im = img(names[c.set]); if (!ready(im)) { pending.push(names[c.set]); return; }
+      const src = autoSource(A1 + c.kind * 48);
+      g.drawImage(im, src.bx * T, src.by * T, T, T, dx, dy, T, T);           // the autotile's preview corner, like the editor
+    } else if (c.region !== undefined) {
+      g.fillStyle = c.region ? `hsla(${(c.region * 47) % 360},80%,55%,0.55)` : 'rgba(0,0,0,0.4)';
+      g.fillRect(dx + 1, dy + 1, T - 2, T - 2);
+      g.fillStyle = '#fff'; g.font = 'bold 14px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(c.region || 'hapus', dx + HT, dy + HT);
+    } else {
+      const im = img(c.sheet); if (!ready(im)) { pending.push(c.sheet); return; }
+      g.drawImage(im, (c.half * 8 + (c.n % 8)) * T, Math.floor((c.n % 128) / 8) * T, T, T, dx, dy, T, T);
+    }
+  });
+  if ($('showPass').checked) cells.forEach(c => {
+    const id = c.kind !== undefined ? A1 + c.kind * 48 : c.id;
+    if (!id) return;                                  // B tile 0 is the empty tile
+    const f = flagOf(id);
+    passMark(g, [1, 2, 4, 8].map(bit => (f & bit) === 0), !!(f & 0x10), c.x * T, c.y * T);
+  });
+  g.strokeStyle = 'rgba(255,255,255,0.08)';
+  for (let x = 0; x <= cols; x++) { g.beginPath(); g.moveTo(x * T + .5, 0); g.lineTo(x * T + .5, cv.height); g.stroke(); }
+  const sel = S.palDrag ? palRect(S.palDrag.a, S.palDrag.b) : S.palSel;
+  if (sel) {
+    g.fillStyle = 'rgba(98,214,255,0.25)'; g.fillRect(sel.x0 * T, sel.y0 * T, (sel.x1 - sel.x0 + 1) * T, (sel.y1 - sel.y0 + 1) * T);
+    g.lineWidth = 3; g.strokeStyle = '#62d6ff'; g.strokeRect(sel.x0 * T + 1.5, sel.y0 * T + 1.5, (sel.x1 - sel.x0 + 1) * T - 3, (sel.y1 - sel.y0 + 1) * T - 3); g.lineWidth = 1;
+  }
+  if (pending.length) loadAll([...new Set(pending)]).then(renderPalette);
+}
+
+function palCellAt(e) {
+  const r = $('pal').getBoundingClientRect(), t = T * S.palZoom;
+  return { x: Math.max(0, Math.min(S.palCols - 1, Math.floor((e.clientX - r.left) / t))), y: Math.max(0, Math.floor((e.clientY - r.top) / t)) };
+}
+function palRect(a, b) {
+  const cells = palLayout(), at0 = cells.find(c => c.x === a.x && c.y === a.y);
+  if (!at0) return null;
+  // single cells only for autotiles and regions; multi-tile blocks stay inside one sheet half
+  if (at0.kind !== undefined || at0.region !== undefined) return { x0: a.x, y0: a.y, x1: a.x, y1: a.y };
+  const inBlock = c => c && c.sheet === at0.sheet && c.half === at0.half && c.kind === undefined;
+  let bx = b.x, by = b.y;
+  while (bx !== a.x && !inBlock(cells.find(c => c.x === bx && c.y === a.y))) bx += bx > a.x ? -1 : 1;
+  while (by !== a.y && !inBlock(cells.find(c => c.x === bx && c.y === by))) by += by > a.y ? -1 : 1;
+  return { x0: Math.min(a.x, bx), y0: Math.min(a.y, by), x1: Math.max(a.x, bx), y1: Math.max(a.y, by) };
+}
+$('pal').addEventListener('mousedown', e => { if (!S.cur) return; const c = palCellAt(e); S.palDrag = { a: c, b: c }; renderPalette(); });
+$('pal').addEventListener('mousemove', e => { if (S.palDrag) { S.palDrag.b = palCellAt(e); renderPalette(); } });
+function finishPalDrag() {
+  const r = palRect(S.palDrag.a, S.palDrag.b); S.palDrag = null;
+  if (!r) { renderPalette(); return; }
+  S.palSel = r;
+  const cells = palLayout(), cell = (x, y) => cells.find(c => c.x === x && c.y === y);
+  const first = cell(r.x0, r.y0);
+  if (first.kind !== undefined) setBrush({ type: 'auto', kind: first.kind, w: 1, h: 1, label: sheetOfKind(first.kind).join(' ') });
+  else if (first.region !== undefined) setBrush({ type: 'region', value: first.region, w: 1, h: 1, label: 'Region ' + first.region });
+  else {
+    const ids = [];
+    for (let y = r.y0; y <= r.y1; y++) { const row = []; for (let x = r.x0; x <= r.x1; x++) row.push(cell(x, y).id); ids.push(row); }
+    setBrush({ type: 'tiles', ids, w: r.x1 - r.x0 + 1, h: r.y1 - r.y0 + 1, ground: !!first.ground,
+               label: first.sheet + ' #' + first.n + (ids.length * ids[0].length > 1 ? ` (${ids[0].length}x${ids.length})` : '') });
+  }
+  if (S.tool === 'pick' || S.tool === 'erase' || S.tool === 'shadow') setTool('pen');
+  renderPalette();
+}
+
+function setBrush(b) {
+  S.brush = b;
+  let f = '';
+  if (b.type === 'tiles' && b.w * b.h === 1) {
+    const fl = flagOf(b.ids[0][0]);
+    f = (fl & 0x10) ? ' · ☆ di atas karakter' : ((fl & 0x0f) === 0x0f ? ' · ✕ menghalangi' : ' · ○ bisa dilewati');
+  }
+  $('brushInfo').textContent = 'Kuas: ' + b.label + f;
+}
+
+// ---------------------------------------------------------------- events
+// Placing, moving and setting up events. Command lists are kept as they are and only shown; the quick templates
+// write the same commands as the RPG Maker editor's quick events (and the doors already in this project).
+const evs = () => S.cur.map.events;
+const eventAt = (x, y) => evs().find(e => e && e.x === x && e.y === y);
+const selEvent = () => S.sel && eventAt(S.sel.x, S.sel.y);
+const pad = (n, w = 4) => String(n).padStart(w, '0');
+const esc = s => String(s === undefined || s === null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+function pushEventUndo(before) {
+  if (before === JSON.stringify(evs())) return;
+  S.undo.push({ events: [before, JSON.stringify(evs())] }); S.redo = [];
+  if (S.undo.length > 300) S.undo.shift();
+  markDirty(true);
+}
+function editEvents(fn) {
+  const before = JSON.stringify(evs());
+  fn();
+  pushEventUndo(before);
+  renderOverlay(); renderEventPanel();
+}
+
+function selectCell(x, y) {
+  const prev = selEvent();
+  S.sel = { x, y };
+  if (selEvent() !== prev) S.page = 0;
+  renderOverlay(); renderEventPanel();
+}
+
+function newPage() {
+  return {
+    conditions: { actorId: 1, actorValid: false, itemId: 1, itemValid: false, selfSwitchCh: 'A', selfSwitchValid: false,
+                  switch1Id: 1, switch1Valid: false, switch2Id: 1, switch2Valid: false, variableId: 1, variableValid: false, variableValue: 0 },
+    directionFix: false, image: { tileId: 0, characterName: '', direction: 2, pattern: 0, characterIndex: 0 },
+    list: [{ code: 0, indent: 0, parameters: [] }], moveFrequency: 3,
+    moveRoute: { list: [{ code: 0, parameters: [] }], repeat: true, skippable: false, wait: false },
+    moveSpeed: 3, moveType: 0, priorityType: 0, stepAnime: false, through: false, trigger: 0, walkAnime: true,
+  };
+}
+
+// The event's id is its index in map.events (the lowest free one, like the editor).
+function addEvent(x, y, name, pages, note) {
+  const list = evs();
+  let id = 1; while (list[id]) id++;
+  while (list.length <= id) list.push(null);
+  list[id] = { id, name: name || 'EV' + pad(id, 3), note: note || '', pages, x, y };
+  return list[id];
+}
+function deleteEvent() {
+  const ev = selEvent(); if (!ev) return;
+  editEvents(() => { const l = evs(); l[ev.id] = null; while (l.length > 1 && !l[l.length - 1]) l.pop(); });
+  status(`Event "${ev.name}" dihapus (Ctrl+Z untuk membatalkan).`);
+}
+function copyEvent() {
+  const ev = selEvent(); if (!ev) return;
+  S.evClip = JSON.stringify(ev);
+  status(`Event "${ev.name}" disalin. Pilih petak kosong lalu Ctrl+V.`, 'ok');
+}
+function pasteEvent() {
+  if (!S.evClip || !S.sel) return;
+  if (eventAt(S.sel.x, S.sel.y)) { status('Petak ini sudah punya event.', 'err'); return; }
+  const src = JSON.parse(S.evClip);
+  editEvents(() => addEvent(S.sel.x, S.sel.y, src.name, src.pages, src.note));
+}
+
+// ---- event panel
+const opts = (list, cur) => list.map(([v, label]) => `<option value="${esc(v)}"${String(v) === String(cur) ? ' selected' : ''}>${esc(label)}</option>`).join('');
+const dbName = n => (Array.isArray(n) ? n[0] : n) || '';
+const dbList = names => names.map((n, i) => [i, pad(i) + ' ' + dbName(n)]).slice(1);
+const field = (f, list, cur, str) => `<select data-f="${f}"${str ? ' data-s="1"' : ''}>${opts(list, cur)}</select>`;
+const check = (f, on, label) => `<label><input type="checkbox" data-f="${f}"${on ? ' checked' : ''}>${label}</label>`;
+const DIRS = [[2, 'Bawah'], [4, 'Kiri'], [6, 'Kanan'], [8, 'Atas']];
+const PRIORITY = [[0, 'Di bawah karakter'], [1, 'Sejajar karakter'], [2, 'Di atas karakter']];
+const TRIGGER = [[0, 'Tombol aksi'], [1, 'Disentuh pemain'], [2, 'Menyentuh pemain/event'], [3, 'Autorun'], [4, 'Paralel']];
+const MOVES = [[0, 'Diam'], [1, 'Acak'], [2, 'Mendekati pemain'], [3, 'Rute kustom']];
+const SPEEDS = [[1, '1: x8 lebih lambat'], [2, '2: x4 lebih lambat'], [3, '3: x2 lebih lambat'], [4, '4: normal'], [5, '5: x2 lebih cepat'], [6, '6: x4 lebih cepat']];
+const FREQS = [[1, '1: paling jarang'], [2, '2: jarang'], [3, '3: normal'], [4, '4: sering'], [5, '5: paling sering']];
+const SELF = [['A', 'A'], ['B', 'B'], ['C', 'C'], ['D', 'D']];
+
+function imageLabel(im) {
+  if (im.tileId) return 'Tile ' + describe(im.tileId);
+  if (im.characterName) return im.characterName + (isBigChar(im.characterName) ? '' : ' #' + (im.characterIndex + 1));
+  return 'Tanpa gambar';
+}
+
+function renderEventPanel() {
+  const box = $('evBox');
+  if (!S.cur || S.tool !== 'event') return;
+  const ev = selEvent();
+  if (!ev) {
+    box.innerHTML = `<div class="evsec"><h3>Event</h3><div class="hint">
+      Klik petak untuk memilih. <b>Klik 2x</b> petak kosong (atau Enter) untuk membuat event.<br>
+      Seret event untuk memindahkannya. Ctrl+C / Ctrl+V: salin / tempel. Delete: hapus.<br>
+      Isi perintah event (teks, cabang, variabel …) tetap diedit di editor RPG Maker.</div>
+      ${S.sel ? `<div class="row"><button id="evNew" class="primary">Event baru di (${S.sel.x}, ${S.sel.y})…</button>
+      <button id="evPaste"${S.evClip ? '' : ' disabled'}>Tempel</button></div>` : ''}</div>`;
+    if (S.sel) { $('evNew').onclick = () => openNewEvent(S.sel.x, S.sel.y); $('evPaste').onclick = pasteEvent; }
+    return;
+  }
+  S.page = Math.min(S.page, ev.pages.length - 1);
+  const p = ev.pages[S.page], c = p.conditions, db = S.setup.db;
+  box.innerHTML = `
+    <div class="evsec"><h3>Event ${pad(ev.id, 3)} · (${ev.x}, ${ev.y})</h3>
+      <div class="row"><span class="k">Nama</span><input type="text" data-f="e.name" data-s="1" value="${esc(ev.name)}"></div>
+      <div class="row"><span class="k">Catatan</span><input type="text" data-f="e.note" data-s="1" value="${esc(ev.note)}"></div>
+      <div class="row"><span class="k"></span><button id="evCopy" title="Ctrl+C">Salin</button><button id="evDel" title="Delete">Hapus event</button></div></div>
+    <div class="row pages"><span class="k">Page</span>${ev.pages.map((_, i) => `<button data-pg="${i}" class="${i === S.page ? 'on' : ''}">${i + 1}</button>`).join('')}
+      <button id="pgNew" title="Page baru">+</button><button id="pgDup">Gandakan</button><button id="pgDel"${ev.pages.length > 1 ? '' : ' disabled'}>Hapus page</button></div>
+    <div class="evsec"><h3>Kondisi page ${S.page + 1}</h3>
+      <div class="row">${check('p.conditions.switch1Valid', c.switch1Valid, 'Switch')} ${field('p.conditions.switch1Id', dbList(db.switches), c.switch1Id)}</div>
+      <div class="row">${check('p.conditions.switch2Valid', c.switch2Valid, 'Switch')} ${field('p.conditions.switch2Id', dbList(db.switches), c.switch2Id)}</div>
+      <div class="row">${check('p.conditions.variableValid', c.variableValid, 'Variable')} ${field('p.conditions.variableId', dbList(db.variables), c.variableId)}
+        ≥ <input type="number" data-f="p.conditions.variableValue" value="${c.variableValue}" style="width:80px"></div>
+      <div class="row">${check('p.conditions.selfSwitchValid', c.selfSwitchValid, 'Self switch')} ${field('p.conditions.selfSwitchCh', SELF, c.selfSwitchCh, true)}</div>
+      <div class="row">${check('p.conditions.itemValid', c.itemValid, 'Punya item')} ${field('p.conditions.itemId', dbList(db.items), c.itemId)}</div>
+      <div class="row">${check('p.conditions.actorValid', c.actorValid, 'Ada aktor')} ${field('p.conditions.actorId', dbList(db.actors), c.actorId)}</div></div>
+    <div class="evsec"><h3>Gambar</h3>
+      <div class="row"><canvas class="prev" id="evPrev" width="48" height="48"></canvas>
+        <div><div>${esc(imageLabel(p.image))}</div>
+        <div class="row"><button id="evImg">Pilih gambar…</button>${p.image.characterName ? 'Arah ' + field('p.image.direction', DIRS, p.image.direction) : ''}</div></div></div></div>
+    <div class="evsec"><h3>Gerak</h3>
+      <div class="row"><span class="k">Jenis</span>${field('p.moveType', MOVES, p.moveType)}</div>
+      ${p.moveType === 3 ? `<div class="row hint">Rute kustom: ${p.moveRoute.list.length - 1} langkah (ubah di editor RPG Maker).</div>` : ''}
+      <div class="row"><span class="k">Kecepatan</span>${field('p.moveSpeed', SPEEDS, p.moveSpeed)}</div>
+      <div class="row"><span class="k">Frekuensi</span>${field('p.moveFrequency', FREQS, p.moveFrequency)}</div>
+      <div class="row">${check('p.walkAnime', p.walkAnime, 'Animasi jalan')} ${check('p.stepAnime', p.stepAnime, 'Animasi diam')}
+        ${check('p.directionFix', p.directionFix, 'Arah tetap')} ${check('p.through', p.through, 'Tembus')}</div></div>
+    <div class="evsec"><h3>Pemicu dan prioritas</h3>
+      <div class="row"><span class="k">Prioritas</span>${field('p.priorityType', PRIORITY, p.priorityType)}</div>
+      <div class="row"><span class="k">Pemicu</span>${field('p.trigger', TRIGGER, p.trigger)}</div></div>
+    <div class="evsec"><h3>Isi page ${S.page + 1} (baca saja)</h3><div class="cmds">${commandsHtml(p.list)}</div>
+      <div class="hint">Ubah isi perintah di editor RPG Maker.</div></div>`;
+  box.querySelectorAll('[data-f]').forEach(el => el.onchange = () => {
+    const keys = el.dataset.f.split('.'), root = keys.shift(), last = keys.pop();
+    const v = el.type === 'checkbox' ? el.checked : el.dataset.s ? el.value : (+el.value || 0);
+    editEvents(() => { const e = selEvent(); let o = root === 'e' ? e : e.pages[S.page]; keys.forEach(k => o = o[k]); o[last] = v; });
+  });
+  box.querySelectorAll('[data-pg]').forEach(b => b.onclick = () => { S.page = +b.dataset.pg; renderEventPanel(); });
+  $('pgNew').onclick = () => editEvents(() => { const e = selEvent(); e.pages.push(newPage()); S.page = e.pages.length - 1; });
+  $('pgDup').onclick = () => editEvents(() => { const e = selEvent(); e.pages.splice(S.page + 1, 0, JSON.parse(JSON.stringify(e.pages[S.page]))); S.page++; });
+  $('pgDel').onclick = () => editEvents(() => { selEvent().pages.splice(S.page, 1); S.page = Math.max(0, S.page - 1); });
+  $('evCopy').onclick = copyEvent; $('evDel').onclick = deleteEvent;
+  $('evImg').onclick = () => openImagePicker(p.image, im => { closeModal(); editEvents(() => { selEvent().pages[S.page].image = im; }); });
+  drawEvPreview();
+}
+
+function drawEvPreview() {
+  const cv = $('evPrev'), ev = S.cur && selEvent();
+  if (!cv || !ev) return;
+  const g = cv.getContext('2d'); g.clearRect(0, 0, T, T);
+  drawEventImage(g, ev.pages[Math.min(S.page, ev.pages.length - 1)].image, 0, 0);
+}
+
+// ---- command list, shown the way the editor lists it
+const ROUTE = ['', 'Jalan ↓', 'Jalan ←', 'Jalan →', 'Jalan ↑', 'Jalan ↙', 'Jalan ↘', 'Jalan ↖', 'Jalan ↗', 'Jalan acak',
+  'Dekati pemain', 'Jauhi pemain', 'Maju 1 langkah', 'Mundur 1 langkah', 'Lompat', 'Tunggu', 'Hadap ↓', 'Hadap ←', 'Hadap →',
+  'Hadap ↑', 'Putar 90° kanan', 'Putar 90° kiri', 'Putar 180°', 'Putar 90° acak', 'Hadap acak', 'Hadap pemain',
+  'Membelakangi pemain', 'Switch ON', 'Switch OFF', 'Ubah kecepatan', 'Ubah frekuensi', 'Animasi jalan ON', 'Animasi jalan OFF',
+  'Animasi diam ON', 'Animasi diam OFF', 'Arah tetap ON', 'Arah tetap OFF', 'Tembus ON', 'Tembus OFF', 'Transparan ON',
+  'Transparan OFF', 'Ganti gambar', 'Ubah opasitas', 'Ubah blend', 'Bunyikan SE', 'Script'];
+const SIMPLE = { 0: ['d', ''], 105: ['t', 'Teks bergulir'], 112: ['f', 'Ulangi'], 113: ['f', 'Keluar dari ulangan'], 115: ['f', 'Hentikan event'],
+  214: ['m', 'Hapus event sementara'], 216: ['m', 'Tampilkan/sembunyikan pengikut'], 217: ['m', 'Kumpulkan pengikut'], 204: ['m', 'Gulir map'],
+  202: ['m', 'Posisi kendaraan'], 206: ['m', 'Naik/turun kendaraan'], 221: ['m', 'Layar gelap (fade out)'], 222: ['m', 'Layar terang (fade in)'],
+  223: ['m', 'Warnai layar'], 224: ['m', 'Kilat layar'], 225: ['m', 'Guncang layar'], 236: ['m', 'Ubah cuaca'], 242: ['m', 'BGM memudar'],
+  243: ['m', 'Simpan BGM'], 244: ['m', 'Lanjutkan BGM'], 246: ['m', 'BGS memudar'], 251: ['m', 'Hentikan SE'], 261: ['m', 'Putar film'],
+  281: ['m', 'Tampilan nama map'], 282: ['m', 'Ganti tileset'], 283: ['m', 'Ganti battleback'], 284: ['m', 'Ganti parallax'], 285: ['m', 'Ambil info lokasi'],
+  302: ['f', 'Toko'], 605: ['d', ' : barang toko'], 311: ['m', 'Ubah HP'], 312: ['m', 'Ubah MP'], 326: ['m', 'Ubah TP'], 313: ['m', 'Ubah state'],
+  314: ['m', 'Pulihkan semua'], 315: ['m', 'Ubah EXP'], 316: ['m', 'Ubah level'], 317: ['m', 'Ubah parameter'], 318: ['m', 'Ubah skill'],
+  319: ['m', 'Ubah equipment'], 320: ['m', 'Ubah nama'], 321: ['m', 'Ubah class'], 322: ['m', 'Ubah gambar aktor'], 323: ['m', 'Ubah gambar kendaraan'],
+  324: ['m', 'Ubah julukan'], 325: ['m', 'Ubah profil'], 351: ['m', 'Buka menu'], 352: ['m', 'Buka layar simpan'], 353: ['f', 'Game over'],
+  354: ['f', 'Kembali ke layar judul'], 411: ['f', 'Selain itu'], 412: ['f', 'Akhir'], 413: ['f', 'Ulangi di atas'], 404: ['f', 'Akhir pilihan'],
+  403: ['f', ' : Jika batal'], 601: ['f', 'Jika menang'], 602: ['f', 'Jika kabur'], 603: ['f', 'Jika kalah'], 604: ['f', 'Akhir'] };
+const sw = id => 'Switch ' + pad(id) + ' ' + dbName(S.setup.db.switches[id]);
+const vr = id => 'Variable ' + pad(id) + ' ' + dbName(S.setup.db.variables[id]);
+const dbRef = (list, id) => pad(id) + ' ' + dbName(S.setup.db[list][id]);
+const onoff = v => (v === 0 ? 'ON' : 'OFF');
+const mapName = id => (S.maps.find(m => m.id === id) || { name: 'Map ' + id }).name;
+function who(id) {
+  if (id < 0) return 'Pemain';
+  if (id === 0) return 'Event ini';
+  const e = evs()[id];
+  return 'Event ' + pad(id, 3) + (e ? ' ' + e.name : '');
+}
+
+function conditionText(p) {
+  switch (p[0]) {
+    case 0: return `${sw(p[1])} = ${onoff(p[2])}`;
+    case 1: return `${vr(p[1])} ${['=', '≥', '≤', '>', '<', '≠'][p[4]]} ${p[2] === 0 ? p[3] : vr(p[3])}`;
+    case 2: return `Self switch ${p[1]} = ${onoff(p[2])}`;
+    case 3: return 'Timer';
+    case 4: return 'Aktor ' + dbRef('actors', p[1]);
+    case 5: return 'Musuh #' + (p[1] + 1);
+    case 6: return `${who(p[1])} menghadap ${(DIRS.find(d => d[0] === p[2]) || [0, '?'])[1]}`;
+    case 7: return `Gold ${['≥', '≤', '<'][p[2]]} ${p[1]}`;
+    case 8: return 'Punya ' + dbRef('items', p[1]);
+    case 9: return 'Punya ' + dbRef('weapons', p[1]);
+    case 10: return 'Punya ' + dbRef('armors', p[1]);
+    case 11: return `Tombol ${p[1]} ditekan`;
+    case 12: return 'Script: ' + p[1];
+    case 13: return 'Naik kendaraan';
+  }
+  return 'Kondisi #' + p[0];
+}
+
+function commandText(c) {
+  const p = c.parameters, plus = v => (v === 0 ? '+' : '-'), amount = (type, v) => (type === 0 ? v : vr(v));
+  switch (c.code) {
+    case 101: return ['t', 'Teks' + (p[0] ? ` (face ${p[0]} #${p[1] + 1})` : '')];
+    case 401: case 405: return ['t', ' : ' + p[0]];
+    case 102: return ['f', 'Pilihan: ' + p[0].join(' / ')];
+    case 402: return ['f', ` : Jika "${p[1]}"`];
+    case 103: return ['f', 'Input angka → ' + vr(p[0])];
+    case 104: return ['f', 'Pilih item → ' + vr(p[0])];
+    case 108: return ['d', 'Komentar: ' + p[0]];
+    case 408: return ['d', ' : ' + p[0]];
+    case 111: return ['f', 'Jika ' + conditionText(p)];
+    case 117: return ['f', 'Common event ' + dbRef('commonEvents', p[0])];
+    case 118: return ['f', 'Label: ' + p[0]];
+    case 119: return ['f', 'Lompat ke label: ' + p[0]];
+    case 121: return ['m', `${sw(p[0])}${p[1] !== p[0] ? ' .. ' + pad(p[1]) : ''} = ${onoff(p[2])}`];
+    case 122: {
+      const src = p[3] === 0 ? p[4] : p[3] === 1 ? vr(p[4]) : p[3] === 2 ? `acak ${p[4]}..${p[5]}` : p[3] === 4 ? 'script ' + p[4] : 'data game';
+      return ['m', `${vr(p[0])}${p[1] !== p[0] ? ' .. ' + pad(p[1]) : ''} ${['=', '+=', '-=', '*=', '/=', '%='][p[2]]} ${src}`];
+    }
+    case 123: return ['m', `Self switch ${p[0]} = ${onoff(p[1])}`];
+    case 124: return ['m', p[0] === 0 ? `Timer mulai ${Math.floor(p[1] / 60)}:${pad(p[1] % 60, 2)}` : 'Timer berhenti'];
+    case 125: return ['m', `Gold ${plus(p[0])} ${amount(p[1], p[2])}`];
+    case 126: return ['m', `Item ${dbRef('items', p[0])} ${plus(p[1])} ${amount(p[2], p[3])}`];
+    case 127: return ['m', `Senjata ${dbRef('weapons', p[0])} ${plus(p[1])} ${amount(p[2], p[3])}`];
+    case 128: return ['m', `Armor ${dbRef('armors', p[0])} ${plus(p[1])} ${amount(p[2], p[3])}`];
+    case 129: return ['m', `Anggota party ${plus(p[1])} ${dbRef('actors', p[0])}`];
+    case 201: return ['m', 'Pindah ke ' + (p[0] === 0 ? `${mapName(p[1])} (${p[2]}, ${p[3]})` : 'map/posisi dari variable')];
+    case 203: return ['m', 'Pindahkan ' + who(p[0])];
+    case 205: return ['m', `Rute gerak: ${who(p[0])}${p[1].repeat ? ' (ulang)' : ''}${p[1].wait ? ' (tunggu)' : ''}`];
+    case 505: return ['d', ' ◇' + (ROUTE[p[0].code] || 'Langkah ' + p[0].code) + (p[0].code === 15 ? ` ${p[0].parameters[0]} frame` : '')];
+    case 211: return ['m', 'Transparan ' + onoff(p[0])];
+    case 212: return ['m', `Animasi ${p[1]} pada ${who(p[0])}`];
+    case 213: return ['m', `Balon ${p[1]} pada ${who(p[0])}`];
+    case 230: return ['m', `Tunggu ${p[0]} frame`];
+    case 231: return ['m', `Tampilkan gambar ${p[0]}: ${p[1]}`];
+    case 232: return ['m', 'Gerakkan gambar ' + p[0]];
+    case 235: return ['m', 'Hapus gambar ' + p[0]];
+    case 241: case 245: case 249: case 250: return ['m', `${{ 241: 'BGM', 245: 'BGS', 249: 'ME', 250: 'SE' }[c.code]}: ${p[0].name || '(tidak ada)'}`];
+    case 301: return ['f', 'Pertarungan: ' + (p[0] === 0 ? dbRef('troops', p[1]) : p[0] === 1 ? 'troop dari variable' : 'seperti encounter')];
+    case 303: return ['f', 'Input nama: ' + dbRef('actors', p[0])];
+    case 355: return ['m', 'Script: ' + p[0]];
+    case 655: return ['m', ' : ' + p[0]];
+    case 356: return ['m', 'Plugin: ' + p[0]];
+  }
+  return SIMPLE[c.code] || ['d', 'Perintah ' + c.code];
+}
+
+function commandsHtml(list) {
+  return list.map(c => {
+    const [cls, text] = commandText(c), sub = /^ [:◇]/.test(text);
+    return `<div class="${cls}">${'  '.repeat(c.indent || 0)}${sub ? '' : '◆'}${esc(text)}</div>`;
+  }).join('');
+}
+
+// ---- dialogs
+function openModal(html, onCancel) {
+  $('modalBox').innerHTML = html;
+  $('modal').classList.add('on');
+  S.modalCancel = onCancel || closeModal;
+  if ($('mCancel')) $('mCancel').onclick = S.modalCancel;
+}
+function closeModal() { $('modal').classList.remove('on'); $('modalBox').innerHTML = ''; S.modalCancel = null; }
+
+// Event image: a character from img/characters or a tile from the map's B-E sheets.
+function openImagePicker(cur, onPick, onCancel) {
+  const names = S.cur.tileset.tilesetNames;
+  const sheets = [5, 6, 7, 8].filter(i => names[i]).map(i => ({ key: 'tile:' + i, label: 'Tile ' + 'BCDE'[i - 5] + ' · ' + names[i], tile: i - 5, name: names[i] }));
+  const all = sheets.concat(S.setup.characters.map(n => ({ key: 'char:' + n, label: n, name: n })));
+  let pick = JSON.parse(JSON.stringify(cur));
+  let shown = cur.tileId ? 'tile:' + (5 + Math.floor(cur.tileId / 256)) : cur.characterName ? 'char:' + cur.characterName : (all[sheets.length] || all[0] || {}).key;
+  openModal(`<h2>Gambar event</h2>
+    <div class="picker"><div class="list"><input type="text" id="pkFilter" placeholder="Cari…"><div id="pkList"></div></div>
+      <div class="view"><canvas id="pkCv"></canvas><div class="mark" id="pkMark"></div></div></div>
+    <div class="foot"><span class="grow" id="pkInfo"></span><button id="pkNone">Tanpa gambar</button>
+      <button id="mCancel">Batal</button><button id="pkOk" class="primary">Pakai</button></div>`, onCancel);
+  const entry = () => all.find(e => e.key === shown);
+  const list = () => {
+    const q = $('pkFilter').value.toLowerCase();
+    $('pkList').innerHTML = all.filter(e => e.label.toLowerCase().includes(q))
+      .map(e => `<div class="mi ${e.key === shown ? 'on' : ''}" data-k="${esc(e.key)}">${esc(e.label)}</div>`).join('');
+    $('pkList').querySelectorAll('.mi').forEach(el => el.onclick = () => { shown = el.dataset.k; list(); draw(); });
+  };
+  // cell size and position of the pick on the shown sheet
+  const grid = (e, im) => {
+    if (e.tile !== undefined) return { fw: T, fh: T };
+    const big = isBigChar(e.name);
+    return { fw: im.naturalWidth / (big ? 3 : 12), fh: im.naturalHeight / (big ? 4 : 8), big };
+  };
+  const mark = () => {
+    const e = entry(), cv = $('pkCv'), m = $('pkMark');
+    $('pkInfo').textContent = 'Dipilih: ' + imageLabel(pick);
+    if (!e || !cv.width) { m.style.display = 'none'; return; }
+    const g = grid(e, img(e.tile !== undefined ? e.name : 'char:' + e.name));
+    let col, row;
+    if (e.tile !== undefined && pick.tileId && Math.floor(pick.tileId / 256) === e.tile) {
+      const n = pick.tileId % 256; col = (n >= 128 ? 8 : 0) + n % 8; row = Math.floor((n % 128) / 8);
+    } else if (e.tile === undefined && pick.characterName === e.name) {
+      const ci = g.big ? 0 : pick.characterIndex;
+      col = (ci % 4) * 3 + pick.pattern; row = Math.floor(ci / 4) * 4 + pick.direction / 2 - 1;
+    } else { m.style.display = 'none'; return; }
+    Object.assign(m.style, { display: 'block', left: col * g.fw + 'px', top: row * g.fh + 'px', width: g.fw + 'px', height: g.fh + 'px' });
+  };
+  const draw = async () => {
+    const e = entry(); if (!e) return;
+    const name = e.tile !== undefined ? e.name : 'char:' + e.name;
+    await loadAll([name]);
+    if (shown !== e.key) return;
+    const im = img(name), cv = $('pkCv');
+    cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+    cv.getContext('2d').drawImage(im, 0, 0);
+    mark();
+  };
+  $('pkCv').onclick = ev => {
+    const e = entry(), r = $('pkCv').getBoundingClientRect(), im = img(e.tile !== undefined ? e.name : 'char:' + e.name), g = grid(e, im);
+    const col = Math.floor((ev.clientX - r.left) / g.fw), row = Math.floor((ev.clientY - r.top) / g.fh);
+    if (e.tile !== undefined) {
+      const n = (col >= 8 ? 128 : 0) + row * 8 + col % 8;
+      pick = { tileId: e.tile * 256 + n, characterName: '', direction: 2, pattern: 0, characterIndex: 0 };
+    } else {
+      pick = { tileId: 0, characterName: e.name, direction: (row % 4) * 2 + 2, pattern: col % 3,
+               characterIndex: g.big ? 0 : Math.floor(col / 3) + Math.floor(row / 4) * 4 };
+    }
+    mark();
+  };
+  $('pkCv').ondblclick = () => onPick(pick);
+  $('pkOk').onclick = () => onPick(pick);
+  $('pkNone').onclick = () => onPick({ tileId: 0, characterName: '', direction: 2, pattern: 0, characterIndex: 0 });
+  $('pkFilter').oninput = list;
+  list(); draw();
+}
+
+// ---- new event: blank or a quick template
+const cmd = (code, parameters, indent = 0) => ({ code, indent, parameters });
+const seParam = name => ({ name, volume: 90, pitch: 100, pan: 0 });
+const charImage = (name, index = 0, pattern = 0) => ({ tileId: 0, characterName: name || '', direction: 2, pattern, characterIndex: index });
+const hasChar = n => S.setup.characters.includes(n);
+function routeCmds(target, steps, wait) {
+  const list = steps.map(([code, ...parameters]) => ({ code, parameters, indent: null }));
+  return [cmd(205, [target, { list: list.concat([{ code: 0, parameters: [] }]), repeat: false, skippable: false, wait }])]
+    .concat(list.map(r => cmd(505, [r])));
+}
+// Blank line = new message window; a window holds 4 lines.
+function textCmds(text) {
+  const out = [], body = text.replace(/\r/g, '').trim();
+  if (!body) return out;
+  body.split(/\n\s*\n/).forEach(block => {
+    const lines = block.split('\n');
+    for (let i = 0; i < lines.length; i += 4) {
+      out.push(cmd(101, ['', 0, 0, 2]));
+      lines.slice(i, i + 4).forEach(l => out.push(cmd(401, [l])));
+    }
+  });
+  return out;
+}
+
+function openNewEvent(x, y) {
+  S.sel = { x, y };
+  openModal(`<h2>Event baru di (${x}, ${y})</h2>
+    <div class="body tpls">
+      <button data-tpl="blank"><b>Kosong</b><span>Event biasa tanpa isi; atur sendiri di panel.</span></button>
+      <button data-tpl="npc"><b>NPC bicara</b><span>Karakter yang bicara saat diajak ngobrol.</span></button>
+      <button data-tpl="door"><b>Pintu / pindah map</b><span>Pintu beranimasi, atau titik pindah tak terlihat yang diinjak.</span></button>
+      <button data-tpl="chest"><b>Peti harta</b><span>Memberi item, senjata, armor atau gold, sekali saja.</span></button>
+    </div>
+    <div class="foot"><button id="mCancel">Batal</button></div>`);
+  $('modalBox').querySelectorAll('[data-tpl]').forEach(b => b.onclick = () =>
+    b.dataset.tpl === 'blank' ? createEvent(x, y, '', [newPage()]) : templateForm(b.dataset.tpl, x, y));
+}
+
+function createEvent(x, y, name, pages) {
+  closeModal();
+  S.sel = { x, y }; S.page = 0;
+  editEvents(() => addEvent(x, y, name, pages));
+  status(`Event "${selEvent().name}" dibuat di (${x}, ${y}). Jangan lupa Simpan.`, 'ok');
+}
+
+function templateForm(kind, x, y) {
+  const people = S.setup.characters.find(n => /^People/.test(n)) || S.setup.characters.find(n => !/^[!$]/.test(n));
+  const st = {
+    npc: { name: 'NPC', image: charImage(people, 0, 1), text: '', move: 0 },
+    door: { name: 'Pintu', kind: 'door', image: charImage(hasChar('!Door1') ? '!Door1' : ''), se: 'Open1', walkIn: true,
+            map: S.cur.id, tx: null, ty: null, dir: 0, fade: 0 },
+    chest: { name: 'Peti', image: charImage(hasChar('!Chest') ? '!Chest' : ''), what: 'item', id: 1, amount: 1, msg: true },
+  }[kind];
+  const title = { npc: 'NPC bicara', door: 'Pintu / pindah map', chest: 'Peti harta' }[kind];
+  const seOpts = [['', '(tanpa suara)']].concat(S.setup.se.map(n => [n, n]));
+  const val = id => $(id) && ($(id).type === 'checkbox' ? $(id).checked : $(id).value);
+  const collect = () => {
+    st.name = val('tfName');
+    if (kind === 'npc') { st.text = val('tfText'); st.move = +val('tfMove'); }
+    if (kind === 'door') {
+      st.kind = val('tfKind'); st.se = val('tfSe'); st.dir = +val('tfDir'); st.fade = +val('tfFade');
+      if ($('tfWalk')) st.walkIn = val('tfWalk');
+    }
+    if (kind === 'chest') { st.what = val('tfWhat'); st.amount = Math.max(1, +val('tfAmount') || 1); st.msg = val('tfMsg'); if ($('tfId')) st.id = +val('tfId'); }
+  };
+  const imageRow = () => `<div class="row"><span class="k">Gambar</span><canvas class="prev" id="tfPrev" width="48" height="48"></canvas>
+    <div>${esc(imageLabel(st.image))}<div class="row"><button id="tfImg">Pilih gambar…</button></div></div></div>`;
+  const render = () => {
+    let body = `<div class="row"><span class="k">Nama</span><input type="text" id="tfName" value="${esc(st.name)}"></div>`;
+    if (kind === 'npc') body += imageRow() +
+      `<div class="row"><span class="k">Teks</span><textarea id="tfText" rows="7" placeholder="Halo, selamat datang di Nova!">${esc(st.text)}</textarea></div>
+       <div class="row"><span class="k"></span><span class="hint">Baris kosong = jendela teks baru. Lebih dari 4 baris dipecah otomatis.</span></div>
+       <div class="row"><span class="k">Gerak</span><select id="tfMove">${opts([[0, 'Diam'], [1, 'Jalan acak']], st.move)}</select></div>`;
+    if (kind === 'door') body +=
+      `<div class="row"><span class="k">Jenis</span><select id="tfKind">${opts([['door', 'Pintu (bergambar, tekan tombol)'], ['area', 'Titik pindah (tak terlihat, diinjak)']], st.kind)}</select></div>` +
+      (st.kind === 'door' ? imageRow() : '') +
+      `<div class="row"><span class="k">Suara</span><select id="tfSe">${opts(seOpts, st.se)}</select>
+         ${st.kind === 'door' ? `<label><input type="checkbox" id="tfWalk"${st.walkIn ? ' checked' : ''}>Pemain melangkah masuk (ke atas) dulu</label>` : ''}</div>
+       <div class="row"><span class="k">Tujuan</span><select id="tfMap">${opts(S.maps.slice().sort((a, b) => a.id - b.id).map(m => [m.id, pad(m.id, 3) + ' ' + m.name]), st.map)}</select>
+         Arah <select id="tfDir">${opts([[0, 'Tetap']].concat(DIRS), st.dir)}</select>
+         Layar <select id="tfFade">${opts([[0, 'Hitam'], [1, 'Putih'], [2, 'Tanpa']], st.fade)}</select></div>
+       <div class="row"><span class="k"></span><span class="hint" id="tfDest">${st.tx === null ? 'Klik peta di bawah untuk memilih posisi tujuan.' : `Posisi tujuan: (${st.tx}, ${st.ty})`}</span></div>
+       <div class="view" style="height:40vh"><canvas id="tfMapCv"></canvas><div class="mark" id="tfMark"></div></div>`;
+    if (kind === 'chest') {
+      const what = st.what;
+      body += imageRow() +
+        `<div class="row"><span class="k">Isi</span><select id="tfWhat">${opts([['item', 'Item'], ['weapon', 'Senjata'], ['armor', 'Armor'], ['gold', 'Gold']], what)}</select>
+           ${what === 'gold' ? '' : `<select id="tfId">${opts(dbList(S.setup.db[what + 's']), st.id)}</select>`}
+           Jumlah <input type="number" id="tfAmount" min="1" value="${st.amount}" style="width:90px"></div>
+         <div class="row"><span class="k"></span><label><input type="checkbox" id="tfMsg"${st.msg ? ' checked' : ''}>Tampilkan pesan "Mendapatkan …!"</label></div>`;
+    }
+    openModal(`<h2>${title} di (${x}, ${y})</h2><div class="body">${body}</div>
+      <div class="foot"><span class="grow" id="tfErr"></span><button id="tfBack">Kembali</button><button id="mCancel">Batal</button><button id="tfOk" class="primary">Buat event</button></div>`);
+    $('tfBack').onclick = () => openNewEvent(x, y);
+    if ($('tfPrev')) drawEventImage($('tfPrev').getContext('2d'), st.image, 0, 0);
+    if ($('tfImg')) $('tfImg').onclick = () => { collect(); openImagePicker(st.image, im => { st.image = im; render(); }, render); };
+    if ($('tfKind')) $('tfKind').onchange = () => { collect(); render(); };
+    if ($('tfWhat')) $('tfWhat').onchange = () => { collect(); st.id = 1; render(); };
+    if ($('tfMap')) {
+      $('tfMap').onchange = () => { collect(); st.map = +$('tfMap').value; st.tx = st.ty = null; render(); };
+      const cv = $('tfMapCv'), half = T / 2;
+      const showMark = () => { if (st.tx !== null) Object.assign($('tfMark').style, { display: 'block', left: st.tx * half + 'px', top: st.ty * half + 'px', width: half + 'px', height: half + 'px' }); };
+      cv.onclick = e => {
+        const r = cv.getBoundingClientRect();
+        st.tx = Math.floor((e.clientX - r.left) / half); st.ty = Math.floor((e.clientY - r.top) / half);
+        $('tfDest').textContent = `Posisi tujuan: (${st.tx}, ${st.ty})`; showMark();
+      };
+      drawMapPreview(st.map, cv).then(() => { showMark(); if (st.tx !== null) $('tfMark').scrollIntoView({ block: 'center', inline: 'center' }); });
+    }
+    $('tfOk').onclick = () => {
+      collect();
+      const err = kind === 'door' && st.tx === null ? 'Pilih posisi tujuan di peta dulu.' : '';
+      if (err) { $('tfErr').textContent = err; return; }
+      createEvent(x, y, st.name, templatePages(kind, st));
+    };
+  };
+  render();
+}
+
+function templatePages(kind, st) {
+  const p = newPage(), db = S.setup.db;
+  if (kind === 'npc') {
+    Object.assign(p, { image: st.image, moveType: st.move, priorityType: 1, trigger: 0 });
+    p.list = textCmds(st.text).concat([cmd(0, [])]);
+    return [p];
+  }
+  if (kind === 'door') {
+    const sound = st.se ? [cmd(250, [seParam(st.se)])] : [], go = cmd(201, [0, st.map, st.tx, st.ty, st.dir, st.fade]);
+    if (st.kind === 'area') {
+      Object.assign(p, { priorityType: 0, trigger: 1 });
+      p.list = sound.concat([go, cmd(0, [])]);
+      return [p];
+    }
+    // the door opens (its sheet rows are the frames), the player steps in, then the door is reset
+    Object.assign(p, { image: st.image, priorityType: 1, trigger: 0, walkAnime: false });
+    p.list = sound.concat(routeCmds(0, [[16], [15, 3], [17], [15, 3], [18], [15, 3], [19]], true),
+      st.walkIn ? routeCmds(-1, [[37], [4], [38]], true) : [], [go], routeCmds(0, [[16]], false), [cmd(0, [])]);
+    return [p];
+  }
+  // chest: page 1 opens and gives the treasure once (self switch A), page 2 stays open
+  const give = st.what === 'gold' ? cmd(125, [0, 0, st.amount])
+             : st.what === 'item' ? cmd(126, [st.id, 0, 0, st.amount]) : cmd(st.what === 'weapon' ? 127 : 128, [st.id, 0, 0, st.amount, false]);
+  const it = st.what === 'gold' ? null : db[st.what + 's'][st.id];
+  const msg = st.what === 'gold' ? `Mendapatkan ${st.amount}\\G!` : `Mendapatkan \\I[${it[1]}]${it[0]}${st.amount > 1 ? ' x' + st.amount : ''}!`;
+  Object.assign(p, { image: st.image, directionFix: true, priorityType: 1, trigger: 0, walkAnime: false });
+  p.list = (S.setup.se.includes('Chest1') ? [cmd(250, [seParam('Chest1')])] : []).concat(
+    routeCmds(0, [[36], [17], [15, 3], [18], [15, 3], [19], [35]], true), [give],
+    st.msg ? [cmd(101, ['', 0, 0, 2]), cmd(401, [msg])] : [], [cmd(123, ['A', 0]), cmd(0, [])]);
+  const open = newPage();
+  Object.assign(open, { image: Object.assign({}, st.image, { direction: 8 }), directionFix: true, priorityType: 1, trigger: 0, walkAnime: false });
+  open.conditions.selfSwitchValid = true;
+  return [p, open];
+}
+
+// A whole map drawn at half size into a canvas (the transfer destination picker). Uses the normal cell
+// renderer with that map swapped in for a moment.
+async function drawMapPreview(id, cv) {
+  let map = S.cur.map, tileset = S.cur.tileset;
+  if (id !== S.cur.id) ({ map, tileset } = await (await fetch('/api/map?id=' + id)).json());
+  const token = cv.token = (cv.token || 0) + 1;
+  const chars = map.events.filter(e => e && e.pages[0] && e.pages[0].image.characterName).map(e => 'char:' + e.pages[0].image.characterName);
+  await loadAll(tileset.tilesetNames.concat([...new Set(map.data.filter(isExt).map(i => (extInfo(i).sheet || {}).name))], [...new Set(chars)]));
+  if (token !== cv.token || !cv.isConnected) return;
+  cv.width = map.width * T; cv.height = map.height * T;
+  cv.style.width = cv.width / 2 + 'px'; cv.style.height = cv.height / 2 + 'px';
+  const keep = { cur: S.cur, ctx: S.mapCtx };
+  S.cur = { id, map, tileset }; S.mapCtx = cv.getContext('2d');
+  try {
+    for (let y = 0; y < map.height; y++) for (let x = 0; x < map.width; x++) renderCell(x, y);
+    map.events.forEach(ev => { if (ev) drawEvent(S.mapCtx, ev); });
+  } finally { S.cur = keep.cur; S.mapCtx = keep.ctx; }
+}
+
+// ---------------------------------------------------------------- tools, maps, saving
+function setTool(t) {
+  S.tool = t;
+  $('tools').innerHTML = TOOLS.map(([k, label, key]) => `<button data-t="${k}" class="${S.tool === k ? 'on' : ''}" title="${key}">${label}</button>`).join(' ');
+  $('tools').querySelectorAll('button').forEach(b => b.onclick = () => setTool(b.dataset.t));
+  document.body.classList.toggle('evmode', t === 'event');
+  if (S.cur) { renderOverlay(); renderEventPanel(); }
+}
+
+function renderMapList() {
+  const q = $('mapFilter').value.trim().toLowerCase(), byParent = {};
+  S.maps.forEach(m => (byParent[m.parentId] = byParent[m.parentId] || []).push(m));
+  Object.values(byParent).forEach(l => l.sort((a, b) => a.order - b.order));
+  S.open = S.open || new Set(S.maps.filter(m => m.expanded).map(m => m.id));
+  const out = [];
+  const walk = (pid, depth) => (byParent[pid] || []).forEach(m => {
+    const kids = byParent[m.id], open = q || S.open.has(m.id);
+    if (!q || m.name.toLowerCase().includes(q))
+      out.push(`<div class="mi ${S.cur && S.cur.id === m.id ? 'on' : ''}" data-id="${m.id}" style="padding-left:${6 + depth * 14}px">` +
+               `<span class="tw" data-tw="${m.id}">${kids ? (open ? '▾' : '▸') : ''}</span>${m.name} <small>${m.width}×${m.height}</small></div>`);
+    if (kids && open) walk(m.id, depth + 1);
+  });
+  walk(0, 0);
+  $('mapList').innerHTML = out.join('');
+  $('mapList').querySelectorAll('.mi').forEach(el => el.onclick = e => {
+    const tw = e.target.dataset.tw;
+    if (tw) { const id = +tw; S.open.has(id) ? S.open.delete(id) : S.open.add(id); renderMapList(); return; }
+    openMap(+el.dataset.id);
+  });
+}
+
+async function openMap(id) {
+  if (S.dirty && !confirm('Perubahan di map ini belum disimpan. Buang dan buka map lain?')) return;
+  status('Memuat map…');
+  const res = await (await fetch('/api/map?id=' + id)).json();
+  S.cur = { id, map: res.map, mtime: res.mtime, tileset: res.tileset };
+  S.undo = []; S.redo = []; S.touched = new Set(); S.touchedAuto = new Set(); S.touchedGround = new Set(); S.palSel = null;
+  S.sel = null; S.page = 0; S.evDrag = null;
+  const names = res.tileset.tilesetNames.concat(
+    [...new Set(res.map.data.filter(isExt).map(i => (extInfo(i).sheet || {}).name))]);
+  await loadAll(names);
+  const w = res.map.width * T, h = res.map.height * T;
+  ['mapCanvas', 'overlay'].forEach(c => { $(c).width = w; $(c).height = h; });
+  $('stage').style.width = w + 'px'; $('stage').style.height = h + 'px';
+  S.mapCtx = $('mapCanvas').getContext('2d'); S.overCtx = $('overlay').getContext('2d');
+  $('emptyMsg').style.display = 'none';
+  applyZoom();
+  renderAll();
+  if (!palSheets().some(([k]) => k === S.tab)) S.tab = 'A';
+  renderTabs(); renderPalette(); renderMapList(); renderEventPanel();
+  const info = S.maps.find(m => m.id === id);
+  $('mapTitle').textContent = `${info.name}  ·  ${res.map.width}×${res.map.height}  ·  tileset ${res.tileset.name}`;
+  markDirty(false);
+  status('Map dimuat.');
+}
+
+function applyZoom() {
+  S.zoom = +$('zoom').value;
+  $('stage').style.transform = `scale(${S.zoom})`;
+  $('stage').style.width = (S.cur ? W() * T : 0) + 'px';
+  $('viewport').style.setProperty('--z', S.zoom);
+  // the scroll area follows the scaled size
+  $('stage').style.marginRight = (S.cur ? W() * T * (S.zoom - 1) : 0) + 'px';
+  $('stage').style.marginBottom = (S.cur ? H() * T * (S.zoom - 1) : 0) + 'px';
+}
+
+async function save(force) {
+  if (!S.cur || !S.dirty) return;
+  status('Menyimpan…');
+  const res = await fetch('/api/map/save', { method: 'POST', body: JSON.stringify({ id: S.cur.id, data: S.cur.map.data, events: S.cur.map.events, mtime: S.cur.mtime, force }) });
+  const out = await res.json();
+  if (res.status === 409 && out.error === 'editor') {
+    if (confirm(out.message + '\n\nSimpan sekarang?')) return save(true);
+    status('Belum disimpan.'); return;
+  }
+  if (!res.ok) { status(out.message || out.error, 'err'); alert(out.message || out.error); return; }
+  S.cur.mtime = out.mtime;
+  markDirty(false);
+  status('Tersimpan ke data/Map' + String(S.cur.id).padStart(3, '0') + '.json (salinan lama di _backups/map_editor).', 'ok');
+}
+
+function status(t, cls) { $('status').textContent = t; $('status').className = cls || ''; }
+
+$('save').onclick = () => save(false);
+$('undo').onclick = undo; $('redo').onclick = redo;
+$('mapFilter').oninput = renderMapList;
+$('zoom').onchange = applyZoom;
+['showGrid', 'showPass', 'showEvents', 'showRegions'].forEach(id => $(id).onchange = () => { if (S.cur) { renderOverlay(); renderPalette(); } });
+$('palZoom').onchange = () => {
+  S.palZoom = +$('palZoom').value;
+  try { localStorage.setItem('novaPalZoom', S.palZoom); } catch (e) { /* not kept */ }
+  renderPalette();
+};
+// Splitters: panel width and map-list height, kept between sessions.
+function sideSizes(w, h) {
+  const aside = document.querySelector('aside');
+  if (w !== undefined) aside.style.width = (w ? Math.max(240, Math.min(w, innerWidth - 320)) + 'px' : '');
+  if (h !== undefined) $('mapsBox').style.height = (h ? Math.max(80, Math.min(h, aside.clientHeight - 160)) + 'px' : '');
+  if (S.cur && palColsFit() !== S.palCols) renderPalette();
+}
+window.addEventListener('resize', () => { if (S.cur && palColsFit() !== S.palCols) renderPalette(); });
+function splitter(el, cls, key, sizeOf, apply) {
+  el.onmousedown = e => {
+    e.preventDefault();
+    const start = cls === 'col' ? e.clientX : e.clientY, size = sizeOf();
+    el.classList.add('drag'); document.body.classList.add('resizing', cls);
+    const move = ev => apply(size + (cls === 'col' ? ev.clientX : ev.clientY) - start);
+    const up = () => {
+      window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up);
+      el.classList.remove('drag'); document.body.classList.remove('resizing', cls);
+      try { localStorage.setItem(key, Math.round(sizeOf())); } catch (err) { /* not kept */ }
+    };
+    window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+  };
+  el.ondblclick = () => { apply(0); try { localStorage.removeItem(key); } catch (err) { /* nothing kept */ } };
+}
+splitter($('splitSide'), 'col', 'novaSideW', () => document.querySelector('aside').offsetWidth, w => sideSizes(w));
+splitter($('splitMaps'), 'row', 'novaMapsH', () => $('mapsBox').offsetHeight, h => sideSizes(undefined, h));
+
+$('overlay').addEventListener('dblclick', e => {
+  if (!S.cur || S.tool !== 'event') return;
+  const c = cellFromEvent(e);
+  if (inMap(c.x, c.y) && !eventAt(c.x, c.y)) openNewEvent(c.x, c.y);
+});
+$('modal').addEventListener('mousedown', e => { if (e.target === $('modal') && S.modalCancel) S.modalCancel(); });
+window.addEventListener('keydown', e => {
+  if ($('modal').classList.contains('on')) { if (e.key === 'Escape' && S.modalCancel) S.modalCancel(); return; }
+  const tag = e.target.tagName;
+  if ((tag === 'INPUT' && e.target.type !== 'checkbox') || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  const ctrl = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+  if (ctrl && k === 's') { e.preventDefault(); save(false); return; }
+  if (ctrl && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
+  if (ctrl && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); return; }
+  if (S.cur && S.tool === 'event') {
+    if (ctrl && k === 'c') { e.preventDefault(); copyEvent(); return; }
+    if (ctrl && k === 'v') { e.preventDefault(); pasteEvent(); return; }
+    if (k === 'delete') { e.preventDefault(); deleteEvent(); return; }
+    if (k === 'enter' && S.sel && !selEvent()) { e.preventDefault(); openNewEvent(S.sel.x, S.sel.y); return; }
+  }
+  if (ctrl || e.altKey) return;
+  const t = TOOLS.find(x => x[2].toLowerCase() === k);
+  if (t) setTool(t[0]);
+});
+window.addEventListener('beforeunload', e => { if (S.dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+(async function init() {
+  setTool('pen');
+  try { const z = +localStorage.getItem('novaPalZoom'); if (z) S.palZoom = z; } catch (e) { /* default size */ }
+  $('palZoom').value = String(S.palZoom);
+  try { sideSizes(+localStorage.getItem('novaSideW') || 0, +localStorage.getItem('novaMapsH') || 0); } catch (e) { /* default sizes */ }
+  S.setup = await (await fetch('/api/setup')).json();
+  const list = await (await fetch('/api/maps')).json();
+  S.maps = list.maps;
+  renderMapList();
+  status(list.editorOpen ? 'Catatan: editor RPG Maker sedang terbuka - lihat peringatan saat menyimpan.' : 'Pilih map di kiri.');
+})();
+</script>
+</body>
+</html>

@@ -144,11 +144,5 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    server = ThreadingHTTPServer(('127.0.0.1', PORT), Handler)
-    url = 'http://localhost:%d/' % PORT
-    print('Tileset Wizard: %s   (Ctrl+C untuk berhenti)' % url)
-    if '--no-browser' not in sys.argv: open_window(url)
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        pass
+    import nova_tools               # the wizard now lives in Nova Tools, next to the Map Editor
+    nova_tools.main('/wizard')

@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Nova Tileset Wizard</title>
+<title>Nova Tools - Tileset Wizard</title>
 <style>
   :root {
     --bg: #07101f; --panel: #0e1c33; --panel2: #13284a; --line: #2b4a72; --text: #e6f2ff; --dim: #93acc8;
@@ -20,6 +20,9 @@
   button:hover:not(:disabled) { border-color: var(--accent); }
   button:disabled { opacity: .4; cursor: not-allowed; }
   button.primary { background: #1677b8; border-color: #3fa8ff; font-weight: 600; }
+  nav a { color: var(--dim); text-decoration: none; padding: 4px 10px; border-radius: 14px; border: 1px solid transparent; }
+  nav a.on { color: var(--text); background: #1677b8; border-color: var(--accent); }
+  nav a:hover { border-color: var(--accent); }
   #status { flex: 1; min-width: 200px; color: var(--dim); }
   #status.ok { color: var(--good); } #status.err { color: var(--bad); }
   main { display: flex; gap: 12px; padding: 12px 16px; align-items: flex-start; }
@@ -53,7 +56,8 @@
 </head>
 <body>
 <header>
-  <h1>Nova Tileset Wizard</h1>
+  <h1>Nova Tools</h1>
+  <nav><a href="/">Map Editor</a> <a href="/wizard" class="on">Tileset Wizard</a></nav>
   <label>Nama tileset <input id="name" list="names" placeholder="mis. Town Plus" size="22"></label>
   <datalist id="names"></datalist>
   <label>Lantai/dinding (A1–A4) dari <select id="base"></select></label>

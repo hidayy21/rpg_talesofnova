@@ -1,4 +1,4 @@
 @echo off
 cd /d "%~dp0"
-python tileset_wizard.py
+python nova_tools.py
 pause
