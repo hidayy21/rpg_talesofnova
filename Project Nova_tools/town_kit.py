@@ -77,6 +77,13 @@ class Town(L.MapBuilder):
         self.rect(0, 0, w - 1, h - 1, ground)
         self.note = '<outdoor>'          # NovaLighting: follows the night switch
 
+    def save(self, map_id, *args, **kw):
+        """Saves, then widens the edge exits to the whole open crossing (see edge_exits.py)."""
+        super().save(map_id, *args, **kw)
+        import json, edge_exits
+        m = json.load(open(L.DATA + 'Map%03d.json' % map_id, encoding='utf8'))
+        if edge_exits.widen(m): L.write_map(map_id, m)
+
     # ------------------------------------------------------------ buildings
     def building(self, x0, x1, top, roof_rows, wall_rows, roof, wall, storeys=None, windows=True,
                  door=None, win_tiles=(WIN,), chimney=None):

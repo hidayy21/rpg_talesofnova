@@ -94,8 +94,9 @@ m.door('Whisker & Paw', 37, 9, K.PET_SHOP, 7, 11)
 
 # ---------------------------------------------------------------- exits
 m.exit('To Plaza', [(0, y) for y in range(14, 18)], K.PLAZA, 42, 15, 4)
-m.exit('To Harbor', [(x, H - 1) for x in range(20, 24)], K.HARBOR, 34, 1, 2)
-m.exit('To Residential (alley)', [(x, 0) for x in range(20, 23)], *K.ARRIVE['residential_from_market'])
+for x in range(20, 24): m.put(x, H - 1, BARRICADE_H)   # the south road is closed: the harbor lies east now
+m.exit('To Royal Quarter', [(x, 0) for x in range(20, 23)], *K.ARRIVE['royal_from_market'])   # the north alley
+m.exit('To Harbor', [(W - 1, y) for y in range(14, 18)], *K.ARRIVE['harbor_from_market'])   # the old East Gate road
 
 # ---------------------------------------------------------------- stall keepers (some sell, some chat)
 def shop_npc(name, x, y, sheet, idx, lines, ce):

@@ -99,6 +99,8 @@ for x in (GX - 3, GX + 3):
 m.door('Royal Barracks', 7 + OX, bb, K.BARRACKS, 8, 13)
 m.locked_door("Knights' Stables", 31 + OX, sb, ['The stable boy waves: "Mind the dung!"'], style=1)
 m.exit('To Plaza', [(x + OX, H - 1) for x in range(17, 23)], K.PLAZA, 19, 1, 2)
+m.exit('To Royal Quarter', [(W - 1, 14)], *K.ARRIVE['royal_from_castle'])   # the moat walk runs on east
+m.exit('To Hearthstone Terraces', [(0, 14)], *K.ARRIVE['terraces_from_castle'])   # ... and west
 m.rect(17 + OX, 14, 23 + OX, H - 1, COBBLE)
 
 # drilling soldiers: march back and forth

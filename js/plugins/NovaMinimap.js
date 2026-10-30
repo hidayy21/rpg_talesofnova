@@ -9,11 +9,11 @@
  * @param Width
  * @type number
  * @desc Width of the map area in pixels (the frame adds a little).
- * @default 210
+ * @default 150
  *
  * @param Height
  * @type number
- * @default 150
+ * @default 104
  *
  * @param Position
  * @type select
@@ -26,12 +26,12 @@
  * @param Max Cell
  * @type number
  * @desc Largest size of one map tile on the minimap, in pixels. Small maps stop growing here.
- * @default 8
+ * @default 6
  *
  * @param Min Cell
  * @type number
  * @desc Smallest size of one map tile. Maps that do not fit at this size scroll with the player.
- * @default 3
+ * @default 5
  *
  * @param Toggle Key
  * @type number
@@ -45,7 +45,14 @@
  *
  * @param Show Map Name
  * @type boolean
- * @default true
+ * @default false
+ *
+ * @param Opacity
+ * @type number
+ * @min 0
+ * @max 255
+ * @desc How solid the minimap is (255 = fully solid). It fades further while the player walks under it.
+ * @default 150
  *
  * @help
  * Place below NovaMenu and NovaTilesetEx.
@@ -79,20 +86,21 @@
     'use strict';
 
     var params = PluginManager.parameters('NovaMinimap');
-    var MAP_W = Number(params['Width'] || 210);
-    var MAP_H = Number(params['Height'] || 150);
+    var MAP_W = Number(params['Width'] || 150);
+    var MAP_H = Number(params['Height'] || 104);
     var POSITION = String(params['Position'] || 'top right');
-    var MAX_CELL = Number(params['Max Cell'] || 8);
-    var MIN_CELL = Number(params['Min Cell'] || 3);
+    var MAX_CELL = Number(params['Max Cell'] || 6);
+    var MIN_CELL = Number(params['Min Cell'] || 5);
     var TOGGLE_KEY = Number(params['Toggle Key'] || 0);
     var HIDE_SWITCH = Number(params['Hide Switch'] || 0);
-    var SHOW_NAME = String(params['Show Map Name'] || 'true') === 'true';
+    var SHOW_NAME = String(params['Show Map Name'] || 'false') === 'true';
+    var OPACITY = Number(params['Opacity'] || 150);
 
     var UI = window.NovaUI;
     var COLOR = UI ? UI.COLOR : { frame: '#6f93c9', frameSoft: 'rgba(185, 212, 245, 0.22)', accent: '#9cc0ec',
                                   accentLit: '#d8e8fb', pending: '#e8cf8f', text: '#eaf0f8',
                                   panelTop: 'rgba(26, 36, 64, 0.94)', panelBottom: 'rgba(12, 18, 34, 0.96)' };
-    var PAD = 8, NAME_H = SHOW_NAME ? 24 : 0, MARGIN = 12;
+    var PAD = 2, NAME_H = SHOW_NAME ? 24 : 0, MARGIN = 12;
     var EMPTY = [14, 20, 34];                       // under the tiles: night blue
 
     if (TOGGLE_KEY) Input.keyMapper[TOGGLE_KEY] = 'novaMinimap';
@@ -278,22 +286,13 @@
     };
 
     Sprite_NovaMinimap.prototype.drawFrame = function() {
-        var bmp = this._frameSprite.bitmap, ctx = ctxOf(bmp), w = bmp.width, h = bmp.height, c = 10;
-        var shape = UI ? UI.panelShape(1, 1, w - 2, h - 2, c) : [[1, 1], [w - 1, 1], [w - 1, h - 1], [1, h - 1]];
-        var g = ctx.createLinearGradient(0, 0, 0, h);
-        g.addColorStop(0, COLOR.panelTop);
-        g.addColorStop(1, COLOR.panelBottom);
-        ctx.fillStyle = g;
-        this.path(ctx, shape);
-        ctx.fill();
-        ctx.lineWidth = 1.5;
-        ctx.strokeStyle = COLOR.frame;
-        this.path(ctx, shape);
-        ctx.stroke();
-        ctx.strokeStyle = 'rgba(156, 192, 236, 0.35)';
+        // a plain box: dark fill and a thin light border
+        var bmp = this._frameSprite.bitmap, ctx = ctxOf(bmp), w = bmp.width, h = bmp.height;
+        ctx.fillStyle = 'rgba(10, 14, 24, 0.85)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(234, 240, 248, 0.45)';
         ctx.lineWidth = 1;
-        ctx.strokeRect(PAD - 0.5, PAD - 0.5, MAP_W + 1, MAP_H + 1);
-        if (UI) UI.diamond(ctx, w / 2, 1.5, 4, COLOR.frame);
+        ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
         dirty(bmp);
     };
 
@@ -346,10 +345,10 @@
     Sprite_NovaMinimap.prototype.updateOpacity = function(shown) {
         var target = 0;
         if (shown) {
-            target = $gameMessage.isBusy() ? 0 : 235;
+            target = $gameMessage.isBusy() ? 0 : OPACITY;
             var px = $gamePlayer.screenX(), py = $gamePlayer.screenY() - 24;
             var w = this._frameSprite.width, h = this._frameSprite.height;
-            if (px > this.x - 24 && px < this.x + w + 24 && py > this.y - 24 && py < this.y + h + 48) target = 70;
+            if (px > this.x - 24 && px < this.x + w + 24 && py > this.y - 24 && py < this.y + h + 48) target = Math.min(OPACITY, 50);
         }
         this.opacity += Math.max(-20, Math.min(20, target - this.opacity));
     };

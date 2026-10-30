@@ -10,7 +10,9 @@ import kingdom as K
 import validate_maps as V
 
 EXTERIORS = [('map_plaza', K.PLAZA, 0), ('map_market', K.MARKET, K.PLAZA), ('map_residential', K.RESIDENTIAL, K.PLAZA),
-             ('map_harbor', K.HARBOR, K.PLAZA), ('map_castle_approach', K.CASTLE_APPROACH, K.PLAZA)]
+             ('map_harbor', K.HARBOR, K.PLAZA), ('map_castle_approach', K.CASTLE_APPROACH, K.PLAZA),
+             ('map_city_gate', K.CITY_GATE, K.PLAZA), ('map_hollow_farm', K.HOLLOW_FARM, K.PLAZA),
+             ('map_royal_quarter', K.ROYAL_QUARTER, K.PLAZA), ('map_terraces', K.TERRACES, K.PLAZA)]
 
 
 def as_dict(builder):
@@ -37,13 +39,13 @@ def bakers_lane_preview():
         e = ev[nm]; e['pages'] = [L.door_page(tgt, tx, ty, 8, '!Door1', e['pages'][0]['image']['characterIndex'])]
     m['events'] = [e for e in m['events'] if e is None or not e['name'].startswith('Edge:')]
     W = m['width']
-    for label, cells, tgt, tx, ty, d in (('Plaza 1', [(W - 1, y) for y in range(7, 11)], K.PLAZA, 1, 1, 2),
-                                         ('Plaza 2', [(W - 1, y) for y in range(17, 21)], K.PLAZA, 1, 1, 2),
-                                         ('Res 1', [(0, y) for y in range(7, 11)], K.RESIDENTIAL, 38, 1, 2),
-                                         ('Res 2', [(0, y) for y in range(17, 21)], K.RESIDENTIAL, 38, 1, 2)):
+    # Baker's Lane lies west of Lantern Row: its east ends lead there (same lane), its west ends are barricaded
+    r1, r2 = K.ARRIVE['residential_from_bakers_1'], K.ARRIVE['residential_from_bakers_2']
+    for label, cells, (tgt, tx, ty, d) in (('Lantern Row (street 1)', [(W - 1, y) for y in range(7, 11)], r1),
+                                           ('Lantern Row (street 2)', [(W - 1, y) for y in range(17, 21)], r2)):
         for i, (x, y) in enumerate(cells):
-            m['events'].append({'id': len(m['events']), 'name': 'Edge: %s %d' % (label, i), 'note': '',
-                                'pages': [L.exit_page(tgt, tx, ty, d)], 'x': x, 'y': y})
+            m['events'].append({'id': len(m['events']), 'name': 'Edge: %s %d' % (label, i + 1), 'note': '',
+                                'pages': [L.exit_page(tgt, tx, ty + i, d)], 'x': x, 'y': y})
     return m
 
 
@@ -58,6 +60,7 @@ if __name__ == '__main__':
     built = collect()
     maps = {mid: as_dict(b) for mid, (b, _) in built.items()}
     maps[K.BAKERS_LANE] = bakers_lane_preview()
+    maps[K.WORLD] = json.load(open(L.DATA + 'Map%03d.json' % K.WORLD, encoding='utf8'))   # the Main Gate leads out to it
     problems = V.check(maps)
     print('%d maps, %d events' % (len(maps), sum(len([e for e in m['events'] if e]) for m in maps.values())))
     print('\n'.join(problems) if problems else 'validation: OK')

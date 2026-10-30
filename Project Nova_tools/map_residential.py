@@ -123,8 +123,11 @@ m.locked_door('House', 3, h0, ['The door is locked. Someone is practising the lu
 m.locked_door('House', 28, h1, ['The door is locked.'])
 m.locked_door('House', 40, h2, ['A note: "Away at the Harvest Fair."'], style=1)
 m.exit('To Plaza', [(W - 1, y) for y in range(15, 19)], K.PLAZA, 1, 15, 6)
-m.exit("To Baker's Lane", [(x, 0) for x in range(37, 41)], *K.ARRIVE['bakers_from_residential'])
-m.exit('To Market', [(x, H - 1) for x in range(33, 36)], K.MARKET, 20, 1, 2)
+# Baker's Lane lies to the west; the north and south roads are closed
+m.exit("To Baker's Lane (north road)", [(0, y) for y in range(15, 19)], *K.ARRIVE['bakers_from_residential_1'])
+m.exit("To Baker's Lane (south road)", [(0, y) for y in range(44, 48)], *K.ARRIVE['bakers_from_residential_2'])
+m.exit('To Hearthstone Terraces', [(x, 0) for x in range(37, 41)], *K.ARRIVE['terraces_from_residential'])
+for x in range(33, 36): m.put(x, H - 1, BARRICADE_H)
 m.rect(37, 0, 40, 13, COBBLE)
 
 # ---------------------------------------------------------------- people & animals
@@ -168,6 +171,10 @@ m.put(17, 47, 112, 3); m.put(18, 47, 113, 3)
 m.put(16, 48, 112, 3); m.put(19, 48, 113, 3)
 m.put(16, 49, 120, 3); m.put(19, 49, 121, 3)
 m.put(17, 50, 120, 3); m.put(18, 50, 121, 3)
+
+# ---------------------------------------------------------------- street life on the main road (stall, notices, people)
+import lantern_street_life
+lantern_street_life.apply_builder(m)
 
 if __name__ == '__main__':
     out = sys.argv[1] if len(sys.argv) > 1 else None

@@ -91,10 +91,12 @@ m.sign('Notice Board', 37, 13, ['\\C[6]Notice Board\\C[0]',
 m.sign("Founder's Statue", 6, 22, ['\\C[6]Aurelian I, Founder of Nova\\C[0]',
        '"Let every street lead home, and every home to the crown."'])
 # exits
-m.exit('To Baker\'s Lane', [(0, 0), (1, 0)], *K.ARRIVE['bakers_from_plaza'])
+for x in (0, 1): m.put(x, 0, BARRICADE_H)      # the NW alley is closed (Baker's Lane lies west of Lantern Row)
 m.exit('To Residential', [(0, y) for y in range(15, 19)], K.RESIDENTIAL, 42, 15, 4)
 m.exit('To Market', [(W - 1, y) for y in range(15, 19)], K.MARKET, 1, 15, 6)
-m.exit('To Harbor', [(x, H - 1) for x in range(19, 25)], K.HARBOR, 19, 1, 2)
+for i, x in enumerate(range(19, 25)):          # the south road leaves the city through the Main Gate (5-wide bridge)
+    g = K.ARRIVE['gate_from_plaza']
+    m.add_event('To Main Gate %d' % (i + 1), x, H - 1, [L.exit_page(g[0], min(max(x - 1, g[1] - 2), g[1] + 2), g[2], 2)])
 m.exit('To Castle', [(x, 0) for x in range(19, 25)], K.CASTLE_APPROACH, 31, 32, 8)
 # people
 m.obj('Carriage', 18, 7, 'Vehicle', 5, ["A noble's carriage, waiting for its owner."], step=False, direction=4)

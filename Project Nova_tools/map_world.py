@@ -24,8 +24,6 @@ VILLAGE, VILLAGE_MIRROR, CASTLE = ((56, 57), (64, 65)), ((57, 56), (65, 64)), ((
 
 # The capital: a 6x2 footprint (west quarter, castle, east quarter), a strip of shore east of it, then the bay.
 NX, NY = 60, 35
-WEST_GATE, EAST_GATE = K.ARRIVE['residential_from_world'], K.ARRIVE['market_from_world']
-assert K.ARRIVE['world_from_west_gate'][1:3] == (NX - 1, NY + 1) and K.ARRIVE['world_from_east_gate'][1:3] == (NX + 6, NY + 1)
 NOVA_C = (NX + 2.5, NY + 0.5)
 
 RIDGE = [(8, 22), (17, 18), (26, 21), (35, 17), (44, 20), (53, 16), (60, 20)]   # the mountain range across the north
@@ -240,8 +238,7 @@ m.put(*SIGN_AT, SIGNPOST)
 
 for x, y in sorted(town_cells):
     if (x, y) in ((NX + 2, NY), (NX + 3, NY)): continue     # castle towers: not walkable
-    gate, label = (WEST_GATE, 'West Gate') if x < NX + 3 else (EAST_GATE, 'East Gate')
-    m.add_event('Royal Capital Nova - %s' % label, x, y, [L.exit_page(*gate)], note='<minimap: exit>')
+    m.add_event('Royal Capital Nova - Main Gate', x, y, [L.exit_page(*K.ARRIVE['gate_from_world'])], note='<minimap: exit>')
 
 m.add_event('Harbor Ship', NX + 10, NY + 1, [page(char('Vehicle', 1, 4), step_anim=True, walk_anim=False)],
             note='<minimap: hide>')
@@ -262,8 +259,7 @@ m.tile_data = lambda: _tile_data()[:5 * W * H] + [region[y][x] for y in range(H)
 # ---------------------------------------------------------------- city gates on the Nova side
 def gate_events():
     """{map id: [(name, cells, arrival)]} - the exits from the capital out to this map."""
-    return {K.MARKET: [('To World Map (East Gate)', [(45, y) for y in range(14, 18)], K.ARRIVE['world_from_east_gate'])],
-            K.RESIDENTIAL: [('To World Map (West Gate)', [(0, y) for y in range(15, 19)], K.ARRIVE['world_from_west_gate'])]}
+    return {}                    # the Main Gate (map_city_gate.py) is the only way out; it links to the World Map itself
 
 
 def patch_gates():
