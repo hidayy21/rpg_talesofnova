@@ -80,6 +80,10 @@
  *   Elements the enemy takes more than 100% damage from (Traits) count as
  *   weaknesses too.
  *
+ * State note tag
+ *   <veil weakness>     while the enemy has this state its weaknesses do
+ *                       nothing: no Guard damage, no weakness critical
+ *
  * Guard and Break
  *   A plate under each enemy shows its HP (a bar, no numbers), its Guard
  *   and its weaknesses. Over its head every state, buff and debuff shows at
@@ -249,10 +253,16 @@
         }, this);
     };
 
+    // A state tagged <veil weakness> hides the enemy's weaknesses: no Guard damage, no critical.
+    Game_Enemy.prototype.novaWeakVeiled = function() {
+        return this.states().some(function(s) { return s.meta['veil weakness']; });
+    };
+
     var _apply = Game_Action.prototype.apply;
     Game_Action.prototype.apply = function(target) {
         _apply.call(this, target);
         if (!target.isEnemy() || !target.result().isHit() || !this.isHpEffect() || this.isRecover()) return;
+        if (target.novaWeakVeiled()) return;
         var weak = weaknessesOf(target.enemyId());
         var hits = hitKeys(this).filter(function(k) { return weak.contains(k); });
         if (hits.length === 0) return;
@@ -271,7 +281,7 @@
     // Critical hits: a weakness hit is always critical
     //=========================================================================
     Game_Action.prototype.novaHitsWeakness = function(target) {
-        if (!target.isEnemy() || !this.isHpEffect() || this.isRecover()) return false;
+        if (!target.isEnemy() || !this.isHpEffect() || this.isRecover() || target.novaWeakVeiled()) return false;
         var weak = weaknessesOf(target.enemyId());
         return hitKeys(this).some(function(k) { return weak.contains(k); });
     };

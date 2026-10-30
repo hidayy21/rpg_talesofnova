@@ -282,12 +282,15 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
 
 Terjadi sekitar **7 bulan setelah Kael lulus** dari akademi (5 bulan sebelum ia naik ke Class 3).
 
-1. **Kael menjalankan misi** → *tutorial bertarung*.
-2. **Kael kembali ke Guild** → *tutorial movement, menu, dll.* Di Guild, gurunya ternyata ada di sana, dikelilingi para hadirin.
-3. **Obrolan dengan guru.** Guru mengajak Kael berjalan malam hari ke alam liar.
-4. Di alam liar, guru menunjukkan anomali magic → *tutorial mana flow detection*. Guru menyampaikan beban dan pesannya: "Pergilah, lihatlah dunia, kau akan menemukan bahwa kita ini kecil."
-5. **Cutscene lain** *(isi belum ditentukan)*.
-6. **Timeskip 5 bulan** → Kael lulus ujian kenaikan class menjadi Class 3 → cerita utama dimulai.
+Skenario lengkap dengan dialog: [Prolog_Scenario.md](Prolog_Scenario.md).
+
+1. **Kael menjalankan misi** (Hollow Farm) → *tutorial bertarung*.
+2. Kael bertemu **musuh yang corrupt** (Corrupted Wolf) dan menemukan **Tainted Shard** saat musuh itu larut menjadi asap.
+3. **Kael kembali ke Guild** → *tutorial movement, menu, dll.* Di Guild yang ramai, gurunya ternyata ada di sana, dikelilingi para hadirin. Kael memanggilnya.
+4. **Obrolan dengan guru.** Guru mengajak Kael berjalan malam hari ke alam liar.
+5. Kael **menunjukkan shard yang ia temukan**. Guru memintanya membaca aliran magic → *tutorial mana flow detection* → mereka menemukan sebuah retakan. Guru menyampaikan beban dan pesannya: "Pergilah, lihatlah dunia, kau akan menemukan bahwa kita ini kecil."
+6. **Cutscene lain** *(usulan: perkenalan pertama Order of Caelum di lokasi retakan)*.
+7. **Timeskip 5 bulan** → Kael lulus ujian kenaikan class menjadi Class 3 → cerita utama dimulai.
 
 ## Bab 1 — Hari Kenaikan Class
 
