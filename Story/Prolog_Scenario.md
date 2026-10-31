@@ -30,7 +30,7 @@
 
 Layar hitam. Narasi legenda bergulir (*scrolling text*):
 
-> *Long ago, when the world was young and wild, seven heroes rose against a darkness that sought to swallow it whole. They were called the Elemental Champions: Ashborn of Darkness. Jeanne of Flame. Caelum of Light. And four more, whose names the ages have worn thin. Together they sealed the darkness away, and the world forgot it had ever been afraid. But seals, like heroes, do not last forever.*
+> *Long ago, when the world was young and wild, seven heroes rose against an evil force that threatened the planet. They were called the Elemental Champions. Together they sealed the evil away, and the world forgot it had ever been afraid. But seals, like heroes, do not last forever.*
 
 **Sealed Vault.** Ruangan batu gelap keunguan. Sesosok berjubah putih (tanpa nama, terlihat dari belakang) berdiri di depan sebuah segel berupa bola hitam.
 

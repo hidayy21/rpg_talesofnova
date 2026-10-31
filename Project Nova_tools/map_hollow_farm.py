@@ -100,7 +100,7 @@ for x, y in ((24, 16), (38, 22)):
 m.exit('To Main Gate', [(W - 1, y) for y in range(RY, RY + 3)], *K.ARRIVE['gate_from_farm'])
 m.locked_door('Farmhouse', 17, fh, ['Something good is baking inside.', 'Nobody answers the knock.'])
 m.locked_door('Barn', 5, bn, ['The barn smells of hay and horses.', 'The doors are barred for the night... or the day.'], style=1)
-m.npc('Rancher Bram', 13, 22, 'People1', 1, ('Rancher Bram:', 'Welcome to Hollow Farm! Best horses in the west.',
+m.npc('Rancher Bram', 15, 19, 'People1', 1, ('Rancher Bram:', 'Welcome to Hollow Farm! Best horses in the west.',
       'The royal stables buy from me - but don\'t tell the Knights.'), direction=2)
 m.npc('Farmhand', 29, 22, 'People4', 0, ('Farmhand:', 'Turnips to the north field, beans to the south.',
       'And the crows get whatever we don\'t guard.'), move=1, freq=2)
@@ -108,9 +108,10 @@ m.npc('Farm Girl', 19, 27, 'People2', 1, ('Farm Girl:', 'This one is Duchess. Sh
       'That one is also Duchess. They are all Duchess.'), direction=4)
 m.critter('Farm Dog', 7, 23, 'Nature', 0, 'Dog', 'The dog wags its whole body.', move=1)
 for x, y in ((3, 27), (7, 28), (10, 26)):
-    m.critter('Horse', x, y, 'Horses', rnd.randrange(4), 'Horse', 'The horse snorts and nudges your shoulder.', move=1, freq=2)
+    m.critter('Horse', x, y, 'Horses', rnd.randrange(4), 'Horse', 'The horse snorts and nudges your shoulder.', move=1, freq=2,
+              area=(1, 26, 11, 29))
 for x, y in ((16, 27), (20, 26), (17, 28)):
-    m.critter('Chicken', x, y, 'Nature', 2, None, 'Bawk! Bawk!', move=1, freq=4)
+    m.critter('Chicken', x, y, 'Nature', 2, None, 'Bawk! Bawk!', move=1, freq=4, area=(15, 26, 21, 29))
 
 if __name__ == '__main__':
     out = next((a for a in sys.argv[1:] if not a.startswith('--')), None)

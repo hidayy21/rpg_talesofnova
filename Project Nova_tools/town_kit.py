@@ -147,10 +147,12 @@ class Town(L.MapBuilder):
         return self.add_event(name, x, y, [page(char(sheet, idx, direction), move_type=move, commands=cmds,
                                                  speed=speed, freq=freq, route=route)])
 
-    def critter(self, name, x, y, sheet, idx, se, line, move=1, speed=3, freq=3, pen=None):
+    def critter(self, name, x, y, sheet, idx, se, line, move=1, speed=3, freq=3, pen=None, area=None):
+        """area (x1, y1, x2, y2): wanders only inside it (NovaPens), e.g. a paddock with an open gate."""
         cmds = [cmd(250, [{'name': se, 'volume': 70, 'pitch': 100, 'pan': 0}])] + text(line) if se else text(line)
         return self.add_event(name, x, y, [page(char(sheet, idx), move_type=move, commands=cmds, speed=speed, freq=freq,
-                                                 route=pen_route(pen) if pen else None, step_anim=bool(pen))])
+                                                 route=pen_route(pen) if pen else None, step_anim=bool(pen))],
+                              note='<pen: %d,%d,%d,%d>' % area if area else '')
 
     def obj(self, name, x, y, sheet, idx, lines=None, step=True, through=False, priority=1, direction=2, pattern=1):
         img = char(sheet, idx, direction, pattern)

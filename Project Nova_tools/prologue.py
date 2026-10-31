@@ -7,6 +7,8 @@
 #   0 opening (Sealed Vault)        1 Hollow Farm: talk to Bram     3 pests cleared, wolf at the pond
 #   4 wolf beaten (shard)           5 go back to the Guild          6 night walk on Skyreach Hill
 #   8 the Order at the crack        9 five months later (license)   10 prologue over
+# Kael can't leave Hollow Farm before stage 5; at stage 5 the World Map exits of the Main Gate turn him back and the
+# gate itself leads straight into the Guild.
 # --save is safe to run again: it replaces its own records/events (matched by id/name) and leaves the rest alone.
 import sys, os, json, math, copy
 import nova_maplib as L
@@ -215,11 +217,10 @@ def build_vault():
     m.add_event('Opening', 1, 11, director([
         *transparent(True), *plugin('Clock hud hide'), *plugin('Minimap hide'), *plugin('Clock stop'),
         *fadeout(), *bgm('Theme2', 70),
-        *scroll('Long ago, when the world was young and wild,', 'seven heroes rose against a darkness',
-                'that sought to swallow it whole.', '',
-                'They were called the Elemental Champions:', 'Ashborn of Darkness. Jeanne of Flame.',
-                'Caelum of Light. And four more,', 'whose names the ages have worn thin.', '',
-                'Together they sealed the darkness away,', 'and the world forgot it had ever been afraid.', '',
+        *scroll('Long ago, when the world was young and wild,', 'seven heroes rose against an evil force',
+                'that threatened the planet.', '',
+                'They were called the Elemental Champions.', '',
+                'Together they sealed the evil away,', 'and the world forgot it had ever been afraid.', '',
                 'But seals, like heroes, do not last forever.'),
         *fade_bgm(3), *tint([-68, -85, -17, 85], 0), *wait(60), *bgm('Dungeon3', 60), *fadein(), *wait(40),
         *se('Darkness1', 70), *anim(seal, 101), *wait(20),
@@ -232,7 +233,7 @@ def build_vault():
         *fade_bgm(2), *fadeout(), *wait(60), *tint([0, 0, 0, 0], 0, False),
         *var(V_STAGE, 1), *plugin('Clock set 12:00'), *plugin('Clock start'), *plugin('Clock hud show'),
         *plugin('Minimap show'), *transparent(False),
-        *goto(FARM, 13, 21, 2)], 0))
+        *goto(FARM, 15, 20, 8)], 0))
     return m
 
 
@@ -420,11 +421,27 @@ def patch_events(map_id, build):
     return mp
 
 
+def staged_pages(mp, prefix, from_stage, until_stage, make):
+    """Existing events named prefix*: their own first page, then make(first page) from one stage until another."""
+    for e in mp['events']:
+        if e and e['name'].startswith(prefix):
+            base = e['pages'][0]
+            e['pages'] = [base, dict(make(base), conditions=page(None, cond=cond(from_stage))['conditions']),
+                          dict(copy.deepcopy(base), conditions=page(None, cond=cond(until_stage))['conditions'])]
+
+
+def hold_exits(mp, prefix, lines, step, from_stage, until_stage):
+    """Map exits that turn Kael back (he talks to himself) from one stage until another."""
+    staged_pages(mp, prefix, from_stage, until_stage,
+                 lambda base: page(None, trigger=1, priority=0, commands=kael(*lines) + move(-1, step)))
+
+
 def farm_events(add, mp):
     ev = {e['name']: e['id'] for e in mp['events'] if e}
     bram = ev['Rancher Bram']
+    hold_exits(mp, 'To Main Gate', ("Not yet. There's still something", 'I need to finish here.'), LEFT, 1, 5)
     add('Prologue: The Job', 1, 15, director([
-        *fadein(), *move(bram, T_UP),
+        *fadein(), *move(bram, T_DOWN),
         *kael("Request from the Guild: 'Pests in the south field.", "Please hurry.' That's me."),
         *kael('Kaelen Ashveil, Mage Class 4, at your service.'),
         *npc('Rancher Bram', 'Class 4? Bit much for some field vermin, isn\'t it?'),
@@ -453,7 +470,7 @@ def farm_events(add, mp):
         *kael('Cold. And the mana inside is moving the wrong way.', "Like it's being *pulled* somewhere."),
         *flash([255, 240, 170, 120], 20), *se('Saint1', 50),
         *kael("...Must've been my fire reflecting. Right."),
-        *fadeout(), *goto(FARM, 13, 21, 2), *move(bram, T_UP), *fadein(),
+        *fadeout(), *goto(FARM, 15, 20, 8), *move(bram, T_DOWN), *fadein(),
         *npc('Rancher Bram', 'You look like you\'ve seen a ghost, lad. What was it?'),
         *kael('A wolf. A very rude wolf.'),
         *npc('Rancher Bram', "Wolves *and* vermin. I'm paying you", 'for the vermin only, mind.'),
@@ -462,40 +479,54 @@ def farm_events(add, mp):
         *tutorial('Open the \\C[6]Menu\\C[0] with \\C[6]Esc\\C[0] / \\C[6]X\\C[0] or a right click:',
                   'Items (the shard is under Key Items), Skills, Equip and Status.',
                   'Press \\C[6]M\\C[0] to show or hide the minimap.'),
-        *tutorial('Report back to the Guild: \\C[6]The Lion\'s Rest\\C[0] in Baker\'s Lane.',
-                  'Out through the Main Gate, then into the city.')]
+        *tutorial('Report back to the Guild: \\C[6]The Lion\'s Rest\\C[0].',
+                  'Head east to the Main Gate and go through it.')]
     add('Corrupted Wolf', 1, 24, [BLANK(), page(char(*WOLF_SPRITE, direction=6), trigger=1, commands=wolf_scene,
                                                 step_anim=True, cond=cond(3)),
                                   page(None, priority=0, cond=cond(self_a=True))])
 
 
-CROWD = [('Young Mage', 'People4', 3, 12, 7), ('Mercenary', 'People3', 4, 14, 7), ('Scholar', 'People2', 1, 12, 8),
-         ('Battle Mage', 'People4', 5, 14, 8), ('Apprentice', 'People1', 3, 12, 9), ('Sellsword', 'People3', 0, 14, 9),
-         ('Mage', 'People2', 6, 13, 7)]
+GUILD_DOOR = (10, 13)                      # where the Tavern Door in Baker's Lane lets you in
+# Isolde sits on the stool right of the west table (3,10); the crowd stands around her (name, sheet, index, x, y, facing)
+ISOLDE_SEAT = (4, 10)
+CROWD = [('Young Mage', 'People4', 3, 3, 9, 2), ('Scholar', 'People2', 1, 4, 9, 2), ('Mage', 'People2', 6, 2, 9, 2),
+         ('Mercenary', 'People3', 4, 5, 9, 4), ('Sellsword', 'People3', 0, 5, 10, 4), ('Battle Mage', 'People4', 5, 5, 11, 4),
+         ('Apprentice', 'People1', 3, 4, 11, 8)]
+
+
+def gate_events(add, mp):
+    """Main Gate during the walk back to the Guild: no way out into the world, and the gate leads straight to the Guild."""
+    hold_exits(mp, 'To World Map', ('Not yet. I still have something to finish:', 'my report to the Guild.'), UP, 1, 9)
+
+    def to_guild(base):
+        p = copy.deepcopy(base)
+        for c in p['list']:
+            if c['code'] == 201: c['parameters'] = [0, GUILD, GUILD_DOOR[0], GUILD_DOOR[1], 8, 0]
+        return p
+    staged_pages(mp, 'Main Gate', 5, 6, to_guild)
 
 
 def guild_events(add, mp):
     crowd = {}
-    for name, sheet, idx, x, y in CROWD:
-        d = 6 if x < 13 else 4 if x > 13 else 2
-        crowd[(x, y)] = add(name, x, y, staged(char(sheet, idx, direction=d), 5, 6))
-    isolde_ev = add('Isolde', 13, 8, staged(char(*ISOLDE_SPRITE, direction=2), 5, 6))
+    for name, sheet, idx, x, y, d in CROWD:
+        crowd[name] = add(name, x, y, staged(char(sheet, idx, direction=d), 5, 6))
+    isolde_ev = add('Isolde', ISOLDE_SEAT[0], ISOLDE_SEAT[1], staged(char(*ISOLDE_SPRITE, direction=4), 5, 6))
     clerk = next(e['id'] for e in mp['events'] if e and e['name'] == 'Guild Clerk')
-    a, b = crowd[(12, 9)], crowd[(14, 9)]
+    # Kael comes in at the door (10,13), squeezes through the crowd and ends up at Isolde's table, on (5,10)
     add('Prologue: The Crowd', 0, 0, director([
         *npc('Young Mage', 'Is it really her? I thought she retired!'),
         *npc('Mercenary', 'Hah, every mage in the capital is here.', "Look at 'em. Like moths to a lamp."),
-        *npc('Guild Clerk', 'Kael! Report first, gawk later.'),
-        *kael('Mission done. Hollow Farm is pest free.', '...Mostly. There was a wolf. It *dissolved*.'),
-        *npc('Guild Clerk', "A wolf that dissolved? Write it down, I'll pass it on.", '...Probably. Fine, go gawk a little.'),
-        *move(-1, RIGHT, RIGHT, RIGHT, UP),
-        *balloon(-1, 2), *kael('White hair... no way.'),
+        *balloon(-1, 1), *kael("Whoa. What's everyone crowding around?"),
+        # through: the Barmaid wanders around here and must never hold the scene up
+        *move(-1, 37, LEFT, LEFT, LEFT, LEFT, UP, 38, skip=True),
+        *kael('Excuse me... pardon me...'),
+        *move(crowd['Sellsword'], 37, RIGHT, UP, T_LEFT, 38, skip=True),
+        *move(-1, 37, UP, UP, LEFT, 38, skip=True),
+        *balloon(-1, 1), *kael('White hair... no way.'),
         *shake(4, 8, 15), *kael('\\{PROFESSOR WYNDMERE!\\}'),
         *[c for k in crowd.values() for c in balloon(k, 1, w=False)], *wait(40),
-        *move(a, LEFT, T_RIGHT, w=False), *move(b, RIGHT, T_LEFT),
-        *move(isolde_ev, DOWN, DOWN, DOWN),
+        *move(isolde_ev, T_RIGHT),
         *isolde('Still the loudest student I ever had, Kaelen.'),
-        *kael("And you're still the only one who calls me Kaelen."),
         *npc('Apprentice', '(He *knows* her?!)'),
         *isolde('Forgive me, everyone. I have an old student to scold.'),
         *isolde('Seven months as a licensed mage.', 'Your letters stopped after the second month.'),
@@ -548,7 +579,7 @@ if __name__ == '__main__':
         build_database()
         vault.save(VAULT, parent_id=0, order=VAULT)
         sky.save(SKYREACH, parent_id=K.WORLD, order=SKYREACH)
-        for mid, fn in ((FARM, farm_events), (GUILD, guild_events)):
+        for mid, fn in ((FARM, farm_events), (K.CITY_GATE, gate_events), (GUILD, guild_events)):
             L.write_map(mid, patch_events(mid, fn))
         world = json.load(open(L.DATA + 'Map001.json', encoding='utf8'))
         world_entry(world); L.write_map(K.WORLD, world)
