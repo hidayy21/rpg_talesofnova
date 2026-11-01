@@ -10,10 +10,10 @@
 | # | Adegan | Lokasi (map) | Waktu | Gameplay |
 |---|---|---|---|---|
 | 0 | Opening: legenda & pesan misterius | Sealed Vault (27) | — | Cutscene |
-| 1 | Misi di Hollow Farm | Hollow Farm (24) | Siang | Tutorial bertarung |
-| 2 | Sesuatu di dekat kolam | Hollow Farm, sisi barat | Siang | Battle melawan musuh *corrupted* |
-| 3 | Pecahan aneh | Hollow Farm | Siang | Dapat item **Tainted Shard** |
-| 4 | Pulang ke Guild | Main Gate → Lion's Rest (12) | Siang–senja | Tutorial movement & menu |
+| 1 | Mencari Tobin | Briarwood (29) | 10:00 | Tutorial movement |
+| 2 | Penyelamatan | Briarwood, tanah lapang | Siang | Tutorial bertarung (Slime + Field Hornet) |
+| 3 | Serigala yang salah | Briarwood, tanah lapang | Siang | Battle melawan musuh *corrupted*, dapat **Tainted Shard**, tutorial menu |
+| 4 | Pulang | Main Gate (23) → Lion's Rest (12) | 17:00 | Cutscene (pemain tidak berjalan sendiri) |
 | 5 | Guild yang penuh sesak | Lion's Rest (12) | — | Cutscene |
 | 6 | Jalan malam | Skyreach Hill (28) | 21:00 | Cutscene berjalan |
 | 7 | Yang Kael temukan | Puncak Skyreach Hill | Malam | Kael menunjukkan shard |
@@ -21,6 +21,8 @@
 | 9 | Beban sang guru | Puncak Skyreach Hill | Malam | Cutscene utama |
 | 10 | Setelah mereka pergi | Puncak Skyreach Hill | 23:40 | Cutscene antagonis |
 | 11 | Lima bulan kemudian | Lion's Rest (12) | 09:00 | Timeskip → Bab 1 |
+
+**Briarwood** (map 29) adalah hutan pinus di barat daya ibu kota, dilewati jalan gerobak tua. Pintu masuknya ada di world map, di sudut hutan dekat jalan (54,38). Selama prolog Kael tidak bisa keluar dari hutan sebelum misinya selesai.
 
 **Skyreach Hill** (map 28) adalah bukit berhutan pinus di barat laut ibu kota, dengan pintu masuk di world map. Puncaknya berupa tebing berumput yang menghadap langit (parallax mengikuti jam: biru, senja, atau bertabur bintang).
 
@@ -45,51 +47,76 @@ Layar hitam. Narasi legenda bergulir (*scrolling text*):
 
 ---
 
-## Adegan 1 — Misi di Hollow Farm *(tutorial bertarung)*
+## Adegan 1 — Mencari Tobin *(tutorial movement)*
 
-**Hollow Farm, siang.** Game dibuka langsung di peternakan. Kael berdiri di depan **Rancher Bram**. Kertas misi dari Guild ada di tangannya.
+**Briarwood, pagi.** Kael tinggal di ibu kota dan orang-orang mengenalnya. Pagi ini ia mengambil misi Guild untuk mencari **Tobin**, tukang gerobak dari kota yang tidak pulang sejak semalam. Game dibuka di ujung selatan jalan hutan.
 
-> **Kael:** "Request from the Guild: 'Pests in the south field. Please hurry.' That's me. Kaelen Ashveil, Mage Class 4, at your service."
-> **Rancher Bram:** "Class 4? Bit much for some field vermin, isn't it?"
-> **Kael:** "Every mission counts. I'm making Class 3 within the year."
-> **Rancher Bram:** "Hah! Then go count some rats for me, lad. South field, past the barn."
+> **Kael:** "Tobin's cart never made it home last night, and the Guild says he took the Briarwood road."
+> **Kael:** "The clerk even made me take supplies. Hang on, Tobin. I'm coming."
 
-Bram memberi **3 Potion**. Di ladang tenggara ada 2 simbol musuh yang terlihat (bukan random), masing-masing **satu ekor** dan sama-sama **lemah terhadap Fire**. Urutannya bebas; battle pertama selalu diawali tutorial dasar (gauge ATB, Attack, Fire).
+Kael membawa **3 Potion** dari Guild.
 
-1. **Slime**: tutorial **weakness**.
-   - Pesan: *"Slimes are weak to Fire. A hit on a weakness is always a CRITICAL hit and wears down the enemy's Guard."*
-   - Setelah Guard habis → **Broken** (tidak bisa bertindak, damage +50%).
-2. **Field Hornet**: Fire lagi, plus tutorial **SPEED** (tombol di kanan atas atau Shift).
+Tutorial movement (jalan, lari dengan Shift, interaksi). Pemain berjalan ke utara menyusuri jalan hutan. Kalau mencoba keluar dari hutan:
 
-Karena ini tutorial, **HP dan MP Kael pulih penuh setelah setiap kemenangan** di prolog (termasuk setelah Corrupted Wolf).
+> **Kael:** "Not yet. I came here to find Tobin."
 
-> **Kael** *(setelah encounter terakhir)*: "That's the last of them. ...Huh. Slimes don't usually crawl *toward* a farm."
+## Adegan 2 — Penyelamatan *(tutorial bertarung)*
 
-## Adegan 2 — Sesuatu di Dekat Kolam
+Di tanah lapang ada gerobak Tobin yang hancur (peti dan barang berserakan). Tobin bersembunyi di antara semak, sementara seekor **Field Hornet** mendekatinya.
 
-**Hollow Farm.** Begitu hama terakhir kalah, anjing peternakan menggonggong ke arah kolam di sisi barat.
+> **Tobin:** "S-stay back! Shoo! Go bother a squirrel!"
+> **Tobin:** "Somebody... help!"
 
-> **Farm Dog:** "*Grrrr... Woof! Woof!*"
-> **Rancher Bram:** "Done already? ...Then what has the animals so spooked?"
-> **Kael:** "Something is out by the pond, west side. Stay here, Mister Bram."
+*(Tepat saat monster akan menyerang, Kael berlari dan menghadang di antara Tobin dan monster.)*
 
-Di tepi kolam ada seekor serigala abu-abu. Saat Kael menyentuhnya:
+> **Kael:** "Hold it right there!"
+> **Tobin:** "Kael!"
+> **Kael:** "Are you alright? I took the Guild's mission to find you. Nobody's heard from you since last night."
+> **Tobin:** "Right... my cart was attacked by monsters, and I twisted my ankle."
+> **Kael:** "Alright. Leave this to me."
+
+**Battle 1: Field Hornet** (lemah terhadap Fire). Tutorial dasar: gauge timeline, Attack/Skill/Item; **weakness**: plate di bawah musuh menunjukkan weakness-nya (berupa **?** sampai pernah dikenai), coba **Fire**, dan serangan ke weakness selalu **CRITICAL**.
+
+Karena ini tutorial, **HP dan MP Kael pulih penuh setelah setiap kemenangan** di prolog (termasuk setelah Corrupted Wolf). Hornet dan slime di prolog juga diberi state tersembunyi **Tutorial** (ATK 75%, tanpa ikon) supaya pemain baru tidak kalah.
+
+> **Kael:** "Phew. Are you hurt anywhere else?"
+> **Tobin:** "Just my ankle, and my pride—"
+> **Tobin:** "Kael, look out! There's another one!"
+
+*(Seekor **Slime** keluar dari balik pepohonan di sisi timur.)*
+
+> **Kael:** "A slime too? Fine. One more!"
+
+**Battle 2: Slime** (lemah terhadap Fire juga). Tutorial **Guard dan Break**: setiap serangan ke weakness mengurangi Guard; saat Guard habis musuh **Broken** (kehilangan giliran berikutnya, damage +50%). Lalu tutorial tombol **SPEED**.
+
+> **Kael:** "That's the last of them. Can you stand?"
+> **Tobin:** "With a hand, maybe. Gods, lad, you came all this way for me?"
+> **Kael:** "Your wife marched into the Guild at dawn. Half the request board was in her handwriting."
+> **Tobin:** "...That sounds like her."
+> **Kael:** "Come on. Let's get you home before—"
+
+## Adegan 3 — Serigala yang Salah
+
+*(Raungan dari dalam hutan.)*
+
+> **Tobin:** "W-what was that?!"
+
+Seekor serigala abu-abu keluar dari balik pepohonan dan mendekati mereka.
 
 > **Kael:** "A grey wolf? No... its mana is all *wrong*. It's like looking at a river flowing uphill."
 > *(Kilatan ungu. Serigala itu berubah wujud menjadi makhluk serigala besar.)*
 > **Kael:** "It's... changing!"
+> **Tobin:** "Kael...!"
+> **Kael:** "Stay behind me, Tobin!"
 
 **Battle: Corrupted Wolf** *(musuh baru, mini-boss prolog)*
-- Battler Werewolf dengan hue ungu. HP 560, cukup untuk Kael solo dengan 3 Potion.
-- **Gimmick:** state **Corrupted Veil** (tag `<veil weakness>` di NovaBreak): weakness Fire **tidak memberi critical**, Guard tidak berkurang, dan Fire hanya 50%. Pesan battle: *"Its mana moves like water flowing uphill..."*
+- Battler Werewolf dengan hue ungu. HP 560, cukup untuk Kael solo.
+- **Gimmick:** state **Corrupted Veil** (tag `<veil weakness>` di NovaBreak): weakness Fire **tidak memberi critical**, Guard tidak berkurang, dan Fire hanya 50%. Pesan battle: *"Its mana moves like water flowing uphill..."*, lalu tutorial singkat tentang musuh *corrupted*.
 - Setelah HP tinggal 50%, korupsinya "retak" (state hilang) dan weakness kembali normal. Ini mengajarkan bahwa ada sesuatu yang aneh, bukan sekadar "musuh kuat".
-
-## Adegan 3 — Pecahan Aneh
 
 Setelah kalah, tubuh serigala **larut menjadi asap ungu**. Yang tersisa hanya sebuah kristal kecil yang gelap.
 
 > **Kael:** "It just... dissolved? Wolves don't do that."
-> *(Kael memungut kristal. SE: dengung rendah.)*
 > **Kael:** "Cold. And the mana inside is moving the wrong way. Like it's being *pulled* somewhere."
 
 *(Kristal berkedip **putih keemasan** sesaat di tangan Kael, lalu redup lagi.)*
@@ -100,48 +127,51 @@ Setelah kalah, tubuh serigala **larut menjadi asap ungu**. Yang tersisa hanya se
 
 > *Catatan:* kilatan emas ini adalah benih **Light** milik Kael (jiwa Caelum). Kael sendiri salah mengiranya sebagai pantulan apinya, dan **tidak ada karakter yang menyadarinya**.
 
-Kembali ke Bram → upah misi (Zen) dan sedikit dialog lucu.
+Kael dan Tobin sama-sama terguncang:
 
-> **Rancher Bram:** "Wolves *and* rats. I'm paying you for the rats only, mind."
-> **Kael:** "...Fair."
+> **Tobin:** "Kael... what in the gods' name was that thing?"
+> **Kael:** "I don't know. I've never seen anything like it. Not in the Academy books, not anywhere."
+> **Tobin:** "Twenty years I've driven this road. Slimes, hornets, the odd boar... never *that*."
+> **Kael:** "Is that what wrecked your cart?"
+> **Tobin:** "I didn't get a good look. Something big, out of the dark. Then I ran."
+> **Kael:** "...Let's get you home. The Guild needs to hear about this."
 
-## Adegan 4 — Pulang ke Guild *(tutorial movement & menu)*
+Tutorial menu: Items (shard ada di Key Items), Skills, Equip, Status, dan minimap (tombol M).
 
-**Main Gate → kota, senja.** Pemain bebas berjalan ke **The Lion's Rest** (Tavern & Guild). Tutorial ditampilkan saat masuk kota:
-- **Movement:** jalan/lari (Shift), interaksi dengan NPC.
-- **Menu:** Items (lihat *Tainted Shard*), Skills, Equip, dan Status.
-- **Minimap** (tombol M) dan **HUD jam**. Matahari sedang terbenam, lampu kota mulai menyala.
+## Adegan 4 — Pulang *(cutscene)*
 
-Penjaga gerbang bisa diajak bicara:
+**Main Gate, senja.** Pemain tidak berjalan sendiri: Kael dan Tobin berjalan menyusuri jalan ke gerbang, dan penjaga gerbang menghampiri mereka.
 
-> **Gate Guard:** "Back from Hollow Farm, Ashveil? You look like you've seen a ghost."
-> **Kael:** "A wolf. A very rude wolf."
+> **Gate Guard:** "Ashveil! You found him!"
+> **Gate Guard:** "We were about to send a patrol into Briarwood. His wife's been at this gate since dawn."
+> **Tobin:** "Found me? The lad saved my hide. Slimes, hornets, and a wolf that... *melted*."
+> **Gate Guard:** "A wolf that what?"
+> **Kael:** "It's a long story. I'll put it in my report."
+> **Gate Guard:** "Then go and report. I'll walk Tobin to the healer. Good work, Kael."
+> **Tobin:** "Thank you, Kael. The next round at the Lion's Rest is on me."
+> **Kael:** "I'll hold you to that."
+
+*(Fade out, lalu langsung ke dalam The Lion's Rest.)*
 
 ## Adegan 5 — Guild yang Penuh Sesak
 
-**The Lion's Rest, senja.** Guild jauh lebih ramai dari biasanya. Para mage dan petualang berkerumun di satu meja, dan dari luar kerumunan Kael tidak bisa melihat siapa yang ada di tengahnya.
+**The Lion's Rest, senja.** Kael masuk dan berjalan beberapa langkah ke dalam. Guild jauh lebih ramai dari biasanya. Para mage dan petualang berkerumun di sekitar satu meja di sisi barat. **Isolde Wyndmere** duduk di meja itu, tertutup kerumunan.
 
 > **Young Mage:** "Is it really her? I thought she retired!"
-> **Mercenary:** "Hah, every mage in the capital's here. Look at 'em, like moths to a lamp."
-> **Guild Clerk:** "Kael! Report first, gawk later. ...Fine. Gawk a little."
+> **Mercenary:** "Hah, every mage in the capital is here. Look at 'em. Like moths to a lamp."
+> **Kael:** "Whoa. What's everyone crowding around?"
 
-Kael melapor ke Guild Clerk (misi selesai). Saat ditanya soal serigala:
+Kael langsung menghampiri meja itu tanpa melapor dulu ke Guild Clerk, dan menyelinap di antara kerumunan.
 
-> **Guild Clerk:** "A wolf that *dissolved*? Write it down, I'll pass it on. ...Probably."
-
-Kael berjinjit dan melihat **rambut putih** di tengah kerumunan.
-
+> **Kael:** "Excuse me... pardon me..."
 > **Kael:** "White hair... no way."
 > **Kael:** "**PROFESSOR WYNDMERE!**"
 
-*(Kerumunan menoleh dan hening. Lalu kerumunan membelah, dan **Isolde Wyndmere** tersenyum.)*
+*(Kerumunan terkejut. Isolde menoleh dari kursinya dan tersenyum.)*
 
 > **Isolde:** "Still the loudest student I ever had, Kaelen."
-> **Kael:** "And you're still the only one who calls me Kaelen."
-> **Young Mage** *(berbisik)*: "He *knows* her?!"
+> **Apprentice** *(berbisik)*: "(He *knows* her?!)"
 > **Isolde:** "Forgive me, everyone. I have an old student to scold."
-
-Isolde berdiri. Para hadirin protes pelan, tapi memberi jalan.
 
 > **Isolde:** "Seven months as a licensed mage. Your letters stopped after the second month."
 > **Kael:** "I've been busy! I'm taking the Class 3 exam within the year."
@@ -170,7 +200,7 @@ Mereka berhenti di sebuah bukit kecil di luar kota.
 *(Kael mengeluarkan **Tainted Shard**. Senyum Isolde langsung hilang.)*
 
 > **Isolde:** "Where?"
-> **Kael:** "Hollow Farm, east treeline. A wolf whose mana flowed backwards. Fire sank into it like water. When it died, it melted, and left *this*."
+> **Kael:** "In Briarwood, on the old cart road. A wolf whose mana flowed backwards. Fire sank into it like water. When it died, it melted, and left *this*."
 > **Isolde:** "...Already so close to the capital."
 > **Kael:** "Professor?"
 > **Isolde:** "Keep holding it. Don't let go of it, and don't let it go *quiet*. Tell me, Kaelen, can you read the flow?"
@@ -264,8 +294,9 @@ Semua adegan di atas sudah dibuat oleh `Project Nova_tools/prologue.py`. Jalanka
 | Bagian | Isi |
 |---|---|
 | **Start game** | Sealed Vault (27). Party awal hanya Kael. |
-| **Map baru** | Sealed Vault (27), Skyreach Hill (28) dengan pintu masuk di world map, barat laut ibu kota. |
-| **Database** | Enemy *Corrupted Wolf* (38), state *Corrupted Veil* (36), item *Tainted Shard* (51, Key Item), troop 41–43, common event 25. |
-| **Flag** | Variabel 1 *Prologue* (tahap 0–10), variabel 2 *Pests Cleared*, switch 11 *Mana Sight*. |
-| **Event** | Hollow Farm (adegan 1–3), Lion's Rest (adegan 5 dan 11), Skyreach Hill (adegan 6–10). |
-| **Placeholder** | Sprite Isolde = `family1` indeks 5; Order of Caelum = `People2` indeks 2; retakan = `!Other2` indeks 5; aliran mana = `!Flame` indeks 7. |
+| **Map baru** | Sealed Vault (27); Skyreach Hill (28), pintu masuk di world map barat laut ibu kota; Briarwood (29), pintu masuk di world map barat daya ibu kota. |
+| **Database** | Enemy *Corrupted Wolf* (38), state *Corrupted Veil* (36) dan *Tutorial* (37), item *Tainted Shard* (51, Key Item), troop 41 *Slime*, 42 *Field Hornet*, 43 *Corrupted Wolf*. |
+| **Flag** | Variabel 1 *Prologue* (tahap 0–10), switch 11 *Mana Sight*. |
+| **Event** | Briarwood (adegan 1–3), Main Gate (adegan 4), Lion's Rest (adegan 5 dan 11), Skyreach Hill (adegan 6–10). Hollow Farm tidak lagi dipakai prolog. |
+| **Placeholder** | Sprite Isolde = `family1` indeks 5; Tobin = `People1` indeks 4; Order of Caelum = `People2` indeks 2; retakan = `!Other2` indeks 5; aliran mana = `!Flame` indeks 7. |
+| **Tes cepat** | Saat playtest, title screen punya menu **Scene Select** (plugin `NovaSceneSelect`) untuk langsung lompat ke adegan 1, 2, 4, 5, 6, Mana Sight, atau 11. Daftarnya ditulis ulang oleh `prologue.py --save` dari koordinat di script, jadi selalu cocok dengan map. Menu ini tidak muncul di game hasil deploy. |

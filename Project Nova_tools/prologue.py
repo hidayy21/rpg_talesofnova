@@ -1,14 +1,13 @@
-# The playable Prologue (Story/Prolog_Scenario.md): database entries, two new maps and the story events on
+# The playable Prologue (Story/Prolog_Scenario.md): database entries, three new maps and the story events on
 # existing maps.
 #   python prologue.py preview_dir      -> preview images of the new maps
 #   python prologue.py --save           -> write everything (RPG Maker MV must be closed)
 #
-# Story flags: variable 1 "Prologue" (stage), variable 2 "Pests Cleared", switch 11 "Mana Sight".
-#   0 opening (Sealed Vault)        1 Hollow Farm: talk to Bram     3 pests cleared, wolf at the pond
-#   4 wolf beaten (shard)           5 go back to the Guild          6 night walk on Skyreach Hill
-#   8 the Order at the crack        9 five months later (license)   10 prologue over
-# Kael can't leave Hollow Farm before stage 5; at stage 5 the World Map exits of the Main Gate turn him back and the
-# gate itself leads straight into the Guild.
+# Story flags: variable 1 "Prologue" (stage), switch 11 "Mana Sight".
+#   0 opening (Sealed Vault)        1 Briarwood: looking for Tobin  2 the rescue (slime + hornet)
+#   3 the wolf                      4 wolf beaten: home to the gate 5 the Guild
+#   6 night walk on Skyreach Hill   8 the Order at the crack        9 five months later (license)   10 prologue over
+# Kael can't leave Briarwood before stage 5; from the wolf on, the story walks him to the Guild by itself.
 # --save is safe to run again: it replaces its own records/events (matched by id/name) and leaves the rest alone.
 import sys, os, json, math, copy
 import nova_maplib as L
@@ -16,14 +15,17 @@ from nova_maplib import page, cmd, text, say, char, rt
 import town_kit as T
 import kingdom as K
 
-V_STAGE, V_PESTS, S_MANA_SIGHT = 1, 2, 11
-VAULT, SKYREACH = 27, 28
+V_STAGE, V_PESTS, S_MANA_SIGHT = 1, 2, 11       # V_PESTS: no longer used (the old Hollow Farm pest count)
+VAULT, SKYREACH, BRIARWOOD = 27, 28, 29
 FARM, GUILD = 24, K.TAVERN
 KAEL, ISOLDE = ('Actor4', 0), ('family1', 5)
 ISOLDE_SPRITE, ORDER_SPRITE, WOLF_SPRITE = ('family1', 5), ('People2', 2), ('Animals2', 1)
-ITEM_SHARD, STATE_VEIL, ENEMY_WOLF, CE_PESTS = 51, 36, 38, 25
+TOBIN_SPRITE = ('People1', 4)              # Tobin the carter, from the capital
+ITEM_SHARD, STATE_VEIL, STATE_TUTORIAL, ENEMY_WOLF, CE_PESTS = 51, 36, 37, 38, 25
 TROOP_SLIME, TROOP_HORNET, TROOP_WOLF = 41, 42, 43
 WORLD_HILL = (58, 30)                      # Skyreach Hill on the World Map; you come back out one tile below
+WORLD_WOOD = (54, 38)                      # Briarwood on the World Map: the forest corner by the road, south-west of
+WORLD_WOOD_OUT = (55, 38)                  # the capital; you come back out next to it
 
 
 # ====================================================================== event-command helpers
@@ -86,8 +88,12 @@ BLANK = lambda **c: page(None, priority=0, cond=c or None)
 
 
 def director(commands, stage):
-    """Autorun that plays once from the given stage on: [nothing, autorun (stage), done (self switch A)]."""
-    return [BLANK(), page(None, trigger=3, priority=0, commands=commands + self_sw(), cond=cond(stage)),
+    """Autorun that plays once from the given stage on: [nothing, autorun (stage), done (self switch A)].
+    It only plays when the story is exactly at its stage; one that was skipped (Scene Select, F9) just marks itself
+    done, so a later stage never replays an old cutscene on the same map."""
+    body = [cmd(111, [1, V_STAGE, 0, stage, 0], 0)] + [dict(c, indent=c['indent'] + 1) for c in commands] \
+        + [cmd(0, [], 1), cmd(412, [], 0)]
+    return [BLANK(), page(None, trigger=3, priority=0, commands=body + self_sw(), cond=cond(stage)),
             page(None, priority=0, cond=cond(self_a=True))]
 
 
@@ -145,18 +151,27 @@ def build_database():
         members = [dict(m, enemyId=enemy) for m in tid[like]['members']]
         db_put(troops, {'id': troop_id, 'members': members, 'name': name, 'pages': pages})
 
-    # one enemy each, both weak to Fire; whichever is fought first also explains the basics
-    def basics():
-        return [cmd(111, [1, V_PESTS, 0, 0, 0], 0)] + plain(
-            '\\C[3]Battle Tutorial\\C[0]', 'Time flows in battle. When Kael\'s gauge on the timeline',
-            'fills, it is his turn: Attack, use a Skill or an Item.', i=1) + plain(
-            'Try \\C[6]Fire\\C[0] from Kael\'s Magic. Spells cost MP.', i=1) + [cmd(0, [], 1), cmd(412, [], 0)]
-    troop(TROOP_SLIME, 'Prologue: Slime', 'Minotaur', eid['Slime'], [troop_page(basics() + plain(
-        'Slimes are weak to \\C[2]Fire\\C[0]. A hit on a weakness is always', 'a \\C[6]CRITICAL\\C[0] hit and wears down the enemy\'s \\C[6]Guard\\C[0].',
-        'The plate under the enemy shows its Guard and weaknesses.')
-        + plain('When the Guard runs out the enemy is \\C[2]Broken\\C[0]:', 'it loses its next turn and takes 50% more damage.'), turn0=True)])
-    troop(TROOP_HORNET, 'Prologue: Field Hornet', 'Minotaur', eid['Field Hornet'], [troop_page(basics() + plain(
-        'Hornets are weak to \\C[2]Fire\\C[0] too. Burn it before it stings!')
+    # tutorial enemies hit softer: an icon-less state (NovaBreak only shows states with an icon), gone after the battle
+    restraint = copy.deepcopy(veil)
+    restraint.update({'id': STATE_TUTORIAL, 'name': 'Tutorial', 'iconIndex': 0, 'priority': 0,
+                      'traits': [{'code': 21, 'dataId': 2, 'value': 0.75}], 'note': 'Prologue tutorial enemies: ATK 75%.'})
+    db_put(states, restraint)
+    soften = [cmd(333, [-1, 0, STATE_TUTORIAL])]
+
+    # Briarwood: first the hornet (basics and weaknesses), then the slime (Guard and Break); both weak to Fire
+    troop(TROOP_HORNET, 'Prologue: Field Hornet', 'Minotaur', eid['Field Hornet'], [troop_page(soften + plain(
+        '\\C[3]Battle Tutorial\\C[0]', 'Time flows in battle. When Kael\'s gauge on the timeline',
+        'fills, it is his turn: Attack, use a Skill or an Item.') + plain(
+        '\\C[3]Weaknesses\\C[0]', 'Every enemy has weaknesses. The plate under the enemy',
+        'shows them, as \\C[6]?\\C[0] until you have hit them once.') + plain(
+        'Field Hornets are weak to \\C[2]Fire\\C[0]. Try \\C[6]Fire\\C[0] from Kael\'s Magic.',
+        'Spells cost MP.') + plain(
+        'A hit on a weakness is always a \\C[6]CRITICAL\\C[0] hit.', 'Find the weakness, and battles end fast.'), turn0=True)])
+    troop(TROOP_SLIME, 'Prologue: Slime', 'Minotaur', eid['Slime'], [troop_page(soften + plain(
+        'Slimes are weak to \\C[2]Fire\\C[0] too.') + plain(
+        '\\C[3]Guard and Break\\C[0]', 'Every hit on a weakness also wears down the enemy\'s',
+        '\\C[6]Guard\\C[0], shown on its plate.') + plain(
+        'When the Guard runs out the enemy is \\C[2]Broken\\C[0]:', 'it loses its next turn and takes 50% more damage.')
         + plain('Battle too slow? Press \\C[6]Shift\\C[0] or click \\C[6]SPEED\\C[0] at the top right',
                 'to switch between x1, x1.5 and x2. It stays as you leave it.'), turn0=True)])
     for t in range(TROOP_WOLF + 1, len(troops)):          # troops left over from an older version of this script
@@ -164,7 +179,10 @@ def build_database():
     while troops[-1] is None: troops.pop()
     troop(TROOP_WOLF, 'Prologue: Corrupted Wolf', 'Minotaur', ENEMY_WOLF, [
         troop_page([cmd(333, [0, 0, STATE_VEIL])] + plain('Black-violet veins pulse under the wolf\'s fur.',
-                                                         'Its mana moves like water flowing uphill...'), turn0=True),
+                                                         'Its mana moves like water flowing uphill...')
+                   + tutorial('A \\C[2]corrupted\\C[0] enemy hides its weaknesses: hitting one is',
+                              'no critical and leaves its \\C[6]Guard\\C[0] alone. Wear it down,',
+                              'and the corruption may crack.'), turn0=True),
         troop_page([cmd(333, [0, 1, STATE_VEIL]), cmd(337, [0, 101, False])] + se('Break', 90)
                    + plain('The corruption \\C[2]cracks\\C[0]!', 'Its weakness to \\C[2]Fire\\C[0] shows through.'), enemy_hp=50)])
 
@@ -176,16 +194,10 @@ def build_database():
                   'note': ''})
     db_put(items, shard)
 
-    db_put(ces, {'id': CE_PESTS, 'name': 'Prologue: Pest Cleared', 'switchId': 1, 'trigger': 0, 'list': var(V_PESTS, 1, op=1) + [
-        cmd(111, [1, V_PESTS, 0, 2, 1], 0),
-        *kael("That's the last of them. ...Huh.", "Slimes don't usually crawl *toward* a farm.", i=1),
-        *se('Dog', 90, i=1), *balloon(9, 1, i=1), *balloon(-1, 1, i=1),
-        *npc('Farm Dog', 'Grrrr... Woof! Woof!', i=1),
-        *npc('Rancher Bram', 'Done already? ...Then what has the animals so spooked?', i=1),
-        *kael('Something is out by the pond, west side.', 'Stay here, Mister Bram.', i=1),
-        *var(V_STAGE, 3, i=1), cmd(0, [], 1), cmd(412, [], 0), cmd(0, [])]})
+    # the Hollow Farm pest counter is gone with the farm mission: clear its common event and variable name
+    db_put(ces, {'id': CE_PESTS, 'name': '', 'switchId': 1, 'trigger': 0, 'list': [cmd(0, [])]})
 
-    for i_, n in ((V_STAGE, 'Prologue'), (V_PESTS, 'Pests Cleared')): system['variables'][i_] = n
+    for i_, n in ((V_STAGE, 'Prologue'), (V_PESTS, '')): system['variables'][i_] = n
     system['switches'][S_MANA_SIGHT] = 'Mana Sight'
     system['partyMembers'] = [1]
     system.update({'startMapId': VAULT, 'startX': 8, 'startY': 11})
@@ -231,9 +243,9 @@ def build_vault():
         *npc('???', 'I will bring it back.'),
         *wait(30), *npc('???', 'The Champion of Light will rise again.'),
         *fade_bgm(2), *fadeout(), *wait(60), *tint([0, 0, 0, 0], 0, False),
-        *var(V_STAGE, 1), *plugin('Clock set 12:00'), *plugin('Clock start'), *plugin('Clock hud show'),
+        *var(V_STAGE, 1), *plugin('Clock set 10:00'), *plugin('Clock start'), *plugin('Clock hud show'),
         *plugin('Minimap show'), *transparent(False),
-        *goto(FARM, 15, 20, 8)], 0))
+        *goto(BRIARWOOD, WOOD_START[0], WOOD_START[1], 8)], 0))
     return m
 
 
@@ -391,7 +403,8 @@ def build_skyreach():
         *move(isolde_ev, T_DOWN), *se('Item1'),
         *plain('Kael holds out the \\C[6]Tainted Shard\\C[0].'),
         *balloon(isolde_ev, 1), *isolde('Where?'),
-        *kael('Hollow Farm, by the pond. A wolf whose mana', 'flowed backwards. Fire sank into it like water.', 'When it died, it melted, and left *this*.'),
+        *kael('In Briarwood, on the old cart road.', 'A wolf whose mana flowed backwards.', 'Fire sank into it like water.'),
+        *kael('When it died, it melted, and left *this*.'),
         *isolde('...Already so close to the capital.'),
         *kael('Professor?'),
         *isolde('Tell me, Kaelen. Can you read the flow?'),
@@ -401,6 +414,139 @@ def build_skyreach():
         *tutorial('\\C[6]Mana Sight\\C[0]: threads of mana glimmer in the dark,', 'all flowing the same way.',
                   'Follow them, and examine the place where they go wrong.')]
     m.add_event('Prologue: Night Walk', 0, H - 2, director(walk, 6))
+    return m
+
+
+# ====================================================================== MAP029 - Briarwood (the rescue)
+WOOD_W, WOOD_H = 30, 36
+WOOD_PATH = [(15.5, 36), (13.5, 30), (16, 24), (15, 19), (15.5, 13)]
+WOOD_CLEARING, WOOD_RX, WOOD_RY = (15.5, 9.5), 7, 5
+WOOD_START = (15, WOOD_H - 2)              # where the opening drops Kael, and where the World Map lets you in
+STRIP_Y = 17                               # stepping on this row (stage 1) starts the rescue
+TOBIN, KAEL_STOP = (15, 7), (15, 8)        # Kael ends up right in front of Tobin, between him and the monsters
+HORNET = (16, 11)
+# the slime and the wolf wait inside the tree line, hidden under the crowns, and come out when it is their turn
+SLIME_FROM, WOLF_FROM = (23, 9), (8, 10)
+
+
+def build_briarwood():
+    W, H = WOOD_W, WOOD_H
+    m = L.MapBuilder(W, H, T.OUTSIDE, 'Briarwood', 'Briarwood')
+    m.note = '<outdoor>'
+    m.bgm = {'name': 'Field2', 'pan': 0, 'pitch': 100, 'volume': 70}
+    road = lambda x, y: min(seg_dist((x, y), WOOD_PATH[i], WOOD_PATH[i + 1]) for i in range(len(WOOD_PATH) - 1))
+    path = lambda x, y: road(x, y) < 1.15
+    clearing = lambda x, y: ((x - WOOD_CLEARING[0]) / WOOD_RX) ** 2 + ((y - WOOD_CLEARING[1]) / WOOD_RY) ** 2 < 1
+    verge = lambda x, y: road(x, y) < 2.3 + 0.9 * math.sin(y * 0.8 + x * 0.5)     # a ragged grass edge along the road
+    wood = lambda x, y: not clearing(x, y) and not verge(x, y)
+    for y in range(H):
+        for x in range(W):
+            m.cell(x, y, T.DIRT if path(x, y) and not clearing(x, y) else T.GRASS)
+    # pines packed one per tile, each crown over the tile above: the forest is a wall around the road and the clearing
+    for y in range(H):
+        for x in range(W):
+            if wood(x, y):
+                m.put(x, y, T.TREE_S3)
+                if y > 0: m.put(x, y - 1, T.TREE_S1, 3)
+    # undergrowth on the verge, kept off the road itself and off the row that starts the rescue
+    rnd = __import__('random').Random(29)
+    for y in range(STRIP_Y + 1, H - 1):
+        for x in range(W):
+            if not wood(x, y) and not path(x, y) and rnd.random() < 0.45:
+                m.put(x, y, rnd.choice([T.FERN, T.BUSH_S, T.STUMP, *T.GRASS_TUFTS, *T.GRASS_TUFTS, *T.FLOWERS]))
+    # Tobin's wrecked cart: spilled crates, a barrel and firewood; ferns where he hides, rocks and a log
+    for (x, y), tile in (((19, 6), T.CRATE), ((20, 6), T.BARREL), ((20, 8), T.CRATE_APPLE), ((21, 7), T.FIREWOOD),
+                         ((12, 7), T.BOULDER), ((19, 12), T.STUMP), ((11, 12), T.LOG), ((14, 6), T.FERN), ((16, 6), T.FERN),
+                         ((22, 10), T.ROCKS)):
+        m.put(x, y, tile)
+    for i, (x, y) in enumerate([(13, 13), (18, 13), (11, 9), (20, 11), (17, 6), (13, 5), (21, 9)]):
+        m.put(x, y, T.FLOWERS[i % 4] if i % 2 else T.GRASS_TUFTS[i % 4])
+
+    # out to the World Map: not before Tobin is found
+    for x in (x for x in range(W) if not wood(x, H - 1)):
+        out = L.exit_page(K.WORLD, WORLD_WOOD_OUT[0], WORLD_WOOD_OUT[1], 2)
+        stay = page(None, trigger=1, priority=0, cond=cond(1), commands=kael("Not yet. I came here to find Tobin.") + move(-1, UP))
+        m.add_event('To World Map %d' % x, x, H - 1, [out, stay, dict(copy.deepcopy(out), conditions=page(None, cond=cond(5))['conditions'])])
+
+    tobin = m.add_event('Tobin', TOBIN[0], TOBIN[1], staged(char(*TOBIN_SPRITE, direction=2), 1, 4))['id']
+    slime = m.add_event('Slime', SLIME_FROM[0], SLIME_FROM[1], staged(char('Monster', 1, direction=4), 1, 3, step_anim=True),
+                        note='<minimap: hide>')['id']
+    hornet = m.add_event('Field Hornet', HORNET[0], HORNET[1], staged(char('$Pet_Hornet', 0, direction=8), 1, 3, step_anim=True),
+                         note='<minimap: hide>')['id']
+    wolf = m.add_event('Grey Wolf', WOLF_FROM[0], WOLF_FROM[1], staged(char(*WOLF_SPRITE, direction=6), 3, 4, step_anim=True),
+                       note='<minimap: hide>')['id']
+    for x in (x for x in range(W) if not wood(x, STRIP_Y)):
+        m.add_event('Prologue: Clearing %d' % x, x, STRIP_Y,
+                    [BLANK(), page(None, trigger=1, priority=0, cond=cond(1), commands=var(V_STAGE, 2)), BLANK(**cond(2))])
+
+    m.add_event('Prologue: Briarwood', 0, H - 1, director([
+        *fadein(),
+        *kael("Tobin's cart never made it home last night,", 'and the Guild says he took the Briarwood road.'),
+        *kael('The clerk even made me take supplies.', "Hang on, Tobin. I'm coming."),
+        *se('Item1'), *item(1, 3), *plain('Kael has 3 \\C[6]Potions\\C[0].'),
+        *tutorial('Move with the arrow keys or a click. Hold \\C[6]Shift\\C[0] to dash.',
+                  'Talk and examine with \\C[6]Enter\\C[0] / \\C[6]Z\\C[0].')], 1))
+
+    gone = lambda ev, w=True: move(ev, 39, 37, w=w)          # transparent + through: off the stage
+    rescue = [
+        *goto(BRIARWOOD, KAEL_STOP[0], STRIP_Y, 8, fade=2),     # same spot whichever tile of the row was stepped on
+        *npc('Tobin', 'S-stay back! Shoo! Go bother a squirrel!'), *balloon(tobin, 6),
+        *move(hornet, UP), *wait(20),
+        *npc('Tobin', 'Somebody... help!'),
+        *move(hornet, UP, w=False),
+        # through + skippable: a cutscene walk must never hang on something in the way
+        *move(-1, 37, (29, 5), *[UP] * (STRIP_Y - KAEL_STOP[1]), (29, 4), 38, T_DOWN, skip=True),
+        *kael('Hold it right there!'),
+        *balloon(tobin, 1), *npc('Tobin', 'Kael!'),
+        *move(-1, T_UP),
+        *kael("Are you alright? I took the Guild's mission to find you.", "Nobody's heard from you since last night."),
+        *npc('Tobin', 'Right... my cart was attacked by monsters,', 'and I twisted my ankle.'),
+        *move(-1, T_DOWN),
+        *kael('Alright. Leave this to me.'),
+        *battle(TROOP_HORNET), *gone(hornet), *heal(),
+        *move(-1, T_UP),
+        *kael('Phew. Are you hurt anywhere else?'),
+        *npc('Tobin', 'Just my ankle, and my pride—'),
+        *balloon(tobin, 1), *npc('Tobin', "Kael, look out! There's another one!"),
+        *move(slime, 37, *[LEFT] * (SLIME_FROM[0] - 17), 38, skip=True), *move(-1, T_RIGHT),
+        *kael('A slime too? Fine. One more!'),
+        *battle(TROOP_SLIME), *gone(slime), *heal(),
+        *move(-1, T_UP),
+        *kael("That's the last of them. Can you stand?"),
+        *npc('Tobin', 'With a hand, maybe. Gods, lad,', 'you came all this way for me?'),
+        *kael('Your wife marched into the Guild at dawn.', 'Half the request board was in her handwriting.'),
+        *npc('Tobin', '...That sounds like her.'),
+        *kael("Come on. Let's get you home before—"),
+        *se('Wolf', 90), *shake(3, 6, 20), *balloon(-1, 1, w=False), *balloon(tobin, 1),
+        *npc('Tobin', 'W-what was that?!'),
+        *var(V_STAGE, 3), *move(-1, T_LEFT, w=False), *move(wolf, 37, RIGHT, RIGHT, RIGHT, RIGHT, 38, skip=True),
+        *kael('A grey wolf? No... its mana is all *wrong*.', "It's like looking at a river flowing uphill."),
+        *se('Growl', 90), *flash([120, 60, 200, 160], 30), *anim(wolf, 103),
+        *kael("It's... changing!"),
+        *npc('Tobin', 'Kael...!'),
+        *kael('Stay behind me, Tobin!'),
+        *battle(TROOP_WOLF), *heal(),
+        *anim(wolf, 104), *se('Darkness3', 80), *gone(wolf),
+        *plain('The wolf dissolves into violet smoke.', 'Only a small black crystal is left in the grass.'),
+        *kael('It just... dissolved? Wolves don\'t do that.'),
+        *se('Item3'), *item(ITEM_SHARD),
+        *plain('Got the \\C[6]Tainted Shard\\C[0]!'),
+        *kael('Cold. And the mana inside is moving the wrong way.', "Like it's being *pulled* somewhere."),
+        *flash([255, 240, 170, 120], 20), *se('Saint1', 50),
+        *kael("...Must've been my fire reflecting. Right."),
+        *move(-1, T_UP),
+        *npc('Tobin', "Kael... what in the gods' name was that thing?"),
+        *kael("I don't know. I've never seen anything like it.", 'Not in the Academy books, not anywhere.'),
+        *npc('Tobin', "Twenty years I've driven this road.", 'Slimes, hornets, the odd boar... never *that*.'),
+        *kael('Is that what wrecked your cart?'),
+        *npc('Tobin', "I didn't get a good look. Something big,", 'out of the dark. Then I ran.'),
+        *kael("...Let's get you home. The Guild needs to hear about this."),
+        *tutorial('Open the \\C[6]Menu\\C[0] with \\C[6]Esc\\C[0] / \\C[6]X\\C[0] or a right click:',
+                  'Items (the shard is under Key Items), Skills, Equip and Status.',
+                  'Press \\C[6]M\\C[0] to show or hide the minimap.'),
+        *fade_bgm(2), *fadeout(), *var(V_STAGE, 4), *plugin('Clock set 17:00'),
+        *goto(K.CITY_GATE, GATE_ROAD[0], GATE_ROAD[1], 8)]
+    m.add_event('Prologue: The Rescue', 1, H - 1, director(rescue, 2))
     return m
 
 
@@ -421,72 +567,20 @@ def patch_events(map_id, build):
     return mp
 
 
-def staged_pages(mp, prefix, from_stage, until_stage, make):
-    """Existing events named prefix*: their own first page, then make(first page) from one stage until another."""
+def restore_pages(mp, prefix):
+    """Existing events named prefix* back to their own first page (an older version of this script staged them)."""
     for e in mp['events']:
-        if e and e['name'].startswith(prefix):
-            base = e['pages'][0]
-            e['pages'] = [base, dict(make(base), conditions=page(None, cond=cond(from_stage))['conditions']),
-                          dict(copy.deepcopy(base), conditions=page(None, cond=cond(until_stage))['conditions'])]
-
-
-def hold_exits(mp, prefix, lines, step, from_stage, until_stage):
-    """Map exits that turn Kael back (he talks to himself) from one stage until another."""
-    staged_pages(mp, prefix, from_stage, until_stage,
-                 lambda base: page(None, trigger=1, priority=0, commands=kael(*lines) + move(-1, step)))
+        if e and e['name'].startswith(prefix): e['pages'] = e['pages'][:1]
 
 
 def farm_events(add, mp):
-    ev = {e['name']: e['id'] for e in mp['events'] if e}
-    bram = ev['Rancher Bram']
-    hold_exits(mp, 'To Main Gate', ("Not yet. There's still something", 'I need to finish here.'), LEFT, 1, 5)
-    add('Prologue: The Job', 1, 15, director([
-        *fadein(), *move(bram, T_DOWN),
-        *kael("Request from the Guild: 'Pests in the south field.", "Please hurry.' That's me."),
-        *kael('Kaelen Ashveil, Mage Class 4, at your service.'),
-        *npc('Rancher Bram', 'Class 4? Bit much for some field vermin, isn\'t it?'),
-        *kael("Every mission counts. I'm making Class 3", 'within the year.'),
-        *npc('Rancher Bram', 'Hah! Then go count some vermin for me, lad.', 'The crop field, south-east. A slime and a hornet.'),
-        *npc('Rancher Bram', 'And take these. My wife insists.'), *se('Item1'), *item(1, 3), *plain('Received 3 \\C[6]Potions\\C[0].'),
-        *tutorial('Move with the arrow keys or a click. Hold \\C[6]Shift\\C[0] to dash.',
-                  'Talk and examine with \\C[6]Enter\\C[0] / \\C[6]Z\\C[0]. Touch a monster to fight it.')], 1))
-    for name, (x, y), img, troop in (('Pest: Slime', (34, 27), char('Monster', 1), TROOP_SLIME),
-                                     ('Pest: Hornet', (30, 28), char('$Pet_Hornet', 0), TROOP_HORNET)):
-        add(name, x, y, [BLANK(), page(img, trigger=2, move_type=1, freq=2, speed=2, step_anim=True, cond=cond(1),
-                                       commands=battle(troop) + heal() + self_sw() + common(CE_PESTS)),
-                         page(None, priority=0, cond=cond(self_a=True))],
-            note='<minimap: npc>')
-    wolf_scene = [
-        *se('Wolf', 80), *balloon(-1, 1), *move(0, T_RIGHT),
-        *kael('A grey wolf? No... its mana is all *wrong*.', "It's like looking at a river flowing uphill."),
-        *se('Growl', 90), *flash([120, 60, 200, 160], 30), *anim(0, 103),
-        *kael("It's... changing!"),
-        *battle(TROOP_WOLF), *heal(),
-        *anim(0, 104), *se('Darkness3', 80), *self_sw(),
-        *plain('The wolf dissolves into violet smoke.', 'Only a small black crystal is left in the grass.'),
-        *kael('It just... dissolved? Wolves don\'t do that.'),
-        *se('Item3'), *item(ITEM_SHARD),
-        *plain('Got the \\C[6]Tainted Shard\\C[0]!'),
-        *kael('Cold. And the mana inside is moving the wrong way.', "Like it's being *pulled* somewhere."),
-        *flash([255, 240, 170, 120], 20), *se('Saint1', 50),
-        *kael("...Must've been my fire reflecting. Right."),
-        *fadeout(), *goto(FARM, 15, 20, 8), *move(bram, T_DOWN), *fadein(),
-        *npc('Rancher Bram', 'You look like you\'ve seen a ghost, lad. What was it?'),
-        *kael('A wolf. A very rude wolf.'),
-        *npc('Rancher Bram', "Wolves *and* vermin. I'm paying you", 'for the vermin only, mind.'),
-        *kael('...Fair.'), *se('Coin'), *gold(120), *plain('Received 120 Z.'),
-        *var(V_STAGE, 5),
-        *tutorial('Open the \\C[6]Menu\\C[0] with \\C[6]Esc\\C[0] / \\C[6]X\\C[0] or a right click:',
-                  'Items (the shard is under Key Items), Skills, Equip and Status.',
-                  'Press \\C[6]M\\C[0] to show or hide the minimap.'),
-        *tutorial('Report back to the Guild: \\C[6]The Lion\'s Rest\\C[0].',
-                  'Head east to the Main Gate and go through it.')]
-    add('Corrupted Wolf', 1, 24, [BLANK(), page(char(*WOLF_SPRITE, direction=6), trigger=1, commands=wolf_scene,
-                                                step_anim=True, cond=cond(3)),
-                                  page(None, priority=0, cond=cond(self_a=True))])
+    """The prologue no longer happens on Hollow Farm: its old events go (patch_events) and the exits are plain again."""
+    restore_pages(mp, 'To Main Gate')
 
 
 GUILD_DOOR = (10, 13)                      # where the Tavern Door in Baker's Lane lets you in
+GUILD_SILL = (10, 14)                      # the doorway itself: in the prologue Kael walks in from here
+GATE_ROAD = (20, 32)                       # Main Gate: bottom of the road, where Kael comes home with Tobin
 # Isolde sits on the stool right of the west table (3,10); the crowd stands around her (name, sheet, index, x, y, facing)
 ISOLDE_SEAT = (4, 10)
 CROWD = [('Young Mage', 'People4', 3, 3, 9, 2), ('Scholar', 'People2', 1, 4, 9, 2), ('Mage', 'People2', 6, 2, 9, 2),
@@ -495,15 +589,26 @@ CROWD = [('Young Mage', 'People4', 3, 3, 9, 2), ('Scholar', 'People2', 1, 4, 9, 
 
 
 def gate_events(add, mp):
-    """Main Gate during the walk back to the Guild: no way out into the world, and the gate leads straight to the Guild."""
-    hold_exits(mp, 'To World Map', ('Not yet. I still have something to finish:', 'my report to the Guild.'), UP, 1, 9)
-
-    def to_guild(base):
-        p = copy.deepcopy(base)
-        for c in p['list']:
-            if c['code'] == 201: c['parameters'] = [0, GUILD, GUILD_DOOR[0], GUILD_DOOR[1], 8, 0]
-        return p
-    staged_pages(mp, 'Main Gate', 5, 6, to_guild)
+    """Main Gate at dusk: Kael walks Tobin home from Briarwood, the gate guard takes over, then on to the Guild."""
+    restore_pages(mp, 'To World Map'); restore_pages(mp, 'Main Gate')
+    guard = next(e['id'] for e in mp['events'] if e and e['name'] == 'Gate Guard' and e['x'] > 20)
+    tobin = add('Tobin', GATE_ROAD[0] - 1, GATE_ROAD[1], staged(char(*TOBIN_SPRITE, direction=8), 4, 5))
+    steps = GATE_ROAD[1] - 18                  # up the road to just below the gate guards (y15)
+    add('Prologue: Home Again', 0, 0, director([
+        *fadein(),       # the Briarwood scene ended on a Fadeout, and a transfer does not undo that
+        *move(tobin, 37, *[UP] * steps, 38, w=False, skip=True), *move(-1, 37, *[UP] * steps, 38, skip=True),
+        *move(guard, 37, LEFT, LEFT, DOWN, DOWN, DOWN, 38, T_LEFT, skip=True), *move(-1, T_RIGHT),
+        *npc('Gate Guard', 'Ashveil! You found him!'),
+        *npc('Gate Guard', 'We were about to send a patrol into Briarwood.', "His wife's been at this gate since dawn."),
+        *npc('Tobin', 'Found me? The lad saved my hide.', 'Slimes, hornets, and a wolf that... *melted*.'),
+        *npc('Gate Guard', 'A wolf that what?'),
+        *kael("It's a long story. I'll put it in my report."),
+        *npc('Gate Guard', "Then go and report. I'll walk Tobin to the healer.", 'Good work, Kael.'),
+        *move(-1, T_LEFT, w=False), *move(tobin, T_RIGHT),
+        *npc('Tobin', 'Thank you, Kael. The next round at', "the Lion's Rest is on me."),
+        *kael("I'll hold you to that."),
+        *fadeout(), *var(V_STAGE, 5), *plugin('Clock set 17:30'),
+        *goto(GUILD, GUILD_SILL[0], GUILD_SILL[1], 8)], 4))
 
 
 def guild_events(add, mp):
@@ -512,13 +617,14 @@ def guild_events(add, mp):
         crowd[name] = add(name, x, y, staged(char(sheet, idx, direction=d), 5, 6))
     isolde_ev = add('Isolde', ISOLDE_SEAT[0], ISOLDE_SEAT[1], staged(char(*ISOLDE_SPRITE, direction=4), 5, 6))
     clerk = next(e['id'] for e in mp['events'] if e and e['name'] == 'Guild Clerk')
-    # Kael comes in at the door (10,13), squeezes through the crowd and ends up at Isolde's table, on (5,10)
+    # Kael walks in from the doorway (10,14) to (10,12), squeezes through the crowd and ends up at Isolde's table, on (5,10)
     add('Prologue: The Crowd', 0, 0, director([
+        *fadein(), *move(-1, UP, UP), *wait(30),
         *npc('Young Mage', 'Is it really her? I thought she retired!'),
         *npc('Mercenary', 'Hah, every mage in the capital is here.', "Look at 'em. Like moths to a lamp."),
         *balloon(-1, 1), *kael("Whoa. What's everyone crowding around?"),
         # through: the Barmaid wanders around here and must never hold the scene up
-        *move(-1, 37, LEFT, LEFT, LEFT, LEFT, UP, 38, skip=True),
+        *move(-1, 37, LEFT, LEFT, LEFT, LEFT, 38, skip=True),
         *kael('Excuse me... pardon me...'),
         *move(crowd['Sellsword'], 37, RIGHT, UP, T_LEFT, 38, skip=True),
         *move(-1, 37, UP, UP, LEFT, 38, skip=True),
@@ -551,7 +657,7 @@ def guild_events(add, mp):
 
 
 def world_entry(mp):
-    """Skyreach Hill on the World Map: a wooded knoll north-west of the capital."""
+    """Skyreach Hill on the World Map (a wooded knoll north-west of the capital) and the way into Briarwood."""
     W, H = mp['width'], mp['height']
     hx, hy = WORLD_HILL
     knoll = {(hx + dx, hy + dy) for dx in (-1, 0, 1) for dy in (-1, 0)}
@@ -560,27 +666,70 @@ def world_entry(mp):
         shape = L._shape(lambda xx, yy: same(xx, yy), x, y, True)
         mp['data'][(1 * H + y) * W + x] = L.A2 + 6 * 48 + shape
     mp['data'][(2 * H + hy - 1) * W + hx] = 11            # World_B: a big tree on top
-    mp['events'] = [None if e and e['name'] == 'Skyreach Hill' else e for e in mp['events']]
+    # Briarwood needs no new tiles: its entrance sits on the corner of the forest south-west of the capital
+    entries = {'Skyreach Hill': (hx, hy, L.exit_page(SKYREACH, 16, SKY_H - 2, 8)),
+               'Briarwood': (WORLD_WOOD[0], WORLD_WOOD[1], L.exit_page(BRIARWOOD, WOOD_START[0], WOOD_START[1], 8))}
+    mp['events'] = [None if e and e['name'] in entries else e for e in mp['events']]
     while len(mp['events']) > 1 and mp['events'][-1] is None: mp['events'].pop()
-    slot = next((k for k in range(1, len(mp['events'])) if mp['events'][k] is None), len(mp['events']))
-    ev = {'id': slot, 'name': 'Skyreach Hill', 'note': '<minimap: exit>', 'x': hx, 'y': hy,
-          'pages': [L.exit_page(SKYREACH, 16, SKY_H - 2, 8)]}
-    if slot == len(mp['events']): mp['events'].append(ev)
-    else: mp['events'][slot] = ev
+    for name, (x, y, pg) in entries.items():
+        slot = next((k for k in range(1, len(mp['events'])) if mp['events'][k] is None), len(mp['events']))
+        ev = {'id': slot, 'name': name, 'note': '<minimap: exit>', 'x': x, 'y': y, 'pages': [pg]}
+        if slot == len(mp['events']): mp['events'].append(ev)
+        else: mp['events'][slot] = ev
+
+
+# ====================================================================== playtest: Scene Select (NovaSceneSelect)
+def scene_select():
+    """The prologue's checkpoints for the Scene Select on the title screen (playtest only), from this script's own
+    coordinates. 'done' marks the cutscenes that already happened, so they don't play again."""
+    shard, gate = 'item=%d' % ITEM_SHARD, K.CITY_GATE
+    scenes = [
+        ('Prologue 0: Opening', (VAULT, 8, 11, 2), []),
+        ('Prologue 1: Briarwood, looking for Tobin', (BRIARWOOD, WOOD_START[0], WOOD_START[1], 8), ['v1=1', 'cmd=Clock set 10:00']),
+        ('Prologue 2: Briarwood, the rescue', (BRIARWOOD, KAEL_STOP[0], STRIP_Y, 8),
+         ['v1=2', 'item=1x3', 'done=Prologue: Briarwood', 'cmd=Clock set 10:30']),
+        ('Prologue 4: Main Gate, home with Tobin', (gate, GATE_ROAD[0], GATE_ROAD[1], 8), ['v1=4', shard, 'cmd=Clock set 17:00']),
+        ('Prologue 5: Guild, Professor Wyndmere', (GUILD, GUILD_SILL[0], GUILD_SILL[1], 8), ['v1=5', shard, 'cmd=Clock set 17:30']),
+        ('Prologue 6: Skyreach Hill, night walk', (SKYREACH, 16, 41, 8), ['v1=6', shard, 'cmd=Clock set 21:00']),
+        ('Prologue 6: Skyreach Hill, Mana Sight', (SKYREACH, LOOKOUT[0] - 1, LOOKOUT[1], 8),
+         ['v1=6', 's%d=on' % S_MANA_SIGHT, shard, 'done=Prologue: Night Walk', 'tint=-51,-17,68,34', 'cmd=Clock set 21:30']),
+        ('Prologue 9: Five months later', (GUILD, 26, 7, 8), ['v1=9', shard, 'done=Prologue: The Crowd', 'cmd=Clock set 09:00'])]
+    return '\n'.join('%s = %d, %d, %d, %d' % ((label,) + spot) + ''.join(' ; ' + s for s in settings)
+                     for label, spot, settings in scenes)
+
+
+def register_scene_select():
+    """Add or update the NovaSceneSelect entry in js/plugins.js with the prologue's scenes."""
+    path = L.PROJ + 'js/plugins.js'
+    src = open(path, encoding='utf8').read()
+    head, body = src.split('var $plugins =', 1)
+    plugins = json.loads(body.strip().rstrip(';'))
+    entry = next((p for p in plugins if p['name'] == 'NovaSceneSelect'), None)
+    if not entry:
+        entry = {'name': 'NovaSceneSelect', 'status': True, 'description': 'Playtest only: "Scene Select" on the title '
+                 'screen jumps straight to a story scene, with its variables, switches, items and clock set.', 'parameters': {}}
+        plugins.append(entry)
+    entry['parameters']['Scenes'] = json.dumps(scene_select(), ensure_ascii=False)
+    j = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
+    with open(path, 'w', encoding='utf8', newline='') as f:
+        f.write(head + 'var $plugins =\n[\n' + ',\n'.join(j(p) for p in plugins) + '\n];\n')
 
 
 if __name__ == '__main__':
-    vault, sky = build_vault(), build_skyreach()
+    vault, sky, wood = build_vault(), build_skyreach(), build_briarwood()
     out = next((a for a in sys.argv[1:] if not a.startswith('--')), None)
     if out:
         vault.render(os.path.join(out, 'vault.png'), scale=0.5)
         sky.render(os.path.join(out, 'skyreach.png'), scale=0.5, grid=True)
+        wood.render(os.path.join(out, 'briarwood.png'), scale=0.5, grid=True)
     if '--save' in sys.argv:
         build_database()
         vault.save(VAULT, parent_id=0, order=VAULT)
         sky.save(SKYREACH, parent_id=K.WORLD, order=SKYREACH)
+        wood.save(BRIARWOOD, parent_id=K.WORLD, order=BRIARWOOD)
         for mid, fn in ((FARM, farm_events), (K.CITY_GATE, gate_events), (GUILD, guild_events)):
             L.write_map(mid, patch_events(mid, fn))
         world = json.load(open(L.DATA + 'Map001.json', encoding='utf8'))
         world_entry(world); L.write_map(K.WORLD, world)
+        register_scene_select()
         print('prologue saved')
