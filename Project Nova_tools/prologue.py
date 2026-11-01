@@ -16,6 +16,7 @@ import town_kit as T
 import kingdom as K
 
 V_STAGE, V_PESTS, S_MANA_SIGHT = 1, 2, 11       # V_PESTS: no longer used (the old Hollow Farm pest count)
+V_CHAPTER1 = 3                             # chapter1.py's story variable: the prologue's last scene sets it to 1
 VAULT, SKYREACH, BRIARWOOD = 27, 28, 29
 FARM, GUILD = 24, K.TAVERN
 KAEL, ISOLDE = ('Actor4', 0), ('family1', 5)
@@ -38,6 +39,8 @@ def var(v, value, op=0, i=0): return [cmd(122, [v, v, op, 0, value], i)]
 def switch(s, on, i=0): return [cmd(121, [s, s, 0 if on else 1], i)]
 def self_sw(ch='A', i=0): return [cmd(123, [ch, 0], i)]
 def plugin(s, i=0): return [cmd(356, [s], i)]
+def chapter_card(head, title, i=0):     # NovaChapterCard: animated title card in the middle of the screen, waits for it
+    return plugin('ChapterCard %s | %s' % (head, title), i)
 def wait(n, i=0): return [cmd(230, [n], i)]
 def se(name, vol=80, pitch=100, i=0): return [cmd(250, [{'name': name, 'volume': vol, 'pitch': pitch, 'pan': 0}], i)]
 def bgm(name, vol=80, i=0): return [cmd(241, [{'name': name, 'volume': vol, 'pitch': 100, 'pan': 0}], i)]
@@ -76,9 +79,9 @@ def if_stage_at_least(value, body_fn, i=0):
     return [cmd(111, [1, V_STAGE, 0, value, 1], i)] + body_fn(i + 1) + [cmd(0, [], i + 1), cmd(412, [], i)]
 
 
-def cond(stage=None, self_a=False, sw=None):
+def cond(stage=None, self_a=False, sw=None, var=V_STAGE):
     c = {}
-    if stage is not None: c.update({'variableValid': True, 'variableId': V_STAGE, 'variableValue': stage})
+    if stage is not None: c.update({'variableValid': True, 'variableId': var, 'variableValue': stage})
     if self_a: c.update({'selfSwitchValid': True, 'selfSwitchCh': 'A'})
     if sw: c.update({'switch1Valid': True, 'switch1Id': sw})
     return c
@@ -87,13 +90,13 @@ def cond(stage=None, self_a=False, sw=None):
 BLANK = lambda **c: page(None, priority=0, cond=c or None)
 
 
-def director(commands, stage):
+def director(commands, stage, var=V_STAGE):
     """Autorun that plays once from the given stage on: [nothing, autorun (stage), done (self switch A)].
     It only plays when the story is exactly at its stage; one that was skipped (Scene Select, F9) just marks itself
-    done, so a later stage never replays an old cutscene on the same map."""
-    body = [cmd(111, [1, V_STAGE, 0, stage, 0], 0)] + [dict(c, indent=c['indent'] + 1) for c in commands] \
+    done, so a later stage never replays an old cutscene on the same map. var: the story variable (chapter)."""
+    body = [cmd(111, [1, var, 0, stage, 0], 0)] + [dict(c, indent=c['indent'] + 1) for c in commands] \
         + [cmd(0, [], 1), cmd(412, [], 0)]
-    return [BLANK(), page(None, trigger=3, priority=0, commands=body + self_sw(), cond=cond(stage)),
+    return [BLANK(), page(None, trigger=3, priority=0, commands=body + self_sw(), cond=cond(stage, var=var)),
             page(None, priority=0, cond=cond(self_a=True))]
 
 
@@ -544,6 +547,8 @@ def build_briarwood():
         *tutorial('Open the \\C[6]Menu\\C[0] with \\C[6]Esc\\C[0] / \\C[6]X\\C[0] or a right click:',
                   'Items (the shard is under Key Items), Skills, Equip and Status.',
                   'Press \\C[6]M\\C[0] to show or hide the minimap.'),
+        *tutorial('\\C[6]Quests\\C[0], at the top of the Menu, keep track of your',
+                  'current objective and the story so far.'),
         *fade_bgm(2), *fadeout(), *var(V_STAGE, 4), *plugin('Clock set 17:00'),
         *goto(K.CITY_GATE, GATE_ROAD[0], GATE_ROAD[1], 8)]
     m.add_event('Prologue: The Rescue', 1, H - 1, director(rescue, 2))
@@ -551,15 +556,15 @@ def build_briarwood():
 
 
 # ====================================================================== existing maps
-def patch_events(map_id, build):
-    """Drop this script's events (note '<prologue>') from the map, then add new ones; build(add) returns nothing."""
+def patch_events(map_id, build, tag='<prologue>'):
+    """Drop this script's events (note tag, '<prologue>') from the map, then add new ones; build(add) returns nothing."""
     mp = json.load(open(L.DATA + 'Map%03d.json' % map_id, encoding='utf8'))
-    mp['events'] = [None if e and '<prologue>' in e.get('note', '') else e for e in mp['events']]
+    mp['events'] = [None if e and tag in e.get('note', '') else e for e in mp['events']]
     while len(mp['events']) > 1 and mp['events'][-1] is None: mp['events'].pop()
 
     def add(name, x, y, pages, note=''):
         slot = next((k for k in range(1, len(mp['events'])) if mp['events'][k] is None), len(mp['events']))
-        ev = {'id': slot, 'name': name, 'note': (note + '\n<prologue>').strip(), 'pages': pages, 'x': x, 'y': y}
+        ev = {'id': slot, 'name': name, 'note': (note + '\n' + tag).strip(), 'pages': pages, 'x': x, 'y': y}
         if slot == len(mp['events']): mp['events'].append(ev)
         else: mp['events'][slot] = ev
         return slot
@@ -590,7 +595,6 @@ CROWD = [('Young Mage', 'People4', 3, 3, 9, 2), ('Scholar', 'People2', 1, 4, 9, 
 
 def gate_events(add, mp):
     """Main Gate at dusk: Kael walks Tobin home from Briarwood, the gate guard takes over, then on to the Guild."""
-    restore_pages(mp, 'To World Map'); restore_pages(mp, 'Main Gate')
     guard = next(e['id'] for e in mp['events'] if e and e['name'] == 'Gate Guard' and e['x'] > 20)
     tobin = add('Tobin', GATE_ROAD[0] - 1, GATE_ROAD[1], staged(char(*TOBIN_SPRITE, direction=8), 4, 5))
     steps = GATE_ROAD[1] - 18                  # up the road to just below the gate guards (y15)
@@ -651,9 +655,14 @@ def guild_events(add, mp):
         *kael('One year. Exactly as promised.'), *wait(30),
         *kael('...Both promises.'),
         *npc('Guild Clerk', 'So? The board has three new requests for a Class 3.'),
-        *kael("Not this time. I'm done taking missions here.", "I'm going to see the world."),
-        *var(V_STAGE, 10),
-        *plain('\\C[6]Prologue - End\\C[0]', 'Chapter 1: The Day of the Class Exam')], 9))
+        *kael("Not this time. I'm stepping away from missions", "for a while. I'm going to see the world."),
+        *npc('Guild Clerk', "Oh? Whatever it is, good luck."),
+        # the title cards (NovaChapterCard) draw their own black backdrop over the faded-out map
+        cmd(243, []), *fade_bgm(3), *fadeout(), *var(V_STAGE, 10), *wait(30),
+        *se('Saint1', 60), *chapter_card('', 'Prologue Ends'), *wait(40),
+        *se('Saint3', 70), *chapter_card('Chapter 1', 'The Adventure Begins'),
+        *var(V_CHAPTER1, 1), cmd(244, []), *fadein(),
+        *kael('Time to get going.')], 9))
 
 
 def world_entry(mp):
@@ -678,12 +687,12 @@ def world_entry(mp):
         else: mp['events'][slot] = ev
 
 
-# ====================================================================== playtest: Scene Select (NovaSceneSelect)
-def scene_select():
+# ====================================================================== playtest: Scene Select (scene_select.py)
+def scenes():
     """The prologue's checkpoints for the Scene Select on the title screen (playtest only), from this script's own
-    coordinates. 'done' marks the cutscenes that already happened, so they don't play again."""
+    coordinates: (label, (map, x, y, direction), settings). 'done' marks cutscenes that already happened."""
     shard, gate = 'item=%d' % ITEM_SHARD, K.CITY_GATE
-    scenes = [
+    return [
         ('Prologue 0: Opening', (VAULT, 8, 11, 2), []),
         ('Prologue 1: Briarwood, looking for Tobin', (BRIARWOOD, WOOD_START[0], WOOD_START[1], 8), ['v1=1', 'cmd=Clock set 10:00']),
         ('Prologue 2: Briarwood, the rescue', (BRIARWOOD, KAEL_STOP[0], STRIP_Y, 8),
@@ -693,26 +702,40 @@ def scene_select():
         ('Prologue 6: Skyreach Hill, night walk', (SKYREACH, 16, 41, 8), ['v1=6', shard, 'cmd=Clock set 21:00']),
         ('Prologue 6: Skyreach Hill, Mana Sight', (SKYREACH, LOOKOUT[0] - 1, LOOKOUT[1], 8),
          ['v1=6', 's%d=on' % S_MANA_SIGHT, shard, 'done=Prologue: Night Walk', 'tint=-51,-17,68,34', 'cmd=Clock set 21:30']),
-        ('Prologue 9: Five months later', (GUILD, 26, 7, 8), ['v1=9', shard, 'done=Prologue: The Crowd', 'cmd=Clock set 09:00'])]
-    return '\n'.join('%s = %d, %d, %d, %d' % ((label,) + spot) + ''.join(' ; ' + s for s in settings)
-                     for label, spot, settings in scenes)
+        ('Prologue 9: Five months later', (GUILD, 26, 7, 8), ['v1=9', shard, 'cmd=Clock set 09:00'])]
 
 
-def register_scene_select():
-    """Add or update the NovaSceneSelect entry in js/plugins.js with the prologue's scenes."""
-    path = L.PROJ + 'js/plugins.js'
-    src = open(path, encoding='utf8').read()
-    head, body = src.split('var $plugins =', 1)
-    plugins = json.loads(body.strip().rstrip(';'))
-    entry = next((p for p in plugins if p['name'] == 'NovaSceneSelect'), None)
-    if not entry:
-        entry = {'name': 'NovaSceneSelect', 'status': True, 'description': 'Playtest only: "Scene Select" on the title '
-                 'screen jumps straight to a story scene, with its variables, switches, items and clock set.', 'parameters': {}}
-        plugins.append(entry)
-    entry['parameters']['Scenes'] = json.dumps(scene_select(), ensure_ascii=False)
-    j = lambda v: json.dumps(v, ensure_ascii=False, separators=(',', ':'))
-    with open(path, 'w', encoding='utf8', newline='') as f:
-        f.write(head + 'var $plugins =\n[\n' + ',\n'.join(j(p) for p in plugins) + '\n];\n')
+# ====================================================================== the quest log (quests.py, NovaQuests)
+def quest():
+    """The prologue in the quest log: it follows the story variable, one step per stage. Kael's side of the story only
+    (the Order at the crack, stage 8, stays a secret)."""
+    from quests import quest, step
+    return quest('prologue', 'main', 'Prologue - Flowing Uphill', [
+        step(1, 'Briarwood', 'Find Tobin on the old cart road in Briarwood.',
+             "Tobin, a carter from the capital, never came home last night. Kael takes the Guild's request and sets out "
+             "along the old cart road through Briarwood to find him."),
+        step(2, 'Briarwood', 'Protect Tobin.',
+             'Deep in the woods, Kael finds Tobin beside his wrecked cart, cornered by a Field Hornet and a Slime.'),
+        step(3, 'Briarwood', 'Defeat the strange wolf.',
+             'Then a grey wolf steps out of the trees, its mana flowing the wrong way, like a river running uphill. '
+             "Before Kael's eyes it changes into something far larger."),
+        step(4, 'Main Gate', 'Report to the Guild.',
+             'When it falls, the wolf dissolves into purple smoke and leaves behind a cold black crystal: the Tainted '
+             'Shard. Kael brings a shaken Tobin home to the capital, where the gate guard has been waiting since dawn.'),
+        step(5, "The Lion's Rest", 'Walk with Professor Wyndmere.',
+             'The Guild is packed. At its centre sits a face Kael never expected to see again: Professor Isolde '
+             'Wyndmere, his old teacher from the Royal Magic Academy. She asks him to walk with her outside the walls '
+             'tonight.'),
+        step(6, 'Skyreach Hill', 'Follow the flow of mana.',
+             "On Skyreach Hill, Kael shows Isolde the shard. With Mana Sight he follows the flow of mana to a crack in "
+             "the ground, where the world's mana drains away and the same purple smoke seeps out. Isolde has been "
+             'tracking these cracks for two years, each one closer to the capital than the last.'),
+        step(9, "The Lion's Rest", 'Collect the Class 3 license.',
+             '"Go. See the world. You\'ll find that we are small." Isolde sends Kael back to finish his exam first. '
+             'Five months later, exactly one year after graduation, Kael earns his Mage Class 3 license.'),
+        step(10, '', '',
+             'The shard is still in his pocket. Kael tells the Guild he is stepping away from missions for a while. '
+             'It is time to see the world.')], var=V_STAGE, done=10)
 
 
 if __name__ == '__main__':
@@ -731,5 +754,6 @@ if __name__ == '__main__':
             L.write_map(mid, patch_events(mid, fn))
         world = json.load(open(L.DATA + 'Map001.json', encoding='utf8'))
         world_entry(world); L.write_map(K.WORLD, world)
-        register_scene_select()
+        import scene_select; scene_select.register()
+        import quests; quests.register()
         print('prologue saved')

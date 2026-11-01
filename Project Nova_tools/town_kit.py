@@ -41,6 +41,8 @@ ARCH_TOP, ARCH_BOT = 50, 58          # double wooden door window/arch
 CHIMNEY_A, CHIMNEY_B = 64, 72
 BOLLARD, BOLLARD_ROPE = 65, 66
 SIGNPOST, NOTICE_BOARD, WELL, STEPPING = 73, 74, 75, 76
+DOOR_HOLE, DOOR_HOLE_ARCH = 69, 71    # the dark doorway behind a door event, seen while the door opens
+ARCH_DOORS = (2, 3)                   # !Door1 styles with a rounded top
 BARREL, POT, BUCKET, BASIN = 77, 80, 81, 82
 FIRE_PIT = 83
 BARRICADE_H, BARRICADE_V = 85, 86
@@ -128,9 +130,11 @@ class Town(L.MapBuilder):
 
     # ------------------------------------------------------------ events
     def door(self, name, x, y, target, tx, ty, style=0, note=''):
+        self.put(x, y, door_hole(style))
         return self.add_event(name, x, y, [L.door_page(target, tx, ty, 8, '!Door1', style)], note)
 
     def locked_door(self, name, x, y, lines, style=0):
+        self.put(x, y, door_hole(style))
         return self.add_event(name, x, y, [page(char('!Door1', style), commands=text(*lines))])
 
     def exit(self, name, cells, target, tx, ty, d):
@@ -161,6 +165,10 @@ class Town(L.MapBuilder):
 
     def sign(self, name, x, y, lines):
         return self.add_event(name, x, y, [page(None, commands=text(*lines), priority=1)])
+
+
+def door_hole(style):
+    return DOOR_HOLE_ARCH if style in ARCH_DOORS else DOOR_HOLE
 
 
 def pen_route(step):

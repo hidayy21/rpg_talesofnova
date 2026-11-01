@@ -164,15 +164,37 @@
         var list = [];
         var table = TILE_LIGHTS[String($gameMap.tilesetId())];
         if (!table || !$dataMap) return list;
-        var w = $dataMap.width, h = $dataMap.height, data = $dataMap.data;
+        var w = $dataMap.width, h = $dataMap.height, data = $dataMap.data, at = {};
         for (var z = 0; z < 4; z++) {
             for (var y = 0; y < h; y++) {
                 for (var x = 0; x < w; x++) {
                     var light = table[data[(z * h + y) * w + x]];
-                    if (light && light.radius) list.push({ x: x, y: y, light: light, seed: (x * 7 + y * 13) % 100 });
+                    if (light && light.radius) at[y * w + x] = light;
                 }
             }
         }
+        // touching tiles with the same light (a fireplace is 3x2 tiles) give one light at their centre, not one each
+        Object.keys(at).forEach(function(key) {
+            var light = at[key];
+            if (!light) return;
+            var stack = [Number(key)], sumX = 0, sumY = 0, n = 0;
+            at[key] = null;
+            while (stack.length) {
+                var k = stack.pop(), cx = k % w, cy = Math.floor(k / w);
+                sumX += cx; sumY += cy; n++;
+                for (var dy = -1; dy <= 1; dy++) {
+                    for (var dx = -1; dx <= 1; dx++) {
+                        var nx = cx + dx, ny = cy + dy, nk = ny * w + nx;
+                        if (nx >= 0 && ny >= 0 && nx < w && ny < h && at[nk] === light) {
+                            at[nk] = null;
+                            stack.push(nk);
+                        }
+                    }
+                }
+            }
+            var mx = sumX / n, my = sumY / n;
+            list.push({ x: mx, y: my, light: light, seed: Math.round(mx * 7 + my * 13) % 100 });
+        });
         return list;
     }
 

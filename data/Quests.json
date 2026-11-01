@@ -1,0 +1,91 @@
+[
+ {
+  "id": "prologue",
+  "type": "main",
+  "title": "Prologue - Flowing Uphill",
+  "steps": [
+   {
+    "at": 1,
+    "where": "Briarwood",
+    "goal": "Find Tobin on the old cart road in Briarwood.",
+    "text": "Tobin, a carter from the capital, never came home last night. Kael takes the Guild's request and sets out along the old cart road through Briarwood to find him."
+   },
+   {
+    "at": 2,
+    "where": "Briarwood",
+    "goal": "Protect Tobin.",
+    "text": "Deep in the woods, Kael finds Tobin beside his wrecked cart, cornered by a Field Hornet and a Slime."
+   },
+   {
+    "at": 3,
+    "where": "Briarwood",
+    "goal": "Defeat the strange wolf.",
+    "text": "Then a grey wolf steps out of the trees, its mana flowing the wrong way, like a river running uphill. Before Kael's eyes it changes into something far larger."
+   },
+   {
+    "at": 4,
+    "where": "Main Gate",
+    "goal": "Report to the Guild.",
+    "text": "When it falls, the wolf dissolves into purple smoke and leaves behind a cold black crystal: the Tainted Shard. Kael brings a shaken Tobin home to the capital, where the gate guard has been waiting since dawn."
+   },
+   {
+    "at": 5,
+    "where": "The Lion's Rest",
+    "goal": "Walk with Professor Wyndmere.",
+    "text": "The Guild is packed. At its centre sits a face Kael never expected to see again: Professor Isolde Wyndmere, his old teacher from the Royal Magic Academy. She asks him to walk with her outside the walls tonight."
+   },
+   {
+    "at": 6,
+    "where": "Skyreach Hill",
+    "goal": "Follow the flow of mana.",
+    "text": "On Skyreach Hill, Kael shows Isolde the shard. With Mana Sight he follows the flow of mana to a crack in the ground, where the world's mana drains away and the same purple smoke seeps out. Isolde has been tracking these cracks for two years, each one closer to the capital than the last."
+   },
+   {
+    "at": 9,
+    "where": "The Lion's Rest",
+    "goal": "Collect the Class 3 license.",
+    "text": "\"Go. See the world. You'll find that we are small.\" Isolde sends Kael back to finish his exam first. Five months later, exactly one year after graduation, Kael earns his Mage Class 3 license."
+   },
+   {
+    "at": 10,
+    "where": "",
+    "goal": "",
+    "text": "The shard is still in his pocket. Kael tells the Guild he is stepping away from missions for a while. It is time to see the world."
+   }
+  ],
+  "var": 1,
+  "done": 10
+ },
+ {
+  "id": "chapter1",
+  "type": "main",
+  "title": "Chapter 1 - The Adventure Begins",
+  "steps": [
+   {
+    "at": 1,
+    "where": "The Lion's Rest",
+    "goal": "Leave the Guild.",
+    "text": "License in hand, Kael is free at last. The world is waiting just outside the Guild's door."
+   },
+   {
+    "at": 2,
+    "where": "Saltwind Harbor",
+    "goal": "",
+    "text": "Meanwhile, the Morning Gull docks at Saltwind Harbor. A swordswoman from Hōrai steps ashore, six weeks from home, looking for someone."
+   },
+   {
+    "at": 4,
+    "where": "Market District",
+    "goal": "Buy 2 Honey Bread and 3 Sweet Buns at the Baker's Stall, then take them home to Mom on Ember Lane (Lantern Row).",
+    "text": "Before he goes anywhere, Kael has a promise to keep: Mom's shopping list. Two Honey Bread and three Sweet Buns from the Baker's Stall in the Market District, and not one coin on spellbooks. Then home with them, to the Ashveil house on Ember Lane, in the south of Lantern Row."
+   },
+   {
+    "at": 5,
+    "where": "Ember Lane, Lantern Row",
+    "goal": "Explore the capital, or set out from the Main Gate.",
+    "text": "Mom gets her bread, and Kael promises to say goodbye properly before he leaves."
+   }
+  ],
+  "var": 3
+ }
+]

@@ -281,9 +281,14 @@ Layar hitam dengan teks:
 
 > *"Five months later."*
 
-**Royal Magic Academy / Guild, pagi.** Kael menerima kartu lisensi baru: **Mage Class 3**, tepat satu tahun setelah lulus. *Tainted Shard* masih ada di inventory sebagai Key Item. → Lanjut ke **Bab 1 — Hari Kenaikan Class** (berhenti dari misi Guild, belanja untuk ibu, copet di pasar, bertemu Yuki).
+**Royal Magic Academy / Guild, pagi.** Kael menerima kartu lisensi baru: **Mage Class 3**, tepat satu tahun setelah lulus. *Tainted Shard* masih ada di inventory sebagai Key Item.
 
 > **Kael:** "One year. Exactly as promised." *(menatap shard)* "...Both promises."
+> **Guild Clerk:** "So? The board has three new requests for a Class 3."
+> **Kael:** "Not this time. I'm stepping away from missions for a while. I'm going to see the world."
+> **Guild Clerk:** "Oh? Whatever it is, good luck."
+
+Kartu judul **Prologue Ends**, lalu **Chapter 1: The Adventure Begins** → lanjut ke `Story/Chapter1_Scenario.md`.
 
 ---
 
@@ -299,4 +304,5 @@ Semua adegan di atas sudah dibuat oleh `Project Nova_tools/prologue.py`. Jalanka
 | **Flag** | Variabel 1 *Prologue* (tahap 0–10), switch 11 *Mana Sight*. |
 | **Event** | Briarwood (adegan 1–3), Main Gate (adegan 4), Lion's Rest (adegan 5 dan 11), Skyreach Hill (adegan 6–10). Hollow Farm tidak lagi dipakai prolog. |
 | **Placeholder** | Sprite Isolde = `family1` indeks 5; Tobin = `People1` indeks 4; Order of Caelum = `People2` indeks 2; retakan = `!Other2` indeks 5; aliran mana = `!Flame` indeks 7. |
+| **Quest log** | Menu **Quests** (plugin `NovaQuests`) mencatat prolog sebagai *Prologue - Flowing Uphill*: tujuan saat ini dan ringkasan yang bertambah tiap tahap (variabel 1). Teksnya ada di `quest()` dalam `prologue.py`; adegan Order of Caelum sengaja tidak dicatat. |
 | **Tes cepat** | Saat playtest, title screen punya menu **Scene Select** (plugin `NovaSceneSelect`) untuk langsung lompat ke adegan 1, 2, 4, 5, 6, Mana Sight, atau 11. Daftarnya ditulis ulang oleh `prologue.py --save` dari koordinat di script, jadi selalu cocok dengan map. Menu ini tidak muncul di game hasil deploy. |
