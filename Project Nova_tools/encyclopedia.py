@@ -83,7 +83,7 @@ CHARACTERS = [
          "Kael's grandfather on his mother's side. Once called the Sword of Nova, now the Hero, for his part in "
          "Nova's victory over the Arulustus Empire sixteen years ago."),
     char('valeria', 'Valeria Dracoheart', 'House Dracoheart', 'The Fire Empress', None, None,
-         [('Age', '41'), ('Rank', 'Royal Mage')],
+         [('Age', '44'), ('Rank', 'Royal Mage')],
          "Kael's aunt, his mother's younger sister, and a Royal Mage of the Royal Magic Council. She once taught Fire "
          'to Kaine, Sera and Kael.'),
 

@@ -10,7 +10,7 @@
 
 - Dua kerajaan terbesar di Benua Barat: **Kerajaan Nova** dan **Arulustus Empire**.
 - Keduanya berada dalam **ketegangan panas selama 100 tahun**, yang berakhir lewat **perang 16 tahun lalu**, dimenangkan Nova. Ignatius Dracoheart berjasa besar dalam kemenangan ini.
-- Usia saat perang (16 tahun lalu): Ignatius 53, Cassius 35 (sudah di intelijen), Vivienne 32, Valeria 25, Kaine 11, Seraphine 9, Kael 3. Selene lahir setahun kemudian (lihat Timeline Keluarga).
+- Usia saat perang (16 tahun lalu): Ignatius 53, Cassius 35 (sudah di intelijen), Vivienne 32, Valeria 28, Kaine 11, Seraphine 9, Kael 3. Selene lahir setahun kemudian (lihat Timeline Keluarga).
 - Perang tersebut memulai **masa damai baru**. Meski begitu, kekuatan militer tetap diperlukan untuk **berjaga-jaga** dan untuk melawan **simpatisan sisa-sisa perang**.
 
 ### Guild
@@ -129,7 +129,7 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
     - **Seraphine** adalah cucu yang **paling dibanggakan**: ia bergabung dengan pasukan kerajaan dan bahkan menjadi knight commander, mengikuti jejaknya.
     - **Kaine** sering **dimarahi** karena malah memilih menjadi "pelaut".
     - Sangat **akrab dengan Selene dan Kael**. Pada acara kelulusan Kael dari Royal Magic Academy, ia **maju sendiri** untuk menyerahkan **kartu lisensi pertama** Kael. Academy mengizinkannya karena ia seorang **veteran perang**.
-- **Valeria Dracoheart** (tante Kael, adik Vivienne, 41 tahun) — berhasil bangkit. Dijuluki **The Fire Empress**, dan digadang-gadang menjadi **kepala clan penerus** kakek.
+- **Valeria Dracoheart** (tante Kael, adik Vivienne, 44 tahun) — berhasil bangkit. Dijuluki **The Fire Empress**, dan digadang-gadang menjadi **kepala clan penerus** kakek.
   - Dulu menjadi **guru elemen api** untuk Kaine, Seraphine, dan Kael. Kesibukannya bertambah setelah ia diangkat menjadi salah satu **Royal Mage**.
   - Tujuan sebenarnya mengajari api: agar mereka **tidak membangkitkan Shadow**. Ternyata tidak berpengaruh: ketiganya tetap bisa menggunakan keduanya.
   - Alasannya: **politik clan**, dan karena ia **tidak suka pada ayah Kael**, yang menurutnya sudah "menculik" kakaknya dengan "bualan cinta".
@@ -139,7 +139,7 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
 #### Timeline Keluarga
 
 Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
-**Usia sekarang:** Ignatius 69 · Cassius 51 · Vivienne 48 · Valeria 41 · Kaine 27 · Seraphine 25 · Kael 19 · Selene 15.
+**Usia sekarang:** Ignatius 69 · Cassius 51 · Vivienne 48 · Valeria 44 · Kaine 27 · Seraphine 25 · Kael 19 · Selene 15.
 
 | Kapan | Peristiwa | Usia saat itu |
 |---|---|---|
@@ -147,13 +147,13 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 | 51 tahun lalu | Cassius lahir | — |
 | 48 tahun lalu | Vivienne lahir, putri sulung Ignatius | Ignatius 21 |
 | 45 tahun lalu | Ignatius diangkat **Knight Commander**, rekor termuda | Ignatius 24 · Vivienne 3 |
-| 41 tahun lalu | Valeria lahir, putri bungsu Ignatius | Ignatius 28 · Vivienne 7 |
+| 44 tahun lalu | Valeria lahir, putri bungsu Ignatius | Ignatius 25 · Vivienne 4 |
 | ±29 tahun lalu *(perkiraan)* | Cassius, prajurit di bawah Ignatius, menjadi **tangan kirinya** | Cassius 22 · Ignatius 40 |
 | ±28 tahun lalu *(perkiraan)* | Cassius dan Vivienne menikah; Vivienne meninggalkan clan Dracoheart. Ignatius merasa dikhianati dan "mempromosikan" Cassius ke **intelijen** agar tewas dalam misi | Cassius 23 · Vivienne 20 · Ignatius 41 |
 | 27 tahun lalu | **Kaine** lahir | Vivienne 21 · Cassius 24 |
 | 25 tahun lalu | **Seraphine** lahir | Vivienne 23 · Cassius 26 |
 | 19 tahun lalu | **Kael** lahir | Vivienne 29 · Cassius 32 |
-| **16 tahun lalu** | **Perang Nova vs Arulustus Empire** berakhir dengan kemenangan Nova, menutup ketegangan 100 tahun. Ignatius berjasa besar dan julukannya berubah dari *the Sword of Nova* menjadi *the Hero* | Ignatius 53 · Cassius 35 · Vivienne 32 · Valeria 25 · Kaine 11 · Sera 9 · Kael 3 |
+| **16 tahun lalu** | **Perang Nova vs Arulustus Empire** berakhir dengan kemenangan Nova, menutup ketegangan 100 tahun. Ignatius berjasa besar dan julukannya berubah dari *the Sword of Nova* menjadi *the Hero* | Ignatius 53 · Cassius 35 · Vivienne 32 · Valeria 28 · Kaine 11 · Sera 9 · Kael 3 |
 | 15 tahun lalu | **Selene** lahir, "anak pertama masa damai" keluarga Ashveil | Vivienne 33 · Cassius 36 |
 | 2 tahun lalu | Seraphine diangkat **commander**, memecahkan rekor kakeknya yang bertahan 43 tahun | Sera 23 |
 | ±1 tahun lalu | Kael lulus dari Royal Magic Academy; Ignatius maju sendiri menyerahkan kartu lisensi pertamanya | Kael 18 |
