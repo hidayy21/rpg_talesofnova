@@ -10,6 +10,11 @@
  * @desc Name of the main menu command.
  * @default Bestiary
  *
+ * @param Show In Menu
+ * @type boolean
+ * @desc Its own main menu command. Off when NovaEncyclopedia opens the Bestiary instead.
+ * @default true
+ *
  * @param Unknown Name
  * @desc Shown for enemies not met yet.
  * @default ??????
@@ -46,6 +51,7 @@
     var params = PluginManager.parameters('NovaBestiary');
     var MENU_NAME = String(params['Menu Command'] || 'Bestiary');
     var UNKNOWN = String(params['Unknown Name'] || '??????');
+    var IN_MENU = String(params['Show In Menu'] || 'true') === 'true';
     var COLOR = UI.COLOR;
     var HEADER_H = 64;
 
@@ -113,7 +119,7 @@
     var _addOriginalCommands = Window_MenuCommand.prototype.addOriginalCommands;
     Window_MenuCommand.prototype.addOriginalCommands = function() {
         _addOriginalCommands.call(this);
-        this.addCommand(MENU_NAME, 'novaBestiary', true);
+        if (IN_MENU) this.addCommand(MENU_NAME, 'novaBestiary', true);
     };
 
     var _createCommandWindow = Scene_Menu.prototype.createCommandWindow;

@@ -9,7 +9,8 @@
 ### Sejarah Politik Benua Barat
 
 - Dua kerajaan terbesar di Benua Barat: **Kerajaan Nova** dan **Arulustus Empire**.
-- Keduanya berada dalam **ketegangan panas selama 100 tahun**, yang berakhir lewat **perang 18 tahun lalu**, dimenangkan Nova. Ignatius Dracoheart berjasa besar dalam kemenangan ini.
+- Keduanya berada dalam **ketegangan panas selama 100 tahun**, yang berakhir lewat **perang 16 tahun lalu**, dimenangkan Nova. Ignatius Dracoheart berjasa besar dalam kemenangan ini.
+- Usia saat perang (16 tahun lalu): Ignatius 53, Cassius 35 (sudah di intelijen), Vivienne 32, Valeria 25, Kaine 11, Seraphine 9, Kael 3. Selene lahir setahun kemudian (lihat Timeline Keluarga).
 - Perang tersebut memulai **masa damai baru**. Meski begitu, kekuatan militer tetap diperlukan untuk **berjaga-jaga** dan untuk melawan **simpatisan sisa-sisa perang**.
 
 ### Guild
@@ -29,7 +30,21 @@
 - **Ashborn Morningstar** — pahlawan, *Champion of Darkness*, ratusan tahun lalu. Keturunannya (keluarga Ashveil) memiliki aptitude terhadap elemen kegelapan.
 - **Jeanne Ignatia** — pahlawan, *Champion of Flame*, salah satu sahabat Ashborn. Garis keturunannya mengalir lewat ibu Kael.
 - **Caelum Dawncrest** — pahlawan, *Champion of Light*, salah satu rekan Ashborn dan Jeanne. Jiwanya bereinkarnasi menjadi Kael.
-- Ashborn, Jeanne, dan Caelum adalah tiga dari **7 hero (Elemental Champion)**. *(Empat lainnya belum ditentukan.)*
+- Ashborn, Jeanne, dan Caelum adalah tiga dari **7 hero (Elemental Champion)**. Empat lainnya:
+  - **Rafael Eisendorf** — *Champion of Water*.
+  - **Magnus Blackwood** — *Champion of Earth* (batu).
+  - **Sylphia Haizel** — *Champion of Wind*.
+  - **Roderick Tempest** — *Champion of Thunder*.
+
+| Elemen | Champion |
+|---|---|
+| Darkness | Ashborn Morningstar |
+| Flame | Jeanne Ignatia |
+| Light | Caelum Dawncrest |
+| Water | Rafael Eisendorf |
+| Earth | Magnus Blackwood |
+| Wind | Sylphia Haizel |
+| Thunder | Roderick Tempest |
 
 ### Siklus Reinkarnasi Elemental Champion
 
@@ -86,7 +101,7 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
 
 ### Keluarga Ashveil
 
-- **Cassius Ashveil** (ayah) — salah satu **orang terkuat di kerajaan**, bekerja di **bagian intelijen**. Pekerjaannya rahasia: ia sering keluar kerajaan **sendirian** untuk misi rahasia dan intelijen, sehingga **jarang terlihat**.
+- **Cassius Ashveil** (ayah, 51 tahun) — salah satu **orang terkuat di kerajaan**, bekerja di **bagian intelijen**. Pekerjaannya rahasia: ia sering keluar kerajaan **sendirian** untuk misi rahasia dan intelijen, sehingga **jarang terlihat**.
   - Anak-anaknya **tahu** ia bekerja untuk kerajaan, tetapi **tidak tahu detail pekerjaannya**. Bahkan Seraphine, yang seorang commander, tidak tahu detail misinya karena **selalu berubah-ubah**.
   - **Masa lalu:** dulu prajurit kerajaan di bawah pasukan **Ignatius**. Keahlian bertarung dan strateginya menarik perhatian Ignatius, yang menjadikannya **tangan kiri**-nya.
   - Setelah Cassius mendekati Vivienne, Ignatius merasa **"dikhianati"**. Ia menghasut para petinggi untuk **"mempromosikan"** Cassius ke bagian intelijen, dengan niat buruk agar Cassius **terbunuh dalam misi**. Namun Cassius **selalu berhasil selamat**, dan karier intelijennya justru membuatnya menjadi salah satu orang terkuat di kerajaan.
@@ -95,8 +110,8 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
 - **Seraphine Ashveil** (anak kedua, kakak perempuan, 25 tahun) — mengabdi pada kerajaan sebagai kesatria, berpangkat **commander**, setara dengan Roland Talonheart.
   - Diangkat menjadi commander di usia **23**, salah satu yang **termuda**. Rekor sebelumnya dipegang **kakeknya, Ignatius Dracoheart**, di usia **24**. Rambut merah, aptitude utama **Fire**.
 - **Kaelen Ashveil** (Kael, anak ketiga) — protagonis.
-- **Selene Ashveil** (anak bungsu, adik perempuan) — rambut hitam. Seperti Kael, aptitude utamanya **Shadow**.
-- **Vivienne Ashveil** (ibu, lahir sebagai Dracoheart) — keturunan Jeanne Ignatia, putri sulung kepala **clan Dracoheart**. Tidak bangkit. Meninggalkan clan untuk ikut suaminya (lihat Keluarga Dracoheart).
+- **Selene Ashveil** (anak bungsu, adik perempuan, 15 tahun) — rambut hitam. Seperti Kael, aptitude utamanya **Shadow**.
+- **Vivienne Ashveil** (ibu, 48 tahun, lahir sebagai Dracoheart) — melahirkan Kaine di usia 21 dan Selene di usia 33. Keturunan Jeanne Ignatia, putri sulung kepala **clan Dracoheart**. Tidak bangkit. Meninggalkan clan untuk ikut suaminya (lihat Keluarga Dracoheart).
 - Semua anak memiliki kedua aptitude; yang berbeda hanya elemen utamanya. Rambut merah mengikuti garis Jeanne (api), rambut hitam mengikuti garis Ashborn (kegelapan).
 - Nama keempat anak berselang-seling huruf awalnya: **K – S – K – S**.
 - Wajah: `family1` (Selene = 0, Seraphine = 1, Kaine = 2).
@@ -104,9 +119,9 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
 #### Keluarga Dracoheart (keluarga ibu)
 
 - **Clan Dracoheart** — keturunan Jeanne Ignatia. Salah satu **magical family**, dan menempati **peringkat 2**.
-- **Ignatius Dracoheart** (kakek Kael, ayah Vivienne) — **kepala clan** Dracoheart. Dijuluki **Ignatius the Hero**; sebelumnya **Ignatius the Sword of Nova**. Berhasil bangkit (**Ruler of Flames**).
-  - Berjasa besar dalam **kemenangan Nova atas Arulustus Empire** 18 tahun lalu, yang mengubah julukannya dari *the Sword of Nova* menjadi *the Hero*.
-  - Di masa mudanya seorang **Knight Commander**, diangkat di usia **24** (rekor termuda sebelum Seraphine). Bertarung dengan **magic dan pedang**, sama seperti Seraphine.
+- **Ignatius Dracoheart** (kakek Kael, ayah Vivienne, 69 tahun) — **kepala clan** Dracoheart. Dijuluki **Ignatius the Hero**; sebelumnya **Ignatius the Sword of Nova**. Berhasil bangkit (**Ruler of Flames**).
+  - Berjasa besar dalam **kemenangan Nova atas Arulustus Empire** 16 tahun lalu, yang mengubah julukannya dari *the Sword of Nova* menjadi *the Hero*.
+  - Di masa mudanya seorang **Knight Commander**, diangkat di usia **24** (rekor termuda sebelum Seraphine), 45 tahun lalu, saat Vivienne berumur 3 (ia menjadi ayah di usia 21). Saat perang melawan Arulustus (16 tahun lalu) ia berusia **53**, panglima yang masih turun langsung ke medan perang. Bertarung dengan **magic dan pedang**, sama seperti Seraphine.
   - Hanya memiliki **dua putri**: Vivienne (sulung) dan Valeria. Kedua putrinya sama-sama berhuruf awal **V**.
   - **Membenci Cassius**, mantan tangan kirinya, yang ia anggap mengkhianatinya dengan mendekati putri sulungnya, lalu membawanya keluar clan (ikut memicu perebutan tahta). Ia sempat menjebloskan Cassius ke intelijen agar tewas dalam misi, tetapi gagal.
   - Pada akhirnya ia **merestui pernikahan** mereka, tetapi hubungan keduanya **tidak pernah akur**, dimainkan secara **komedik**.
@@ -114,12 +129,40 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
     - **Seraphine** adalah cucu yang **paling dibanggakan**: ia bergabung dengan pasukan kerajaan dan bahkan menjadi knight commander, mengikuti jejaknya.
     - **Kaine** sering **dimarahi** karena malah memilih menjadi "pelaut".
     - Sangat **akrab dengan Selene dan Kael**. Pada acara kelulusan Kael dari Royal Magic Academy, ia **maju sendiri** untuk menyerahkan **kartu lisensi pertama** Kael. Academy mengizinkannya karena ia seorang **veteran perang**.
-- **Valeria Dracoheart** (tante Kael, adik Vivienne) — berhasil bangkit. Dijuluki **The Fire Empress**, dan digadang-gadang menjadi **kepala clan penerus** kakek.
+- **Valeria Dracoheart** (tante Kael, adik Vivienne, 41 tahun) — berhasil bangkit. Dijuluki **The Fire Empress**, dan digadang-gadang menjadi **kepala clan penerus** kakek.
   - Dulu menjadi **guru elemen api** untuk Kaine, Seraphine, dan Kael. Kesibukannya bertambah setelah ia diangkat menjadi salah satu **Royal Mage**.
   - Tujuan sebenarnya mengajari api: agar mereka **tidak membangkitkan Shadow**. Ternyata tidak berpengaruh: ketiganya tetap bisa menggunakan keduanya.
   - Alasannya: **politik clan**, dan karena ia **tidak suka pada ayah Kael**, yang menurutnya sudah "menculik" kakaknya dengan "bualan cinta".
   - **Selene** sering bermain dengan tante, tetapi belum sempat diajari.
 - **Konflik suksesi:** posisi kakek **terancam oleh adik-adiknya dan para keponakannya**, karena ia tidak punya putra, dan **putri sulungnya** (ibu Kael) sudah meninggalkan clan untuk ikut suaminya. Kepergian sang sulung inilah yang membuat keluarga besar berani mengincar tahta.
+
+#### Timeline Keluarga
+
+Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
+**Usia sekarang:** Ignatius 69 · Cassius 51 · Vivienne 48 · Valeria 41 · Kaine 27 · Seraphine 25 · Kael 19 · Selene 15.
+
+| Kapan | Peristiwa | Usia saat itu |
+|---|---|---|
+| 69 tahun lalu | Ignatius lahir | — |
+| 51 tahun lalu | Cassius lahir | — |
+| 48 tahun lalu | Vivienne lahir, putri sulung Ignatius | Ignatius 21 |
+| 45 tahun lalu | Ignatius diangkat **Knight Commander**, rekor termuda | Ignatius 24 · Vivienne 3 |
+| 41 tahun lalu | Valeria lahir, putri bungsu Ignatius | Ignatius 28 · Vivienne 7 |
+| ±29 tahun lalu *(perkiraan)* | Cassius, prajurit di bawah Ignatius, menjadi **tangan kirinya** | Cassius 22 · Ignatius 40 |
+| ±28 tahun lalu *(perkiraan)* | Cassius dan Vivienne menikah; Vivienne meninggalkan clan Dracoheart. Ignatius merasa dikhianati dan "mempromosikan" Cassius ke **intelijen** agar tewas dalam misi | Cassius 23 · Vivienne 20 · Ignatius 41 |
+| 27 tahun lalu | **Kaine** lahir | Vivienne 21 · Cassius 24 |
+| 25 tahun lalu | **Seraphine** lahir | Vivienne 23 · Cassius 26 |
+| 19 tahun lalu | **Kael** lahir | Vivienne 29 · Cassius 32 |
+| **16 tahun lalu** | **Perang Nova vs Arulustus Empire** berakhir dengan kemenangan Nova, menutup ketegangan 100 tahun. Ignatius berjasa besar dan julukannya berubah dari *the Sword of Nova* menjadi *the Hero* | Ignatius 53 · Cassius 35 · Vivienne 32 · Valeria 25 · Kaine 11 · Sera 9 · Kael 3 |
+| 15 tahun lalu | **Selene** lahir, "anak pertama masa damai" keluarga Ashveil | Vivienne 33 · Cassius 36 |
+| 2 tahun lalu | Seraphine diangkat **commander**, memecahkan rekor kakeknya yang bertahan 43 tahun | Sera 23 |
+| ±1 tahun lalu | Kael lulus dari Royal Magic Academy; Ignatius maju sendiri menyerahkan kartu lisensi pertamanya | Kael 18 |
+| 5 bulan lalu | **Prolog**: misi Briarwood, Isolde di Guild, jalan malam ke Skyreach Hill | Kael 18–19 |
+| Sekarang | **Bab 1**: Kael lulus ujian Class 3 | Kael 19 |
+
+- Kaine dan Seraphine **mengingat perang dengan jelas**; Kael hanya samar-samar, dan tumbuh sepenuhnya di masa damai. Sera melihat kakeknya pulang sebagai pahlawan, salah satu latar ia memilih jalan kesatria.
+- Saat perang, Cassius sudah ±12 tahun di intelijen: rencana Ignatius agar ia tewas dalam misi justru menjadikannya salah satu orang terkuat di kerajaan.
+- Belum ditentukan: kapan Valeria mengajari api ke Kaine, Sera, dan Kael; kapan ia menjadi Royal Mage; kapan Kaine mulai melaut.
 
 #### Awakening Garis Darah
 
@@ -296,9 +339,11 @@ Skenario lengkap dengan dialog: [Prolog_Scenario.md](Prolog_Scenario.md).
 
 1. Kael resmi mendapatkan **lisensi Mage Class 3** setelah lulus ujian kenaikan class. Ia memutuskan **berhenti mengambil misi di Guild ibu kota Nova** dan pergi berpetualang.
 2. Sebelum berangkat, ia harus membantu ibunya berbelanja beberapa bahan pokok.
-3. Di **pasar**, Kael secara tidak sengaja memergoki seorang **copet**, lalu mengejarnya.
-4. Copet tersebut dihentikan oleh **Yuki**, yang baru saja datang dari pelabuhan.
-5. Yuki menceritakan bahwa ia mencari kakaknya, tetapi tidak tahu harus mulai dari mana. **Kael menawarkan bantuan** → Yuki bergabung sebagai party member pertama.
+3. **Selene** minta dibelikan **pita sutra** di pasar ("kalau misi kecil saja tidak bisa, bagaimana misi besar?").
+4. Di **pasar**, **Yuki** menyerang **Tobin** (tukang gerobak yang Kael selamatkan di Prolog) karena melihatnya mencopet. Kael membela Tobin → duel dengan Yuki → keduanya ditangkap prajurit dan dijebloskan ke **satu sel**.
+5. Di penjara Yuki memperkenalkan diri. **Seraphine** yang kebetulan sedang inspeksi membebaskan Kael, lalu atas permintaan Kael juga Yuki, dengan syarat Yuki **minta maaf** kepada Tobin. Malamnya Yuki **bergabung** sebagai party member pertama dan mereka berangkat ke rumah Tobin.
+   - **Plot twist (belum dibuat):** Tobin **memang mencopet**, karena harus menyetor uang kepada **bandit**. Kael dan Yuki bekerja sama melawan para bandit itu.
+   - Pencarian kakak Yuki (lihat Masa Lalu Yuki) diceritakan setelah urusan bandit.
 6. **Pamit ke ibu dan adik.** Ibunya meledek: jangan berlebihan, toh nanti Kael juga pasti pulang sesekali. *(Meta-joke: akan ada beberapa sidequest yang membawa pemain kembali ke ibu kota Nova.)*
    - Di sini **Yuki pertama kali makan makanan dari Benua Barat**, di rumah keluarga Ashveil.
    - Adik Kael meminta **oleh-oleh** → membuka **sidequest oleh-oleh** (dikumpulkan dari kota-kota yang dikunjungi, diserahkan saat pulang ke Nova).
@@ -307,7 +352,7 @@ Skenario lengkap dengan dialog: [Prolog_Scenario.md](Prolog_Scenario.md).
 ## Catatan Terbuka
 
 - ~~Motivasi Kael kurang kuat~~ → terjawab: anomali magic yang ditunjukkan guru + pesan "pergilah, lihatlah dunia" + mimpi menjadi mage nomor satu.
-- Nama dan elemen empat Elemental Champion lainnya.
+- ~~Nama dan elemen empat Elemental Champion lainnya~~ → terjawab (lihat Legenda Masa Lalu). Kisah dan keturunan mereka belum ditentukan.
 - Kapan Ebonflame dan Twilight Emperor terjadi dalam alur cerita.
 - Ultimate Kael.
 - Detail awakening kedua (visual, pemicu, teknik) Kaine dan Seraphine.

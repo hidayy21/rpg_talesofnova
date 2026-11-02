@@ -14,11 +14,12 @@
  *
  * @param Night Ambient
  * @desc Ambient colour of outdoor maps at night (#rrggbb). Darker = darker night.
- * @default #2c3658
+ * @default #46527c
  *
  * @param Player Light
- * @desc Lantern around the party when the ambient is dark: radius,#color (blank = none).
- * @default 130,#ffd9a8
+ * @desc Lantern around the party when the ambient is dark: radius,#color (blank = none). A soft colour keeps
+ * it natural: it is added to the night colour, and it gets no glow.
+ * @default 120,#8c7a62
  *
  * @param Character Shadows
  * @type boolean
@@ -83,7 +84,7 @@
 
     var P = PluginManager.parameters('NovaLighting');
     var NIGHT_SWITCH = Number(P['Night Switch'] || 10);
-    var NIGHT_COLOR = String(P['Night Ambient'] || '#2c3658');
+    var NIGHT_COLOR = String(P['Night Ambient'] || '#46527c');
     var SHADOWS = String(P['Character Shadows'] || 'true') === 'true';
     var SHADOW_OPACITY = Number(P['Shadow Opacity'] || 150);
     var DYNAMIC_SHADOWS = String(P['Dynamic Shadows'] || 'false') === 'true';
@@ -269,13 +270,13 @@
         var meta = $dataMap ? $dataMap.meta : {};
         var pl = meta['player light'] ? parseLight(meta['player light']) : PLAYER_LIGHT;
         if (pl && !meta['no player light'] && darkness > 0.35 && !$gamePlayer.isTransparent()) {
-            this.drawLight(ctx, $gamePlayer.screenX(), $gamePlayer.screenY() - 24, pl, t);
+            this.drawLight(ctx, $gamePlayer.screenX(), $gamePlayer.screenY() - 24, pl, t, true);   // a lantern: no glow
         }
         if (bmp._setDirty) bmp._setDirty(); else if (bmp._baseTexture) bmp._baseTexture.update();
         if (gb._setDirty) gb._setDirty(); else if (gb._baseTexture) gb._baseTexture.update();
     };
 
-    Sprite_NovaLight.prototype.drawLight = function(ctx, sx, sy, light, t) {
+    Sprite_NovaLight.prototype.drawLight = function(ctx, sx, sy, light, t, noGlow) {
         var r = light.radius;
         if (sx < -r || sy < -r || sx > Graphics.width + r || sy > Graphics.height + r) return;
         NovaLighting.lights.push({ x: sx, y: sy, r: r });
@@ -288,7 +289,7 @@
         g.addColorStop(1, 'rgba(' + rgb + ',0)');
         ctx.fillStyle = g;
         ctx.fillRect(x - rr, y - rr, rr * 2, rr * 2);
-        var k = this._glowStrength;
+        var k = noGlow ? 0 : this._glowStrength;
         if (k > 0) {
             var gr = rr * 0.8, gg = this._gctx.createRadialGradient(x, y, 0, x, y, gr);
             gg.addColorStop(0, 'rgba(' + rgb + ',' + k + ')');

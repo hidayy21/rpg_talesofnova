@@ -82,10 +82,54 @@
    {
     "at": 5,
     "where": "Ember Lane, Lantern Row",
-    "goal": "Explore the capital, or set out from the Main Gate.",
+    "goal": "",
     "text": "Mom gets her bread, and Kael promises to say goodbye properly before he leaves."
+   },
+   {
+    "at": 6,
+    "where": "Market District",
+    "goal": "Buy the Silk Ribbon at the Tailor's stall for Selene.",
+    "text": "Then Selene comes running downstairs: a midnight-blue silk ribbon from the Tailor, please. Kael says no. Selene asks how a Class 3 mage plans to manage big missions if he can't manage a small one. Kael says yes."
+   },
+   {
+    "at": 7,
+    "where": "Market District",
+    "goal": "",
+    "text": "Ribbon in hand, Kael hears a commotion by the shops. A swordswoman in strange clothes has knocked Tobin the carter to the ground, swearing he is a thief. Kael stands between them, and the stranger draws her sword."
+   },
+   {
+    "at": 8,
+    "where": "Royal Prison",
+    "goal": "",
+    "text": "The city guard breaks up the fight and throws them both in the same cell. The swordswoman is Yuki, from Hōrai. Sera, on an inspection, gets Kael out, and on his word has Yuki released too, on one condition: Yuki apologizes to the man she accused."
+   },
+   {
+    "at": 10,
+    "where": "Tobin's house",
+    "goal": "Take Yuki to Tobin's house.",
+    "text": "Outside the prison at night, Yuki insists she saw Tobin picking pockets. To settle it, Kael offers to take her to Tobin's house. With nowhere else to go, Yuki joins him."
    }
   ],
   "var": 3
+ },
+ {
+  "id": "selene_ribbon",
+  "type": "sub",
+  "title": "A Ribbon for Selene",
+  "steps": [
+   {
+    "at": 1,
+    "where": "Market District",
+    "goal": "Buy the Silk Ribbon at the Tailor's stall.",
+    "text": "Selene wants the midnight-blue silk ribbon from the Tailor's stall, and she paid the 120 Z herself. Not navy. Not sky blue. Midnight."
+   },
+   {
+    "at": 2,
+    "where": "Ember Lane, Lantern Row",
+    "goal": "Bring the ribbon home to Selene.",
+    "text": "The ribbon is bought. Now it only has to make it home."
+   }
+  ],
+  "done": 3
  }
 ]

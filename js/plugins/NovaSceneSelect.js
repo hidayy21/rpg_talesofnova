@@ -23,6 +23,7 @@
  *   v1=4                 variable 1 = 4
  *   s11=on               switch 11 ON (off: OFF)
  *   item=51              gain item 51 (item=1x3: three of item 1)
+ *   gold=120             gain 120 gold
  *   done=Event Name      self switch A ON for the events with this name on
  *                        the target map (cutscenes that already happened)
  *   cmd=Clock set 17:00  any plugin command
@@ -63,6 +64,7 @@
                 var it = /^(\d+)(?:\s*x\s*(\d+))?$/i.exec(val);
                 if (it) $gameParty.gainItem($dataItems[+it[1]], it[2] ? +it[2] : 1);
             }
+            else if (key === 'gold') $gameParty.gainGold(Number(val));
             else if (key === 'done') done.push(val);
             else if (key === 'cmd') {
                 var args = val.split(/\s+/);

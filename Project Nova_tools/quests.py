@@ -24,7 +24,7 @@ def quest(qid, kind, title, steps, var=None, done=None):
 def register():
     import prologue, chapter1
     import scene_select
-    rows = [prologue.quest(), chapter1.quest()] + SUB_QUESTS
+    rows = [prologue.quest(), chapter1.quest()] + chapter1.sub_quests() + SUB_QUESTS
     with open(L.DATA + 'Quests.json', 'w', encoding='utf8', newline='') as f:
         json.dump(rows, f, ensure_ascii=False, indent=1)
     scene_select.register_plugin('NovaQuests', 'Quest log in the main menu: the main story chapters and sub quests, '
