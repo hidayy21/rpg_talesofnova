@@ -114,6 +114,11 @@
     //=========================================================================
     var _Scene_Map_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
+        if (this._novaPainter && this._novaPainter.leaving) {   // on the way to another map: just draw the fade
+            keys.length = 0;
+            Scene_Base.prototype.update.call(this);
+            return;
+        }
         while (keys.length) {
             var k = keys.shift();
             if (k === 'toggle') this.novaTogglePainter();
@@ -879,7 +884,12 @@
         SoundManager.playOk();
         NovaMapPainter.reopen = { list: false };
         $gamePlayer.reserveTransfer(mapId, Math.floor(w / 2), Math.floor(h / 2), 2, 0);
-        this.scene.novaClosePainter();
+        // Change scene straight away with the painter still open: closing it first lets this map run one frame,
+        // and an autorun here (the Opening on the start map fades the screen out) would carry on over the new map.
+        this.closeMapList();
+        this.remember();
+        this.leaving = true;
+        SceneManager.goto(Scene_Map);
     };
 
     //------------------------------------------------------------------ save

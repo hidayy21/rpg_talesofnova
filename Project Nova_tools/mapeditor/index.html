@@ -364,6 +364,8 @@ function drawEvent(g, ev) {
   const dx = ev.x * T, dy = ev.y * T, page = ev.pages[0];
   g.fillStyle = 'rgba(30,60,120,0.25)'; g.fillRect(dx + 2, dy + 2, T - 4, T - 4);
   if (page) drawEventImage(g, page.image, dx, dy);
+  // like the game: star (☆) tiles are drawn above characters, e.g. a stall's counter board in front of its keeper
+  for (let z = 0; z < 4; z++) { const id = at(ev.x, ev.y, z); if (id && (flagOf(id) & 0x10)) drawTile(g, id, dx, dy); }
   g.strokeStyle = 'rgba(98,214,255,0.9)'; g.lineWidth = 2; g.strokeRect(dx + 2, dy + 2, T - 4, T - 4); g.lineWidth = 1;
 }
 

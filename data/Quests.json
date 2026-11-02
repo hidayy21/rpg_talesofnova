@@ -125,13 +125,25 @@
     "at": 13,
     "where": "Main Gate",
     "goal": "",
-    "text": "Five months ago Tobin was carrying their crates through the gate when the wolf wrecked his cart, and he has been paying for the lost cargo ever since, by picking pockets. Yuki was right, and Tobin apologizes to her. In the crates: black crystals, as cold as the shard from the wolf. The bandits only move them, for hooded clients who give no names."
+    "text": "Five months ago Tobin was carrying their crates through the gate when the wolf wrecked his cart, and he has been paying for the lost cargo ever since, by picking pockets. Yuki was right, and Tobin apologizes to her. In the crates: black crystals, as cold as the shard from the wolf; Kael keeps one. The bandits only move them, for hooded clients who give no names."
    },
    {
     "at": 14,
     "where": "Ember Lane, Lantern Row",
     "goal": "Take the Silk Ribbon home to Selene.",
     "text": "At the Main Gate Tobin hands himself and the bandits to the guard, and Greta is waiting for him. It is almost midnight, and Selene is still waiting for her ribbon."
+   },
+   {
+    "at": 15,
+    "where": "Ashveil Residence",
+    "goal": "Go down to breakfast.",
+    "text": "Mom waited up, and Selene went to bed. Mom sits Yuki down to a bowl of Western stew, nothing like the stew of Hōrai, and over the table Yuki speaks of her brother Homura, who fled Hōrai and came west; when she finds him, she will settle what he did. Kael asks her to come with him. Before he sleeps, he writes to Professor Wyndmere about the crystals."
+   },
+   {
+    "at": 16,
+    "where": "Ember Lane, Lantern Row",
+    "goal": "Set out into the world from the Main Gate.",
+    "text": "Kael oversleeps: by the time he comes down, Yuki is at breakfast with Mom and Selene. Selene gets her ribbon, midnight blue, and makes her brother promise a souvenir from every town he visits. Mom only laughs at the goodbye: he will be back the moment he runs out of clean clothes."
    }
   ],
   "var": 3
@@ -152,8 +164,27 @@
     "where": "Ember Lane, Lantern Row",
     "goal": "Bring the ribbon home to Selene.",
     "text": "The ribbon is bought. Now it only has to make it home."
+   },
+   {
+    "at": 3,
+    "where": "",
+    "goal": "",
+    "text": "Delivered the next morning, a little late. Selene says it is exactly the right blue."
    }
   ],
   "done": 3
+ },
+ {
+  "id": "selene_souvenirs",
+  "type": "sub",
+  "title": "Souvenirs for Selene",
+  "steps": [
+   {
+    "at": 1,
+    "where": "Every town",
+    "goal": "Bring Selene a souvenir from every town you visit.",
+    "text": "Selene made her brother promise: a souvenir from every town he visits. Every. Single. One."
+   }
+  ]
  }
 ]

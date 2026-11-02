@@ -8,7 +8,8 @@
 #   7 ribbon bought: the brawl with Yuki           8 the prison cells (Sera)
 #   9 night, outside the prison: Yuki joins        10 to Tobin's house
 #   11 Greta: Tobin went out, to Briarwood          12 the bandits in Briarwood
-#   13 back at the Main Gate                        14 home to Selene with the ribbon (comes next)
+#   13 back at the Main Gate                        14 home at midnight: supper, Yuki's brother, the letter
+#   15 the morning: Kael wakes on 3F, breakfast below 16 the Main Gate is open: out into the world
 # Kael can't leave the capital (Main Gate -> World Map) during the chapter's errands, only to go after Tobin (11-13).
 # --save is safe to run again: it replaces its own events (note '<chapter1>') and rebuilds the pages it adds.
 import sys, json, copy
@@ -119,17 +120,19 @@ def build_database():
                       'members': [dict(m, enemyId=ENEMY_YUKI) for m in like['members']],
                       'pages': [stop(enemyValid=True, enemyHp=STOP_HP), stop(actorValid=True, actorHp=STOP_HP)]})
 
-    # Briarwood: the crew Tobin pays, sized for Kael and Yuki at about level 2-3 (two lackeys, then their leader)
+    # Briarwood: the crew Tobin pays, sized for Kael and Yuki at about level 2-3 (two lackeys, then their leader).
+    # Their skills hit for ATK x4 - DEF x2: at ATK 20 a lackey did 0 to Yuki (DEF 44 at level 3, katana + hat + cloth);
+    # ATK 32/38 lands about 30-60 a hit on her and 50-80 on Kael
     def bandit(eid, name, battler, params, exp, gold, actions, note):
         foe = copy.deepcopy(enemies[11])                        # the road Bandit: traits, drops
         foe.update({'id': eid, 'name': name, 'battlerName': battler, 'battlerHue': 0, 'params': params, 'exp': exp,
                     'gold': gold, 'actions': [{'conditionParam1': 0, 'conditionParam2': 0, 'conditionType': 0,
                                                'rating': r, 'skillId': k} for k, r in actions], 'note': note})
         P.db_put(enemies, foe)
-    bandit(ENEMY_LACKEY, 'Bandit Lackey', 'Rogue', [220, 0, 20, 14, 10, 12, 20, 10], 18, 25, [(190, 5), (201, 3)],
+    bandit(ENEMY_LACKEY, 'Bandit Lackey', 'Rogue', [220, 0, 32, 14, 10, 12, 20, 10], 18, 25, [(190, 5), (201, 3)],
            '<guard: 2>\n<weak: Ice>\n<desc1:Hired muscle for a crew that moves crates by night.>\n'
            '<desc2:Cold steel makes them think twice.>')
-    bandit(ENEMY_LEADER, 'Bandit Leader', 'Swordsman', [480, 20, 25, 18, 12, 15, 22, 12], 50, 80,
+    bandit(ENEMY_LEADER, 'Bandit Leader', 'Swordsman', [480, 20, 38, 18, 12, 15, 22, 12], 50, 80,
            [(190, 5), (193, 3), (203, 2)],
            '<guard: 3>\n<weak: Fire>\n<desc1:Runs a smuggling crew out of Briarwood.>\n'
            '<desc2:Asks no questions about the cargo, and answers none.>')
@@ -224,7 +227,8 @@ def gate_events(add, mp):
         if e and e['name'].startswith('To World Map'):
             base = e['pages'][0]
             e['pages'] = [base, dict(stay(errands), conditions=at(1)), dict(copy.deepcopy(base), conditions=at(11)),
-                          dict(stay(kael("Not yet. Selene's still waiting for her ribbon.")), conditions=at(14))]
+                          dict(stay(kael("Not yet. Selene's still waiting for her ribbon.")), conditions=at(14)),
+                          dict(copy.deepcopy(base), conditions=at(16))]       # said goodbye: the world is open
     greta = add('Greta', *GRETA_AT_GATE, staged(char(*GRETA, direction=2), 11, 14, commands=say(
         'Greta', 'Please, Kael. Bring him home.')))
     guard = next(e['id'] for e in mp['events'] if e and e['name'] == 'Gate Guard' and e['x'] > 20)
@@ -323,11 +327,193 @@ def home_events(add, mp):
                   "The Baker's Stall in the market has them.")],
             cmd(0, [], 1), cmd(412, [], 0)])
     staged_pages(mp, lambda e: e['name'] == 'Mother', 4, 5, errand)
+    mother = next(e for e in mp['events'] if e and e['name'] == 'Mother')
+    # at breakfast (stage 15) she sits at the table as her own event; back in the kitchen after the goodbye (16)
+    mother['pages'] += [dict(BLANK(), conditions=at(15)), dict(copy.deepcopy(mother['pages'][0]), conditions=at(16))]
+    night_events(add, mother['id'])
+    breakfast_events(add)
+
+
+def walk_path(map_id, start, goal, avoid=()):
+    """Route steps for the shortest walk over the floor from start to goal: the map's tiles only (the walkers go
+    Through other characters, but keep off `avoid`, where someone sits), and never over the top of a wall, which
+    the database marks passable."""
+    import validate_maps as V
+    m = json.load(open(L.DATA + 'Map%03d.json' % map_id, encoding='utf8'))
+    flags, w = L.tileset_flags(m['tilesetId']), m['width']
+    floor = lambda x, y: V.passable(m, x, y, flags) and not (L.A3 <= m['data'][y * w + x] < 8192)
+    steps = {(0, -1): UP, (0, 1): DOWN, (-1, 0): LEFT, (1, 0): RIGHT}
+    came, todo = {start: None}, [start]
+    while todo and goal not in came:
+        x, y = todo.pop(0)
+        for (dx, dy) in steps:
+            n = (x + dx, y + dy)
+            if n not in came and n not in avoid and (n == goal or floor(*n)):
+                came[n] = (x, y)
+                todo.append(n)
+    route, at_ = [], goal
+    while came[at_] is not None:
+        prev = came[at_]
+        route.append(steps[(at_[0] - prev[0], at_[1] - prev[1])])
+        at_ = prev
+    return route[::-1]
+
+
+# the kitchen table (3..5, 7..8): stools left (2,7) (2,8), right (6,7) (6,8), at the head (4,6)
+SEAT_KAEL, SEAT_YUKI, SEAT_MOM, SEAT_SELENE = (6, 7), (2, 7), (4, 6), (2, 8)
+DOORWAY, STAIRS_UP = (11, 13), (14, 3)
+MOM_WAITS = (11, 10)                     # up late in the living room, by the door
+KAEL_BED, KAEL_WAKES = (1, 4), (2, 4)    # Ashveil 3F: Kael's bed (1,3..4), and where he gets up
+BREAKFAST = [((4, 7), 256 + 34), ((3, 8), 256 + 32), ((5, 8), 256 + 35)]     # Inside_C: side dishes, a meal, fruit
+LETTER = ['Professor Wyndmere,', '',
+          'I found more of them. A whole crate of black crystals',
+          'in Briarwood, the same as the shard from the wolf.',
+          'A crew of bandits was carrying them through the Main Gate',
+          'for hooded clients who never give a name.', '',
+          'I kept one. Tomorrow I leave the capital,',
+          'to see the world, like you told me to.', '',
+          '- Kaelen']
+
+
+def night_events(add, mother):
+    """Stage 14: home near midnight. Mom waited up; she feeds Yuki (stew, but not the stew of Hōrai), Yuki speaks of
+    her brother, Kael asks her to come along, and he writes to Isolde. Ends in his room on 3F at 07:30 (stage 15)."""
+    yuki_ev = add('Yuki', DOORWAY[0] + 1, DOORWAY[1], on_cue(char(*YUKI_SPRITE, direction=8), 14, 15))
+    to_bed = lambda frm, speed: [THROUGH_ON, (SPEED, speed), *walk_path(K.ASHVEIL_1F, frm, STAIRS_UP, avoid=(SEAT_KAEL,)),
+                                  (39,), THROUGH_OFF]
+    add('Chapter 1: Home at Midnight', 0, 0, director([
+        cmd(216, [1]), *P.place(mother, MOM_WAITS[0], MOM_WAITS[1], 2), *self_on(K.ASHVEIL_1F, yuki_ev), *wait(30),
+        *mom('Kaelen Ashveil.'), *balloon(-1, 1),
+        *move(mother, (SPEED, 4), DOWN, (SPEED, 3)), *move(-1, UP), *move(yuki_ev, UP),
+        *mom('Do you have any idea what time it is?'),
+        *kael('...Late?'),
+        *mom('Selene waited for you all evening.', 'She went to bed an hour ago.'),
+        *balloon(-1, 6), *kael("(The ribbon... It'll have to wait until morning.)"),
+        *balloon(mother, 1), *mom('And who is this?'),
+        *move(-1, T_RIGHT), *move(yuki_ev, T_UP),
+        *yuki('Good evening. My name is Ryuzetsu Yuki.', "I've come from Hōrai. Forgive me for calling so late.", name='Yuki'),
+        *move(-1, T_UP),
+        *kael("She's only just arrived in the capital, Mom.", "She's got nowhere to stay tonight."),
+        *mom('Then she stays here, of course.'),
+        *mom('From Hōrai... You have come a long way, Yuki.', 'Have the two of you eaten?'),
+        *balloon(-1, 8), *balloon(yuki_ev, 8),
+        *mom('I thought not. Sit down, both of you.', 'The stew is still warm.'),
+        *fade_out_slow(40),
+        *goto(K.ASHVEIL_1F, SEAT_KAEL[0], SEAT_KAEL[1], 4, fade=2),
+        *P.place(yuki_ev, SEAT_YUKI[0], SEAT_YUKI[1], 6), *P.place(mother, SEAT_MOM[0], SEAT_MOM[1], 2),
+        *wait(20), *fade_in_slow(60),
+        # Yuki's first Western meal (Story Bible, chapter 1 point 6): Hōrai has stew too, just not this one
+        *plain('Two bowls of beef stew, still steaming,', 'and the last of the Golden Crust bread.'),
+        *yuki('Stew... We have stew in Hōrai as well.', name='Yuki'),
+        *mom('Oh? Is it like this one?'),
+        *wait(40), *balloon(yuki_ev, 1),
+        *yuki('...Not at all. Ours is lighter, with miso and fish.', 'This one is rich. Heavy, in a good way.', name='Yuki'),
+        *balloon(mother, 3), *mom('Then have another bowl.'),
+        *kael('Wait till you try her apple pie.'),
+        *mom('There is no apple pie, Kaelen.', 'Not for boys who come home at midnight.'),
+        *balloon(-1, 6), *kael('...Fair.'),
+        *mom('The guest room on the second floor is ready for you, Yuki.', "Goodnight, you two. Don't stay up too late."),
+        *move(mother, *to_bed(SEAT_MOM, 4), w=False),
+        # Yuki's brother (Story Bible: Masa Lalu Yuki), told once the business with the bandits is done
+        *wait(60),
+        *kael('So, Yuki. You came a long way.', 'What are you looking for out here?'),
+        *yuki('......', name='Yuki'), *wait(30),
+        *yuki('My brother. Homura.', name='Yuki'),
+        *yuki('Half a year ago he left Hōrai in the night.', 'They say he took a ship west.', name='Yuki'),
+        *kael("Your brother? Then he'll be glad to see you,", 'after all this time.'),
+        *yuki("...He won't be.", name='Yuki'),
+        *yuki('When I find him, I will settle what he did.', "That is all I'll say about it tonight.", name='Yuki'),
+        *kael('......'),
+        *kael("I'm going to see the world anyway.", "If your brother's out there, our road will cross his",
+              'sooner or later.'),
+        *kael('Come with me.'),
+        *balloon(yuki_ev, 1),
+        *yuki("You'd travel with a woman who drew her sword", 'on you this morning?', name='Yuki'),
+        *kael("You'd travel with the guy who beat you?"),
+        *yuki('Beat me? The guards stopped that fight.', name='Yuki'),
+        *balloon(-1, 5), *wait(30),
+        *yuki('Goodnight, Kael. Thank you for the stew.', name='Yuki'),
+        *kael('...Goodnight.'),
+        *move(yuki_ev, *to_bed(SEAT_YUKI, 3), w=False),
+        # a letter to Isolde: the second shard and the hooded clients
+        *wait(90), *kael('(Before I sleep...)'),
+        *se('Book2'), *plain('Kael finds a pen and a sheet of paper.'),
+        *P.scroll(*LETTER),
+        *kael("(I'll send it with the morning post.", "Wherever she is, it'll find her.)"),
+        *fade_out_slow(100), *var(V_CH1, 15), *plugin('Clock set 07:30'), *wait(60),
+        *goto(K.ASHVEIL_3F, KAEL_WAKES[0], KAEL_WAKES[1], 2, fade=2)], 14, var=V_CH1),
+        note='<minimap: hide>')
+
+
+def breakfast_events(add):
+    """Stage 15, Ashveil 1F: Kael overslept, so Yuki already sits at breakfast with Mom and Selene (and has met her).
+    The ribbon, Mom's teasing goodbye (Story Bible, chapter 1 point 6), Selene's souvenirs. The food goes at 16."""
+    for k, ((x, y), tile) in enumerate(BREAKFAST):
+        add('Breakfast %d' % (k + 1), x, y, staged({'tileId': tile, 'characterName': ''}, 15, 16, priority=0))
+    mom_ev = add('Mother at Breakfast', SEAT_MOM[0], SEAT_MOM[1], staged(char(*MOM_FACE, direction=2), 15, 16))
+    sis = add('Selene', SEAT_SELENE[0], SEAT_SELENE[1], staged(char(*SELENE, direction=6), 15, 16))
+    yuki_ev = add('Yuki', SEAT_YUKI[0], SEAT_YUKI[1], staged(char(*YUKI_SPRITE, direction=6), 15, 16))
+    add('Chapter 1: Breakfast', 0, 0, director([
+        *wait(10),
+        *balloon(sis, 1), *selene('Brother! You overslept!'),
+        *mom('Good morning, sleepyhead.', 'Come and sit down. Breakfast is getting cold.'),
+        *kael('Morning...'),
+        *fade_out_slow(30), *goto(K.ASHVEIL_1F, SEAT_KAEL[0], SEAT_KAEL[1], 4, fade=2), *wait(10), *fade_in_slow(40),
+        *selene("Yuki's been telling us everything.", 'The market, the prison, the bandits!'),
+        *balloon(-1, 6), *kael('...Everything?'),
+        *yuki('Most of it.', name='Yuki'),
+        *selene('She says the guards had to stop your fight', 'because you were losing.'),
+        *balloon(-1, 5), *kael("That's not what happened."),
+        *yuki('Mm.', name='Yuki'),
+        *selene('So? Brother?', 'Did you get it?'),
+        *kael('One silk ribbon.', 'Midnight blue.'),
+        cmd(126, [ITEM_RIBBON, 1, 0, 1]), *quest_cmd('complete selene_ribbon'),
+        *se('Item3'), *plain('Kael gives Selene the \\C[6]Silk Ribbon\\C[0].'),
+        *balloon(sis, 4), *selene("It's... it's actually midnight!", 'Not navy! Not sky blue!'),
+        *selene('Thank you, Brother!'),
+        *mom('So. You really are going today.'),
+        *kael("Yeah. I promised I'd say goodbye properly."),
+        *mom("Don't look so solemn about it.", "It's not as if you're leaving forever."),
+        *mom("You'll be back the moment you run out of clean clothes.", 'I know you, Kaelen Ashveil.'),
+        *balloon(-1, 6), *kael('...Probably.'),
+        *selene('Then bring me something back!', 'From every town you visit!'),
+        *kael('Every town?'),
+        *selene('Every. Single. One.'),
+        *kael('...Fine. Every town.'),
+        *quest_cmd('start selene_souvenirs'), *se('Book1'),
+        *plain('\\C[3]New Quest: Souvenirs for Selene\\C[0]', 'Bring Selene a souvenir from every town you visit.'),
+        *mom('Yuki, dear. Look after him for me.'),
+        *yuki('I will. Someone has to.', name='Yuki'),
+        *balloon(-1, 6), *kael("Alright. Let's go, Yuki."),
+        *fade_out_slow(60), *var(V_CH1, 16), cmd(216, [0]),
+        *goto(K.ASHVEIL_1F, DOORWAY[0], DOORWAY[1] - 1, 2, fade=2), *wait(20), *fade_in_slow(60),
+        *se('Book1'), *plain('\\C[3]Quest Updated\\C[0]', 'The Main Gate is open.',
+                             'Set out into the world with Yuki.')], 15, var=V_CH1),
+        note='<minimap: hide>')
 
 
 def upstairs_events(add, mp):
-    """Ashveil 2F: Selene is downstairs, waiting for her ribbon (she comes back up once it is handed over)."""
+    """Ashveil 2F: Selene is downstairs, waiting for her ribbon (she comes back up once it is handed over), and at
+    breakfast on the morning of the goodbye."""
     staged_pages(mp, lambda e: e['name'] == 'Little Sister', 5, 11, lambda base: BLANK())
+    sis = next(e for e in mp['events'] if e and e['name'] == 'Little Sister')
+    sis['pages'] += [dict(BLANK(), conditions=at(15)), dict(copy.deepcopy(sis['pages'][0]), conditions=at(16))]
+
+
+def kael_room_events(add, mp):
+    """Ashveil 3F: Kael's bed (rest: full HP and MP, any time), and the morning he wakes up beside it (stage 15)."""
+    rest = [cmd(101, ['', 0, 0, 2]), cmd(401, ['Your bed. Rest for a while?']),
+            cmd(102, [['Rest', 'Not now'], 1, 0, 2, 0]),
+            cmd(402, [0, 'Rest']), cmd(221, [], 1), *se('Recovery', i=1), cmd(314, [0, 0], 1), cmd(230, [60], 1),
+            cmd(222, [], 1), *plain('Kael feels rested.', i=1), cmd(0, [], 1),
+            cmd(402, [1, 'Not now']), cmd(0, [], 1), cmd(404, [])]
+    add("Kael's Bed", KAEL_BED[0], KAEL_BED[1], [page(None, priority=1, commands=rest)])
+    add('Chapter 1: Morning', 0, 0, director([
+        cmd(216, [1]), *wait(30), *fade_in_slow(90), *wait(20),
+        *move(-1, T_LEFT), *wait(20), *move(-1, T_DOWN),
+        *kael("Alright. Today's the day.", 'Time to start the journey.'),
+        *tutorial('Your \\C[6]bed\\C[0] at home lets you rest and fully recover', 'HP and MP, whenever you come back.')],
+        15, var=V_CH1), note='<minimap: hide>')
 
 
 # ====================================================================== Market District: the ribbon, and the brawl
@@ -472,6 +658,19 @@ def castle_events(add, mp):
         *script('$gameActors.actor(%d).changeLevel($gameActors.actor(1).level, false);' % ACTOR_YUKI),
         cmd(129, [ACTOR_YUKI, 0, False]), cmd(314, [0, 0]), *var(V_CH1, 10),
         *se('Item3'), *plain('\\C[3]Yuki joined the party!\\C[0]'),
+        *tutorial('\\C[6]Yuki\\C[0] fights at your side now. Her \\C[6]Frost Iai\\C[0] strikes with \\C[6]Ice\\C[0],',
+                  'and her sword arts hit hard: two of you means two kinds of weakness to aim for.',
+                  'Check her \\C[6]Equip\\C[0] and \\C[6]Skills\\C[0] from the Menu.'),
+        # Formation (NovaFormation): the party order decides the rows
+        *tutorial('\\C[6]Formation\\C[0] (in the Menu) sets the party order, and the order sets the rows:',
+                  'slots \\C[6]1-2\\C[0] stand in the \\C[6]front row\\C[0], slots \\C[6]3-4\\C[0] in the \\C[6]back row\\C[0].',
+                  'Enemies aim at the front row more often.'),
+        *tutorial('In the \\C[6]back row\\C[0], melee attacks deal 40% less damage, but physical hits taken',
+                  'are 40% weaker too. Bows, crossbows, guns and whips lose nothing back there,',
+                  "and a \\C[6]cane\\C[0] like Kael's staff attacks with \\C[6]magic\\C[0] instead."),
+        *tutorial('With only the two of you, both stand in the front row for now.',
+                  'In battle, the \\C[6]Row\\C[0] command swaps rows with an ally until the fight ends.',
+                  'Each card in the Menu shows its row next to the level.'),
         *se('Book1'), *plain('\\C[3]New Quest\\C[0]', 'Take Yuki to \\C[6]Tobin\'s house\\C[0]',
                              'and find out what really happened in the market.')], 9, var=V_CH1),
         note='<minimap: hide>')
@@ -518,6 +717,8 @@ def lantern_row_events(add, mp):
             *greta('You do?'),
             *kael("Briarwood. I'll bring him home.", 'I did it once already, didn\'t I?'),
             *greta('...Then I\'ll wait at the Main Gate.', 'Just like last time.'),
+            *greta('Wait. Take these.', 'Tobin always kept a few for the road.'),
+            *se('Item3'), *item(1, 3), *plain('Received 3 \\C[6]Potion\\C[0]!'),
             *kael('Thank you, Greta.'),
             *move(wife, THROUGH_ON, UP, 39, THROUGH_OFF), *se('Close1'), *move(0, *DOOR_SHUT),
             *move(-1, T_RIGHT),
@@ -594,7 +795,7 @@ def briarwood_events(add, mp):
         *kael("Yuki, sorry. You don't have to get mixed up in this.", 'Go.'),
         *yuki("Heh. Not a chance. Don't keep all the fun to yourself.",
               'Besides, I have unfinished business with your friend.', name='Yuki'),
-        *kael('Hahaha! Alright then.'),
+        *kael('Suit yourself, then.'),
         *move(-1, T_UP), *move(yuki_ev, T_UP), *move(tobin, THROUGH_ON, LEFT, THROUGH_OFF, T_RIGHT),
         *npc('Bandit Leader', 'Get them!'),
         cmd(301, [0, TROOP_BANDITS, False, False]),
@@ -637,6 +838,13 @@ def briarwood_events(add, mp):
         *npc('Bandit Leader', 'Hooded types. Never once saw their faces.', "Ask all you want, kid. That's all I know."),
         *yuki('Kael. Do you know what those are?', name='Yuki'),
         *kael('...I\'ve seen one before. Right here,', 'five months ago.'),
+        # Kael keeps one: two shards now, the wolf's and one from the crates (Isolde will want to see it)
+        *move(-1, T_UP), *se('Item3'), *item(P.ITEM_SHARD),
+        *plain('Kael wraps one of the crystals in a cloth', 'and slips it into his pocket.',
+               'Got another \\C[6]Tainted Shard\\C[0]! (2 in total)'),
+        *move(-1, T_LEFT),
+        *yuki("You're keeping one?", name='Yuki'),
+        *kael('Someone I know will want to see it.', "And I'd rather it didn't go missing on the way to the gate."),
         *kael("Come on. Let's take these three to the gate.", 'The guard can deal with them. And with the crates.'),
         *npc('Tobin', "I'm coming too.", "It's time I told the guard everything."),
         *kael('...Alright.'),
@@ -665,8 +873,14 @@ def scenes():
          base + ['v3=9', 'item=%d' % ITEM_RIBBON, 'cmd=Quest step selene_ribbon 2', 'cmd=Clock set 20:30']),
         ("Chapter 1: Tobin's door (Greta)", (K.RESIDENTIAL, TOBIN_DOOR[0], TOBIN_DOOR[1] + 1, 8),
          base + ['v3=10'] + party + ['cmd=Clock set 20:50']),
+        ('Chapter 1: Briarwood - Entrance, after Tobin', (P.ENTRANCE, P.ENTRANCE_START[0], P.ENTRANCE_START[1], 8),
+         base + ['v3=11'] + party + ['cmd=Clock set 21:20']),
         ('Chapter 1: Briarwood road, after Tobin', (P.BRIARWOOD, WOOD_IN[0], WOOD_ROW + 2, 8),
-         base + ['v3=11'] + party + ['item=1x3', 'cmd=Clock set 21:30'])]
+         base + ['v3=11'] + party + ['item=1x3', 'cmd=Clock set 21:30']),
+        ('Chapter 1: home at midnight (Yuki, the letter)', (K.ASHVEIL_1F, DOORWAY[0], DOORWAY[1], 8),
+         base + ['v3=14', 'item=%d' % P.ITEM_SHARD] + party + ['cmd=Clock set 23:45']),
+        ('Chapter 1: the morning goodbye (wake up on 3F)', (K.ASHVEIL_3F, KAEL_WAKES[0], KAEL_WAKES[1], 2),
+         base + ['v3=15', 'item=%d' % P.ITEM_SHARD] + party + ['cmd=Clock set 07:30'])]
 
 
 # ====================================================================== the quest log (quests.py, NovaQuests)
@@ -710,11 +924,20 @@ def quest():
         step(13, 'Main Gate', '',
              'Five months ago Tobin was carrying their crates through the gate when the wolf wrecked his cart, and he '
              'has been paying for the lost cargo ever since, by picking pockets. Yuki was right, and Tobin apologizes '
-             'to her. In the crates: black crystals, as cold as the shard from the wolf. The bandits only move them, '
+             'to her. In the crates: black crystals, as cold as the shard from the wolf; Kael keeps one. The bandits only move them, '
              'for hooded clients who give no names.'),
         step(14, 'Ember Lane, Lantern Row', 'Take the Silk Ribbon home to Selene.',
              'At the Main Gate Tobin hands himself and the bandits to the guard, and Greta is waiting for him. It is '
-             'almost midnight, and Selene is still waiting for her ribbon.')], var=V_CH1)
+             'almost midnight, and Selene is still waiting for her ribbon.'),
+        step(15, 'Ashveil Residence', 'Go down to breakfast.',
+             'Mom waited up, and Selene went to bed. Mom sits Yuki down to a bowl of Western stew, nothing like the '
+             'stew of Hōrai, and over the table Yuki speaks of her brother Homura, who fled Hōrai and came west; when '
+             'she finds him, she will settle what he did. Kael asks her to come with him. Before he sleeps, he writes '
+             'to Professor Wyndmere about the crystals.'),
+        step(16, 'Ember Lane, Lantern Row', 'Set out into the world from the Main Gate.',
+             'Kael oversleeps: by the time he comes down, Yuki is at breakfast with Mom and Selene. Selene gets her '
+             'ribbon, midnight blue, and makes her brother promise a souvenir from every town he visits. Mom only '
+             'laughs at the goodbye: he will be back the moment he runs out of clean clothes.')], var=V_CH1)
 
 
 def sub_quests():
@@ -725,14 +948,19 @@ def sub_quests():
              "Selene wants the midnight-blue silk ribbon from the Tailor's stall, and she paid the %d Z herself. "
              'Not navy. Not sky blue. Midnight.' % RIBBON_PRICE),
         step(2, 'Ember Lane, Lantern Row', 'Bring the ribbon home to Selene.',
-             'The ribbon is bought. Now it only has to make it home.')], done=3)]
+             'The ribbon is bought. Now it only has to make it home.'),
+        step(3, '', '', 'Delivered the next morning, a little late. Selene says it is exactly the right blue.')], done=3),
+        # opened at the goodbye (stage 15); the souvenirs themselves come with the towns
+        quest('selene_souvenirs', 'sub', 'Souvenirs for Selene', [
+            step(1, 'Every town', 'Bring Selene a souvenir from every town you visit.',
+                 'Selene made her brother promise: a souvenir from every town he visits. Every. Single. One.')])]
 
 
 if __name__ == '__main__':
     if '--save' in sys.argv:
         build_database()
         for mid, fn in ((P.GUILD, guild_events), (K.HARBOR, harbor_events), (K.BAKERS_LANE, bakers_lane_events),
-                        (K.CITY_GATE, gate_events), (K.ASHVEIL_1F, home_events), (K.ASHVEIL_2F, upstairs_events),
+                        (K.CITY_GATE, gate_events), (K.ASHVEIL_1F, home_events), (K.ASHVEIL_2F, upstairs_events), (K.ASHVEIL_3F, kael_room_events),
                         (K.MARKET, market_events), (K.PRISON_CELLS, prison_events), (K.CASTLE_APPROACH, castle_events),
                         (K.RESIDENTIAL, lantern_row_events), (P.BRIARWOOD, briarwood_events)):
             L.write_map(mid, P.patch_events(mid, fn, tag=TAG))

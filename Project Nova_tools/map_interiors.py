@@ -352,10 +352,13 @@ def townhouse_2f():
 
 
 # =========================================================================== Ashveil Residence (3 floors)
+# Lantern Row's tune (Town2, same pitch), softer indoors: walking in keeps it playing, and the house is never silent
+HOME_BGM = {'name': 'Town2', 'pan': 0, 'pitch': 95, 'volume': 55}
 @reg(K.ASHVEIL_1F, K.RESIDENTIAL)
 def ashveil_1f():
     # kitchen & dining (west) | living room (east) | bathroom (south-east corner)
     r = Room(21, 15, *name(K.ASHVEIL_1F), floor=WOOD, walls='plaster_e', ambient='#efe2d6')
+    r.bgm = HOME_BGM
     r.rect(8, 0, 8, 13, r.WT); r.rect(8, 10, 8, 11, WOOD)               # kitchen | living room, open doorway
     r.rect(14, 7, 20, 7, r.WT); r.rect(14, 8, 14, 13, r.WT)               # bathroom walls
     r.rect(15, 8, 19, 9, r.WF); r.rect(15, 10, 19, 13, TILE_W)
@@ -405,6 +408,7 @@ def ashveil_1f():
 def ashveil_2f():
     # parents' room (west) | stair hall (middle) | sisters' room (east)
     r = Room(21, 13, *name(K.ASHVEIL_2F), floor=WOOD_B, walls='plaster_e', ambient='#efe2d6')
+    r.bgm = HOME_BGM
     r.rect(7, 0, 7, 11, r.WT); r.cell(7, 9, WOOD_B)
     r.rect(13, 0, 13, 11, r.WT); r.cell(13, 9, WOOD_B)
     # stair hall
@@ -445,6 +449,7 @@ def ashveil_2f():
 def ashveil_3f():
     # the brothers' attic room: Kael (west), the eldest brother (east), separate beds
     r = Room(17, 11, *name(K.ASHVEIL_3F), floor=WOOD, walls='plaster_e', ambient='#e8dccf')
+    r.bgm = HOME_BGM
     r.put(8, 3, STAIRS_DOWN[3])
     # Kael
     r.two(1, 3, BED); r.two(3, 2, BOOKSHELF_A); r.two(4, 2, BOOKSHELF_B); r.put(2, 1, WIN_SMALL[1])

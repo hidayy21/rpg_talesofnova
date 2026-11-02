@@ -16,8 +16,10 @@
 | 7 | Satu sel | Royal Prison - Cells (22) | Sore | Cutscene, Sera membebaskan mereka |
 | 8 | Di depan penjara | Castle Approach (7) | 20:30 | **Yuki bergabung**, quest ke rumah Tobin |
 | 9 | Rumah Tobin | Lantern Row (5), pintu (28,43) | 21:00 | Cutscene dengan **Greta**, gerbang kota terbuka |
-| 10 | Para bandit | Briarwood (29) | Malam | Jalan sendiri ke clearing → cutscene, **battle bandit** |
+| 10 | Para bandit | Briarwood - Entrance (30) → Briarwood (29) | Malam | Kristal heal & chest di Entrance, lalu clearing → cutscene, **battle bandit**, **Tainted Shard kedua** |
 | 11 | Pulang lewat gerbang | Main Gate (23) | 23:00 | Cutscene, Tobin menyerahkan diri |
+| 12 | Pulang tengah malam | Ashveil Residence (18) | 23:45 | Makan malam Yuki, kisah kakaknya, ajakan Kael, surat untuk Isolde |
+| 13 | Pagi dan pamit | Ashveil 3F (20) → 1F (18) | 07:30 | Bangun di kamar (kasur = heal), sarapan, pita, sub quest **Souvenirs for Selene**, gerbang terbuka |
 
 Selama urusan Bab 1 belum selesai, Kael **tidak bisa keluar dari ibu kota** (jalan ke world map di Main Gate):
 
@@ -25,7 +27,7 @@ Selama urusan Bab 1 belum selesai, Kael **tidak bisa keluar dari ibu kota** (jal
 > **Kael:** "Not yet. I promised Selene her ribbon." *(tahap 6–7)*
 > **Kael:** "Not yet. We should go and see Tobin first." *(tahap 10)*
 > *(tahap 11–13: gerbang terbuka, untuk menyusul Tobin ke Briarwood)*
-> **Kael:** "Not yet. Selene's still waiting for her ribbon." *(tahap 14, sampai adegan pamit dibuat)*
+> **Kael:** "Not yet. Selene's still waiting for her ribbon." *(tahap 14–15; terbuka lagi dari tahap 16, setelah pamit)*
 
 ---
 
@@ -204,7 +206,7 @@ Fade perlahan, jam 20:30. **Castle Approach**, di depan pintu Royal Prison.
 > **Yuki:** "Very well. I don't know where else to go right now anyway."
 > **Kael:** "Okay, follow me."
 
-**Yuki bergabung** (level disamakan dengan Kael). *New Quest:* bawa Yuki ke **rumah Tobin**.
+**Yuki bergabung** (level disamakan dengan Kael), lalu **tutorial party**: Frost Iai milik Yuki ber-elemen Ice, cek Equip/Skills di Menu; dan **tutorial Formation**: slot 1–2 baris depan, 3–4 baris belakang (melee −40%, damage fisik yang diterima −40%, Cane menyerang dengan magic), untuk sekarang berdua di depan, perintah Row di battle. *New Quest:* bawa Yuki ke **rumah Tobin**.
 
 ## Adegan 9 — Rumah Tobin
 
@@ -226,6 +228,7 @@ Fade perlahan, jam 20:30. **Castle Approach**, di depan pintu Royal Prison.
 > **Greta:** "You do?"
 > **Kael:** "Briarwood. I'll bring him home. I did it once already, didn't I?"
 > **Greta:** "...Then I'll wait at the Main Gate. Just like last time."
+> **Greta:** "Wait. Take these. Tobin always kept a few for the road." *(dapat 3 Potion)*
 > **Kael:** "Thank you, Greta."
 
 *(Greta masuk, pintu tertutup.)*
@@ -264,7 +267,7 @@ Seorang bandit berjalan ke depan Kael ("Come quietly now—"). Kael menyerang ba
 > **Bandit Leader:** "Why, you little—!"
 > **Kael:** "Yuki, sorry. You don't have to get mixed up in this. Go."
 > **Yuki:** "Heh. Not a chance. Don't keep all the fun to yourself. Besides, I have unfinished business with your friend."
-> **Kael:** "Hahaha! Alright then."
+> **Kael:** "Suit yourself, then."
 > **Bandit Leader:** "Get them!"
 
 **Battle: Bandit Leader + 2 Bandit Lackey** (troop 45). Disesuaikan untuk Kael dan Yuki level 2–3. Lackey lemah terhadap **Ice** (Frost Iai milik Yuki), Leader lemah terhadap **Fire** (milik Kael). Bisa kabur: tidak. Kalah: game over.
@@ -303,6 +306,11 @@ Kael membuka salah satu peti di (19,6).
 > **Bandit Leader:** "Hooded types. Never once saw their faces. Ask all you want, kid. That's all I know."
 > **Yuki:** "Kael. Do you know what those are?"
 > **Kael:** "...I've seen one before. Right here, five months ago."
+
+*Kael wraps one of the crystals in a cloth and slips it into his pocket.* **Dapat Tainted Shard kedua** (total 2).
+
+> **Yuki:** "You're keeping one?"
+> **Kael:** "Someone I know will want to see it. And I'd rather it didn't go missing on the way to the gate."
 > **Kael:** "Come on. Let's take these three to the gate. The guard can deal with them. And with the crates."
 > **Tobin:** "I'm coming too. It's time I told the guard everything."
 > **Kael:** "...Alright."
@@ -342,7 +350,73 @@ Fade, 23:30. Yuki kembali menjadi follower.
 
 *Quest Updated:* bawa Silk Ribbon pulang ke Selene.
 
-> *Berikutnya (belum dibuat):* menyerahkan pita ke Selene, makan malam di rumah Ashveil (Yuki pertama kali makan makanan Benua Barat), dan pamit.
+## Adegan 12 — Pulang Tengah Malam
+
+**Ashveil Residence 1F, 23:45.** Ibu masih terjaga di ruang tengah, dekat pintu. Ia maju selangkah, Kael dan Yuki juga.
+
+> **Mother:** "Kaelen Ashveil." / "Do you have any idea what time it is?"
+> **Kael:** "...Late?"
+> **Mother:** "Selene waited for you all evening. She went to bed an hour ago."
+> **Kael:** "(The ribbon... It'll have to wait until morning.)"
+> **Mother:** "And who is this?"
+> **Yuki:** "Good evening. My name is Ryuzetsu Yuki. I've come from Hōrai. Forgive me for calling so late."
+> **Kael:** "She's only just arrived in the capital, Mom. She's got nowhere to stay tonight."
+> **Mother:** "Then she stays here, of course." / "From Hōrai... You have come a long way, Yuki. Have the two of you eaten?"
+> *(Kael dan Yuki: ...)*
+> **Mother:** "I thought not. Sit down, both of you. The stew is still warm."
+
+Di meja dapur: **makanan Benua Barat pertama Yuki** (Story Bible, Bab 1 poin 6). Di Hōrai juga ada stew, tapi rasanya lain.
+
+> **Yuki:** "Stew... We have stew in Hōrai as well." — **Mother:** "Oh? Is it like this one?"
+> **Yuki:** "...Not at all. Ours is lighter, with miso and fish. This one is rich. Heavy, in a good way."
+> **Mother:** "Then have another bowl."
+> **Kael:** "Wait till you try her apple pie." — **Mother:** "There is no apple pie, Kaelen. Not for boys who come home at midnight."
+> **Mother:** "The guest room on the second floor is ready for you, Yuki. Goodnight, you two."
+
+Ibu berjalan ke tangga (lewat lantai, tidak menembus dinding) sementara obrolan berlanjut. **Kisah kakak Yuki:**
+
+> **Yuki:** "My brother. Homura. Half a year ago he left Hōrai in the night. They say he took a ship west."
+> **Kael:** "Your brother? Then he'll be glad to see you." — **Yuki:** "...He won't be."
+> **Yuki:** "When I find him, I will settle what he did. That is all I'll say about it tonight."
+> **Kael:** "I'm going to see the world anyway. If your brother's out there, our road will cross his sooner or later. Come with me."
+> **Yuki:** "You'd travel with a woman who drew her sword on you this morning?"
+> **Kael:** "You'd travel with the guy who beat you?"
+> **Yuki:** "Beat me? The guards stopped that fight." *(Kael: kesal)*
+> **Yuki:** "Goodnight, Kael. Thank you for the stew." — **Kael:** "...Goodnight."
+
+Kael sendirian menulis **surat untuk Isolde** (scroll text), lalu tidur.
+
+## Adegan 13 — Pagi dan Pamit
+
+**Ashveil 3F, 07:30.** Kael bangun di sebelah kasurnya.
+
+> **Kael:** "Alright. Today's the day. Time to start the journey."
+
+*Tutorial:* kasur di rumah bisa dipakai untuk istirahat (HP & MP penuh) kapan saja. Pemain turun sendiri ke lantai 1.
+
+**1F.** Kael kesiangan: Ibu, Selene, dan Yuki sudah sarapan di meja (ada hidangan di meja). Selene dan Yuki sudah berkenalan.
+
+> **Selene:** "Brother! You overslept!" — **Mother:** "Good morning, sleepyhead. Come and sit down. Breakfast is getting cold."
+> **Selene:** "Yuki's been telling us everything. The market, the prison, the bandits!" — **Kael:** "...Everything?" — **Yuki:** "Most of it."
+> **Selene:** "She says the guards had to stop your fight because you were losing." — **Kael:** *(kesal)* "That's not what happened." — **Yuki:** "Mm."
+> **Kael:** "One silk ribbon. Midnight blue." *(pita diserahkan, sub quest selesai)*
+> **Selene:** "It's... it's actually midnight! Not navy! Not sky blue! Thank you, Brother!"
+> **Mother:** "Don't look so solemn about it. It's not as if you're leaving forever. You'll be back the moment you run out of clean clothes." *(meta-joke Story Bible)*
+> **Selene:** "Then bring me something back! From every town you visit! Every. Single. One."
+
+*New Quest: **Souvenirs for Selene*** (sub quest oleh-oleh).
+
+> **Mother:** "Yuki, dear. Look after him for me." — **Yuki:** "I will. Someone has to."
+
+Gerbang kota terbuka (tahap 16). Saat pemain bisa bergerak lagi, hidangan di meja sudah hilang dan Ibu kembali ke dapur.
+
+## Briarwood - Entrance (map 30)
+
+Hutan berdaun lebar antara World Map dan Briarwood (`map_briarwood_entrance.py`). Masuk dari bawah (dari World Map, 54,38), keluar ke Briarwood di atas; keluar dari Briarwood ke bawah juga kembali ke sini.
+
+- **Kristal heal** (19,5), tepat sebelum Briarwood: HP & MP seluruh party penuh, bisa dipakai berkali-kali.
+- **Chest** di dataran tinggi kanan (22,10), naik lewat tangga batu (21,15–16): 2 Hi-Potion, 2 Magic Water.
+- Papan penunjuk di jalan masuk. Lantai hutan memakai autotile *Bush* (dibuat tidak bisa dilewati di tileset Outside).
 
 ---
 

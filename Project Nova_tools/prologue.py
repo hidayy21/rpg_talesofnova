@@ -27,6 +27,8 @@ TROOP_SLIME, TROOP_HORNET, TROOP_WOLF = 41, 42, 43
 WORLD_HILL = (58, 30)                      # Skyreach Hill on the World Map; you come back out one tile below
 WORLD_WOOD = (54, 38)                      # Briarwood on the World Map: the forest corner by the road, south-west of
 WORLD_WOOD_OUT = (55, 38)                  # the capital; you come back out next to it
+ENTRANCE, ENTRANCE_START, ENTRANCE_TOP = 30, (16, 28), (17, 1)   # Briarwood - Entrance (map_briarwood_entrance.py):
+                                                                # in from the World Map / back out of Briarwood
 
 
 # ====================================================================== event-command helpers
@@ -87,7 +89,9 @@ def cond(stage=None, self_a=False, sw=None, var=V_STAGE):
     return c
 
 
-BLANK = lambda **c: page(None, priority=0, cond=c or None)
+# "not here": no picture and Through, because MV won't let an event step onto a tile holding any other event that
+# isn't Through, picture or not (Game_Event.isCollidedWithEvents) - a spent prologue hornet would block a later scene
+BLANK = lambda **c: page(None, priority=0, through=True, cond=c or None)
 
 
 def director(commands, stage, var=V_STAGE):
@@ -193,7 +197,7 @@ def build_database():
     shard.update({'id': ITEM_SHARD, 'name': 'Tainted Shard', 'iconIndex': 161, 'itypeId': 2, 'consumable': False,
                   'occasion': 3, 'scope': 0, 'price': 0, 'effects': [], 'animationId': 0, 'speed': 0, 'successRate': 100,
                   'damage': {'critical': False, 'elementId': 0, 'formula': '0', 'type': 0, 'variance': 20},
-                  'description': 'A cold black crystal left by a corrupted wolf.\nIts mana flows the wrong way.',
+                  'description': 'A cold black crystal. Its mana flows the wrong way,\nas if something is pulling it.',
                   'note': ''})
     db_put(items, shard)
 
@@ -465,9 +469,9 @@ def build_briarwood():
     for i, (x, y) in enumerate([(13, 13), (18, 13), (11, 9), (20, 11), (17, 6), (13, 5), (21, 9)]):
         m.put(x, y, T.FLOWERS[i % 4] if i % 2 else T.GRASS_TUFTS[i % 4])
 
-    # out to the World Map: not before Tobin is found
+    # out to the forest edge (Briarwood - Entrance, then the World Map): not before Tobin is found
     for x in (x for x in range(W) if not wood(x, H - 1)):
-        out = L.exit_page(K.WORLD, WORLD_WOOD_OUT[0], WORLD_WOOD_OUT[1], 2)
+        out = L.exit_page(ENTRANCE, ENTRANCE_TOP[0], ENTRANCE_TOP[1], 2)
         stay = page(None, trigger=1, priority=0, cond=cond(1), commands=kael("Not yet. I came here to find Tobin.") + move(-1, UP))
         m.add_event('To World Map %d' % x, x, H - 1, [out, stay, dict(copy.deepcopy(out), conditions=page(None, cond=cond(5))['conditions'])])
 
@@ -677,7 +681,7 @@ def world_entry(mp):
     mp['data'][(2 * H + hy - 1) * W + hx] = 11            # World_B: a big tree on top
     # Briarwood needs no new tiles: its entrance sits on the corner of the forest south-west of the capital
     entries = {'Skyreach Hill': (hx, hy, L.exit_page(SKYREACH, 16, SKY_H - 2, 8)),
-               'Briarwood': (WORLD_WOOD[0], WORLD_WOOD[1], L.exit_page(BRIARWOOD, WOOD_START[0], WOOD_START[1], 8))}
+               'Briarwood': (WORLD_WOOD[0], WORLD_WOOD[1], L.exit_page(ENTRANCE, ENTRANCE_START[0], ENTRANCE_START[1], 8))}
     mp['events'] = [None if e and e['name'] in entries else e for e in mp['events']]
     while len(mp['events']) > 1 and mp['events'][-1] is None: mp['events'].pop()
     for name, (x, y, pg) in entries.items():
@@ -750,6 +754,7 @@ if __name__ == '__main__':
         vault.save(VAULT, parent_id=0, order=VAULT)
         sky.save(SKYREACH, parent_id=K.WORLD, order=SKYREACH)
         wood.save(BRIARWOOD, parent_id=K.WORLD, order=BRIARWOOD)
+        import map_briarwood_entrance; map_briarwood_entrance.save()
         for mid, fn in ((FARM, farm_events), (K.CITY_GATE, gate_events), (GUILD, guild_events)):
             L.write_map(mid, patch_events(mid, fn))
         world = json.load(open(L.DATA + 'Map001.json', encoding='utf8'))
