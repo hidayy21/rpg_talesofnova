@@ -65,6 +65,11 @@
                 if (it) $gameParty.gainItem($dataItems[+it[1]], it[2] ? +it[2] : 1);
             }
             else if (key === 'gold') $gameParty.gainGold(Number(val));
+            else if (key === 'join') {          // join=2: actor 2 joins the party at Kael's level
+                $gameActors.actor(Number(val)).changeLevel($gameActors.actor(1).level, false);
+                $gameParty.addActor(Number(val));
+            }
+            else if (key === 'level') $gameActors.actor(1).changeLevel(Number(val), false);
             else if (key === 'done') done.push(val);
             else if (key === 'cmd') {
                 var args = val.split(/\s+/);

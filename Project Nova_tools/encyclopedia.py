@@ -7,6 +7,7 @@ import json
 import nova_maplib as L
 
 V_PROLOGUE, V_CH1 = 1, 3
+GRETA_FACE = None                  # no face sheet yet (sprite People4 7)
 
 
 def at(var, stage): return {'var': var, 'at': stage}
@@ -99,7 +100,16 @@ CHARACTERS = [
          'A carter from the capital. His cart was wrecked by monsters on the Briarwood road, and Kael, sent by the '
          'Guild, found him hiding in the bushes with a twisted ankle.',
          ('Five months later, a swordswoman knocked him down in the market and called him a thief. He swears he '
-          'is not.', at(V_CH1, 7))),
+          'is not.', at(V_CH1, 7)),
+         ('He was lying. The night his cart was wrecked he was carrying crates for a bandit crew, and he had been '
+          'picking pockets ever since to pay for the cargo he lost. He walked the bandits to the gate himself.',
+          at(V_CH1, 13))),
+    char('greta', 'Greta', 'Royal Capital of Nova', "Tobin's wife", GRETA_FACE, at(V_CH1, 11),
+         [('Home', 'Ember Lane, Lantern Row')],
+         "Tobin's wife, a few doors down from the Ashveil house. When Tobin went missing in Briarwood she filled half "
+         "the Guild's request board and waited at the Main Gate from dawn.",
+         ('Five months later she waited at the gate again, the night Kael and Yuki went after Tobin a second time.',
+          at(V_CH1, 13))),
     char('mara', 'Captain Mara', 'Royal Capital of Nova', 'Captain of the Morning Gull', ('People2', 3), at(V_CH1, 2),
          [('Ship', 'The Morning Gull'), ('Port', 'Saltwind Harbor')],
          'Captain of the Morning Gull, which crosses the sea between the Eastern Continent and Saltwind Harbor. '

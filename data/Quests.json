@@ -108,6 +108,30 @@
     "where": "Tobin's house",
     "goal": "Take Yuki to Tobin's house.",
     "text": "Outside the prison at night, Yuki insists she saw Tobin picking pockets. To settle it, Kael offers to take her to Tobin's house. With nowhere else to go, Yuki joins him."
+   },
+   {
+    "at": 11,
+    "where": "Briarwood",
+    "goal": "Find Tobin in Briarwood, west of the capital (Main Gate, then the World Map).",
+    "text": "At Tobin's door on Ember Lane, his wife Greta says he went out just before they came, with strangers waiting for him at the end of the lane. For months he has been going out at night. Kael remembers the night his cart never came home from Briarwood, and wonders why he never asked."
+   },
+   {
+    "at": 12,
+    "where": "Briarwood",
+    "goal": "",
+    "text": "In the clearing where the cart was wrecked, Tobin stands at a campfire with a crew of bandits, short of money again. When one of them tries to put Kael to sleep, Kael knocks him out, and Yuki refuses to walk away from the fight."
+   },
+   {
+    "at": 13,
+    "where": "Main Gate",
+    "goal": "",
+    "text": "Five months ago Tobin was carrying their crates through the gate when the wolf wrecked his cart, and he has been paying for the lost cargo ever since, by picking pockets. Yuki was right, and Tobin apologizes to her. In the crates: black crystals, as cold as the shard from the wolf. The bandits only move them, for hooded clients who give no names."
+   },
+   {
+    "at": 14,
+    "where": "Ember Lane, Lantern Row",
+    "goal": "Take the Silk Ribbon home to Selene.",
+    "text": "At the Main Gate Tobin hands himself and the bandits to the guard, and Greta is waiting for him. It is almost midnight, and Selene is still waiting for her ribbon."
    }
   ],
   "var": 3

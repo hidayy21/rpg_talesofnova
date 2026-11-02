@@ -15,12 +15,17 @@
 | 6 | Keributan di pasar | Market District (4) | Siang | Beli pita di Tailor → cutscene, **duel melawan Yuki** |
 | 7 | Satu sel | Royal Prison - Cells (22) | Sore | Cutscene, Sera membebaskan mereka |
 | 8 | Di depan penjara | Castle Approach (7) | 20:30 | **Yuki bergabung**, quest ke rumah Tobin |
+| 9 | Rumah Tobin | Lantern Row (5), pintu (28,43) | 21:00 | Cutscene dengan **Greta**, gerbang kota terbuka |
+| 10 | Para bandit | Briarwood (29) | Malam | Jalan sendiri ke clearing → cutscene, **battle bandit** |
+| 11 | Pulang lewat gerbang | Main Gate (23) | 23:00 | Cutscene, Tobin menyerahkan diri |
 
 Selama urusan Bab 1 belum selesai, Kael **tidak bisa keluar dari ibu kota** (jalan ke world map di Main Gate):
 
 > **Kael:** "Not yet. Mom's errand comes first." *(tahap 1–4)*
 > **Kael:** "Not yet. I promised Selene her ribbon." *(tahap 6–7)*
-> **Kael:** "Not yet. We should go and see Tobin first." *(tahap 10, sampai cerita bandit dibuat)*
+> **Kael:** "Not yet. We should go and see Tobin first." *(tahap 10)*
+> *(tahap 11–13: gerbang terbuka, untuk menyusul Tobin ke Briarwood)*
+> **Kael:** "Not yet. Selene's still waiting for her ribbon." *(tahap 14, sampai adegan pamit dibuat)*
 
 ---
 
@@ -201,7 +206,143 @@ Fade perlahan, jam 20:30. **Castle Approach**, di depan pintu Royal Prison.
 
 **Yuki bergabung** (level disamakan dengan Kael). *New Quest:* bawa Yuki ke **rumah Tobin**.
 
-> *Berikutnya (belum dibuat):* ternyata Tobin memang mencopet, untuk membayar **bandit**. Kael dan Yuki melawan para bandit itu. Penyerahan pita ke Selene juga belum dibuat.
+## Adegan 9 — Rumah Tobin
+
+**Lantern Row, Ember Lane**, rumah di (28,43), beberapa pintu di sebelah timur rumah Ashveil. Kael mengetuk pintu. Fade singkat: Kael mundur satu langkah, Yuki di sebelah kanannya. Pintu terbuka dan **Greta**, istri Tobin, keluar ke depan pintu.
+
+> **Kael:** "Tobin? It's Kael."
+> **Greta:** "Kael? At this hour?"
+> **Kael:** "Evening, Greta. Sorry it's so late. Is Tobin home?"
+> **Greta:** "You just missed him. He went out a little while ago."
+> **Greta:** "I watched him from the window... There were men waiting for him at the end of the lane. Men I've never seen before."
+> **Kael:** *(!)* "Strangers? Where did he go with them?"
+> **Greta:** "I don't know. He never tells me anymore."
+> **Greta:** "These past months he's been going out at night, again and again. And when he comes home, he won't say a word about it."
+> **Yuki:** "...Doesn't that sound suspicious to you?"
+> **Kael:** "......"
+> **Kael:** *(...)* "(Five months ago... Tobin never made it home from Briarwood that night.)"
+> **Kael:** "(I never asked him what he was doing on the forest road after dark.)"
+> **Kael:** "Greta. I think I know where he went."
+> **Greta:** "You do?"
+> **Kael:** "Briarwood. I'll bring him home. I did it once already, didn't I?"
+> **Greta:** "...Then I'll wait at the Main Gate. Just like last time."
+> **Kael:** "Thank you, Greta."
+
+*(Greta masuk, pintu tertutup.)*
+
+> **Yuki:** "Briarwood?"
+> **Kael:** "A forest west of the capital. The old cart road runs right through it."
+> **Yuki:** "And the gate will let us out at night?"
+> **Kael:** "For a Class 3 mage? It will."
+
+*Quest Updated:* pergi ke **Briarwood** dan cari Tobin. Gerbang kota sekarang terbuka. Greta menunggu di pinggir jalan Main Gate ("Please, Kael. Bring him home.").
+
+> *Catatan:* "Just like last time" menggemakan Prolog ("His wife's been at this gate since dawn").
+
+## Adegan 10 — Para Bandit
+
+**Briarwood, malam.** Para bandit dan Tobin sudah terlihat dari jalan: mereka duduk mengelilingi api unggun di clearing tempat gerobak Tobin hancur dulu. Begitu pemain sampai di baris jalan y19, cutscene dimulai. Kael dan Yuki berjalan ke tepi selatan clearing.
+
+> **Bandit Leader:** "Short again, Tobin. That's the third time this month."
+> **Tobin:** "I-I'll get the rest. I just need a few more days—"
+> **Kael:** "Tobin!"
+> **Tobin:** *(!)* "Kael? Wh-what are you doing here?"
+> **Kael:** "I could ask you the same thing. What are you doing with these people?"
+> *(semua bandit: !)*
+> **Bandit Leader:** "Tobin, what is this? You led them straight to us?"
+> **Tobin:** "No! I swear, I don't know why they're here!"
+> **Yuki:** "Your friend seems quite at home with these men."
+> **Kael:** "......"
+> **Bandit:** "Hey, kid. Ever heard the saying? Curiosity killed the cat."
+> **Tobin:** "Wait! Don't hurt them!" / "...At least don't hurt the boy."
+> **Yuki:** *(keringat)* "Ouch."
+> **Bandit Leader:** "Relax, Tobin. We'll only put them to sleep for a while."
+
+Seorang bandit berjalan ke depan Kael ("Come quietly now—"). Kael menyerang balik dengan api (animasi *Fire One*, layar bergetar), bandit itu terpental dan **pingsan** (sprite `Damage2`).
+
+> *(semua bandit dan Tobin: !)*
+> **Bandit Leader:** "Why, you little—!"
+> **Kael:** "Yuki, sorry. You don't have to get mixed up in this. Go."
+> **Yuki:** "Heh. Not a chance. Don't keep all the fun to yourself. Besides, I have unfinished business with your friend."
+> **Kael:** "Hahaha! Alright then."
+> **Bandit Leader:** "Get them!"
+
+**Battle: Bandit Leader + 2 Bandit Lackey** (troop 45). Disesuaikan untuk Kael dan Yuki level 2–3. Lackey lemah terhadap **Ice** (Frost Iai milik Yuki), Leader lemah terhadap **Fire** (milik Kael). Bisa kabur: tidak. Kalah: game over.
+
+Setelah menang, semua bandit tergeletak pingsan. Kael menghampiri Tobin.
+
+> **Kael:** "Tobin!"
+> **Tobin:** "I'm sorry, Kael..."
+> **Tobin:** "That night in Briarwood, five months ago... I wasn't hauling grain."
+> **Tobin:** "It was their cargo. They paid me to bring it through the gate. Nobody checks an old carter's cart."
+> **Tobin:** "Then that wolf came out of the dark. The cart, the crates, all of it... gone."
+> **Tobin:** "And they wanted every coin of it back. With interest."
+> **Kael:** "So the market..."
+> **Tobin:** "...Yes. The young lady was right."
+> **Kael:** "Why didn't you tell me? I'd have helped you."
+> **Tobin:** "You'd just saved my life, lad. How could I tell you I'd lied to you the same day?"
+> **Kael:** "......"
+> **Yuki:** "I was told I have to apologize to you."
+> **Yuki:** "...But I think it should be the other way around."
+> **Tobin:** *(keringat)* "...I'm sorry I got you thrown in prison, miss."
+> **Yuki:** "Accepted."
+
+**Hook ke cerita utama.**
+
+> **Yuki:** "What's in those crates, anyway? They were guarding them like treasure."
+
+Kael membuka salah satu peti di (19,6).
+
+> *Packed in straw: black crystals, cold to the touch.*
+> **Kael:** *(!)* "These are..."
+> **Kael:** "(The same as the shard from the wolf. The mana's flowing the wrong way.)"
+> **Kael:** "Where did you get these?"
+> **Bandit Leader:** "Ugh... Don't look at me. We just move the crates."
+> **Bandit Leader:** "The client pays well and doesn't give names."
+> **Kael:** "What client?"
+> **Bandit Leader:** "Hooded types. Never once saw their faces. Ask all you want, kid. That's all I know."
+> **Yuki:** "Kael. Do you know what those are?"
+> **Kael:** "...I've seen one before. Right here, five months ago."
+> **Kael:** "Come on. Let's take these three to the gate. The guard can deal with them. And with the crates."
+> **Tobin:** "I'm coming too. It's time I told the guard everything."
+> **Kael:** "...Alright."
+
+> *Catatan:* kliennya adalah Order of Caelum (para "hooded types"), tapi belum ada yang tahu. Kebohongan Tobin di Prolog ("I didn't get a good look") kini terjawab.
+
+## Adegan 11 — Pulang Lewat Gerbang
+
+**Main Gate, 23:00.** Kael, Yuki, dan Tobin berjalan naik dari ujung jalan, ketiga bandit di belakang mereka. Penjaga gerbang menghampiri.
+
+> **Gate Guard:** "Ashveil? At this hour? And who are... these?"
+> **Kael:** "Bandits. We caught them in Briarwood. They've been running crates through this gate in Tobin's cart."
+> **Gate Guard:** "Tobin's cart?"
+> **Tobin:** "It's true. Every word. I carried their cargo. And when I lost it, I picked pockets in the market to pay them back."
+> **Tobin:** "I'll answer for it."
+> **Greta:** *(!)* "Tobin!" *(berlari ke Tobin)*
+> **Greta:** "You fool... Why didn't you tell me?"
+> **Tobin:** "I'm sorry, Greta."
+> **Gate Guard:** "Picking pockets is a matter for the magistrate. But a man who walks a bandit crew to the gate himself... that will count for something."
+> **Kael:** "I'll speak to Sera too. She'll hear the whole story."
+> **Gate Guard:** "Sir Seraphine? Ha. Then he's in good hands."
+> **Gate Guard:** "And those crates in the clearing... we'll send a patrol for them at first light."
+
+*The guards lead the bandits through the gate.*
+
+> **Tobin:** "Kael. Miss Yuki. Thank you."
+> **Tobin:** "The next round at the Lion's Rest is on me... ...once I can afford it."
+> **Kael:** "I'll hold you to that. Again."
+> **Yuki:** "Make it two rounds."
+
+Fade, 23:30. Yuki kembali menjadi follower.
+
+> **Kael:** "...What a day."
+> **Yuki:** "Is it always like this in your country?"
+> **Kael:** "No. Usually it's quieter. I think."
+> **Kael:** "Come on. Selene's still waiting for her ribbon. And you need somewhere to sleep tonight."
+
+*Quest Updated:* bawa Silk Ribbon pulang ke Selene.
+
+> *Berikutnya (belum dibuat):* menyerahkan pita ke Selene, makan malam di rumah Ashveil (Yuki pertama kali makan makanan Benua Barat), dan pamit.
 
 ---
 
@@ -210,13 +351,14 @@ Fade perlahan, jam 20:30. **Castle Approach**, di depan pintu Royal Prison.
 | Bagian | Isi |
 |---|---|
 | **Script** | `python chapter1.py --save` (editor ditutup, jalankan setelah `prologue.py --save`). |
-| **Flag** | Variabel 3 *Chapter 1*: 1 bebas di Guild, 2 Yuki di harbor, 3 daftar Ibu, 4 errand berjalan, 5 errand selesai (Selene turun), 6 beli pita, 7 keributan di pasar, 8 penjara, 9 malam di depan penjara, 10 ke rumah Tobin. |
+| **Flag** | Variabel 3 *Chapter 1*: 1 bebas di Guild, 2 Yuki di harbor, 3 daftar Ibu, 4 errand berjalan, 5 errand selesai (Selene turun), 6 beli pita, 7 keributan di pasar, 8 penjara, 9 malam di depan penjara, 10 ke rumah Tobin, 11 ke Briarwood (gerbang terbuka), 12 adegan bandit, 13 di Main Gate, 14 pulang ke Selene (gerbang terkunci lagi). |
 | **Event** | Lion's Rest: pintu keluar mengarah ke harbor di tahap 1. Saltwind Harbor: Yuki dan cutscene-nya. Baker's Lane: daftar Ibu. Main Gate: jalan ke world map terkunci di tahap 1–4. Ashveil Residence: Ibu menerima belanjaan di tahap 4. |
 | **Plugin** | `NovaChapterCard` (kartu judul bab, perintah `ChapterCard Chapter 1 \| The Adventure Begins`). `NovaSvEnemy`: musuh dengan sheet SV aktor (`<sv actor: Actor4_2>`, dibalik), stat dari class pada level aktor (`<as class: 2>` + `<match level: 1>`). |
-| **Database** | Item 52 *Silk Ribbon* (120 Z). Enemy 39 *???* (Yuki). Troop 44 *Chapter 1: Yuki (market brawl)*: dua halaman (HP enemy / HP Kael ≤ 47%) yang memudarkan layar lalu menghentikan battle. |
+| **Database** | Item 52 *Silk Ribbon* (120 Z). Enemy 39 *???* (Yuki). Troop 44 *Chapter 1: Yuki (market brawl)*: dua halaman (HP enemy / HP Kael ≤ 47%) yang memudarkan layar lalu menghentikan battle. Enemy 40 *Bandit Lackey* (220 HP, lemah Ice, battler `Rogue`), enemy 41 *Bandit Leader* (480 HP, lemah Fire, battler `Swordsman`), troop 45 *Chapter 1: Bandits (Briarwood)*. |
+| **Event Bab 1 lanjutan** | Lantern Row: pintu rumah Tobin (28,43) memutar adegan Greta di tahap 10, plus Greta dan Yuki. Briarwood: api unggun (`!Flame` 2, dengan cahaya), 3 bandit (`Evil` 0/4), Bandit Leader (`Evil` 1), Tobin, Yuki, 4 pemicu di jalan y19, cutscene. Bandit pingsan memakai `Damage2` 0/1/7. Main Gate: Greta (tahap 11–13), Tobin, Yuki, 3 bandit, cutscene. Selama cutscene, follower disembunyikan dan Yuki diperankan event. |
 | **Event baru** | Ashveil 1F: Selene. Ashveil 2F: *Little Sister* disembunyikan di tahap 5–10. Market: Tailor menjual pita di tahap 6, Yuki, Tobin, 8 warga, 4 prajurit (People3 #7) + kapten (People3 #6), cutscene. Prison Cells: Yuki, penjaga, Sera, Old Pell sementara di sel kanan bawah, cutscene. Castle Approach: Yuki, cutscene. |
 | **Quest log** | Menu **Quests** (plugin `NovaQuests`, data `data/Quests.json` dari `quests.py`): *Chapter 1 - The Adventure Begins* mengikuti variabel 3, dengan tujuan saat ini dan ringkasan per tahap. Teksnya ada di `quest()` dalam `chapter1.py`. Tab *Sub Quests* sudah ada, diisi lewat `SUB_QUESTS` di `quests.py`. |
 | **Papan kota** | `city_map.py --save`: papan peta di Grand Plaza (18,25) menampilkan gambar `img/pictures/Nova_CityMap.png` (dirender dari map distrik; jalankan ulang `python city_map.py` setelah map distrik berubah). Papan *Ashveil Residence* di Ember Lane (13,44). |
 | **Lubang pintu** | Setiap event pintu `!Door1` di map luar punya tile lubang gelap di Outside_B (69 kotak, 71 lengkung untuk style 2/3), dipasang `town_kit` dan `door_holes.py --save`. |
-| **Tes cepat** | Scene Select punya 7 titik Bab 1 (Guild, harbor, daftar Ibu, pulang ke Ibu dengan belanjaan, di Tailor dengan 120 Z, sel penjara, malam di depan penjara). Setting baru `gold=N`. |
-| **Placeholder** | Sprite & wajah Yuki = `Actor4` indeks 1. Sprite & wajah Selene / Sera = `family1` indeks 0 / 1. Lokasi rumah Tobin belum ditentukan. |
+| **Tes cepat** | Scene Select punya 9 titik Bab 1 (Guild, harbor, daftar Ibu, pulang ke Ibu dengan belanjaan, di Tailor dengan 120 Z, sel penjara, malam di depan penjara, pintu rumah Tobin, jalan Briarwood). Setting `gold=N`, serta `join=2` (aktor 2 masuk party pada level Kael) dan `level=N` (level Kael). |
+| **Placeholder** | Sprite & wajah Yuki = `Actor4` indeks 1. Sprite & wajah Selene / Sera = `family1` indeks 0 / 1. Sprite Greta = `People4` indeks 7 (belum punya wajah). Rumah Tobin = rumah terkunci di Ember Lane (28,43), adegannya di depan pintu. |

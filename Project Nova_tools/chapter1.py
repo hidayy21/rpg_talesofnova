@@ -6,8 +6,10 @@
 #   3 back to Kael in Baker's Lane           4 Mom's errand: 2 Honey Bread + 3 Sweet Buns from the market
 #   5 errand handed over: Selene comes down       6 Selene's errand: a Silk Ribbon from the Tailor
 #   7 ribbon bought: the brawl with Yuki           8 the prison cells (Sera)
-#   9 night, outside the prison: Yuki joins        10 to Tobin's house (the bandit story comes next)
-# Kael can't leave the capital (Main Gate -> World Map) during the chapter's errands.
+#   9 night, outside the prison: Yuki joins        10 to Tobin's house
+#   11 Greta: Tobin went out, to Briarwood          12 the bandits in Briarwood
+#   13 back at the Main Gate                        14 home to Selene with the ribbon (comes next)
+# Kael can't leave the capital (Main Gate -> World Map) during the chapter's errands, only to go after Tobin (11-13).
 # --save is safe to run again: it replaces its own events (note '<chapter1>') and rebuilds the pages it adds.
 import sys, json, copy
 import nova_maplib as L
@@ -15,7 +17,7 @@ from nova_maplib import page, cmd, say, char
 import kingdom as K
 import prologue as P
 from prologue import (kael, npc, plain, tutorial, var, se, gold, item, balloon, wait, fadein, fadeout, transparent, goto, plugin,
-                      move, director, cond, shake, flash, BLANK, UP, DOWN, LEFT, RIGHT, T_UP, T_DOWN, T_LEFT, T_RIGHT)
+                      move, director, cond, shake, flash, anim, BLANK, UP, DOWN, LEFT, RIGHT, T_UP, T_DOWN, T_LEFT, T_RIGHT)
 
 V_CH1 = P.V_CHAPTER1
 TAG = '<chapter1>'
@@ -28,8 +30,14 @@ SELENE, SERA = ('family1', 0), ('family1', 1)          # sprite and face share t
 SOLDIER, CAPTAIN = ('People3', 7), ('People3', 6)        # round helmet, plumed helmet
 ITEM_RIBBON, RIBBON_PRICE = 52, 120                     # Selene's errand; she pays exactly the price
 ENEMY_YUKI, TROOP_YUKI = 39, 44
+ENEMY_LACKEY, ENEMY_LEADER, TROOP_BANDITS = 40, 41, 45
 CLASS_RONIN, ACTOR_YUKI = 2, 2
 STOP_HP = 47                                             # the duel stops once either side is under 48% HP
+GRETA = ('People4', 7)                                   # Tobin's wife (placeholder sprite)
+# the bandits on the map (Evil sheet) and the same faces knocked out (Damage2)
+BANDIT_A, BANDIT_B, BANDIT_LEADER = ('Evil', 0), ('Evil', 4), ('Evil', 1)
+DOWN_A, DOWN_B, DOWN_LEADER = ('Damage2', 0), ('Damage2', 1), ('Damage2', 7)
+ANIM_FIRE = 66                                           # Fire One: Kael's answer to the bandit who grabs him
 
 # Saltwind Harbor: Yuki comes off the Morning Gull at the end of the first pier and walks in past Captain Mara (33,15)
 YUKI_FROM, HARBOR_VIEW = (39, 15), (33, 13)     # the camera (an invisible Kael) hangs over the pier
@@ -110,6 +118,24 @@ def build_database():
     P.db_put(troops, {'id': TROOP_YUKI, 'name': 'Chapter 1: Yuki (market brawl)',
                       'members': [dict(m, enemyId=ENEMY_YUKI) for m in like['members']],
                       'pages': [stop(enemyValid=True, enemyHp=STOP_HP), stop(actorValid=True, actorHp=STOP_HP)]})
+
+    # Briarwood: the crew Tobin pays, sized for Kael and Yuki at about level 2-3 (two lackeys, then their leader)
+    def bandit(eid, name, battler, params, exp, gold, actions, note):
+        foe = copy.deepcopy(enemies[11])                        # the road Bandit: traits, drops
+        foe.update({'id': eid, 'name': name, 'battlerName': battler, 'battlerHue': 0, 'params': params, 'exp': exp,
+                    'gold': gold, 'actions': [{'conditionParam1': 0, 'conditionParam2': 0, 'conditionType': 0,
+                                               'rating': r, 'skillId': k} for k, r in actions], 'note': note})
+        P.db_put(enemies, foe)
+    bandit(ENEMY_LACKEY, 'Bandit Lackey', 'Rogue', [220, 0, 20, 14, 10, 12, 20, 10], 18, 25, [(190, 5), (201, 3)],
+           '<guard: 2>\n<weak: Ice>\n<desc1:Hired muscle for a crew that moves crates by night.>\n'
+           '<desc2:Cold steel makes them think twice.>')
+    bandit(ENEMY_LEADER, 'Bandit Leader', 'Swordsman', [480, 20, 25, 18, 12, 15, 22, 12], 50, 80,
+           [(190, 5), (193, 3), (203, 2)],
+           '<guard: 3>\n<weak: Fire>\n<desc1:Runs a smuggling crew out of Briarwood.>\n'
+           '<desc2:Asks no questions about the cargo, and answers none.>')
+    like = troops[39]                                           # three enemies: one at the back, two in front
+    P.db_put(troops, {'id': TROOP_BANDITS, 'name': 'Chapter 1: Bandits (Briarwood)', 'pages': [P.troop_page([])],
+                      'members': [dict(m, enemyId=e) for m, e in zip(like['members'], (ENEMY_LEADER, ENEMY_LACKEY, ENEMY_LACKEY))]})
     P.db_save('Items', items); P.db_save('Enemies', enemies); P.db_save('Troops', troops)
 
 
@@ -178,15 +204,72 @@ def bakers_lane_events(add, mp):
 
 
 # ====================================================================== Main Gate: not during the chapter's errands
+# from Briarwood, Kael, Yuki and Tobin walk up the road from the bottom (y32) with the bandits one row behind them,
+# to just below the gate guards; Greta waits by the road (stage 11 on) and meets Tobin there
+GATE_ROAD, GATE_WALK = P.GATE_ROAD, 12
+GATE_WALK_TO = GATE_ROAD[1] - GATE_WALK
+GRETA_AT_GATE = (18, 17)
+
+
 def gate_events(add, mp):
-    def stay(base):
-        # stage <= 4: Mom's list; 6-7: Selene's ribbon; later: Tobin (stages 5, 8 and 9 are cutscenes elsewhere)
-        lines = [cmd(111, [1, V_CH1, 0, 4, 2], 0), *kael("Not yet. Mom's errand comes first.", i=1), cmd(0, [], 1),
-                 cmd(411, [], 0), cmd(111, [1, V_CH1, 0, 7, 2], 1), *kael('Not yet. I promised Selene her ribbon.', i=2),
-                 cmd(0, [], 2), cmd(411, [], 1), *kael('Not yet. We should go and see Tobin first.', i=2), cmd(0, [], 2),
-                 cmd(412, [], 1), cmd(0, [], 1), cmd(412, [], 0)]
-        return page(None, trigger=1, priority=0, commands=lines + move(-1, UP))
-    staged_pages(mp, lambda e: e['name'].startswith('To World Map'), 1, 11, stay)
+    def stay(line):
+        return page(None, trigger=1, priority=0, commands=line + move(-1, UP))
+    # stage <= 4: Mom's list; 6-7: Selene's ribbon; 10: Tobin (stages 5, 8 and 9 are cutscenes elsewhere)
+    errands = [cmd(111, [1, V_CH1, 0, 4, 2], 0), *kael("Not yet. Mom's errand comes first.", i=1), cmd(0, [], 1),
+               cmd(411, [], 0), cmd(111, [1, V_CH1, 0, 7, 2], 1), *kael('Not yet. I promised Selene her ribbon.', i=2),
+               cmd(0, [], 2), cmd(411, [], 1), *kael('Not yet. We should go and see Tobin first.', i=2), cmd(0, [], 2),
+               cmd(412, [], 1), cmd(0, [], 1), cmd(412, [], 0)]
+    # open from 11 (after Tobin, to Briarwood) to 13, then shut again until Selene has her ribbon
+    for e in mp['events']:
+        if e and e['name'].startswith('To World Map'):
+            base = e['pages'][0]
+            e['pages'] = [base, dict(stay(errands), conditions=at(1)), dict(copy.deepcopy(base), conditions=at(11)),
+                          dict(stay(kael("Not yet. Selene's still waiting for her ribbon.")), conditions=at(14))]
+    greta = add('Greta', *GRETA_AT_GATE, staged(char(*GRETA, direction=2), 11, 14, commands=say(
+        'Greta', 'Please, Kael. Bring him home.')))
+    guard = next(e['id'] for e in mp['events'] if e and e['name'] == 'Gate Guard' and e['x'] > 20)
+    road = GATE_ROAD
+    tobin = add('Tobin', road[0] - 1, road[1], staged(char(*P.TOBIN_SPRITE, direction=8), 13, 14))
+    yuki_ev = add('Yuki', road[0] + 1, road[1], staged(char(*YUKI_SPRITE, direction=8), 13, 14))
+    crew = [add('Bandit %d' % (k + 1), road[0] - 1 + k, road[1] + 1, staged(char(*img, direction=8), 13, 14))
+            for k, img in enumerate((BANDIT_A, BANDIT_LEADER, BANDIT_B))]
+    up = lambda ev, w=False: move(ev, 37, *[UP] * GATE_WALK, 38, w=w, skip=True)
+    add('Chapter 1: Home Through the Gate', 0, 0, director([
+        *fade_out_slow(1), cmd(216, [1]), *wait(20), *fade_in_slow(60),
+        *up(tobin), *up(yuki_ev), *[c for b in crew for c in up(b)], *up(-1, w=True),
+        *move(guard, 37, LEFT, DOWN, DOWN, DOWN, DOWN, 38, T_LEFT, skip=True),
+        *npc('Gate Guard', 'Ashveil? At this hour?', 'And who are... these?'),
+        *move(-1, T_RIGHT),
+        *kael('Bandits. We caught them in Briarwood.', "They've been running crates through this gate", "in Tobin's cart."),
+        *npc('Gate Guard', "Tobin's cart?"),
+        *npc('Tobin', "It's true. Every word.", 'I carried their cargo. And when I lost it,',
+             'I picked pockets in the market to pay them back.'),
+        *npc('Tobin', "I'll answer for it."),
+        *balloon(greta, 1), *say('Greta', 'Tobin!'),
+        *move(greta, 37, DOWN, DOWN, RIGHT, 38, T_DOWN, skip=True), *move(tobin, T_UP),
+        *say('Greta', 'You fool...', "Why didn't you tell me?"),
+        *npc('Tobin', "I'm sorry, Greta."),
+        *npc('Gate Guard', 'Picking pockets is a matter for the magistrate.',
+             'But a man who walks a bandit crew to the gate himself...', 'that will count for something.'),
+        *kael("I'll speak to Sera too. She'll hear the whole story."),
+        *npc('Gate Guard', 'Sir Seraphine? Ha. Then he\'s in good hands.'),
+        *npc('Gate Guard', "And those crates in the clearing... we'll send", 'a patrol for them at first light.'),
+        *fade_out_slow(40), *[c for b in crew for c in move(b, 39)], *wait(20), *fade_in_slow(40),
+        *plain('The guards lead the bandits through the gate.'),
+        *move(tobin, T_RIGHT),
+        *npc('Tobin', 'Kael. Miss Yuki. Thank you.'),
+        *npc('Tobin', "The next round at the Lion's Rest is on me...", '...once I can afford it.'),
+        *kael("I'll hold you to that. Again."),
+        *yuki('Make it two rounds.', name='Yuki'),
+        *fade_out_slow(100), *var(V_CH1, 14), cmd(216, [0]), *plugin('Clock set 23:30'),
+        *goto(K.CITY_GATE, road[0], GATE_WALK_TO, 8, fade=2), *wait(20), *fade_in_slow(60),
+        *kael('...What a day.'),
+        *yuki('Is it always like this in your country?', name='Yuki'),
+        *kael('No. Usually it\'s quieter. I think.'),
+        *kael("Come on. Selene's still waiting for her ribbon.", 'And you need somewhere to sleep tonight.'),
+        *se('Book1'), *plain('\\C[3]Quest Updated\\C[0]', 'Take the \\C[6]Silk Ribbon\\C[0] home to Selene,',
+                             'on \\C[6]Ember Lane\\C[0], in Lantern Row.')], 13, var=V_CH1),
+        note='<minimap: hide>')
 
 
 # ====================================================================== Ashveil Residence: home to Mom, then Selene
@@ -394,10 +477,180 @@ def castle_events(add, mp):
         note='<minimap: hide>')
 
 
+# ====================================================================== Lantern Row: Tobin's house, on Ember Lane
+# the locked House at (28,43), a few doors east of the Ashveil house. Kael knocks from the doorstep; for the scene he
+# stands one step back (28,45) with Yuki beside him, and Greta comes out onto the step (28,44).
+TOBIN_DOOR, DOORSTEP, YUKI_STEP = (28, 43), (28, 45), (29, 45)
+DOOR_OPEN = [DIR_FIX_OFF, T_DOWN, (L.R_WAIT, 3), T_LEFT, (L.R_WAIT, 3), T_RIGHT, (L.R_WAIT, 3), T_UP]
+DOOR_SHUT = [T_RIGHT, (L.R_WAIT, 3), T_LEFT, (L.R_WAIT, 3), T_DOWN]
+
+
+def greta(*lines): return say('Greta', *lines)
+
+
+def lantern_row_events(add, mp):
+    door = next(e for e in mp['events'] if e and e['name'] == 'House' and (e['x'], e['y']) == TOBIN_DOOR)
+    wife = add('Greta', TOBIN_DOOR[0], TOBIN_DOOR[1], on_cue(char(*GRETA, direction=2), 10, 11))
+    yuki_ev = add('Yuki', YUKI_STEP[0], YUKI_STEP[1], on_cue(char(*YUKI_SPRITE, direction=8), 10, 11))
+
+    def visit(base):
+        return dict(copy.deepcopy(base), list=[
+            *fade_out_slow(30), cmd(216, [1]), *goto(K.RESIDENTIAL, DOORSTEP[0], DOORSTEP[1], 8, fade=2),
+            *self_on(K.RESIDENTIAL, yuki_ev), *wait(10), *fade_in_slow(40),
+            *se('Knock'), *wait(40), *kael("Tobin? It's Kael."), *wait(30),
+            *se('Open1'), *move(0, *DOOR_OPEN), *self_on(K.RESIDENTIAL, wife), *wait(5),
+            *move(wife, THROUGH_ON, DOWN, THROUGH_OFF),
+            *greta('Kael? At this hour?'),
+            *kael("Evening, Greta. Sorry it's so late.", 'Is Tobin home?'),
+            *greta('You just missed him. He went out a little while ago.'),
+            *greta('I watched him from the window...', 'There were men waiting for him at the end of the lane.',
+                   "Men I've never seen before."),
+            *balloon(-1, 1), *kael('Strangers?', 'Where did he go with them?'),
+            *greta("I don't know. He never tells me anymore."),
+            *greta("These past months he's been going out at night,", 'again and again. And when he comes home,',
+                   "he won't say a word about it."),
+            *move(yuki_ev, T_LEFT), *yuki("...Doesn't that sound suspicious to you?", name='Yuki'),
+            *kael('......'),
+            *wait(30), *balloon(-1, 8),
+            *kael('(Five months ago... Tobin never made it home', 'from Briarwood that night.)'),
+            *kael('(I never asked him what he was doing', 'on the forest road after dark.)'),
+            *move(-1, T_UP), *kael('Greta. I think I know where he went.'),
+            *greta('You do?'),
+            *kael("Briarwood. I'll bring him home.", 'I did it once already, didn\'t I?'),
+            *greta('...Then I\'ll wait at the Main Gate.', 'Just like last time.'),
+            *kael('Thank you, Greta.'),
+            *move(wife, THROUGH_ON, UP, 39, THROUGH_OFF), *se('Close1'), *move(0, *DOOR_SHUT),
+            *move(-1, T_RIGHT),
+            *yuki('Briarwood?', name='Yuki'),
+            *kael('A forest west of the capital.', 'The old cart road runs right through it.'),
+            *yuki('And the gate will let us out at night?', name='Yuki'),
+            *kael('For a Class 3 mage? It will.'),
+            *fade_out_slow(40), *move(yuki_ev, 39), cmd(216, [0]), *var(V_CH1, 11), *plugin('Clock set 21:00'),
+            *goto(K.RESIDENTIAL, DOORSTEP[0], DOORSTEP[1] - 1, 2, fade=2), *wait(10), *fade_in_slow(40),
+            *se('Book1'), *plain('\\C[3]Quest Updated\\C[0]', 'Go to \\C[6]Briarwood\\C[0] and find Tobin.',
+                                 'Leave the capital by the \\C[6]Main Gate\\C[0]: the forest lies',
+                                 'just west of the capital on the World Map.')])
+    staged_pages(mp, lambda e: e is door, 10, 11, visit)
+
+
+# ====================================================================== Briarwood: Tobin and the bandits, at night
+# the prologue's clearing (prologue.py): the crew sits round a fire where Tobin's cart was wrecked. Kael and Yuki come
+# up the road to the clearing's south edge; the bandit who grabs Kael ends up knocked out at (14,11).
+FIRE, LEADER_AT, TOBIN_AT = (15, 8), (15, 7), (15, 10)
+LACKEY_A, LACKEY_B, LACKEY_C = (13, 9), (17, 10), (18, 8)           # A (Evil 0) grabs Kael; B (Evil 4) and C (Evil 0)
+WOOD_ROW = 19                                                       # stepping on this row (stage 11) starts the scene
+WOOD_IN, WOOD_STOP = (15, 17), 13                                   # Kael walks up from (15,17) to (15,13)
+CRATE_STEP = (19, 7)                                                # below the crate at (19,6)
+
+
+def knocked_out(ev, img, w=False):
+    return move(ev, T_DOWN, (41, img[0], img[1]), 35, 32, w=w)       # collapsed sprite, direction fixed, no walking
+
+
+def briarwood_events(add, mp):
+    add('Campfire', FIRE[0], FIRE[1], staged(char('!Flame', 2), 11, 13, step_anim=True, walk_anim=False),
+        note='<light: 4, #ffa040>\n<minimap: hide>')
+    hidden = '<minimap: hide>'
+    leader = add('Bandit Leader', LEADER_AT[0], LEADER_AT[1], staged(char(*BANDIT_LEADER, direction=2), 11, 13), note=hidden)
+    a = add('Bandit', LACKEY_A[0], LACKEY_A[1], staged(char(*BANDIT_A, direction=6), 11, 13), note=hidden)
+    b = add('Bandit', LACKEY_B[0], LACKEY_B[1], staged(char(*BANDIT_B, direction=4), 11, 13), note=hidden)
+    c = add('Bandit', LACKEY_C[0], LACKEY_C[1], staged(char(*BANDIT_A, direction=4), 11, 13), note=hidden)
+    tobin = add('Tobin', TOBIN_AT[0], TOBIN_AT[1], staged(char(*P.TOBIN_SPRITE, direction=8), 11, 13))
+    yuki_ev = add('Yuki', WOOD_IN[0], WOOD_IN[1] + 1, on_cue(char(*YUKI_SPRITE, direction=8), 11, 13), note=hidden)
+    for x in range(13, 17):                                         # the open road on row 19 (x13..16)
+        add('Chapter 1: Briarwood Road %d' % x, x, WOOD_ROW,
+            [BLANK(), page(None, trigger=1, priority=0, cond=cond(11, var=V_CH1), commands=var(V_CH1, 12)),
+             BLANK(**cond(12, var=V_CH1))])
+    walk = WOOD_IN[1] - WOOD_STOP
+    gang = (leader, b, c)
+    add('Chapter 1: The Bandits', 0, 0, director([
+        *fade_out_slow(30), cmd(216, [1]), *goto(P.BRIARWOOD, WOOD_IN[0], WOOD_IN[1], 8, fade=2),
+        *self_on(P.BRIARWOOD, yuki_ev), *wait(10), *fade_in_slow(60),
+        *npc('Bandit Leader', "Short again, Tobin. That's the third time this month."),
+        *npc('Tobin', "I-I'll get the rest. I just need a few more days—"),
+        *move(-1, *[UP] * walk, w=False), *move(yuki_ev, THROUGH_ON, *[UP] * walk, RIGHT, UP, THROUGH_OFF, T_UP),
+        *kael('Tobin!'),
+        *balloon(tobin, 1), *move(tobin, T_DOWN),
+        *npc('Tobin', 'Kael? Wh-what are you doing here?'),
+        *kael('I could ask you the same thing.', 'What are you doing with these people?'),
+        *[x for g in gang + (a,) for x in balloon(g, 1, w=False)], *wait(30),
+        *npc('Bandit Leader', 'Tobin, what is this?', 'You led them straight to us?'),
+        *move(tobin, T_UP),
+        *npc('Tobin', "No! I swear, I don't know why they're here!"),
+        *yuki('Your friend seems quite at home with these men.', name='Yuki'),
+        *kael('......'),
+        *move(c, T_DOWN), *npc('Bandit', 'Hey, kid. Ever heard the saying?', 'Curiosity killed the cat.'),
+        *move(tobin, T_DOWN),
+        *npc('Tobin', "Wait! Don't hurt them!"), *npc('Tobin', "...At least don't hurt the boy."),
+        *balloon(yuki_ev, 6), *yuki('Ouch.', name='Yuki'),
+        *npc('Bandit Leader', "Relax, Tobin. We'll only put them to sleep for a while."),
+        *move(a, THROUGH_ON, DOWN, DOWN, DOWN, RIGHT, RIGHT, THROUGH_OFF, T_DOWN),
+        *npc('Bandit', 'Come quietly now—'),
+        *se('Fire2', 90), *anim(a, ANIM_FIRE, w=False), *shake(5, 8, 15), *wait(20),
+        *move(a, THROUGH_ON, (14, -1, -1), THROUGH_OFF), *se('Blow3', 90), *knocked_out(a, DOWN_A, w=True),
+        *[x for g in gang for x in balloon(g, 1, w=False)], *balloon(tobin, 1),
+        *npc('Bandit Leader', 'Why, you little—!'),
+        *move(-1, T_RIGHT), *move(yuki_ev, T_LEFT),
+        *kael("Yuki, sorry. You don't have to get mixed up in this.", 'Go.'),
+        *yuki("Heh. Not a chance. Don't keep all the fun to yourself.",
+              'Besides, I have unfinished business with your friend.', name='Yuki'),
+        *kael('Hahaha! Alright then.'),
+        *move(-1, T_UP), *move(yuki_ev, T_UP), *move(tobin, THROUGH_ON, LEFT, THROUGH_OFF, T_RIGHT),
+        *npc('Bandit Leader', 'Get them!'),
+        cmd(301, [0, TROOP_BANDITS, False, False]),
+        *script('$gameScreen.startFadeOut(30);'), *wait(30),
+        *knocked_out(b, DOWN_B), *knocked_out(c, DOWN_A), *knocked_out(leader, DOWN_LEADER),
+        *move(tobin, THROUGH_ON, RIGHT, THROUGH_OFF, T_DOWN), *wait(20), *fade_in_slow(60),
+        # Tobin's confession
+        *move(-1, UP, UP), *kael('Tobin!'),
+        *npc('Tobin', "I'm sorry, Kael..."),
+        *npc('Tobin', 'That night in Briarwood, five months ago...', "I wasn't hauling grain."),
+        *npc('Tobin', 'It was their cargo. They paid me to bring it', "through the gate. Nobody checks an old carter's cart."),
+        *npc('Tobin', 'Then that wolf came out of the dark.', 'The cart, the crates, all of it... gone.'),
+        *npc('Tobin', 'And they wanted every coin of it back.', 'With interest.'),
+        *kael('So the market...'),
+        *npc('Tobin', '...Yes. The young lady was right.'),
+        *kael("Why didn't you tell me? I'd have helped you."),
+        *npc('Tobin', "You'd just saved my life, lad.", "How could I tell you I'd lied to you the same day?"),
+        *kael('......'),
+        # Sera's condition, the other way round
+        *move(yuki_ev, UP, UP, UP, T_LEFT), *move(tobin, T_RIGHT),
+        *yuki('I was told I have to apologize to you.', name='Yuki'),
+        *yuki('...But I think it should be the other way around.', name='Yuki'),
+        *balloon(tobin, 6), *npc('Tobin', "...I'm sorry I got you thrown in prison, miss."),
+        *yuki('Accepted.', name='Yuki'),
+        # the crates: the hook to the main story
+        *move(yuki_ev, T_UP),
+        *yuki("What's in those crates, anyway?", 'They were guarding them like treasure.', name='Yuki'),
+        *move(-1, THROUGH_ON, *[RIGHT] * (CRATE_STEP[0] - TOBIN_AT[0]), *[UP] * (TOBIN_AT[1] + 1 - CRATE_STEP[1]),
+              THROUGH_OFF, T_UP),
+        *se('Open2'), *plain('Kael pries the lid off one of the crates.'),
+        *se('Darkness1', 70), *flash([120, 60, 200, 120], 20),
+        *plain('Packed in straw: black crystals, cold to the touch.'),
+        *balloon(-1, 1), *kael('These are...'),
+        *kael("(The same as the shard from the wolf.", "The mana's flowing the wrong way.)"),
+        *move(-1, T_LEFT),
+        *kael('Where did you get these?'),
+        *npc('Bandit Leader', "Ugh... Don't look at me.", 'We just move the crates.'),
+        *npc('Bandit Leader', "The client pays well and doesn't give names."),
+        *kael('What client?'),
+        *npc('Bandit Leader', 'Hooded types. Never once saw their faces.', "Ask all you want, kid. That's all I know."),
+        *yuki('Kael. Do you know what those are?', name='Yuki'),
+        *kael('...I\'ve seen one before. Right here,', 'five months ago.'),
+        *kael("Come on. Let's take these three to the gate.", 'The guard can deal with them. And with the crates.'),
+        *npc('Tobin', "I'm coming too.", "It's time I told the guard everything."),
+        *kael('...Alright.'),
+        *fade_out_slow(100), *var(V_CH1, 13), *plugin('Clock set 23:00'),
+        *goto(K.CITY_GATE, GATE_ROAD[0], GATE_ROAD[1], 8, fade=2)], 12, var=V_CH1),
+        note='<minimap: hide>')
+
+
 # ====================================================================== playtest: Scene Select
 def scenes():
     base = ['v1=10', 'item=%d' % P.ITEM_SHARD]
     goods = ['item=%dx%d' % (i, n) for i, n in LIST]
+    party = ['level=3', 'join=%d' % ACTOR_YUKI, 'item=%d' % ITEM_RIBBON, 'cmd=Quest start selene_ribbon',
+             'cmd=Quest step selene_ribbon 2']
     return [
         ('Chapter 1: the Guild, after the license', (P.GUILD, 26, 7, 8), base + ['v3=1', 'cmd=Clock set 09:10']),
         ('Chapter 1: Yuki arrives at the harbor', (K.HARBOR, HARBOR_VIEW[0], HARBOR_VIEW[1], 2), base + ['v3=2', 'cmd=Clock set 09:15']),
@@ -409,7 +662,11 @@ def scenes():
         ('Chapter 1: the prison cell with Yuki', (K.PRISON_CELLS, CELL_KAEL[0], CELL_KAEL[1], 6),
          base + ['v3=8', 'item=%d' % ITEM_RIBBON, 'cmd=Quest step selene_ribbon 2', 'cmd=Clock set 15:00']),
         ('Chapter 1: night outside the prison (Yuki joins)', (K.CASTLE_APPROACH, NIGHT_KAEL[0], NIGHT_KAEL[1], 6),
-         base + ['v3=9', 'item=%d' % ITEM_RIBBON, 'cmd=Quest step selene_ribbon 2', 'cmd=Clock set 20:30'])]
+         base + ['v3=9', 'item=%d' % ITEM_RIBBON, 'cmd=Quest step selene_ribbon 2', 'cmd=Clock set 20:30']),
+        ("Chapter 1: Tobin's door (Greta)", (K.RESIDENTIAL, TOBIN_DOOR[0], TOBIN_DOOR[1] + 1, 8),
+         base + ['v3=10'] + party + ['cmd=Clock set 20:50']),
+        ('Chapter 1: Briarwood road, after Tobin', (P.BRIARWOOD, WOOD_IN[0], WOOD_ROW + 2, 8),
+         base + ['v3=11'] + party + ['item=1x3', 'cmd=Clock set 21:30'])]
 
 
 # ====================================================================== the quest log (quests.py, NovaQuests)
@@ -441,7 +698,23 @@ def quest():
              'Yuki apologizes to the man she accused.'),
         step(10, "Tobin's house", "Take Yuki to Tobin's house.",
              'Outside the prison at night, Yuki insists she saw Tobin picking pockets. To settle it, Kael offers to take '
-             "her to Tobin's house. With nowhere else to go, Yuki joins him.")], var=V_CH1)
+             "her to Tobin's house. With nowhere else to go, Yuki joins him."),
+        step(11, 'Briarwood', 'Find Tobin in Briarwood, west of the capital (Main Gate, then the World Map).',
+             "At Tobin's door on Ember Lane, his wife Greta says he went out just before they came, with strangers "
+             'waiting for him at the end of the lane. For months he has been going out at night. Kael remembers the '
+             'night his cart never came home from Briarwood, and wonders why he never asked.'),
+        step(12, 'Briarwood', '',
+             'In the clearing where the cart was wrecked, Tobin stands at a campfire with a crew of bandits, short of '
+             'money again. When one of them tries to put Kael to sleep, Kael knocks him out, and Yuki refuses to walk '
+             'away from the fight.'),
+        step(13, 'Main Gate', '',
+             'Five months ago Tobin was carrying their crates through the gate when the wolf wrecked his cart, and he '
+             'has been paying for the lost cargo ever since, by picking pockets. Yuki was right, and Tobin apologizes '
+             'to her. In the crates: black crystals, as cold as the shard from the wolf. The bandits only move them, '
+             'for hooded clients who give no names.'),
+        step(14, 'Ember Lane, Lantern Row', 'Take the Silk Ribbon home to Selene.',
+             'At the Main Gate Tobin hands himself and the bandits to the guard, and Greta is waiting for him. It is '
+             'almost midnight, and Selene is still waiting for her ribbon.')], var=V_CH1)
 
 
 def sub_quests():
@@ -460,7 +733,8 @@ if __name__ == '__main__':
         build_database()
         for mid, fn in ((P.GUILD, guild_events), (K.HARBOR, harbor_events), (K.BAKERS_LANE, bakers_lane_events),
                         (K.CITY_GATE, gate_events), (K.ASHVEIL_1F, home_events), (K.ASHVEIL_2F, upstairs_events),
-                        (K.MARKET, market_events), (K.PRISON_CELLS, prison_events), (K.CASTLE_APPROACH, castle_events)):
+                        (K.MARKET, market_events), (K.PRISON_CELLS, prison_events), (K.CASTLE_APPROACH, castle_events),
+                        (K.RESIDENTIAL, lantern_row_events), (P.BRIARWOOD, briarwood_events)):
             L.write_map(mid, P.patch_events(mid, fn, tag=TAG))
         import scene_select
         scene_select.register_plugin('NovaChapterCard', 'Chapter title cards: an animated title in the middle of the '

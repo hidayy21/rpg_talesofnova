@@ -342,7 +342,8 @@ Skenario lengkap dengan dialog: [Prolog_Scenario.md](Prolog_Scenario.md).
 3. **Selene** minta dibelikan **pita sutra** di pasar ("kalau misi kecil saja tidak bisa, bagaimana misi besar?").
 4. Di **pasar**, **Yuki** menyerang **Tobin** (tukang gerobak yang Kael selamatkan di Prolog) karena melihatnya mencopet. Kael membela Tobin → duel dengan Yuki → keduanya ditangkap prajurit dan dijebloskan ke **satu sel**.
 5. Di penjara Yuki memperkenalkan diri. **Seraphine** yang kebetulan sedang inspeksi membebaskan Kael, lalu atas permintaan Kael juga Yuki, dengan syarat Yuki **minta maaf** kepada Tobin. Malamnya Yuki **bergabung** sebagai party member pertama dan mereka berangkat ke rumah Tobin.
-   - **Plot twist (belum dibuat):** Tobin **memang mencopet**, karena harus menyetor uang kepada **bandit**. Kael dan Yuki bekerja sama melawan para bandit itu.
+   - **Plot twist:** Tobin **memang mencopet**. Malam di Prolog ia sebenarnya mengangkut **peti milik bandit** lewat gerbang kota; Corrupted Wolf menghancurkan gerobak beserta muatannya, dan sejak itu ia harus mengganti muatan yang hilang. Istrinya, **Greta**, memberi tahu bahwa Tobin pergi dengan orang asing. Kael dan Yuki menyusul ke Briarwood dan mengalahkan para bandit.
+   - **Hook:** isi peti itu adalah **kristal hitam** seperti Tainted Shard. Para bandit hanya kurir untuk klien berkerudung yang tidak pernah menyebut nama (Order of Caelum, belum terungkap). Tobin menyerahkan diri di Main Gate.
    - Pencarian kakak Yuki (lihat Masa Lalu Yuki) diceritakan setelah urusan bandit.
 6. **Pamit ke ibu dan adik.** Ibunya meledek: jangan berlebihan, toh nanti Kael juga pasti pulang sesekali. *(Meta-joke: akan ada beberapa sidequest yang membawa pemain kembali ke ibu kota Nova.)*
    - Di sini **Yuki pertama kali makan makanan dari Benua Barat**, di rumah keluarga Ashveil.

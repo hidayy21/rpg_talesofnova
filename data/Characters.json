@@ -407,6 +407,42 @@
      "var": 3,
      "at": 7
     }
+   },
+   {
+    "text": "He was lying. The night his cart was wrecked he was carrying crates for a bandit crew, and he had been picking pockets ever since to pay for the cargo he lost. He walked the bandits to the gate himself.",
+    "unlock": {
+     "var": 3,
+     "at": 13
+    }
+   }
+  ]
+ },
+ {
+  "id": "greta",
+  "name": "Greta",
+  "group": "Royal Capital of Nova",
+  "title": "Tobin's wife",
+  "face": null,
+  "unlock": {
+   "var": 3,
+   "at": 11
+  },
+  "facts": [
+   [
+    "Home",
+    "Ember Lane, Lantern Row"
+   ]
+  ],
+  "text": [
+   {
+    "text": "Tobin's wife, a few doors down from the Ashveil house. When Tobin went missing in Briarwood she filled half the Guild's request board and waited at the Main Gate from dawn."
+   },
+   {
+    "text": "Five months later she waited at the gate again, the night Kael and Yuki went after Tobin a second time.",
+    "unlock": {
+     "var": 3,
+     "at": 13
+    }
    }
   ]
  },
