@@ -742,6 +742,7 @@ LACKEY_A, LACKEY_B, LACKEY_C = (13, 9), (17, 10), (18, 8)           # A (Evil 0)
 WOOD_ROW = 19                                                       # stepping on this row (stage 11) starts the scene
 WOOD_IN, WOOD_STOP = (15, 17), 13                                   # Kael walks up from (15,17) to (15,13)
 CRATE_STEP = (19, 7)                                                # below the crate at (19,6)
+CAMP_FIRES = ((11, 8), (19, 11), (12, 12))                          # smaller fires around the camp, off every walk path
 
 
 def knocked_out(ev, img, w=False):
@@ -750,7 +751,7 @@ def knocked_out(ev, img, w=False):
 
 def briarwood_events(add, mp):
     add('Campfire', FIRE[0], FIRE[1], staged(char('!Flame', 2), 11, 13, step_anim=True, walk_anim=False),
-        note='<light: 4, #ffa040>\n<minimap: hide>')
+        note='<light: 240, #ffa040, flicker>\n<minimap: hide>')
     hidden = '<minimap: hide>'
     leader = add('Bandit Leader', LEADER_AT[0], LEADER_AT[1], staged(char(*BANDIT_LEADER, direction=2), 11, 13), note=hidden)
     a = add('Bandit', LACKEY_A[0], LACKEY_A[1], staged(char(*BANDIT_A, direction=6), 11, 13), note=hidden)
@@ -851,6 +852,9 @@ def briarwood_events(add, mp):
         *fade_out_slow(100), *var(V_CH1, 13), *plugin('Clock set 23:00'),
         *goto(K.CITY_GATE, GATE_ROAD[0], GATE_ROAD[1], 8, fade=2)], 12, var=V_CH1),
         note='<minimap: hide>')
+    for x, y in CAMP_FIRES:                                         # added last so the scene's event ids stay put
+        add('Campfire', x, y, staged(char('!Flame', 2), 11, 13, step_anim=True, walk_anim=False),
+            note='<light: 170, #ff9a48, flicker>\n<minimap: hide>')
 
 
 # ====================================================================== playtest: Scene Select
