@@ -312,7 +312,7 @@ def compose(recipe, preview=False, remap=False, check=False):
 
     # backups first
     stamp = time.strftime('%Y%m%d_%H%M%S')
-    proj = PROJ.rstrip('/')
+    proj = os.path.abspath(PROJ)          # PROJ ends in "Project Nova_tools/../"
     backup = os.path.join(os.path.dirname(proj), os.path.basename(proj) + '_backups', 'tileset_' + stamp)
     os.makedirs(backup, exist_ok=True)
     shutil.copy2(PROJ + 'data/Tilesets.json', backup)
