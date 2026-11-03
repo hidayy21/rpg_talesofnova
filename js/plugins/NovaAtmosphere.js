@@ -3,8 +3,8 @@
 //=============================================================================
 /*:
  * @plugindesc Atmosphere on the map: bloom, tilt-shift depth of field, colour
- * grade and vignette, sunbeams that follow the clock, and floating pollen,
- * dust or fireflies.
+ * grade presets and vignette, sunbeams that follow the clock, drifting fog,
+ * and floating pollen, dust or fireflies.
  * @author Project Nova
  *
  * @param Bloom
@@ -49,6 +49,10 @@
  * @desc Strength and colour of the sunbeams through the day (HH:MM = strength, #rrggbb). Blended in between.
  * @default "00:00 = 0, #9fb4ff\n05:00 = 0, #ffb37a\n06:00 = 0.8, #ffc48a\n07:30 = 1, #ffe0a8\n10:00 = 0.6, #fff6dc\n14:30 = 0.6, #fff6dc\n16:30 = 1, #ffd08a\n17:45 = 1, #ffa860\n18:45 = 0, #ff8a60"
  *
+ * @param Fog Color
+ * @desc Colour of the fog of a map with <fog: N> (map note <fog color: #rrggbb> overrides).
+ * @default #d4ddd6
+ *
  * @param Particles
  * @type number
  * @desc How many motes float over the map (0 = none).
@@ -77,6 +81,27 @@
  *   <sunbeams: 0.8>       sunbeams on this map (also indoors: light from windows)
  *   <no sunbeams>
  *   <particles: dust>     pollen, dust, fireflies, embers, snow, auto or none
+ *   <grade: forest>       colour grade preset (below)
+ *   <saturation: 0.9>     colour strength on this map (after the preset)
+ *   <contrast: 1.1>
+ *   <fog: 0.6>            drifting fog over the map (0-1); it follows the
+ *                         light: grey-blue and thinner at night
+ *   <fog color: #c8d8d0>
+ *
+ * Grade presets: each tints the shadows and the highlights of the map and
+ * sets its colour strength; they blend over a second when you change maps.
+ *   warm      sunny town: golden highlights, rich colour
+ *   noble     castle and royal streets: clean, slightly cool shadows
+ *   coast     harbour and sea: blue shadows, bright air
+ *   forest    woods: green-teal shadows, soft highlights
+ *   mystic    deep or haunted woods: blue shadows, little colour
+ *   interior  lamp-lit rooms: amber shadows, warm whites
+ *   gloom     prisons, crypts: cold and nearly grey
+ *   arcane    sealed vaults, magic: violet shadows
+ *   neutral   none (the plugin's Saturation and Contrast only)
+ *
+ * Indoor sunbeams (<sunbeams: N> on a map without <outdoor>) are light from
+ * the windows: they come with the daylight and are gone at night.
  *
  * Plugin command
  *   Atmosphere off / on   turn every effect off or on (cutscenes)
@@ -97,6 +122,20 @@
     var CONTRAST = num('Contrast', 1.04);
     var SUNBEAMS = num('Sunbeams', 0.7);
     var PARTICLES = num('Particles', 36);
+    var FOG_COLOR = P['Fog Color'] || '#d4ddd6';
+
+    // name -> shadow tint, highlight tint (multipliers), saturation, contrast
+    var GRADES = {
+        neutral:  { low: [1, 1, 1],          high: [1, 1, 1],          sat: null, con: null },
+        warm:     { low: [1.0, 0.98, 0.95],  high: [1.0, 0.98, 0.93],  sat: 1.1, con: 1.04 },
+        noble:    { low: [0.95, 0.97, 1.03], high: [1.0, 0.99, 0.95],  sat: 1.06, con: 1.06 },
+        coast:    { low: [0.9, 0.97, 1.06],  high: [0.98, 1.0, 1.0],  sat: 1.1, con: 1.04 },
+        forest:   { low: [0.8, 0.94, 0.9],   high: [0.98, 1.03, 0.94], sat: 0.94, con: 1.1 },
+        mystic:   { low: [0.62, 0.76, 0.92], high: [0.84, 0.93, 0.98], sat: 0.68, con: 1.14 },
+        interior: { low: [1.02, 0.94, 0.84], high: [1.0, 0.96, 0.88], sat: 1.04, con: 1.04 },
+        gloom:    { low: [0.88, 0.91, 1.03], high: [0.97, 0.98, 1.02], sat: 0.6, con: 1.12 },
+        arcane:   { low: [0.92, 0.82, 1.1],  high: [1.0, 0.95, 1.08],  sat: 0.86, con: 1.08 }
+    };
     var NIGHT_SWITCH = Number(PluginManager.parameters('NovaLighting')['Night Switch'] || 0);
 
     function hex(c) {
@@ -190,6 +229,8 @@
         'uniform float vignette;',
         'uniform float saturation;',
         'uniform float contrast;',
+        'uniform vec3 gradeLow;',
+        'uniform vec3 gradeHigh;',
         'const vec3 LUMA = vec3(0.299, 0.587, 0.114);',
         'vec3 tap(vec2 uv) { return texture2D(uSampler, clamp(uv, filterClamp.xy, filterClamp.zw)).rgb; }',
         'void main(void) {',
@@ -225,6 +266,7 @@
         // colour grade
         '    col = mix(vec3(dot(col, LUMA)), col, saturation);',
         '    col = (col - 0.5) * contrast + 0.5;',
+        '    col *= mix(gradeLow, gradeHigh, smoothstep(0.05, 0.85, dot(col, LUMA)));',
         // vignette (round on a wide screen)
         '    vec2 v = (screen - 0.5) * vec2(screenSize.x / screenSize.y, 1.0) * 0.82;',
         '    col *= 1.0 - vignette * smoothstep(0.3, 0.85, length(v));',
@@ -240,17 +282,36 @@
         this.uniforms.tiltBand = TILT_BAND;
         this.uniforms.saturation = SATURATION;
         this.uniforms.contrast = CONTRAST;
+        this.uniforms.gradeLow = new Float32Array([1, 1, 1]);
+        this.uniforms.gradeHigh = new Float32Array([1, 1, 1]);
+        this._grade = null;
     }
     AtmosphereFilter.prototype = Object.create(PIXI.Filter.prototype);
     AtmosphereFilter.prototype.constructor = AtmosphereFilter;
 
-    AtmosphereFilter.prototype.sync = function() {
+    function gradeTarget(on) {
+        var g = GRADES[String(meta().grade || 'neutral').trim().toLowerCase()] || GRADES.neutral;
+        if (!on) return { low: [1, 1, 1], high: [1, 1, 1], sat: 1, con: 1 };
+        return { low: g.low, high: g.high, sat: metaNum('saturation', g.sat || SATURATION),
+                 con: metaNum('contrast', g.con || CONTRAST) };
+    }
+
+    // instant: on a new map (no blend from the last one)
+    AtmosphereFilter.prototype.sync = function(instant) {
         var on = enabled(), u = this.uniforms;
         u.bloom = on ? metaNum('bloom', BLOOM) : 0;
         u.tilt = on ? metaNum('tilt shift', TILT) : 0;
         u.vignette = on ? metaNum('vignette', VIGNETTE) : 0;
-        u.saturation = on ? SATURATION : 1;
-        u.contrast = on ? CONTRAST : 1;
+        var t = gradeTarget(on), g = this._grade, f = instant || !g ? 1 : 0.05;
+        if (!g) g = this._grade = { low: t.low.slice(), high: t.high.slice(), sat: t.sat, con: t.con };
+        for (var i = 0; i < 3; i++) {
+            g.low[i] = mix(g.low[i], t.low[i], f);
+            g.high[i] = mix(g.high[i], t.high[i], f);
+            u.gradeLow[i] = g.low[i];
+            u.gradeHigh[i] = g.high[i];
+        }
+        u.saturation = g.sat = mix(g.sat, t.sat, f);
+        u.contrast = g.con = mix(g.con, t.con, f);
     };
 
     //=========================================================================
@@ -317,7 +378,8 @@
         var k = metaNum('sunbeams', isOutdoor() ? SUNBEAMS : 0);
         if (k <= 0) return 0;
         if (!window.NovaDayNight) return isNight() ? 0 : k * 0.8;
-        return isOutdoor() ? k * beamAt(minutesNow()).s : k;
+        if (isOutdoor()) return k * beamAt(minutesNow()).s;
+        return k * Math.min(1, beamAt(minutesNow()).s / 0.6);      // window light: with the daylight, none at night
     };
 
     Sprite_NovaSunbeams.prototype.update = function() {
@@ -327,7 +389,7 @@
         this.visible = this._strength > 0.01;
         if (!this.visible) return;
         var t = minutesNow();
-        var c = isOutdoor() && window.NovaDayNight ? beamAt(t).color : [255, 240, 210];
+        var c = window.NovaDayNight ? beamAt(t).color : [255, 240, 210];
         // morning light from the left, afternoon light from the right
         var angle = isOutdoor() ? Math.max(-0.55, Math.min(0.55, (t - 720) / 360 * 0.5)) : -0.35;
         var tint = (Math.round(c[0]) << 16) | (Math.round(c[1]) << 8) | Math.round(c[2]);
@@ -448,6 +510,81 @@
     };
 
     //=========================================================================
+    // Fog: two layers of soft cloud drifting at different speeds, fixed on the
+    // map (they scroll with it), coloured by the light of the hour
+    //=========================================================================
+    var _fogBitmap = null;
+    function fogBitmap() {
+        if (_fogBitmap) return _fogBitmap;
+        var size = 512, bmp = new Bitmap(size, size), ctx = ctxOf(bmp);
+        var seed = 11;
+        var rand = function() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+        for (var i = 0; i < 70; i++) {
+            var x = rand() * size, y = rand() * size, r = 40 + rand() * 110, a = 0.05 + rand() * 0.12;
+            // drawn on every side too, so the sheet tiles without seams
+            for (var dx = -1; dx <= 1; dx++) {
+                for (var dy = -1; dy <= 1; dy++) {
+                    var cx = x + dx * size, cy = y + dy * size;
+                    if (cx + r < 0 || cx - r > size || cy + r < 0 || cy - r > size) continue;
+                    var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                    g.addColorStop(0, 'rgba(255,255,255,' + a + ')');
+                    g.addColorStop(1, 'rgba(255,255,255,0)');
+                    ctx.fillStyle = g;
+                    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+                }
+            }
+        }
+        dirty(bmp);
+        return (_fogBitmap = bmp);
+    }
+
+    function Sprite_NovaFog() { this.initialize.apply(this, arguments); }
+    Sprite_NovaFog.prototype = Object.create(Sprite.prototype);
+    Sprite_NovaFog.prototype.constructor = Sprite_NovaFog;
+
+    Sprite_NovaFog.prototype.initialize = function() {
+        Sprite.prototype.initialize.call(this);
+        this._layers = [{ speed: 0.18, scale: 1.6, weight: 0.65 }, { speed: -0.1, scale: 2.4, weight: 0.5 }].map(function(d) {
+            var s = new TilingSprite(fogBitmap());
+            s.move(0, 0, Graphics.width, Graphics.height);
+            s._d = d;
+            s.scale.x = s.scale.y = 1;
+            this.addChild(s);
+            return s;
+        }, this);
+        this._strength = 0;
+        this._drift = 0;
+    };
+
+    Sprite_NovaFog.prototype.targetStrength = function() {
+        return enabled() ? Math.max(0, Math.min(1, metaNum('fog', 0))) : 0;
+    };
+
+    Sprite_NovaFog.prototype.update = function() {
+        Sprite.prototype.update.call(this);
+        this._strength = mix(this._strength, this.targetStrength(), 0.03);
+        this.visible = this._strength > 0.01;
+        if (!this.visible) return;
+        this._drift++;
+        var c = hex(meta()['fog color'] || FOG_COLOR) || [212, 221, 214];
+        var amb = window.NovaLighting && NovaLighting.ambient ? NovaLighting.ambient() : null;
+        var light = 1;
+        if (amb) {
+            c = [0, 1, 2].map(function(i) { return c[i] * (0.25 + 0.75 * amb[i] / 255); });
+            light = 0.55 + 0.45 * (amb[0] + amb[1] + amb[2]) / 765;       // thinner in the dark
+        }
+        var tint = (Math.round(c[0]) << 16) | (Math.round(c[1]) << 8) | Math.round(c[2]);
+        var ox = $gameMap.displayX() * $gameMap.tileWidth(), oy = $gameMap.displayY() * $gameMap.tileHeight();
+        this._layers.forEach(function(s, i) {
+            var d = s._d;
+            s.tint = tint;
+            s.origin.x = (ox / d.scale + this._drift * d.speed) % 512;
+            s.origin.y = (oy / d.scale + Math.sin(this._drift * 0.002 + i) * 30) % 512;
+            s.opacity = 255 * Math.min(1, this._strength * light * d.weight * 1.6);
+        }, this);
+    };
+
+    //=========================================================================
     // Hook into the map
     //=========================================================================
     var _createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
@@ -457,8 +594,10 @@
         this._novaMotes = new Sprite_NovaMotes();
         var idx = this._baseSprite.children.indexOf(this._weather);  // above lights, below weather
         if (idx < 0) idx = this._baseSprite.children.length;
-        this._baseSprite.addChildAt(this._novaSunbeams, idx);
-        this._baseSprite.addChildAt(this._novaMotes, idx + 1);
+        this._novaFog = new Sprite_NovaFog();
+        this._baseSprite.addChildAt(this._novaFog, idx);
+        this._baseSprite.addChildAt(this._novaSunbeams, idx + 1);
+        this._baseSprite.addChildAt(this._novaMotes, idx + 2);
     };
 
     var _createToneChanger = Spriteset_Map.prototype.createToneChanger;
@@ -467,7 +606,7 @@
         if (!Graphics.isWebGL()) return;
         try {
             this._novaAtmosphere = new AtmosphereFilter();
-            this._novaAtmosphere.sync();
+            this._novaAtmosphere.sync(true);
             this._baseSprite.filters = this._baseSprite.filters.concat([this._novaAtmosphere]);
         } catch (e) {
             console.warn('NovaAtmosphere: shader unavailable', e);

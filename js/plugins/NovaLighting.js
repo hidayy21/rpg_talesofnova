@@ -300,7 +300,7 @@
         }
     };
 
-    var NovaLighting = { active: false, lights: [] };
+    var NovaLighting = { active: false, lights: [], ambient: mapAmbient };     // ambient: [r,g,b] or null (no darkness)
     window.NovaLighting = NovaLighting;
 
     // ------------------------------------------------------------------ character shadows
