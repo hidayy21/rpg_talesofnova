@@ -285,7 +285,11 @@
         _updateStateSprite.call(this);
         var s = this._novaChargeSprite;
         if (!s) return;
-        s.scale.x = this.scale.x < 0 ? -1 : 1;       // reads the right way round on mirrored side-view enemies
-        s.y = -Math.round(Math.min(this.height * 0.5, 220));     // across the body: clear of the log and the plate
+        var k = 1 / (Math.abs(this.scale.y) || 1);    // same size on a larger enemy (<sv scale>)
+        s.scale.x = this.scale.x < 0 ? -k : k;         // reads the right way round on mirrored side-view enemies
+        s.scale.y = k;
+        // over the head of a small enemy; across the body of a tall one (clear of the log at the top)
+        var tall = this.height / k > 200;
+        s.y = tall ? -Math.round(Math.min(this.height * 0.5, 220 * k)) : -Math.round(this.height + 30 * k);
     };
 })();

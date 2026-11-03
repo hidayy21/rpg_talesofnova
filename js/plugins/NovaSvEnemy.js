@@ -15,6 +15,8 @@
  *                          like a party member, mirrored to face right.
  *                          Keep an existing image as the enemy's own battler
  *                          (the Database and the bestiary still use it).
+ *   <sv scale: 1.5>        draw it larger (an elite or a boss among
+ *                          people of the party's size)
  *   <as class: 2>          with <match level>: the enemy's base stats are
  *   <match level: 1>       this class's stats at actor 1's current level
  *                          (a duel against a future party member, say).
@@ -80,7 +82,9 @@
     Sprite_Enemy.prototype.loadBitmap = function(name, hue) {
         var sv = this._enemy.novaSvActor();
         this._novaSv = !!sv;
-        this.scale.x = sv ? -1 : 1;
+        var size = sv ? Number(this._enemy.enemy().meta['sv scale']) || 1 : 1;
+        this.scale.x = sv ? -size : 1;
+        this.scale.y = size;
         this._novaMotion = null;
         if (sv) this.bitmap = ImageManager.loadSvActor(sv);
         else _loadBitmap.call(this, name, hue);
@@ -134,7 +138,9 @@
     var _updateStateSprite = Sprite_Enemy.prototype.updateStateSprite;
     Sprite_Enemy.prototype.updateStateSprite = function() {
         _updateStateSprite.call(this);
-        this._stateIconSprite.scale.x = this.scale.x;      // the state row reads the right way round
+        var k = 1 / (Math.abs(this.scale.y) || 1);        // the state row keeps its size on a larger enemy
+        this._stateIconSprite.scale.x = (this.scale.x < 0 ? -k : k);   // and reads the right way round
+        this._stateIconSprite.scale.y = k;
         if (this._novaSv) this._stateIconSprite.y = -Math.round((this.height + 40) * 0.9);
     };
 })();

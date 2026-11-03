@@ -59,6 +59,20 @@ AI = {
     39: ([('Attack', A, 5), ('Frost Iai', A, 4), ('Ittōryū: Kesagiri', T(3, 3), 8)], ['Ittōryū: Kesagiri'], None),
     40: ([('Slash', A, 5), ('Cheap Shot', A, 3), ('Slip Away', HP(0, 0.2), 7)], [], None),
     41: ([('Slash', A, 5), ('Battle Roar', T(1), 8), ('Sweep', T(3, 3), 8)], ['Sweep'], None),
+    # Dark Fantasy pack enemies (new_enemies.py)
+    42: ([('Slash', A, 5), ('Shield Bash', A, 3), ('Battle Roar', T(1), 8), ('Sweep', T(3, 3), 8)], ['Sweep'], None),
+    43: ([('Slash', A, 5), ('Holy Strike', A, 4), ('Iron Wall', T(1), 7), ('Radiant Cleave', T(3, 3), 8)],
+         ['Radiant Cleave'], None),
+    44: ([('Venom Breath', A, 5), ('Acid Spit', A, 4), ('Spore Cloud', T(2, 3), 7), ('Heal', HP(0, 0.5), 6)], [], None),
+    45: ([('Lumen', A, 5), ('Greater Heal', A, 3), ('Greater Heal', HP(0, 0.6), 7), ('Purify', T(4, 4), 6),
+          ('Holy Radiance', T(3, 3), 8)], ['Holy Radiance'], None),
+    46: ([('Life Drain', A, 5), ('Umbra', A, 4), ('Curse', T(1), 8), ('Mana Rupture', T(3, 3), 8)], ['Mana Rupture'], None),
+    47: ([('Rending Claws', A, 5), ('Umbra', A, 4), ('Bewitch', T(2, 3), 7), ('Dark Nebula', T(3, 3), 8)],
+         ['Dark Nebula'], None),
+    48: ([('Umbra', A, 5), ('Shadowbind', A, 3), ('Phantom Legion', T(2, 3), 7), ('Mana Rupture', T(4, 4), 8),
+          ('Dark Nebula', HP(0, 0.4), 6)], ['Mana Rupture', 'Phantom Legion'], 65),
+    49: ([('Lumen', A, 5), ('Holy Radiance', A, 3), ('Hex of Dusk', T(2, 3), 7), ('Greater Heal', HP(0, 0.5), 6),
+          ('Seraphic Ray', T(3, 3), 8)], ['Seraphic Ray'], 65),
 }
 
 
