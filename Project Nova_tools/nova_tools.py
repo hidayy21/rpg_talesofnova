@@ -178,9 +178,21 @@ class Handler(W.Handler):
         return W.Handler.do_POST(self)
 
 
+class Server(ThreadingHTTPServer):
+    # on Windows SO_REUSEADDR lets a second Nova Tools listen on the same port, and the two then take turns answering
+    # (an old copy with old code, saves going to either) - so there the bind must fail instead
+    allow_reuse_address = os.name != 'nt'
+
+
 def main(page='/'):
-    server = ThreadingHTTPServer(('127.0.0.1', PORT), Handler)
     url = 'http://localhost:%d%s' % (PORT, page)
+    try:
+        server = Server(('127.0.0.1', PORT), Handler)
+    except OSError:
+        print('Nova Tools sudah berjalan di port %d - membuka jendelanya saja.' % PORT)
+        print('(Kalau baru mengubah kode Nova Tools, tutup dulu yang lama: Ctrl+C di jendela konsolnya.)')
+        if '--no-browser' not in sys.argv: W.open_window(url)
+        return
     print('Nova Tools: %s   (Ctrl+C untuk berhenti)' % url)
     if '--no-browser' not in sys.argv: W.open_window(url)
     try:

@@ -14,6 +14,7 @@ from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import compose_tileset as C
+import import_tilesets as I
 
 PROJ = C.PROJ
 PAGE = os.path.join(HERE, 'wizard', 'index.html')
@@ -115,6 +116,9 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, open(PAGE, 'rb').read(), 'text/html; charset=utf-8')
         if path == '/api/state':
             return self._send(200, state())
+        if path == '/api/import':
+            os.makedirs(I.IMPORT_DIR, exist_ok=True)
+            return self._send(200, {'dir': 'img/tilesets/import/', 'packs': I.scan()})
         m = re.match(r'^/tileset/([\w\-. ()]+)\.png$', path)
         if m:
             f = PROJ + 'img/tilesets/%s.png' % m.group(1).replace('%20', ' ')
@@ -122,6 +126,15 @@ class Handler(BaseHTTPRequestHandler):
         self._send(404, {'error': 'not found'})
 
     def do_POST(self):
+        if self.path == '/api/import':
+            body = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))).decode('utf8'))
+            if editor_running():
+                return self._send(409, {'error': 'Editor RPG Maker masih terbuka. Tutup dulu (simpan pekerjaanmu), '
+                                                 'lalu tekan Import lagi.'})
+            try:
+                return self._send(200, I.import_pack(body['pack'], body.get('base') or 'Outside', body.get('title')))
+            except (ValueError, KeyError, OSError) as e:
+                return self._send(400, {'error': str(e)})
         if self.path != '/api/compose':
             return self._send(404, {'error': 'not found'})
         body = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))).decode('utf8'))

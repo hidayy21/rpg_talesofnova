@@ -371,6 +371,14 @@
   .check li::before { content: "✓"; color: var(--ok); font-weight: var(--w-bold); width: 14px; flex: none; }
   .check li.no { color: var(--ink-mute); } .check li.no::before { content: "○"; color: var(--warn); }
   #selMark { position: absolute; border: 3px solid var(--accent); box-shadow: 0 0 0 var(--hair) #000, inset 0 0 0 999px var(--accent-soft); pointer-events: none; display: none; }
+  /* import dialog */
+  .imp { border: var(--hair) solid var(--line); border-radius: var(--r); background: var(--panel-2); padding: var(--s3) var(--s4); display: flex; flex-direction: column; gap: var(--s3); }
+  .imp .row h4 { margin: 0; font-size: var(--text-body); font-weight: var(--w-bold); }
+  .imp table { border-collapse: collapse; width: 100%; font-size: var(--text-label); }
+  .imp td { padding: 2px var(--s2) 2px 0; vertical-align: top; }
+  .imp td.k { font-weight: var(--w-semi); color: var(--accent); width: 36px; }
+  .imp td.bad { color: var(--bad); } .imp td.dim { color: var(--ink-mute); }
+  .imp .field { flex: 1 1 180px; }
   .createbar { position: sticky; bottom: 0; background: var(--panel); border-top: var(--hair) solid var(--line); padding: var(--s3) var(--s4); display: flex; gap: var(--s2); align-items: center; }
   .createbar .btn.primary { flex: 1; justify-content: center; }
   @media (max-width: 1100px) { #wapp { --side-col: 0px; } #wapp > #side, #wapp > #splitL { display: none; } }
@@ -394,6 +402,7 @@
   </div>
   <span class="grow"></span>
   <span class="savechip" id="statusChip" role="status"><span id="statusText">Pilih tile di tengah, tambahkan ke slot di kanan.</span></span>
+  <button class="btn" id="importBtn" title="Sheet A dan B baru dari img/tilesets/import/">Import aset</button>
   <button class="btn primary" id="createBtn" disabled>Buat tileset</button>
 </header>
 
@@ -442,6 +451,14 @@
 </div>
 
 <div id="toasts" aria-live="polite"></div>
+
+<div class="scrim" id="impScrim" role="dialog" aria-modal="true" aria-labelledby="impTitle">
+  <div class="dialog">
+    <header><h2 id="impTitle">Import aset baru</h2><span class="grow"></span><button class="btn ghost" id="impClose" aria-label="Tutup">✕</button></header>
+    <div class="dform" id="impBody"></div>
+    <div class="dfoot"><span class="help" id="impWhere"></span><span class="grow"></span><button class="btn" id="impRescan">Pindai ulang</button></div>
+  </div>
+</div>
 
 <script>
 'use strict';
@@ -814,6 +831,50 @@ window.addEventListener('keydown', e => {
   const k = SLOTS.find(x => x === e.key.toUpperCase());
   if (k && slotAllows(k)) { S.target = k; renderAct(); renderSlots(); }
 });
+
+// ---------------------------------------------------------------- import: new A/B sheets from img/tilesets/import/
+async function openImport() {
+  $('impScrim').classList.add('on');
+  $('impBody').innerHTML = '<p class="muted">Memindai…</p>';
+  const res = await (await fetch('/api/import')).json();
+  $('impWhere').textContent = 'Folder: ' + res.dir;
+  if (!res.packs.length) {
+    $('impBody').innerHTML = `<div class="howto"><b>Belum ada sheet di ${esc(res.dir)}</b>
+      <p class="help">Beri nama file sesuai jenisnya: <code>NamaPack_A1.png</code> … <code>NamaPack_A5.png</code>, <code>NamaPack_B.png</code>,
+      <code>NamaPack_B2.png</code> (C/D/E juga boleh), atau satu folder per pack: <code>import/NamaPack/A2.png</code>, <code>import/NamaPack/B.png</code>.
+      Lalu tekan Pindai ulang.</p></div>`;
+    return;
+  }
+  const bases = ['Outside', 'Inside', 'Dungeon'];
+  $('impBody').innerHTML = `<p class="help">Satu pack = satu tileset baru (maksimal 4 sheet objek per tileset; lebih dari itu jadi "Nama 2" dst.).
+    Sheet A pack menggantikan slot A tileset dasar, slot A lain tetap dari dasar. Sheet objek dan A5 juga muncul di palet semua map
+    (+ Sheet lain). Passage A1-A4 mengikuti tileset dasar; A5 dan objek mulai bisa dilewati: atur dengan alat Passage di Map Editor.</p>` +
+    res.packs.map((p, i) => `<section class="imp" data-i="${i}">
+      <div class="row"><h4>${esc(p.pack)}</h4>${p.ok ? '<span class="tag new">Siap</span>' : '<span class="tag upd">Perlu dibenahi</span>'}
+        <span class="grow"></span><small class="muted">${p.tilesets} tileset baru</small></div>
+      <table>${p.files.map(f => `<tr><td class="k">${esc(f.kind || '?')}</td><td>${esc(f.file)}</td>
+        <td class="dim">${f.dest ? '→ ' + esc(f.dest) : ''}</td><td class="${f.problem ? 'bad' : 'dim'}">${esc(f.problem || f.note || (f.size ? f.size.join('×') : ''))}</td></tr>`).join('')}</table>
+      <div class="row">
+        <div class="field"><label for="impBase${i}">Tileset dasar</label><select id="impBase${i}">${bases.map(b => `<option${b === p.base ? ' selected' : ''}>${b}</option>`).join('')}</select></div>
+        <div class="field"><label for="impName${i}">Nama tileset</label><input type="text" id="impName${i}" value="${esc(p.name.replace(/_/g, ' '))}"></div>
+        <button class="btn primary" data-go="${i}"${p.ok ? '' : ' disabled'}>Import</button>
+      </div></section>`).join('');
+  $('impBody').querySelectorAll('[data-go]').forEach(b => b.onclick = () => runImport(res.packs[+b.dataset.go], +b.dataset.go, b));
+}
+async function runImport(p, i, btn) {
+  btn.disabled = true; btn.textContent = 'Mengimpor…';
+  const res = await fetch('/api/import', { method: 'POST', body: JSON.stringify({ pack: p.pack, base: $('impBase' + i).value, title: $('impName' + i).value }) });
+  const out = await res.json();
+  if (!res.ok) { alert(out.error); btn.disabled = false; btn.textContent = 'Import'; return; }
+  toast(`Tileset ${out.names.join(', ')} dibuat (${out.sheets.length} sheet). Salinan lama di _backups.`, 'ok');
+  await reload();
+  openImport();
+}
+$('importBtn').onclick = openImport;
+$('impRescan').onclick = openImport;
+$('impClose').onclick = () => $('impScrim').classList.remove('on');
+$('impScrim').addEventListener('mousedown', e => { if (e.target === $('impScrim')) $('impScrim').classList.remove('on'); });
+window.addEventListener('keydown', e => { if (e.key === 'Escape') $('impScrim').classList.remove('on'); });
 
 async function reload() {
   S.state = await (await fetch('/api/state')).json();
