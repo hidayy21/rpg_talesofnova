@@ -40,8 +40,8 @@ BANDIT_A, BANDIT_B, BANDIT_LEADER = ('Evil', 0), ('Evil', 4), ('Evil', 1)
 DOWN_A, DOWN_B, DOWN_LEADER = ('Damage2', 0), ('Damage2', 1), ('Damage2', 7)
 ANIM_FIRE = 66                                           # Fire One: Kael's answer to the bandit who grabs him
 
-# Saltwind Harbor: Yuki comes off the Morning Gull at the end of the first pier and walks in past Captain Mara (33,15)
-YUKI_FROM, HARBOR_VIEW = (39, 15), (33, 13)     # the camera (an invisible Kael) hangs over the pier
+# Saltwind Harbor: Yuki has just come off the Morning Gull and stands at the end of the first pier, by Captain Mara (28,15)
+YUKI_FROM, HARBOR_VIEW = (31, 14), (33, 13)     # the end of the pier, under the bow; the camera (an invisible Kael)
 TAVERN_STEP = (30, 7)                           # Baker's Lane, just outside the Lion's Rest
 MOM_SPOT = (3, 6)                               # Ashveil Residence 1F, in front of Mom (3,4)
 
@@ -158,10 +158,9 @@ def harbor_events(add, mp):
                                                       BLANK()], note='<minimap: hide>')
     ev = mp['events'][yuki_ev]
     ev['pages'][1]['conditions'], ev['pages'][2]['conditions'] = at(2), at(3)
-    walk_in = len(range(YUKI_FROM[0] - 1, 34, -1))              # down the pier to just short of Captain Mara
     add('Chapter 1: Yuki Arrives', 0, 0, director([
         *transparent(True), *fade_out_slow(1), *hud(False), *fade_in_slow(), *wait(20),   # already black, unless from Scene Select
-        *move(yuki_ev, *[LEFT] * walk_in), *move(mara, T_RIGHT), *wait(20),
+        *move(mara, T_RIGHT), *wait(20),
         *npc('Captain Mara', 'And there she is. Saltwind Harbor,', 'the Royal Capital of Nova.'),
         *yuki('So this is the Western Continent...'),
         *npc('Captain Mara', "Six weeks at sea, and that's all you have to say?"),
@@ -173,7 +172,7 @@ def harbor_events(add, mp):
         *yuki('The market, then.'), *balloon(yuki_ev, 9), *yuki('...And some of that bread.'),
         *npc('Captain Mara', 'Good luck, miss. And mind your purse in the crowds.'),
         # through: the dockhands and cats on the pier must never hold the scene up
-        *move(yuki_ev, 37, UP, LEFT, LEFT, LEFT, LEFT, 38, skip=True), *wait(30),
+        *move(yuki_ev, 37, LEFT, LEFT, 38, skip=True), *wait(30),
         *yuki('Somewhere on this side of the sea... you are hiding.', 'I will find you.'),
         # the screen fades while she walks on, so she leaves the picture instead of vanishing; the harbor's waves go too
         *move(yuki_ev, 37, LEFT, LEFT, LEFT, LEFT, LEFT, LEFT, 38, w=False, skip=True), *wait(20),
@@ -397,7 +396,12 @@ def night_events(add, mother):
         *mom('Then she stays here, of course.'),
         *mom('From Hōrai... You have come a long way, Yuki.', 'Have the two of you eaten?'),
         *balloon(-1, 8), *balloon(yuki_ev, 8),
-        *mom('I thought not. Sit down, both of you.', 'The stew is still warm.'),
+        *mom('I thought not.'),
+        # Kael missed supper (Sera came by for it, the evening after she got him out of the cells); Mom kept his bowl
+        *mom('Sera came by for supper tonight.', 'She waited for you as long as she could.'),
+        *balloon(-1, 6), *kael('(Sera was here...?', "I hope she didn't mention the prison.)"),
+        *mom('I kept your bowl aside, Kaelen,', "and there's just enough left for one more."),
+        *mom('Sit down, both of you. The stew is still warm.'),
         *fade_out_slow(40),
         *goto(K.ASHVEIL_1F, SEAT_KAEL[0], SEAT_KAEL[1], 4, fade=2),
         *P.place(yuki_ev, SEAT_YUKI[0], SEAT_YUKI[1], 6), *P.place(mother, SEAT_MOM[0], SEAT_MOM[1], 2),
@@ -976,4 +980,5 @@ if __name__ == '__main__':
                                      'to face the party), and enemies whose stats follow an actor\'s level.')
         scene_select.register()
         import quests; quests.register()
+        import enemy_ai; enemy_ai.main(True)        # build_database() rewrote the bandits' and Yuki's action patterns
         print('chapter 1 saved')

@@ -84,7 +84,8 @@ def set_tag(note, tag, value):
 
 
 def main(apply):
-    skills = json.load(open(L.DATA + 'Skills.json', encoding='utf8'))
+    if hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(errors='replace')   # Windows console vs "ō"
+    skills =json.load(open(L.DATA + 'Skills.json', encoding='utf8'))
     by_name = {s['name']: s['id'] for s in skills[::-1] if s}       # lowest id wins for duplicate names
     enemies = json.load(open(L.DATA + 'Enemies.json', encoding='utf8'))
     changed = 0

@@ -761,4 +761,5 @@ if __name__ == '__main__':
         world_entry(world); L.write_map(K.WORLD, world)
         import scene_select; scene_select.register()
         import quests; quests.register()
+        import enemy_ai; enemy_ai.main(True)        # build_database() rewrote some action patterns
         print('prologue saved')

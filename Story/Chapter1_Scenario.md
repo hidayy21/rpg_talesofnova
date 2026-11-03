@@ -363,7 +363,9 @@ Fade, 23:30. Yuki kembali menjadi follower.
 > **Kael:** "She's only just arrived in the capital, Mom. She's got nowhere to stay tonight."
 > **Mother:** "Then she stays here, of course." / "From Hōrai... You have come a long way, Yuki. Have the two of you eaten?"
 > *(Kael dan Yuki: ...)*
-> **Mother:** "I thought not. Sit down, both of you. The stew is still warm."
+> **Mother:** "I thought not." / "Sera came by for supper tonight. She waited for you as long as she could."
+> **Kael:** *(keringat)* "(Sera was here...? I hope she didn't mention the prison.)"
+> **Mother:** "I kept your bowl aside, Kaelen, and there's just enough left for one more." / "Sit down, both of you. The stew is still warm."
 
 Di meja dapur: **makanan Benua Barat pertama Yuki** (Story Bible, Bab 1 poin 6). Di Hōrai juga ada stew, tapi rasanya lain.
 
