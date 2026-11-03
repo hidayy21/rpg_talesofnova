@@ -5,7 +5,8 @@
 # Map Editor: paints every tile layer of a map - floors, walls and water as joined autotiles (A1-A4), A5, objects
 # from the map's own B-E sheets and from every NovaTilesetEx sheet, wall shadows and regions. Events can be placed,
 # moved, copied and set up (image, trigger, priority, page conditions, quick NPC/door/chest templates); their
-# command lists are shown but edited in the RPG Maker editor. Saving writes the map file in the editor's layout and keeps the old file in
+# command lists are shown but edited in the RPG Maker editor. The Passage tool edits tile flags (passage, 4 directions,
+# ladder, bush, counter, damage, terrain tag) into Tilesets.json, like the editor's Tileset tab. Saving writes the map file in the editor's layout and keeps the old file in
 # <project>_backups/map_editor/. Only this computer can reach the server (127.0.0.1). Needs Python 3 with Pillow.
 import json, os, re, shutil, sys, time
 from urllib.parse import unquote
@@ -97,6 +98,44 @@ def save_map(map_id, data, events, mtime, force):
     return 200, {'mtime': os.path.getmtime(path)}
 
 
+FLAG_MASK = 0xF1FF      # what the Passage tool edits: 4 directions, star, ladder, bush, counter, damage, terrain tag
+
+
+def save_flags(edits, force):
+    """Passage edits: {'tileset', 'kind', 'v'} sets all 48 shapes of an A1-A4 autotile in that tileset;
+    {'sheet', 'n', 'v'} sets tile n of a B-E/A5 sheet in every tileset that has the sheet (so NovaTilesetEx and
+    the other tilesets keep the same passability). Boat/ship/airship bits are kept."""
+    path = PROJ + 'data/Tilesets.json'
+    if not force and W.editor_running():
+        return 409, {'error': 'editor', 'message': 'Editor RPG Maker sedang terbuka. Editor menyimpan seluruh database '
+                     '(termasuk Tilesets.json) setiap kali kamu menyimpan di sana - tutup editor dulu, atau buka ulang '
+                     'project di editor sesudah ini supaya passage yang baru tidak tertimpa.'}
+    tilesets, missing = C._read(path), []
+    merge = lambda old, v: (old & ~FLAG_MASK) | (int(v) & FLAG_MASK)
+    for e in edits:
+        if 'kind' in e:
+            ts, kind = tilesets[int(e['tileset'])], int(e['kind'])
+            if not ts or not 0 <= kind < 128: return 400, {'error': 'flags', 'message': 'Autotile tidak valid.'}
+            for k in range(48):
+                i = 2048 + kind * 48 + k
+                ts['flags'][i] = merge(ts['flags'][i], e['v'])
+            continue
+        n, hit = int(e['n']), False
+        for ts in tilesets:
+            s = ts and C._sheet_slot(ts, e['sheet'])
+            if s and n < (128 if s == 4 else 256):
+                i = C._first_id(s) + n
+                ts['flags'][i] = merge(ts['flags'][i], e['v'])
+                hit = True
+        if not hit: missing.append(e['sheet'])
+    proj = os.path.abspath(PROJ)
+    backups = os.path.join(os.path.dirname(proj), os.path.basename(proj) + '_backups', 'map_editor')
+    os.makedirs(backups, exist_ok=True)
+    shutil.copy2(path, os.path.join(backups, 'Tilesets_%s.json' % time.strftime('%Y%m%d_%H%M%S')))
+    with open(path, 'w', encoding='utf8', newline='') as f: f.write(C._tilesets_text(tilesets))
+    return 200, {'missing': sorted(set(missing))}
+
+
 class Handler(W.Handler):
     def do_GET(self):
         path, _, query = self.path.partition('?')
@@ -133,6 +172,9 @@ class Handler(W.Handler):
             code, out = save_map(int(body['id']), body['data'], body.get('events'), float(body['mtime']),
                                  bool(body.get('force')))
             return self._send(code, out)
+        if self.path == '/api/tileset/flags':
+            body = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))).decode('utf8'))
+            return self._send(*save_flags(body['edits'], bool(body.get('force'))))
         return W.Handler.do_POST(self)
 
 

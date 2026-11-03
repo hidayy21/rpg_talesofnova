@@ -65,6 +65,9 @@
   /* events */
   #evBox { flex: 1; display: none; flex-direction: column; gap: 8px; min-height: 0; overflow: auto; padding: 8px; }
   body.evmode #palBox { display: none; } body.evmode #evBox { display: flex; }
+  #passBar { display: none; border-bottom: 1px solid var(--line); }
+  body.passmode #passBar { display: flex; }
+  body.passmode #pal { cursor: crosshair; }
   #evBox > * { flex: none; }
   .evsec { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; background: rgba(19,40,74,.5); }
   .evsec h3 { margin: 0 0 4px; font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: .6px; }
@@ -120,6 +123,7 @@
     </div>
     <div class="split" id="splitMaps" title="Geser untuk mengubah tinggi daftar map (klik 2x: ukuran awal)"></div>
     <div id="palBox">
+      <div class="tabs" id="passBar"></div>
       <div class="tabs" id="palTabs"></div>
       <div id="palWrap"><canvas id="pal"></canvas></div>
       <div class="palfoot"><span id="brushInfo">Pilih tile di palet.</span>
@@ -154,13 +158,24 @@
 // ---------------------------------------------------------------- constants (same as rpg_core.js)
 const T = 48, HT = 24;
 const A1 = 2048, A2 = 2816, A3 = 4352, A4 = 5888, A5 = 1536, TILE_MAX = 8192;
-const TOOLS = [['pen', 'Pena', 'P'], ['rect', 'Kotak', 'R'], ['fill', 'Isi', 'F'], ['pick', 'Pipet', 'I'], ['erase', 'Hapus', 'E'], ['shadow', 'Bayangan', 'S'], ['event', 'Event', 'V']];
+const TOOLS = [['pen', 'Pena', 'P'], ['rect', 'Kotak', 'R'], ['fill', 'Isi', 'F'], ['pick', 'Pipet', 'I'], ['erase', 'Hapus', 'E'], ['shadow', 'Bayangan', 'S'], ['pass', 'Passage', 'L'], ['event', 'Event', 'V']];
+// Passage tool modes, like the database's Tileset tab: [key, label, flag bit, hint]
+const PASS_MODES = [
+  ['pass', 'Passage', 0, 'Klik tile: ○ bisa lewat → ✕ menghalangi → ☆ di atas karakter (B-E). Klik kanan: mundur. Geser untuk mengecat sama.'],
+  ['dir', '4 Arah', 0, 'Klik dekat sisi tile untuk buka/tutup arah itu (tengah = keempatnya). ▲ = bisa dilewati, • = tertutup.'],
+  ['ladder', 'Tangga', 0x20, 'Klik: tangga ya/tidak (karakter menghadap ke atas).'],
+  ['bush', 'Semak', 0x40, 'Klik: semak ya/tidak (bagian bawah karakter tembus pandang).'],
+  ['counter', 'Counter', 0x80, 'Klik: counter ya/tidak (bisa bicara melewatinya).'],
+  ['damage', 'Damage', 0x100, 'Klik: lantai damage ya/tidak.'],
+  ['terrain', 'Terrain', 0, 'Klik: terrain tag +1, klik kanan: -1 (0-7).']];
+const FLAG_MASK = 0xF1FF;
 const $ = id => document.getElementById(id);
 const S = {
   setup: null, maps: [], cur: null, images: {}, tool: 'pen', zoom: 1,
   tab: 'A', extSheet: null, palZoom: 0.75, palCols: 8, brush: null, palSel: null, palDrag: null,
   undo: [], redo: [], stroke: null, rect: null, hover: null, dirty: false,
   sel: null, page: 0, evDrag: null, evClip: null,
+  passMode: 'pass', flagEdits: new Map(), flagStroke: null, mapDirty: false,
 };
 
 // ---------------------------------------------------------------- tile id helpers
@@ -342,7 +357,9 @@ function renderOverlay() {
       g.fillStyle = '#fff'; g.fillText(r, x * T + HT, y * T + HT);
     }
   }
-  if ($('showPass').checked) {
+  if (S.tool === 'pass') {
+    for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) cellFlagMark(g, x, y);
+  } else if ($('showPass').checked) {
     for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) passMark(g, passage(x, y), false, x * T, y * T);
   }
   const evMode = S.tool === 'event';
@@ -536,14 +553,17 @@ function endStroke() {
     const changes = [...S.stroke].map(([i, old]) => [i, old, S.cur.map.data[i]]);
     S.undo.push(changes); S.redo = [];
     if (S.undo.length > 300) S.undo.shift();
-    markDirty(true);
+    S.mapDirty = true; markDirty(true);
   }
   S.stroke = null;
   renderOverlay();
 }
 
-// An undo step is either a list of tile changes or {events: [before, after]} (the event list as JSON).
+// An undo step is a list of tile changes, {events: [before, after]} (the event list as JSON) or
+// {flags: [[target, old, new], ...]} (Passage tool).
 function replay(list, back) {
+  if (list.flags) { list.flags.forEach(([t, o, n]) => setFlag(t, back ? o : n)); renderAll(); renderPalette(); return; }
+  S.mapDirty = true;
   if (list.events) { S.cur.map.events = JSON.parse(list.events[back ? 0 : 1]); renderOverlay(); renderEventPanel(); return; }
   const d = S.cur.map.data, w = W(), h = H();
   list.forEach(c => { d[c[0]] = back ? c[1] : c[2]; });
@@ -565,7 +585,8 @@ function markDirty(v) {
 function cellFromEvent(e) {
   const r = $('stage').getBoundingClientRect();
   const px = (e.clientX - r.left) / S.zoom, py = (e.clientY - r.top) / S.zoom;
-  return { x: Math.floor(px / T), y: Math.floor(py / T), qx: Math.floor((px % T) / HT), qy: Math.floor((py % T) / HT) };
+  return { x: Math.floor(px / T), y: Math.floor(py / T), qx: Math.floor((px % T) / HT), qy: Math.floor((py % T) / HT),
+           fx: (px % T) / T, fy: (py % T) / T };
 }
 
 $('overlay').addEventListener('contextmenu', e => e.preventDefault());
@@ -577,6 +598,10 @@ $('overlay').addEventListener('mousedown', e => {
     selectCell(c.x, c.y);
     const ev = eventAt(c.x, c.y);
     if (ev) S.evDrag = { ev, before: JSON.stringify(evs()), moved: false };
+    return;
+  }
+  if (S.tool === 'pass') {
+    if (e.button === 0 || e.button === 2) beginFlagStroke(topTarget(c.x, c.y), c.fx, c.fy, e.button === 2);
     return;
   }
   if (e.button === 2) { pickAt(c.x, c.y); return; }                  // right click picks, like the editor
@@ -603,6 +628,7 @@ window.addEventListener('mousemove', e => {
     }
     return;
   }
+  if (S.flagStroke) { if (S.flagStroke.from === 'map' && inMap(c.x, c.y)) flagPaint(topTarget(c.x, c.y)); return; }
   if (!S.stroke || !S.down) return;
   if (!inMap(c.x, c.y)) return;
   if (S.tool === 'rect') { S.rect.b = c; updateCursor(c); return; }
@@ -618,6 +644,7 @@ window.addEventListener('mousemove', e => {
 });
 window.addEventListener('mouseup', () => {
   if (S.palDrag) finishPalDrag();
+  if (S.flagStroke) endFlagStroke();
   if (S.evDrag) {
     if (S.evDrag.moved) { pushEventUndo(S.evDrag.before); renderEventPanel(); }
     S.evDrag = null;
@@ -661,7 +688,8 @@ function showInfo(c) {
   const p = passage(c.x, c.y), ev = eventAt(c.x, c.y);
   $('info').textContent = (ev ? `[EV${String(ev.id).padStart(3, '0')} ${ev.name}]   ` : '') + `(${c.x}, ${c.y})   L0: ${describe(at(c.x, c.y, 0))}   L1: ${describe(at(c.x, c.y, 1))}   ` +
     `L2: ${describe(at(c.x, c.y, 2))}   L3: ${describe(at(c.x, c.y, 3))}   region: ${at(c.x, c.y, 5)}   ` +
-    `lewat: ${p.every(v => v) ? 'ya' : p.every(v => !v) ? 'tidak' : 'sebagian'}`;
+    `lewat: ${p.every(v => v) ? 'ya' : p.every(v => !v) ? 'tidak' : 'sebagian'}` +
+    (S.tool === 'pass' ? `   ·   klik mengubah: ${(topTarget(c.x, c.y) || { label: '-' }).label}` : '');
 }
 
 // ---------------------------------------------------------------- palette
@@ -751,11 +779,11 @@ function renderPalette() {
       g.drawImage(im, (c.half * 8 + (c.n % 8)) * T, Math.floor((c.n % 128) / 8) * T, T, T, dx, dy, T, T);
     }
   });
-  if ($('showPass').checked) cells.forEach(c => {
+  if ($('showPass').checked || S.tool === 'pass') cells.forEach(c => {
+    if (c.region !== undefined) return;
     const id = c.kind !== undefined ? A1 + c.kind * 48 : c.id;
     if (!id) return;                                  // B tile 0 is the empty tile
-    const f = flagOf(id);
-    passMark(g, [1, 2, 4, 8].map(bit => (f & bit) === 0), !!(f & 0x10), c.x * T, c.y * T);
+    flagMark(g, S.tool === 'pass' ? S.passMode : 'pass', flagOf(id), c.x * T, c.y * T);
   });
   g.strokeStyle = 'rgba(255,255,255,0.08)';
   for (let x = 0; x <= cols; x++) { g.beginPath(); g.moveTo(x * T + .5, 0); g.lineTo(x * T + .5, cv.height); g.stroke(); }
@@ -782,8 +810,30 @@ function palRect(a, b) {
   while (by !== a.y && !inBlock(cells.find(c => c.x === bx && c.y === by))) by += by > a.y ? -1 : 1;
   return { x0: Math.min(a.x, bx), y0: Math.min(a.y, by), x1: Math.max(a.x, bx), y1: Math.max(a.y, by) };
 }
-$('pal').addEventListener('mousedown', e => { if (!S.cur) return; const c = palCellAt(e); S.palDrag = { a: c, b: c }; renderPalette(); });
-$('pal').addEventListener('mousemove', e => { if (S.palDrag) { S.palDrag.b = palCellAt(e); renderPalette(); } });
+$('pal').addEventListener('contextmenu', e => e.preventDefault());
+$('pal').addEventListener('mousedown', e => {
+  if (!S.cur) return;
+  const c = palCellAt(e);
+  if (S.tool === 'pass') {
+    if (e.button === 0 || e.button === 2) { const f = palFraction(e); beginFlagStroke(palTarget(c), f.fx, f.fy, e.button === 2, 'pal'); }
+    return;
+  }
+  if (e.button !== 0) return;
+  S.palDrag = { a: c, b: c }; renderPalette();
+});
+$('pal').addEventListener('mousemove', e => {
+  if (S.flagStroke) { if (S.flagStroke.from === 'pal') flagPaint(palTarget(palCellAt(e))); return; }
+  if (S.palDrag) { S.palDrag.b = palCellAt(e); renderPalette(); }
+});
+function palFraction(e) {
+  const r = $('pal').getBoundingClientRect(), t = T * S.palZoom;
+  return { fx: ((e.clientX - r.left) % t) / t, fy: ((e.clientY - r.top) % t) / t };
+}
+function palTarget(c) {
+  const cell = palLayout().find(p => p.x === c.x && p.y === c.y);
+  if (!cell || cell.region !== undefined) return null;
+  return flagTarget(cell.kind !== undefined ? A1 + cell.kind * 48 : cell.id);
+}
 function finishPalDrag() {
   const r = palRect(S.palDrag.a, S.palDrag.b); S.palDrag = null;
   if (!r) { renderPalette(); return; }
@@ -812,6 +862,151 @@ function setBrush(b) {
   $('brushInfo').textContent = 'Kuas: ' + b.label + f;
 }
 
+// ---------------------------------------------------------------- passage (tile flags)
+// The Passage tool edits Tilesets.json like the database's Tileset tab, from the palette or from the map (the top
+// tile of the cell). A1-A4 autotiles belong to this map's tileset; B-E/A5 tiles are saved for their sheet in every
+// tileset that has it, so the NovaTilesetEx copies on other maps agree.
+function renderPassBar() {
+  $('passBar').innerHTML = PASS_MODES.map(([k, label]) => `<button data-m="${k}" class="${S.passMode === k ? 'on' : ''}">${label}</button>`).join('');
+  $('passBar').querySelectorAll('button').forEach(b => b.onclick = () => { S.passMode = b.dataset.m; renderPassBar(); if (S.cur) { renderPalette(); renderOverlay(); } });
+  const hint = S.tool === 'pass' ? PASS_MODES.find(m => m[0] === S.passMode)[3] : '';
+  $('brushInfo').title = hint;
+  if (hint) $('brushInfo').textContent = hint;
+  else if (S.brush) setBrush(S.brush);
+  else $('brushInfo').textContent = 'Pilih tile di palet.';
+}
+
+const firstIdOf = slot => slot === 4 ? A5 : (slot - 5) * 256;
+// What a flag edit of this tile id changes: {key, id (to read the flag), save: what the server gets, star allowed, label}
+function flagTarget(id) {
+  if (!id) return null;
+  const names = S.cur.tileset.tilesetNames, label = describe(id);
+  if (isAuto(id)) {
+    const kind = kindOf(id);
+    return { key: 'a' + kind, id: A1 + kind * 48, kind, star: false, label, save: { tileset: S.cur.tileset.id, kind } };
+  }
+  let sheet, n, star;
+  if (isExt(id)) { const e = extInfo(id); if (!e.sheet) return null; sheet = e.sheet.name; n = e.n; star = !e.sheet.a5; }
+  else if (isA5(id)) { sheet = names[4]; n = id - A5; star = false; }
+  else if (id < 1024) { sheet = names[5 + Math.floor(id / 256)]; n = id % 256; star = true; }
+  else return null;
+  return sheet ? { key: 's' + sheet + '#' + n, id, sheet, n, star, label, save: { sheet, n } } : null;
+}
+function topTarget(x, y) {
+  for (let z = 3; z >= 0; z--) { const id = at(x, y, z); if (id) return flagTarget(id); }
+  return null;
+}
+
+// Writes the flag into every local copy (this tileset's sheets and NovaTilesetEx sheets) and remembers it for saving.
+function setFlag(t, v) {
+  const flags = S.cur.tileset.flags, merge = old => ((old || 0) & ~FLAG_MASK) | (v & FLAG_MASK);
+  if (t.kind !== undefined) for (let k = 0; k < 48; k++) flags[A1 + t.kind * 48 + k] = merge(flags[A1 + t.kind * 48 + k]);
+  else {
+    S.cur.tileset.tilesetNames.forEach((name, s) => {
+      if (s >= 4 && name === t.sheet && t.n < (s === 4 ? 128 : 256)) flags[firstIdOf(s) + t.n] = merge(flags[firstIdOf(s) + t.n]);
+    });
+    S.setup.ext.forEach(e => { if (e.name === t.sheet) e.flags[t.n] = merge(e.flags[t.n]); });
+  }
+  S.flagEdits.set(t.key, Object.assign({ v: flagOf(t.id) }, t.save));
+}
+
+const passState = f => (f & 0x10) ? 'star' : (f & 0x0f) === 0x0f ? 'x' : 'o';
+function withPass(f, st) {
+  if (st === 'star') return (f & ~0x0f) | 0x10;
+  return st === 'x' ? (f | 0x0f) & ~0x10 : f & ~0x1f;
+}
+// From the first click: a function that gives any tile's flag the same setting, so dragging paints it.
+function flagSetter(t, f, fx, fy, back) {
+  const mode = PASS_MODES.find(m => m[0] === S.passMode);
+  if (S.passMode === 'pass') {
+    const cycle = t.star ? ['o', 'x', 'star'] : ['o', 'x'], i = cycle.indexOf(passState(f));
+    const st = cycle[(Math.max(i, 0) + (back ? cycle.length - 1 : 1)) % cycle.length];
+    return (g, tt) => withPass(g, st === 'star' && !tt.star ? 'x' : st);
+  }
+  if (S.passMode === 'dir') {
+    const dx = fx - 0.5, dy = fy - 0.5;
+    const bits = Math.max(Math.abs(dx), Math.abs(dy)) < 0.17 ? 0x0f : Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 4) : (dy < 0 ? 8 : 1);
+    const block = bits === 0x0f ? (f & 0x0f) !== 0x0f : !(f & bits);
+    return g => (block ? g | bits : g & ~bits) & ~0x10;
+  }
+  if (S.passMode === 'terrain') {
+    const tag = (((f >> 12) & 7) + (back ? 7 : 1)) % 8;
+    return g => (g & ~0xf000) | (tag << 12);
+  }
+  const on = !(f & mode[2]);
+  return g => on ? g | mode[2] : g & ~mode[2];
+}
+
+function beginFlagStroke(t, fx, fy, back, from = 'map') {
+  if (!t) return;
+  S.flagStroke = { from, apply: flagSetter(t, flagOf(t.id), fx, fy, back), changes: new Map() };
+  flagPaint(t);
+}
+function flagPaint(t) {
+  const st = S.flagStroke;
+  if (!t || st.changes.has(t.key)) return;
+  const old = flagOf(t.id), v = st.apply(old, t);
+  st.changes.set(t.key, [t, old, v]);
+  if (v === old) return;
+  setFlag(t, v);
+  renderPalette(); renderOverlay();
+  if (S.hover) showInfo(S.hover);
+}
+function endFlagStroke() {
+  const list = [...S.flagStroke.changes.values()].filter(([, o, n]) => o !== n);
+  S.flagStroke = null;
+  if (!list.length) return;
+  S.undo.push({ flags: list }); S.redo = [];
+  if (S.undo.length > 300) S.undo.shift();
+  markDirty(true);
+  renderAll();                       // counters change how A2 tables are drawn
+}
+
+function markText(g, text, color, dx, dy, size = 20) {
+  g.font = `bold ${size}px sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.lineWidth = 4; g.strokeStyle = 'rgba(0,0,0,.7)'; g.strokeText(text, dx + HT, dy + HT);
+  g.fillStyle = color; g.fillText(text, dx + HT, dy + HT); g.lineWidth = 1;
+}
+// Four arrows at the sides: a triangle where the tile can be left/entered that way, a red dot where it cannot.
+function dirMark(g, dirs, dx, dy) {
+  const spots = [[HT, T - 8, 0, 1], [8, HT, -1, 0], [T - 8, HT, 1, 0], [HT, 8, 0, -1]];
+  spots.forEach(([sx, sy, vx, vy], i) => {
+    const x = dx + sx, y = dy + sy;
+    g.beginPath();
+    if (dirs[i]) { g.moveTo(x + vx * 5, y + vy * 5); g.lineTo(x - vx * 3 + vy * 5, y - vy * 3 + vx * 5); g.lineTo(x - vx * 3 - vy * 5, y - vy * 3 - vx * 5); g.closePath(); g.fillStyle = 'rgba(111,240,160,.95)'; }
+    else { g.arc(x, y, 3.5, 0, Math.PI * 2); g.fillStyle = 'rgba(255,112,136,.95)'; }
+    g.lineWidth = 3; g.strokeStyle = 'rgba(0,0,0,.6)'; g.stroke(); g.fill(); g.lineWidth = 1;
+  });
+}
+const dirsOf = f => [1, 2, 4, 8].map(bit => (f & bit) === 0);
+// The mark of one tile's flag for a Passage mode (palette).
+function flagMark(g, mode, f, dx, dy) {
+  if (mode === 'pass') return passMark(g, dirsOf(f), !!(f & 0x10), dx, dy);
+  if (mode === 'dir') return (f & 0x10) ? markText(g, '☆', '#ffe08a', dx, dy) : dirMark(g, dirsOf(f), dx, dy);
+  if (mode === 'terrain') { const tag = (f >> 12) & 7; return markText(g, tag, tag ? '#ffe08a' : 'rgba(255,255,255,.35)', dx, dy, tag ? 20 : 14); }
+  const bit = PASS_MODES.find(m => m[0] === mode)[2];
+  if (f & bit) passMark(g, [true, true, true, true], false, dx, dy);
+  else markText(g, '·', 'rgba(255,255,255,.45)', dx, dy);
+}
+// On the map: what the game makes of the layers (Game_Map rules), plus a small star when the top tile is a star tile.
+function cellFlagMark(g, x, y) {
+  const dx = x * T, dy = y * T, mode = S.passMode;
+  if (mode === 'pass' || mode === 'dir') {
+    if (mode === 'pass') passMark(g, passage(x, y), false, dx, dy); else dirMark(g, passage(x, y), dx, dy);
+    const top = topTarget(x, y);
+    if (top && (flagOf(top.id) & 0x10)) { g.font = 'bold 13px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#ffe08a'; g.fillText('☆', dx + 9, dy + 10); }
+    return;
+  }
+  const ids = [3, 2, 1, 0].map(z => at(x, y, z)).filter(Boolean);
+  if (mode === 'terrain') {
+    const id = ids.find(i => (flagOf(i) >> 12) & 7);
+    if (id) markText(g, (flagOf(id) >> 12) & 7, '#ffe08a', dx, dy);
+    return;
+  }
+  const bit = PASS_MODES.find(m => m[0] === mode)[2];
+  if (ids.some(i => flagOf(i) & bit)) passMark(g, [true, true, true, true], false, dx, dy);
+}
+
 // ---------------------------------------------------------------- events
 // Placing, moving and setting up events. Command lists are kept as they are and only shown; the quick templates
 // write the same commands as the RPG Maker editor's quick events (and the doors already in this project).
@@ -825,7 +1020,7 @@ function pushEventUndo(before) {
   if (before === JSON.stringify(evs())) return;
   S.undo.push({ events: [before, JSON.stringify(evs())] }); S.redo = [];
   if (S.undo.length > 300) S.undo.shift();
-  markDirty(true);
+  S.mapDirty = true; markDirty(true);
 }
 function editEvents(fn) {
   const before = JSON.stringify(evs());
@@ -1327,7 +1522,9 @@ function setTool(t) {
   $('tools').innerHTML = TOOLS.map(([k, label, key]) => `<button data-t="${k}" class="${S.tool === k ? 'on' : ''}" title="${key}">${label}</button>`).join(' ');
   $('tools').querySelectorAll('button').forEach(b => b.onclick = () => setTool(b.dataset.t));
   document.body.classList.toggle('evmode', t === 'event');
-  if (S.cur) { renderOverlay(); renderEventPanel(); }
+  document.body.classList.toggle('passmode', t === 'pass');
+  renderPassBar();
+  if (S.cur) { renderOverlay(); renderEventPanel(); renderPalette(); }
 }
 
 function renderMapList() {
@@ -1355,6 +1552,8 @@ function renderMapList() {
 async function openMap(id) {
   if (S.dirty && !confirm('Perubahan di map ini belum disimpan. Buang dan buka map lain?')) return;
   status('Memuat map…');
+  if (S.flagEdits.size) S.setup.ext = (await (await fetch('/api/setup')).json()).ext;    // drop unsaved passage edits
+  S.flagEdits.clear(); S.mapDirty = false;
   const res = await (await fetch('/api/map?id=' + id)).json();
   S.cur = { id, map: res.map, mtime: res.mtime, tileset: res.tileset };
   S.undo = []; S.redo = []; S.touched = new Set(); S.touchedAuto = new Set(); S.touchedGround = new Set(); S.palSel = null;
@@ -1390,6 +1589,18 @@ function applyZoom() {
 async function save(force) {
   if (!S.cur || !S.dirty) return;
   status('Menyimpan…');
+  if (S.flagEdits.size) {
+    const res = await fetch('/api/tileset/flags', { method: 'POST', body: JSON.stringify({ edits: [...S.flagEdits.values()], force }) });
+    const out = await res.json();
+    if (res.status === 409 && out.error === 'editor') {
+      if (confirm(out.message + '\n\nSimpan sekarang?')) return save(true);
+      status('Belum disimpan.'); return;
+    }
+    if (!res.ok) { status(out.message || out.error, 'err'); alert(out.message || out.error); return; }
+    S.flagEdits.clear();
+    if (out.missing.length) alert('Sheet ini tidak ada di tileset mana pun, passage-nya tidak tersimpan: ' + out.missing.join(', '));
+    if (!S.mapDirty) { markDirty(false); status('Passage tersimpan ke data/Tilesets.json (salinan lama di _backups/map_editor).', 'ok'); return; }
+  }
   const res = await fetch('/api/map/save', { method: 'POST', body: JSON.stringify({ id: S.cur.id, data: S.cur.map.data, events: S.cur.map.events, mtime: S.cur.mtime, force }) });
   const out = await res.json();
   if (res.status === 409 && out.error === 'editor') {
@@ -1398,7 +1609,7 @@ async function save(force) {
   }
   if (!res.ok) { status(out.message || out.error, 'err'); alert(out.message || out.error); return; }
   S.cur.mtime = out.mtime;
-  markDirty(false);
+  S.mapDirty = false; markDirty(false);
   status('Tersimpan ke data/Map' + String(S.cur.id).padStart(3, '0') + '.json (salinan lama di _backups/map_editor).', 'ok');
 }
 
