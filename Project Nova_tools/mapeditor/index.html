@@ -4,161 +4,470 @@
 <meta charset="utf-8">
 <title>Nova Tools - Map Editor</title>
 <style>
+  /* Nova Tools tokens: every colour, size and space comes from here. */
   :root {
-    --bg: #07101f; --panel: #0e1c33; --panel2: #13284a; --line: #2b4a72; --text: #e6f2ff; --dim: #93acc8;
-    --accent: #62d6ff; --warn: #ffb35c; --bad: #ff7088; --good: #6ff0a0;
+    --bg: #07101f; --panel: #0e1c33; --panel-2: #13284a; --panel-3: #1b3560; --canvas-bg: #050a14;
+    --line: #2b4a72; --line-strong: #5a80ad;          /* control borders: 3.9:1 on --panel */
+    --ink: #e6f2ff; --ink-mute: #a3bad3; --ink-faint: #7f97b3;
+    --accent: #62d6ff; --accent-soft: rgba(98, 214, 255, 0.16); --on-accent: #04192a;
+    --action: #1677b8; --action-hover: #1b8ad4; --on-action: #ffffff;
+    --ok: #6ff0a0; --warn: #ffb35c; --bad: #ff7088; --star: #ffe08a;
+    --bad-tint: rgba(255, 112, 136, 0.30); --ok-soft: rgba(111, 240, 160, 0.14); --warn-soft: rgba(255, 179, 92, 0.16);
+    --grid: rgba(255, 255, 255, 0.12); --shade: rgba(0, 0, 0, 0.55); --scrim: rgba(2, 6, 14, 0.72);
+    --check-a: #1a2a40; --check-b: #142236;
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px; --s8: 32px; --s12: 48px;
+    --r-sm: 6px; --r: 10px; --r-pill: 999px; --hair: 1px; --ring: 2px;
+    --text-label: 12px; --text-body: 14px; --text-title: 19px; --leading: 1.5;
+    --w-normal: 400; --w-medium: 500; --w-semi: 600; --w-bold: 700;
+    --font: "Segoe UI", system-ui, -apple-system, sans-serif; --mono: ui-monospace, Menlo, Consolas, monospace;
+    --control-h: 32px; --touch-min: 24px; --header-h: 52px; --rail-w: 76px; --side-w: 300px; --insp-w: 300px;
+    --split-w: 6px; --strip-w: 36px; --tabs-h: 38px; --side-min: 240px; --side-max: 560px; --main-min: 360px;
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    --dur: 140ms; --ease: cubic-bezier(0.2, 0, 0.2, 1);
+    /* older names used by the event panel and dialogs */
+    --panel2: var(--panel-2); --text: var(--ink); --dim: var(--ink-mute); --good: var(--ok);
   }
+  @media (pointer: coarse) { :root { --control-h: 44px; --touch-min: 44px; } }
+  @media (prefers-reduced-motion: reduce) { :root { --dur: 0ms; } }
+
   * { box-sizing: border-box; }
   html, body { height: 100%; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.4 "Segoe UI", system-ui, sans-serif;
+  body { margin: 0; background: var(--bg); color: var(--ink); font: var(--w-normal) var(--text-body)/var(--leading) var(--font);
          display: flex; flex-direction: column; overflow: hidden; }
-  header { display: flex; gap: 10px; align-items: center; padding: 8px 12px; flex-wrap: wrap;
-           background: linear-gradient(90deg, rgba(98,214,255,.18), rgba(98,214,255,0) 60%), var(--panel); border-bottom: 1px solid var(--line); }
-  header h1 { font-size: 16px; margin: 0; letter-spacing: .5px; }
-  nav a { color: var(--dim); text-decoration: none; padding: 4px 10px; border-radius: 14px; border: 1px solid transparent; }
-  nav a.on { color: var(--text); background: #1677b8; border-color: var(--accent); }
-  nav a:hover { border-color: var(--accent); }
-  #mapTitle { font-weight: 600; }
-  #status { flex: 1; min-width: 160px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #status.ok { color: var(--good); } #status.err { color: var(--bad); }
-  button, select, input, textarea { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; font: inherit; }
+  button, select, input, textarea { background: var(--panel-2); color: var(--ink); border: var(--hair) solid var(--line); border-radius: var(--r-sm); padding: 4px 9px; font: inherit; }
   button { cursor: pointer; }
   button:hover:not(:disabled) { border-color: var(--accent); }
-  button:disabled { opacity: .4; cursor: not-allowed; }
-  button.on { background: #1677b8; border-color: var(--accent); }
-  button.primary { background: #1677b8; border-color: #3fa8ff; font-weight: 600; }
-  #app { flex: 1; display: flex; min-height: 0; }
-  aside { width: 420px; flex: none; display: flex; flex-direction: column; background: var(--panel); min-height: 0; }
-  #mapsBox { height: 30%; min-height: 80px; display: flex; flex-direction: column; }
-  .split { flex: none; background: var(--line); }
-  .split:hover, .split.drag { background: var(--accent); }
-  #splitSide { width: 5px; cursor: col-resize; }
-  #splitMaps { height: 5px; cursor: row-resize; }
-  body.resizing { user-select: none; }
-  body.resizing.col { cursor: col-resize; } body.resizing.row { cursor: row-resize; }
-  #mapFilter { margin: 6px; }
-  #mapList { overflow: auto; flex: 1; padding: 0 4px 6px; }
-  .mi { padding: 2px 6px; border-radius: 4px; cursor: pointer; white-space: nowrap; }
-  .mi:hover { background: var(--panel2); }
-  .mi.on { background: #1677b8; }
-  .mi .tw { display: inline-block; width: 14px; color: var(--dim); }
-  .mi small { color: var(--dim); }
-  #palBox { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-  .tabs { display: flex; gap: 4px; padding: 6px; flex-wrap: wrap; align-items: center; }
-  .tabs button { padding: 3px 10px; }
-  #palWrap { overflow: auto; flex: 1; padding: 0 6px 6px;
-             background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 24px 24px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.on { background: var(--action); border-color: var(--accent); }
+  button.primary { background: var(--action); border-color: #3fa8ff; font-weight: var(--w-semi); }
+  :focus-visible { outline: var(--ring) solid var(--accent); outline-offset: var(--ring); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .grow { flex: 1; }
+
+  .btn { min-height: var(--control-h); padding: 0 var(--s3); border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong);
+         background: var(--panel-2); cursor: pointer; display: inline-flex; align-items: center; gap: var(--s2); white-space: nowrap; }
+  .btn.primary { background: var(--action); border-color: var(--action); color: var(--on-action); font-weight: var(--w-semi); }
+  .btn.primary:hover:not(:disabled) { background: var(--action-hover); }
+  /* a primary button with nothing to do stays readable, it just stops looking like the next step */
+  .btn.primary:disabled { opacity: 1; background: var(--panel-2); border-color: var(--line-strong); color: var(--ink-mute); font-weight: var(--w-medium); }
+  .btn.primary .k { font-size: var(--text-label); opacity: .8; font-weight: var(--w-normal); }
+  .btn.ghost { background: transparent; border-color: transparent; }
+  .btn.ghost:hover:not(:disabled) { border-color: var(--line-strong); }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+
+  /* header */
+  header { height: var(--header-h); flex: none; display: flex; align-items: center; gap: var(--s3); padding: 0 var(--s4);
+           background: var(--panel); border-bottom: var(--hair) solid var(--line); }
+  .brand { font-weight: var(--w-bold); font-size: var(--text-title); letter-spacing: .3px; white-space: nowrap; }
+  .nav { display: flex; gap: var(--s1); }
+  .nav a { color: var(--ink-mute); text-decoration: none; padding: var(--s1) var(--s3); border-radius: var(--r-pill); white-space: nowrap; }
+  .nav a[aria-current] { color: var(--ink); background: var(--panel-3); }
+  .nav a:hover { color: var(--ink); }
+  .crumb { display: flex; align-items: center; gap: var(--s2); min-width: 0; padding-left: var(--s3); border-left: var(--hair) solid var(--line); }
+  .crumb .btn { min-width: 0; overflow: hidden; text-overflow: ellipsis; max-width: 420px; }
+  .crumb .btn span { overflow: hidden; text-overflow: ellipsis; }
+  .crumb small { color: var(--ink-mute); white-space: nowrap; }
+  .muted { color: var(--ink-mute); }
+  .savechip { display: inline-flex; align-items: center; gap: var(--s2); color: var(--warn); white-space: nowrap; }
+  .savechip[hidden] { display: none; }
+  .savechip i { width: 8px; height: 8px; border-radius: var(--r-pill); background: var(--warn); }
+
+  /* body grid: rail | left panel | splitter | map | splitter | right panel */
+  #app { flex: 1; min-height: 0; display: grid; --side-col: var(--side-cur, var(--side-w)); --insp-col: var(--insp-cur, var(--insp-w));
+         --split-l: var(--split-w); --split-r: var(--split-w);
+         grid-template-columns: var(--rail-w) var(--side-col) var(--split-l) minmax(0, 1fr) var(--split-r) var(--insp-col); }
+  #app > .rail { grid-column: 1; } #side, #stripL { grid-column: 2; } #splitL { grid-column: 3; } #app > main { grid-column: 4; }
+  #splitR { grid-column: 5; } #insp, #stripR { grid-column: 6; }
+  #app > * { grid-row: 1; min-height: 0; }
+  #app.noside { --side-col: var(--strip-w); --split-l: 0px; } #app.noside #side, #app.noside #splitL { display: none; }
+  #app.noinsp { --insp-col: var(--strip-w); --split-r: 0px; } #app.noinsp #insp, #app.noinsp #splitR { display: none; }
+  .splitter { background: var(--line); cursor: col-resize; border: 0; border-radius: 0; padding: 0; touch-action: none; }
+  .splitter:hover, .splitter.drag, .splitter:focus-visible { background: var(--accent); }
+  body.resizing { cursor: col-resize; user-select: none; }
+  .strip { display: none; flex-direction: column; align-items: center; gap: var(--s3); padding: var(--s3) 0; border: 0; border-radius: 0; cursor: pointer;
+           background: var(--panel); color: var(--ink-mute); }
+  .strip:hover { color: var(--ink); background: var(--panel-2); }
+  #stripL { border-right: var(--hair) solid var(--line); } #stripR { border-left: var(--hair) solid var(--line); }
+  #app.noside #stripL, #app.noinsp #stripR { display: flex; }
+  .strip b { font-size: var(--text-title); line-height: 1; }
+  .strip span { writing-mode: vertical-rl; font-weight: var(--w-semi); letter-spacing: .5px; }
+  .collapse { min-width: var(--control-h); justify-content: center; padding: 0; font-size: var(--text-title); }
+
+  /* tool rail */
+  .rail { background: var(--panel); border-right: var(--hair) solid var(--line); display: flex; flex-direction: column; gap: var(--s1); padding: var(--s2) var(--s1); overflow: auto; }
+  .rail h2 { margin: var(--s2) 0 0; font-size: var(--text-label); color: var(--ink-faint); text-align: center; font-weight: var(--w-semi); text-transform: uppercase; letter-spacing: .6px; }
+  .rail hr { width: 60%; border: 0; border-top: var(--hair) solid var(--line); margin: var(--s1) auto; }
+  .tool { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: var(--s2) 0; border-radius: var(--r-sm);
+          border: var(--hair) solid transparent; background: transparent; cursor: pointer; color: var(--ink-mute); min-height: var(--touch-min); }
+  .tool svg { width: 18px; height: 18px; }
+  .tool span { font-size: var(--text-label); }
+  .tool kbd { font: var(--w-semi) 10px/1 var(--mono); padding: 1px 4px; border: var(--hair) solid var(--line); border-radius: var(--r-sm); } /* optical: shortcut hint under the label */
+  .tool:hover { color: var(--ink); background: var(--panel-2); }
+  .tool[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+  .tool[aria-pressed="true"] kbd { color: var(--on-accent); border-color: var(--on-accent); }
+
+  /* side panels */
+  aside { min-height: 0; display: flex; flex-direction: column; background: var(--panel); }
+  #side { border-right: var(--hair) solid var(--line); }
+  #insp { border-left: var(--hair) solid var(--line); overflow: auto; }
+  .sidehead { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s2); border-bottom: var(--hair) solid var(--line); position: relative; }
+  .seg { display: flex; gap: 2px; padding: 2px; background: var(--bg); border-radius: var(--r-sm); border: var(--hair) solid var(--line); }
+  .seg > button, .seg label { flex: 1; min-height: calc(var(--control-h) - 4px); border: 0; border-radius: var(--r-sm); background: transparent;
+         color: var(--ink-mute); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 var(--s2); white-space: nowrap; }
+  .seg [aria-selected="true"], .seg input:checked + span { color: var(--ink); background: var(--panel-3); }
+  .seg label { position: relative; padding: 0; }
+  .seg label span { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: var(--r-sm); padding: 0 var(--s2); }
+  .seg input { position: absolute; opacity: 0; }
+  .seg input:focus-visible + span { outline: var(--ring) solid var(--accent); }
+  .search { min-height: var(--control-h); width: 100%; border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong); background: var(--bg); padding: 0 var(--s3); }
+  #tilesPane, #mapsPane { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  #tilesPane[hidden], #mapsPane[hidden] { display: none; }
+  .tabs { display: flex; gap: var(--s1); padding: var(--s2) var(--s3); flex-wrap: wrap; align-items: center; border-bottom: var(--hair) solid var(--line); }
+  .tabs button { min-height: var(--control-h); min-width: 40px; color: var(--ink-mute); padding: 0 var(--s2); }
+  .tabs button.on { color: var(--ink); border-color: var(--accent); background: var(--panel-3); }
+  #palWrap { overflow: auto; flex: 1; padding: var(--s2) var(--s3);
+             background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 24px 24px; }
   #pal { display: block; cursor: pointer; }
-  .palfoot { display: flex; gap: 6px; align-items: center; padding: 4px 8px; border-top: 1px solid var(--line); }
-  #brushInfo { flex: 1; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .toolbar { display: flex; gap: 6px; padding: 6px 10px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid var(--line); background: var(--panel); }
-  .toolbar .sep { width: 1px; height: 22px; background: var(--line); margin: 0 2px; }
-  .toolbar label { color: var(--dim); display: flex; gap: 4px; align-items: center; }
-  #viewport { flex: 1; overflow: auto; position: relative; background: #050a14; }
-  #stage { position: relative; transform-origin: 0 0; }
+  body[data-tool=pass] #pal { cursor: crosshair; }
+  .palfoot { display: flex; gap: var(--s2); align-items: center; padding: var(--s2) var(--s3); border-top: var(--hair) solid var(--line); color: var(--ink-mute); font-size: var(--text-label); }
+  .palfoot { flex-wrap: wrap; } #palHint { flex-basis: 100%; }
+  .pzoom { display: flex; align-items: center; gap: var(--s2); flex: 1 1 100%; min-width: 0; color: var(--ink-mute); font-size: var(--text-body); }
+  .pzoom input { flex: 1 1 0; min-width: 0; margin: 0; padding: 0; border: 0; background: transparent; accent-color: var(--accent); min-height: var(--touch-min); }
+  .pzoom output { flex: none; width: 4.5ch; margin-left: calc(-1 * var(--s1)); text-align: left; color: var(--ink); font-variant-numeric: tabular-nums; }
+  #tilesPane { position: relative; }
+  .ptab { display: inline-flex; align-items: stretch; border-radius: var(--r-sm); border: var(--hair) solid var(--line); background: var(--panel-2); }
+  .ptab.on { border-color: var(--accent); background: var(--panel-3); }
+  .tabs .ptab button { border: 0; background: transparent; min-width: 0; }
+  .tabs .ptab button.pt { padding: 0 var(--s1) 0 var(--s2); }
+  .tabs .ptab.on button.pt { color: var(--ink); }
+  .tabs .ptab .x { padding: 0 var(--s2); color: var(--ink-faint); border-left: var(--hair) solid var(--line); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+  .tabs .ptab .x:hover { color: var(--bad); }
+  .tabs .add { border-style: dashed; }
+  .pop { position: absolute; left: var(--s3); right: var(--s3); z-index: 6; background: var(--panel); border: var(--hair) solid var(--line-strong);
+         border-radius: var(--r); box-shadow: var(--shadow); padding: var(--s2); display: flex; flex-direction: column; gap: var(--s2); }
+  .pop[hidden] { display: none; }
+  .pop .list { max-height: 320px; overflow: auto; display: flex; flex-direction: column; }
+  .pop .list button { text-align: left; min-height: var(--control-h); border: 0; background: transparent; border-radius: var(--r-sm); padding: 0 var(--s2);
+                      display: flex; gap: var(--s2); align-items: center; }
+  .pop .list button:hover, .pop .list button:focus-visible { background: var(--panel-2); }
+  .pop .list small { margin-left: auto; color: var(--ink-faint); }
+  .pop .zero { color: var(--ink-mute); padding: var(--s3); margin: 0; }
+  #mapsPane .sidehead { border-bottom: 0; padding-top: 0; }
+  #mapList { overflow: auto; flex: 1; padding: 0 var(--s2) var(--s2); }
+  .mi { padding: 0 var(--s2); min-height: var(--control-h); display: flex; align-items: center; border-radius: var(--r-sm); cursor: pointer; white-space: nowrap; }
+  .mi:hover { background: var(--panel-2); }
+  .mi.on { background: var(--panel-3); box-shadow: inset 3px 0 0 var(--accent); }
+  .mi .tw { display: inline-block; width: 14px; color: var(--ink-faint); }
+  .mi small { color: var(--ink-mute); margin-left: auto; padding-left: var(--s2); }
+
+  /* right panel */
+  .phead { display: flex; align-items: center; gap: var(--s2); padding: var(--s2) var(--s2) var(--s2) var(--s4); border-bottom: var(--hair) solid var(--line);
+           position: sticky; top: 0; background: var(--panel); z-index: 1; }
+  .phead h2 { margin: 0; font-size: var(--text-body); font-weight: var(--w-bold); flex: 1; }
+  .card { padding: var(--s4); border-bottom: var(--hair) solid var(--line); display: flex; flex-direction: column; gap: var(--s3); }
+  .card h3 { margin: 0; font-size: var(--text-label); text-transform: uppercase; letter-spacing: .6px; color: var(--ink-faint); font-weight: var(--w-semi); }
+  .help { margin: 0; color: var(--ink-mute); font-size: var(--text-label); }
+  .field { display: flex; flex-direction: column; gap: var(--s1); }
+  .field .lbl { font-weight: var(--w-semi); }
+  .brush { display: flex; gap: var(--s3); align-items: center; }
+  .brush canvas { width: 72px; height: 72px; flex: none; object-fit: contain; image-rendering: pixelated; border-radius: var(--r-sm); border: var(--hair) solid var(--line);
+                  background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px; }
+  .brush div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .brush b { overflow-wrap: anywhere; }
+  .modes { display: flex; flex-direction: column; gap: var(--s1); }
+  .mode { display: grid; grid-template-columns: 28px 1fr; gap: 0 var(--s2); align-items: center; text-align: left; padding: var(--s2);
+          border-radius: var(--r-sm); border: var(--hair) solid var(--line); background: var(--panel-2); cursor: pointer; }
+  .mode b { font-weight: var(--w-semi); } .mode small { grid-column: 2; color: var(--ink-mute); font-size: var(--text-label); }
+  .mode .ic { grid-row: span 2; font-size: var(--text-title); text-align: center; color: var(--accent); }
+  .mode[aria-checked="true"] { border-color: var(--accent); background: var(--panel-3); box-shadow: inset 3px 0 0 var(--accent); }
+  .howto { padding: var(--s3); border-radius: var(--r-sm); background: var(--accent-soft); border: var(--hair) solid var(--accent); }
+  .note { padding: var(--s3); border-radius: var(--r-sm); background: var(--warn-soft); color: var(--ink); font-size: var(--text-label); }
+  #inspPaint, #inspPass, #evBox { display: none; }
+  body[data-tool=pen] #inspPaint, body[data-tool=rect] #inspPaint, body[data-tool=fill] #inspPaint, body[data-tool=pick] #inspPaint,
+  body[data-tool=erase] #inspPaint, body[data-tool=shadow] #inspPaint { display: block; }
+  body[data-tool=erase] #brushCard, body[data-tool=erase] #layerCard, body[data-tool=pick] #layerCard, body[data-tool=shadow] #layerCard { display: none; }
+  body[data-tool=pass] #inspPass { display: block; }
+  body[data-tool=event] #evBox { display: flex; }
+
+  /* map */
+  main { min-width: 0; display: flex; flex-direction: column; background: var(--canvas-bg); position: relative; }
+  #viewport { flex: 1; overflow: auto; position: relative; }
+  #stage { position: relative; transform-origin: 0 0; margin: var(--s4); }
   #stage canvas { position: absolute; left: 0; top: 0; }
-  #cursor { position: absolute; border: 2px solid var(--accent); pointer-events: none; box-shadow: 0 0 0 1px rgba(0,0,0,.6); display: none; }
+  #cursor { position: absolute; border: var(--ring) solid var(--accent); pointer-events: none; box-shadow: 0 0 0 var(--hair) rgba(0,0,0,.6); display: none; }
   #cursor.erase { border-color: var(--bad); }
-  footer { padding: 4px 10px; color: var(--dim); border-top: 1px solid var(--line); background: var(--panel); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .empty { color: var(--dim); padding: 40px; }
-  /* events */
-  #evBox { flex: 1; display: none; flex-direction: column; gap: 8px; min-height: 0; overflow: auto; padding: 8px; }
-  body.evmode #palBox { display: none; } body.evmode #evBox { display: flex; }
-  #passBar { display: none; border-bottom: 1px solid var(--line); }
-  body.passmode #passBar { display: flex; }
-  body.passmode #pal { cursor: crosshair; }
+  .empty { color: var(--ink-mute); padding: var(--s12); }
+  .viewbar { position: absolute; top: var(--s3); right: var(--s4); max-width: calc(100% - var(--s8)); z-index: 3; display: flex; flex-wrap: wrap; justify-content: flex-end;
+             gap: var(--s2); align-items: center; background: var(--panel); border: var(--hair) solid var(--line); border-radius: var(--r); padding: var(--s1); box-shadow: var(--shadow); }
+  .grip { min-height: calc(var(--control-h) - 4px); width: var(--s6); padding: 0; border: 0; border-radius: var(--r-sm); background: transparent;
+          color: var(--ink-faint); cursor: grab; display: flex; align-items: center; justify-content: center; touch-action: none; }
+  .grip svg { width: 16px; height: 16px; }
+  .grip:hover { color: var(--ink); background: var(--panel-2); }
+  body.moving, body.moving .grip { cursor: grabbing; user-select: none; }
+  .chip { min-height: calc(var(--control-h) - 4px); padding: 0 var(--s3); border-radius: var(--r-pill); border: var(--hair) solid var(--line-strong);
+          cursor: pointer; color: var(--ink-mute); display: inline-flex; align-items: center; gap: var(--s1); position: relative; }
+  .chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .chip:has(input:checked) { color: var(--ink); background: var(--accent-soft); border-color: var(--accent); }
+  .chip:has(input:checked)::before { content: "✓"; color: var(--accent); }
+  .chip:has(input:focus-visible) { outline: var(--ring) solid var(--accent); outline-offset: var(--ring); }
+  .zoom { display: flex; align-items: center; gap: 2px; padding-left: var(--s2); border-left: var(--hair) solid var(--line); }
+  .zoom output { min-width: 48px; text-align: center; color: var(--ink-mute); }
+  .vbhide { min-width: var(--control-h); padding: 0; justify-content: center; }
+  .vbmini { display: none; align-items: center; gap: var(--s2); min-height: calc(var(--control-h) - 4px); padding: 0 var(--s3) 0 var(--s1); border: 0;
+            border-radius: var(--r-pill); background: transparent; color: var(--ink-mute); cursor: pointer; }
+  .vbmini:hover { color: var(--ink); background: var(--panel-2); }
+  .vbmini svg { width: 18px; height: 18px; }
+  .viewbar.mini > :not(.grip):not(.vbmini) { display: none; }
+  .viewbar.mini .vbmini { display: inline-flex; }
+  .legend { position: absolute; left: var(--s4); bottom: var(--s3); z-index: 2; display: none; gap: var(--s4); align-items: center; flex-wrap: wrap;
+            background: var(--panel); border: var(--hair) solid var(--line); border-radius: var(--r); padding: var(--s2) var(--s3); box-shadow: var(--shadow); color: var(--ink-mute); }
+  .legend.on { display: flex; }
+  .legend > span, .okmark { display: inline-flex; align-items: center; gap: var(--s2); }
+  .okmark { cursor: pointer; }
+  .okmark input { accent-color: var(--ok); width: 16px; height: 16px; margin: 0; padding: 0; }
+  .sw { width: 16px; height: 16px; border-radius: 3px; border: var(--hair) solid var(--line-strong); display: inline-block; }
+  .sw.bad { background: var(--bad-tint); border-color: var(--bad); }
+  .sw.part { border: 0; border-bottom: 3px solid var(--bad); border-radius: 0; }
+  .sw.ok, .sw.star { border: 0; width: auto; height: auto; font-style: normal; font-weight: var(--w-bold); }
+  .sw.ok { color: var(--ok); } .sw.star { color: var(--star); }
+  footer { flex: none; padding: var(--s1) var(--s4); color: var(--ink-mute); border-top: var(--hair) solid var(--line); background: var(--panel);
+           white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 30px; }
+
+  /* toasts */
+  #toasts { position: fixed; left: 50%; bottom: var(--s12); transform: translateX(-50%); display: flex; flex-direction: column; gap: var(--s2); z-index: 30; max-width: calc(100vw - var(--s8)); }
+  .toast { display: flex; gap: var(--s3); align-items: center; padding: var(--s2) var(--s2) var(--s2) var(--s4); background: var(--panel-3);
+           border: var(--hair) solid var(--line-strong); border-radius: var(--r); box-shadow: var(--shadow);
+           transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .toast.ok { border-color: var(--ok); } .toast.err { border-color: var(--bad); }
+  .toast.out { opacity: 0; transform: translateY(8px); }
+
+  /* events (panel content is built by the event code) */
+  #evBox { flex-direction: column; }
+  #evBox .row > select, #evBox .row > input[type=text] { flex: 1 1 0; min-width: 0; }
+  #evBox .field input[type=text], #evBox .field select { width: 100%; min-height: var(--control-h); }
+  .evhead code, .evlist code { font: var(--text-label) var(--mono); color: var(--ink-mute); }
+  .evlist { display: flex; flex-direction: column; max-height: 50vh; overflow: auto; }
+  .evlist button { display: flex; gap: var(--s2); align-items: center; text-align: left; min-height: var(--control-h); border: 0; background: transparent; padding: 0 var(--s2); }
+  .evlist button:hover { background: var(--panel-2); }
+  .evlist button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .evlist small { margin-left: auto; color: var(--ink-faint); white-space: nowrap; }
+  .pages { display: flex; gap: var(--s1); flex-wrap: wrap; align-items: center; }
+  .pages button { min-width: 36px; min-height: var(--control-h); }
+  details.sec { border: var(--hair) solid var(--line); border-radius: var(--r-sm); background: var(--panel-2); }
+  details.sec > summary { cursor: pointer; padding: var(--s2) var(--s3); font-weight: var(--w-semi); display: flex; gap: var(--s2); align-items: baseline; list-style: none; }
+  details.sec > summary::before { content: "▸"; color: var(--ink-faint); } details.sec[open] > summary::before { content: "▾"; }
+  details.sec > summary small { margin-left: auto; color: var(--ink-mute); font-weight: var(--w-normal); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; }
+  details.sec > div { padding: 0 var(--s3) var(--s3); display: flex; flex-direction: column; gap: var(--s2); }
+  .btn.danger { color: var(--bad); }
+  .ntpl { display: grid; grid-template-columns: 230px 1fr; gap: var(--s4); min-height: 0; }
+  .ntpl .tplist { display: flex; flex-direction: column; gap: var(--s2); }
+  .ntpl .tform { min-width: 0; }
+  .maptabs { flex: none; display: flex; align-items: flex-end; gap: 2px; min-height: var(--tabs-h); padding: var(--s1) var(--s2) 0; overflow-x: auto;
+             background: var(--panel); border-bottom: var(--hair) solid var(--line); scrollbar-width: thin; }
+  .mtab { display: inline-flex; align-items: center; flex: none; max-width: 240px; border: var(--hair) solid transparent; border-bottom: 0;
+          border-radius: var(--r-sm) var(--r-sm) 0 0; color: var(--ink-mute); }
+  .mtab:hover { background: var(--panel-2); color: var(--ink); }
+  .mtab.on { background: var(--canvas-bg); color: var(--ink); border-color: var(--line); box-shadow: inset 0 2px 0 var(--accent); }
+  .mtab > button { border: 0; background: transparent; color: inherit; min-height: calc(var(--tabs-h) - var(--s1)); border-radius: var(--r-sm) var(--r-sm) 0 0; }
+  .mtab .tname { padding: 0 var(--s1) 0 var(--s3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+  .mtab .star { color: var(--warn); font-weight: var(--w-bold); }
+  .mtab .tx { padding: 0 var(--s2); color: var(--ink-faint); }
+  .mtab .tx:hover { color: var(--bad); }
+  .maptabs .tnew { border: 0; background: transparent; color: var(--ink-faint); min-height: calc(var(--tabs-h) - var(--s1)); padding: 0 var(--s3); }
+  .maptabs .tnew:hover { color: var(--ink); }
+  .mi .open { width: 6px; height: 6px; border-radius: var(--r-pill); background: var(--accent); flex: none; margin-left: var(--s2); }
+  .viewbar { top: calc(var(--tabs-h) + var(--s3)); }
   #evBox > * { flex: none; }
-  .evsec { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; background: rgba(19,40,74,.5); }
-  .evsec h3 { margin: 0 0 4px; font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: .6px; }
+  .evsec { border: var(--hair) solid var(--line); border-radius: var(--r-sm); padding: var(--s2) var(--s3); background: var(--panel-2); }
+  .evsec h3 { margin: 0 0 var(--s1); font-size: var(--text-label); color: var(--ink-faint); text-transform: uppercase; letter-spacing: .6px; }
   .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 3px 0; }
-  .row > .k { width: 74px; color: var(--dim); }
+  .row > .k { width: 74px; color: var(--ink-mute); }
   .row label { display: flex; gap: 4px; align-items: center; }
   .row input[type=text], .row textarea { flex: 1; min-width: 120px; }
   .row select { max-width: 100%; }
-  .hint { color: var(--dim); line-height: 1.6; }
+  .hint { color: var(--ink-mute); line-height: 1.6; }
   .pages button { padding: 2px 9px; }
-  .cmds { font: 12px/1.55 Consolas, "Courier New", monospace; white-space: pre; overflow: auto; max-height: 300px;
-          background: #050a14; border-radius: 6px; padding: 6px 8px; }
-  .cmds .t { color: #fff; } .cmds .f { color: #ffb35c; } .cmds .m { color: #62d6ff; } .cmds .d { color: var(--dim); }
-  canvas.prev { width: 72px; height: 72px; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 6px;
-                background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 12px 12px; }
-  .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 20; }
+  .cmds { font: var(--text-label)/1.55 var(--mono); white-space: pre; overflow: auto; max-height: 300px; background: var(--canvas-bg); border-radius: var(--r-sm); padding: 6px 8px; }
+  .cmds .t { color: var(--ink); } .cmds .f { color: var(--warn); } .cmds .m { color: var(--accent); } .cmds .d { color: var(--ink-mute); }
+  canvas.prev { width: 72px; height: 72px; image-rendering: pixelated; border: var(--hair) solid var(--line); border-radius: var(--r-sm);
+                background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px; }
+  .modal { position: fixed; inset: 0; background: var(--scrim); display: none; align-items: center; justify-content: center; z-index: 20; }
   .modal.on { display: flex; }
-  .modal .box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
-                width: 980px; max-width: 94vw; max-height: 92vh; display: flex; flex-direction: column; gap: 10px; }
-  .modal h2 { margin: 0; font-size: 15px; }
+  .modal .box { background: var(--panel); border: var(--hair) solid var(--line); border-radius: var(--r); padding: 14px 16px;
+                width: 980px; max-width: 94vw; max-height: 92vh; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); }
+  .modal h2 { margin: 0; font-size: var(--text-title); }
   .modal .body { overflow: auto; min-height: 0; flex: 1; }
   .modal .foot { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
-  .modal .foot .grow { flex: 1; color: var(--dim); }
+  .modal .foot .grow { flex: 1; color: var(--ink-mute); }
   .tpls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
   .tpls button { padding: 12px; text-align: left; line-height: 1.5; }
-  .tpls button b { display: block; font-size: 14px; margin-bottom: 2px; }
-  .tpls button span { color: var(--dim); }
+  .tpls button b { display: block; font-size: var(--text-body); margin-bottom: 2px; }
+  .tpls button span { color: var(--ink-mute); }
   .picker { display: flex; gap: 10px; height: 62vh; }
   .picker .list { width: 190px; display: flex; flex-direction: column; gap: 6px; }
   .picker .list > div { overflow: auto; flex: 1; }
-  .view { flex: 1; overflow: auto; position: relative; border-radius: 6px;
-          background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 24px 24px; }
+  .view { flex: 1; overflow: auto; position: relative; border-radius: var(--r-sm);
+          background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 24px 24px; }
   .view canvas { display: block; cursor: pointer; }
-  .mark { position: absolute; border: 3px solid #ffe08a; box-shadow: 0 0 0 1px #000; pointer-events: none; display: none; }
+  .mark { position: absolute; border: 3px solid var(--star); box-shadow: 0 0 0 var(--hair) #000; pointer-events: none; display: none; }
+
+  @media (max-width: 1100px) {
+    #app, #app.noside { --side-col: 0px; --split-l: 0px; }
+    #side, #splitL, #app.noside #stripL, [data-collapse=side] { display: none; }
+  }
+  /* narrow windows: everything stacks; the map keeps its own 2-D scroll area (maps are exempt from reflow) */
+  @media (max-width: 760px) {
+    body { overflow: auto; }
+    header { height: auto; flex-wrap: wrap; padding: var(--s2) var(--s3); }
+    .crumb { border-left: 0; padding-left: 0; width: 100%; flex-wrap: wrap; }
+    .crumb .btn { max-width: 100%; white-space: normal; text-align: left; }
+    #app { display: flex; flex-direction: column; }
+    .splitter, #app .strip, .collapse { display: none; }
+    #app #side, #app.noside #side { display: flex; height: 360px; }
+    #app.noinsp #insp { display: block; }
+    .rail { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: var(--hair) solid var(--line); }
+    .rail h2, .rail hr { display: none; }
+    .tool { flex: 1 0 64px; }
+    main { height: 60vh; flex: none; }
+    .viewbar { position: static; margin: var(--s2); } .grip { display: none; }
+    .legend { position: static; margin: var(--s2); }
+    #insp { border-left: 0; }
+    footer { white-space: normal; }
+    .ntpl { grid-template-columns: 1fr; }
+  }
+  @media (forced-colors: active) {
+    .tool[aria-pressed="true"], .mode[aria-checked="true"], .tabs button.on, .seg input:checked + span, .chip:has(input:checked) { outline: var(--ring) solid Highlight; }
+  }
 </style>
 </head>
 <body>
 <header>
-  <h1>Nova Tools</h1>
-  <nav><a href="/" class="on">Map Editor</a> <a href="/wizard">Tileset Wizard</a></nav>
-  <span class="sep"></span>
-  <span id="mapTitle">-</span>
-  <button id="save" class="primary" disabled title="Ctrl+S">Simpan</button>
-  <button id="undo" disabled title="Ctrl+Z">Undo</button>
-  <button id="redo" disabled title="Ctrl+Y">Redo</button>
-  <span id="status">Memuat…</span>
+  <span class="brand">Nova Tools</span>
+  <nav class="nav" aria-label="Halaman"><a href="/" aria-current="page">Map Editor</a><a href="/wizard">Tileset Wizard</a></nav>
+  <div class="crumb">
+    <button class="btn ghost" id="mapTitle" title="Ganti map (Ctrl+P)"><span>Pilih map</span> ▾</button>
+    <small id="mapMeta"></small>
+  </div>
+  <span class="grow"></span>
+  <span class="savechip" id="saveChip" role="status" hidden><i></i><span></span></span>
+  <button class="btn ghost" id="undo" title="Urungkan (Ctrl+Z)" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Urungkan</button>
+  <button class="btn ghost" id="redo" title="Ulangi (Ctrl+Y)" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg>Ulangi</button>
+  <button class="btn primary" id="save" title="Simpan map ini (Ctrl+S)" disabled>✓ Tersimpan</button>
 </header>
+
 <div id="app">
-  <aside>
-    <div id="mapsBox">
-      <input id="mapFilter" placeholder="Cari map…">
-      <div id="mapList"></div>
+  <nav class="rail" id="tools" aria-label="Alat"></nav>
+
+  <button class="strip" id="stripL" aria-label="Buka panel kiri: palet dan daftar map" title="Buka panel ( [ )"><b aria-hidden="true">»</b><span>Palet · Map</span></button>
+  <aside id="side" aria-label="Palet dan daftar map">
+    <div class="sidehead">
+      <div class="row" style="flex-wrap:nowrap;margin:0"><div class="seg" role="tablist" aria-label="Panel kiri" style="flex:1">
+        <button role="tab" aria-selected="true" data-side="tiles">Tile</button>
+        <button role="tab" aria-selected="false" data-side="maps">Daftar map</button>
+      </div><button class="btn ghost collapse" data-collapse="side" aria-expanded="true" aria-controls="side" aria-label="Sembunyikan panel kiri" title="Sembunyikan panel ( [ )">«</button></div>
     </div>
-    <div class="split" id="splitMaps" title="Geser untuk mengubah tinggi daftar map (klik 2x: ukuran awal)"></div>
-    <div id="palBox">
-      <div class="tabs" id="passBar"></div>
+    <div id="tilesPane">
       <div class="tabs" id="palTabs"></div>
       <div id="palWrap"><canvas id="pal"></canvas></div>
-      <div class="palfoot"><span id="brushInfo">Pilih tile di palet.</span>
-        <select id="palZoom" title="Ukuran palet"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option></select></div>
+      <div class="palfoot"><span class="grow" id="palHint">Klik tile = kuas · geser = beberapa tile</span>
+        <span class="pzoom"><label for="palZoom">Ukuran</label>
+          <input type="range" id="palZoom" min="25" max="100" step="25" value="75" list="palStops" aria-valuetext="75%">
+          <datalist id="palStops"><option value="25"></option><option value="50"></option><option value="75"></option><option value="100"></option></datalist>
+          <output for="palZoom" id="palZoomLbl">75%</output></span></div>
+      <div class="pop" id="sheetPop" hidden role="dialog" aria-label="Pilih sheet lain">
+        <label class="sr" for="sheetSearch">Cari sheet</label><input id="sheetSearch" class="search" placeholder="Cari sheet…  (mis. Inside, PM_)" autocomplete="off">
+        <div class="list" id="sheetList"></div>
+        <p class="help" id="sheetHelp"></p>
+      </div>
+    </div>
+    <div id="mapsPane" hidden>
+      <div class="sidehead"><label class="sr" for="mapFilter">Cari map</label><input id="mapFilter" class="search" placeholder="Cari map…  (Ctrl+P)"></div>
+      <div id="mapList"></div>
+    </div>
+  </aside>
+  <button class="splitter" id="splitL" role="separator" aria-orientation="vertical" aria-label="Lebar panel kiri (panah kiri/kanan, klik 2x: ukuran awal)"></button>
+
+  <main>
+    <div class="maptabs" id="mapTabs" role="tablist" aria-label="Map yang terbuka"></div>
+    <div class="viewbar" id="viewbar" role="toolbar" aria-label="Tampilan">
+      <button class="grip" id="vbGrip" aria-label="Geser bar tampilan (panah untuk memindah, klik 2x: posisi awal)" title="Geser · klik 2x: posisi awal"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+      <label class="chip"><input type="checkbox" id="showGrid" checked><span>Grid</span></label>
+      <label class="chip"><input type="checkbox" id="showPass"><span>Passability</span></label>
+      <label class="chip"><input type="checkbox" id="showEvents" checked><span>Event</span></label>
+      <label class="chip"><input type="checkbox" id="showRegions"><span>Region</span></label>
+      <div class="zoom"><button class="btn ghost" id="zOut" aria-label="Perkecil">−</button><output id="zLbl">100%</output><button class="btn ghost" id="zIn" aria-label="Perbesar">+</button></div>
+      <button class="btn ghost vbhide" id="vbHide" aria-label="Sembunyikan bar tampilan (H)" title="Sembunyikan · H"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+      <button class="vbmini" id="vbMini" aria-label="Tampilkan bar tampilan (H)" title="Tampilkan · H"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span id="vbMiniLbl">Tampilan · 100%</span></button>
+    </div>
+    <div id="viewport"><div class="empty" id="emptyMsg">Pilih map di "Daftar map" (kiri), atau tekan Ctrl+P.</div>
+      <div id="stage"><canvas id="mapCanvas"></canvas><canvas id="overlay"></canvas><div id="cursor"></div></div>
+    </div>
+    <div class="legend" id="legend" aria-label="Arti tanda passability">
+      <label class="okmark"><input type="checkbox" id="showOk"> <i class="sw ok">○</i><span id="okLbl">Bisa dilewati (tanpa tanda) · tandai juga ○</span></label>
+      <span><i class="sw bad"></i>Menghalangi</span>
+      <span><i class="sw part"></i>Tertutup dari sisi itu</span>
+      <span><i class="sw star">☆</i>Di atas karakter</span>
+    </div>
+  </main>
+
+  <button class="splitter" id="splitR" role="separator" aria-orientation="vertical" aria-label="Lebar panel kanan (panah kiri/kanan, klik 2x: ukuran awal)"></button>
+  <button class="strip" id="stripR" aria-label="Buka panel kanan" title="Buka panel ( ] )"><b aria-hidden="true">«</b><span id="stripRLbl">Pena</span></button>
+  <aside id="insp" aria-label="Pengaturan alat">
+    <div class="phead"><h2 id="inspTitle">Pena</h2>
+      <button class="btn ghost collapse" data-collapse="insp" aria-expanded="true" aria-controls="insp" aria-label="Sembunyikan panel kanan" title="Sembunyikan panel ( ] )">»</button></div>
+    <div id="inspPaint">
+      <section class="card" id="brushCard"><h3>Kuas</h3>
+        <div class="brush"><canvas id="brushPrev" width="48" height="48" aria-hidden="true"></canvas>
+          <div><b id="brushInfo">Belum ada kuas</b><span class="muted" id="brushSub">Klik tile di palet (kiri).</span><span class="muted">Klik kanan di map untuk mengambil tile dari sana.</span></div></div></section>
+      <section class="card" id="layerCard"><h3>Ditaruh di layer</h3>
+        <div class="field"><span class="lbl">Lantai & dinding (sheet A)</span>
+          <div class="seg" role="radiogroup" aria-label="Layer lantai dan dinding">
+            <label><input type="radio" name="layerA" value="auto" checked><span>Otomatis</span></label><label><input type="radio" name="layerA" value="0"><span>Bawah</span></label><label><input type="radio" name="layerA" value="1"><span>Atas</span></label></div>
+          <p class="help">Otomatis: lantai di layer bawah; hiasan A2 kanan di atasnya.</p></div>
+        <div class="field"><span class="lbl">Objek (sheet B-E)</span>
+          <div class="seg" role="radiogroup" aria-label="Layer objek">
+            <label><input type="radio" name="layerO" value="auto" checked><span>Otomatis</span></label><label><input type="radio" name="layerO" value="2"><span>Layer 2</span></label><label><input type="radio" name="layerO" value="3"><span>Layer 3</span></label></div>
+          <p class="help">Otomatis: ke layer 3 kalau layer 2 di kotak itu sudah terisi tile lain.</p></div></section>
+      <section class="card"><h3>Cara pakai</h3><p class="help" id="toolHelp"></p></section>
+    </div>
+    <div id="inspPass">
+      <section class="card"><h3>Yang diubah</h3><div class="modes" id="passBar" role="radiogroup" aria-label="Jenis passage"></div></section>
+      <section class="card"><h3>Cara klik</h3><div class="howto" id="passHint"></div>
+        <p class="help">Klik di palet untuk tile tertentu, atau langsung di map untuk tile paling atas di kotak itu (namanya muncul di bar bawah).</p></section>
+      <section class="card"><h3>Berlaku untuk</h3><p class="help">Tile B-E dan A5 berubah di setiap tileset yang memakai sheet-nya, supaya sama di semua map. Autotile A1-A4 hanya di tileset map ini.</p>
+        <div class="note">Tutup RPG Maker sebelum menyimpan: editor itu menimpa Tilesets.json setiap kali menyimpan.</div></section>
     </div>
     <div id="evBox"></div>
   </aside>
-  <div class="split" id="splitSide" title="Geser untuk mengubah lebar panel (klik 2x: ukuran awal)"></div>
-  <main>
-    <div class="toolbar">
-      <span id="tools"></span>
-      <span class="sep"></span>
-      <label>Lantai/dinding <select id="layerA"><option value="auto">Auto</option><option value="0">Bawah</option><option value="1">Atas</option></select></label>
-      <label>Objek <select id="layerO"><option value="auto">Auto</option><option value="2">Layer 2</option><option value="3">Layer 3</option></select></label>
-      <span class="sep"></span>
-      <label><input type="checkbox" id="showGrid" checked> grid</label>
-      <label><input type="checkbox" id="showPass"> passability</label>
-      <label><input type="checkbox" id="showEvents" checked> event</label>
-      <label><input type="checkbox" id="showRegions"> region</label>
-      <span class="sep"></span>
-      <select id="zoom"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.5">150%</option></select>
-    </div>
-    <div id="viewport"><div class="empty" id="emptyMsg">Pilih map di kiri.</div>
-      <div id="stage"><canvas id="mapCanvas"></canvas><canvas id="overlay"></canvas><div id="cursor"></div></div>
-    </div>
-    <footer id="info">-</footer>
-  </main>
 </div>
+<footer id="info">-</footer>
 <div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+<div id="toasts" aria-live="polite"></div>
 <script>
 'use strict';
 // ---------------------------------------------------------------- constants (same as rpg_core.js)
 const T = 48, HT = 24;
 const A1 = 2048, A2 = 2816, A3 = 4352, A4 = 5888, A5 = 1536, TILE_MAX = 8192;
 const TOOLS = [['pen', 'Pena', 'P'], ['rect', 'Kotak', 'R'], ['fill', 'Isi', 'F'], ['pick', 'Pipet', 'I'], ['erase', 'Hapus', 'E'], ['shadow', 'Bayangan', 'S'], ['pass', 'Passage', 'L'], ['event', 'Event', 'V']];
+const TOOL_ICON = {
+  pen: '<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="m14 6 3 3"/>',
+  rect: '<rect x="4" y="5" width="16" height="14" rx="1"/>',
+  fill: '<path d="M5 11 12 4l7 7-7 7z"/><path d="M20 15s2 2.5 2 4a2 2 0 0 1-4 0c0-1.5 2-4 2-4"/>',
+  pick: '<path d="m14 4 6 6-3 1-8 8H5v-4l8-8z"/>',
+  erase: '<path d="M8 20h12"/><path d="m4 14 9-9 6 6-7 7H8z"/>',
+  shadow: '<rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 12h8V4" fill="currentColor" opacity=".5"/>',
+  pass: '<circle cx="12" cy="12" r="8"/><path d="M8 8l8 8"/>',
+  event: '<path d="M6 21V4h10l-2 4 2 4H6"/>',
+};
+const TOOL_HELP = {
+  pen: 'Klik atau geser untuk melukis. Kuas besar mengulang polanya sendiri.',
+  rect: 'Tarik kotak di map; seluruh kotak diisi dengan kuas.',
+  fill: 'Klik satu kotak; semua kotak tetangga yang sama ikut terisi.',
+  pick: 'Klik kotak di map untuk menjadikan tile paling atasnya kuas. Klik kanan dengan alat apa pun juga mengambil tile.',
+  erase: 'Klik untuk menghapus tile paling atas (layer 3, lalu 2, lalu 1). Lantai dasar tidak ikut terhapus.',
+  shadow: 'Klik seperempat kotak untuk menambah atau menghapus bayangan dinding. Bayangan otomatis tetap dihitung ulang.',
+};
+const ZOOMS = [0.25, 0.5, 0.75, 1, 1.5];
 // Passage tool modes, like the database's Tileset tab: [key, label, flag bit, hint]
 const PASS_MODES = [
   ['pass', 'Passage', 0, 'Klik tile: ○ bisa lewat → ✕ menghalangi → ☆ di atas karakter (B-E). Klik kanan: mundur. Geser untuk mengecat sama.'],
@@ -172,9 +481,9 @@ const FLAG_MASK = 0xF1FF;
 const $ = id => document.getElementById(id);
 const S = {
   setup: null, maps: [], cur: null, images: {}, tool: 'pen', zoom: 1,
-  tab: 'A', extSheet: null, palZoom: 0.75, palCols: 8, brush: null, palSel: null, palDrag: null,
+  tab: 'A', extSheet: null, pinned: [], palZoom: 0.75, palCols: 8, brush: null, palSel: null, palDrag: null,
   undo: [], redo: [], stroke: null, rect: null, hover: null, dirty: false,
-  sel: null, page: 0, evDrag: null, evClip: null,
+  sel: null, page: 0, evDrag: null, evClip: null, zoomI: 3, showOk: false,
   passMode: 'pass', flagEdits: new Map(), flagStroke: null, mapDirty: false,
 };
 
@@ -360,7 +669,7 @@ function renderOverlay() {
   if (S.tool === 'pass') {
     for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) cellFlagMark(g, x, y);
   } else if ($('showPass').checked) {
-    for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) passMark(g, passage(x, y), false, x * T, y * T);
+    for (let y = 0; y < H(); y++) for (let x = 0; x < W(); x++) softPass(g, passage(x, y), x * T, y * T);
   }
   const evMode = S.tool === 'event';
   if ($('showEvents').checked || evMode) S.cur.map.events.forEach(ev => { if (ev) drawEvent(g, ev); });
@@ -485,19 +794,20 @@ function upperA2(kind) {
   return s === 'A2' && l % 8 >= 4 && S.cur.tileset.mode === 1;   // A2 right half = decoration over the ground (Area tilesets)
 }
 
+const layerMode = name => (document.querySelector(`input[name=${name}]:checked`) || {}).value || 'auto';
 function applyBrushAt(x, y, ox, oy) {
   const b = S.brush; if (!b) return;
   if (b.type === 'region') { set(x, y, 5, b.value); return; }
   if (b.type === 'auto') {
-    const mode = $('layerA').value;
+    const mode = layerMode('layerA');
     const z = mode === 'auto' ? (upperA2(b.kind) ? 1 : 0) : +mode;
     set(x, y, z, A1 + b.kind * 48);
     if (mode === 'auto' && z === 0) set(x, y, 1, 0);
     return;
   }
   const id = b.ids[((oy % b.h) + b.h) % b.h][((ox % b.w) + b.w) % b.w];
-  if (b.ground) { set(x, y, 0, id); if ($('layerA').value === 'auto') set(x, y, 1, 0); return; }
-  const mode = $('layerO').value;
+  if (b.ground) { set(x, y, 0, id); if (layerMode('layerA') === 'auto') set(x, y, 1, 0); return; }
+  const mode = layerMode('layerO');
   let z = mode === 'auto' ? 2 : +mode;
   if (mode === 'auto') { const under = at(x, y, 2); z = (!under || under === id) ? 2 : 3; }
   set(x, y, z, id);
@@ -577,8 +887,11 @@ function redo() { const c = S.redo.pop(); if (!c) return; replay(c, false); S.un
 function markDirty(v) {
   S.dirty = v;
   $('save').disabled = !S.cur || !v;
-  $('save').textContent = v ? 'Simpan*' : 'Simpan';
+  $('save').innerHTML = v ? 'Simpan <span class="k">Ctrl+S</span>' : '✓ Tersimpan';
+  $('saveChip').hidden = !v;
+  $('saveChip').lastElementChild.textContent = 'Belum disimpan';
   $('undo').disabled = !S.undo.length; $('redo').disabled = !S.redo.length;
+  if (S.tabs && S.cur) { const t = tabOf(S.cur.id), el = t && $('mapTabs').querySelector(`[data-tab="${t.id}"] .star`); if (!!el !== S.mapDirty) renderMapTabs(); }
 }
 
 // ---------------------------------------------------------------- map mouse
@@ -702,18 +1015,80 @@ function palSheets() {
   return tabs;
 }
 
-function renderTabs() {
-  $('palTabs').innerHTML = palSheets().map(([k, label]) => `<button data-k="${k}" class="${S.tab === k ? 'on' : ''}">${label}</button>`).join('') +
-    (S.tab === 'X' ? ` <select id="extSel">${S.setup.ext.filter(e => !S.cur.tileset.tilesetNames.includes(e.name))
-      .map(e => `<option value="${e.slot}" ${S.extSheet === e.slot ? 'selected' : ''}>${e.name}</option>`).join('')}</select>` : '');
-  $('palTabs').querySelectorAll('button').forEach(b => b.onclick = () => { S.tab = b.dataset.k; S.palSel = null; renderTabs(); renderPalette(); renderOverlay(); });
-  const sel = $('extSel');
-  if (sel) {
-    if (S.extSheet === null || ![...sel.options].some(o => +o.value === S.extSheet)) S.extSheet = sel.options.length ? +sel.value : null;
-    sel.value = S.extSheet;
-    sel.onchange = () => { S.extSheet = +sel.value; S.palSel = null; renderPalette(); };
+// Sheets of other tilesets (NovaTilesetEx) open as tabs: at most 3, kept per tileset, until closed with x.
+// Opening a 4th replaces the one used longest ago (with Urungkan).
+const MAX_PINNED = 3;
+const pinKey = () => 'novaPinned:' + S.cur.tileset.id;
+const otherSheets = () => S.setup.ext.filter(e => !S.cur.tileset.tilesetNames.includes(e.name));
+function loadPinned() {
+  const ok = new Set(otherSheets().map(e => e.slot));
+  let list = null;
+  try { list = JSON.parse(localStorage.getItem(pinKey())); } catch (e) { /* first time */ }
+  if (!Array.isArray(list)) {      // first time on this tileset: the extra sheets this map already uses
+    const used = [...new Set(S.cur.map.data.filter(isExt).map(i => extInfo(i).sheet).filter(Boolean).map(e => e.slot))];
+    list = used.slice(0, MAX_PINNED).map(slot => ({ slot, used: 0 }));
   }
+  S.pinned = list.filter(p => ok.has(p.slot)).slice(0, MAX_PINNED);
 }
+const savePinned = () => { try { localStorage.setItem(pinKey(), JSON.stringify(S.pinned)); } catch (e) { /* not kept */ } };
+const sheetName = slot => (S.setup.ext.find(e => e.slot === slot) || {}).name || '?';
+function renderTabs() {
+  const own = palSheets().filter(([k]) => k !== 'X' && k !== 'R');
+  const on = (k, slot) => S.tab === k && (k !== 'X' || S.extSheet === slot);
+  $('palTabs').innerHTML = own.map(([k, label]) => `<button data-k="${k}" class="${on(k) ? 'on' : ''}" aria-pressed="${on(k)}">${label}</button>`).join('') +
+    S.pinned.map(p => { const n = sheetName(p.slot), a = on('X', p.slot);
+      return `<span class="ptab${a ? ' on' : ''}"><button class="pt" data-pin="${p.slot}" aria-pressed="${a}">${esc(n)}</button>` +
+             `<button class="x" data-unpin="${p.slot}" aria-label="Tutup tab ${esc(n)}" title="Tutup tab">×</button></span>`; }).join('') +
+    `<button class="add" id="addSheet" aria-haspopup="dialog" aria-expanded="${!$('sheetPop').hidden}">+ Sheet lain</button>` +
+    `<button data-k="R" class="${on('R') ? 'on' : ''}" aria-pressed="${on('R')}">Region</button>`;
+  $('palTabs').querySelectorAll('[data-k]').forEach(b => b.onclick = () => selectTab(b.dataset.k));
+  $('palTabs').querySelectorAll('[data-pin]').forEach(b => b.onclick = () => selectTab('X', +b.dataset.pin));
+  $('palTabs').querySelectorAll('[data-unpin]').forEach(b => b.onclick = () => unpinSheet(+b.dataset.unpin));
+  $('addSheet').onclick = e => { e.stopPropagation(); $('sheetPop').hidden ? openSheetPop() : closeSheetPop(); };
+}
+function selectTab(k, slot) {
+  S.tab = k; S.palSel = null;
+  if (k === 'X') { S.extSheet = slot; const p = S.pinned.find(x => x.slot === slot); if (p) { p.used = Date.now(); savePinned(); } }
+  renderTabs(); renderPalette(); renderOverlay();
+}
+function unpinSheet(slot) {
+  S.pinned = S.pinned.filter(p => p.slot !== slot); savePinned();
+  if (S.tab === 'X' && S.extSheet === slot) selectTab(S.cur.tileset.tilesetNames[5] ? 'B' : 'A'); else renderTabs();
+}
+function pinSheet(slot) {
+  closeSheetPop();
+  if (!S.pinned.some(p => p.slot === slot)) {
+    if (S.pinned.length >= MAX_PINNED) {
+      const old = S.pinned.reduce((a, b) => (a.used <= b.used ? a : b)), i = S.pinned.indexOf(old);
+      S.pinned[i] = { slot, used: 0 };
+      toast(`Tab ${sheetName(old.slot)} diganti ${sheetName(slot)} (maksimal ${MAX_PINNED} tab sheet lain).`, '', 'Urungkan', () => {
+        S.pinned = S.pinned.map(p => p.slot === slot ? old : p); savePinned(); selectTab('X', old.slot); });
+    } else S.pinned.push({ slot, used: 0 });
+  }
+  selectTab('X', slot);
+}
+function renderSheetList() {
+  const q = $('sheetSearch').value.trim().toLowerCase();
+  const list = otherSheets().filter(e => !S.pinned.some(p => p.slot === e.slot) && e.name.toLowerCase().includes(q));
+  $('sheetList').innerHTML = list.map(e => `<button data-add="${e.slot}">${esc(e.name)}<small>${e.a5 ? 'lantai A5' : 'objek'}</small></button>`).join('') ||
+    `<p class="zero">Tidak ada sheet "${esc(q)}" yang belum terbuka.</p>`;
+  $('sheetList').querySelectorAll('[data-add]').forEach(b => b.onclick = () => pinSheet(+b.dataset.add));
+  $('sheetHelp').textContent = S.pinned.length >= MAX_PINNED
+    ? `Sudah ${MAX_PINNED} tab: sheet baru menggantikan tab yang paling lama tidak dipakai.`
+    : `Sheet yang dipilih jadi tab dan tetap ada sampai ditutup dengan ×. Maksimal ${MAX_PINNED} tab.`;
+}
+function openSheetPop() {
+  const tabs = $('palTabs');
+  $('sheetPop').style.top = tabs.offsetTop + tabs.offsetHeight + 'px';
+  $('sheetPop').hidden = false; $('sheetSearch').value = ''; renderSheetList(); renderTabs(); $('sheetSearch').focus();
+}
+function closeSheetPop() { if ($('sheetPop').hidden) return; $('sheetPop').hidden = true; renderTabs(); }
+$('sheetSearch').oninput = renderSheetList;
+$('sheetSearch').onkeydown = e => {
+  if (e.key === 'Enter') { const b = $('sheetList').querySelector('[data-add]'); if (b) b.click(); }
+  if (e.key === 'Escape') { e.stopPropagation(); closeSheetPop(); $('addSheet').focus(); }
+};
+document.addEventListener('mousedown', e => { if (!$('sheetPop').hidden && !e.target.closest('#sheetPop, #addSheet')) closeSheetPop(); });
 
 // Palette layout for the current tab: list of {x, y, draw(g), brush} cells on a grid of 48px.
 function palLayout() {
@@ -750,7 +1125,7 @@ function palLayout() {
 // 16 columns when they fit in the panel at the current palette size, 8 otherwise.
 function palColsFit() {
   const wrap = $('palWrap');
-  return wrap.clientWidth - 12 >= 16 * T * S.palZoom ? 16 : 8;
+  return wrap.clientWidth - 24 >= 16 * T * S.palZoom ? 16 : 8;
 }
 
 function renderPalette() {
@@ -857,23 +1232,57 @@ function setBrush(b) {
   let f = '';
   if (b.type === 'tiles' && b.w * b.h === 1) {
     const fl = flagOf(b.ids[0][0]);
-    f = (fl & 0x10) ? ' · ☆ di atas karakter' : ((fl & 0x0f) === 0x0f ? ' · ✕ menghalangi' : ' · ○ bisa dilewati');
+    f = (fl & 0x10) ? '☆ di atas karakter' : ((fl & 0x0f) === 0x0f ? '✕ menghalangi' : '○ bisa dilewati');
   }
-  $('brushInfo').textContent = 'Kuas: ' + b.label + f;
+  $('brushInfo').textContent = b.label;
+  $('brushSub').textContent = (b.type === 'region' ? 'Region' : `${b.w || 1}×${b.h || 1} tile`) + (f ? ' · ' + f : '');
+  drawBrushPreview();
+}
+// The brush card's picture: the whole brush, scaled into the 72 px box.
+function drawBrushPreview() {
+  const b = S.brush, cv = $('brushPrev'); if (!b) return;
+  const w = b.w || 1, h = b.h || 1;
+  cv.width = w * T; cv.height = h * T;
+  const g = cv.getContext('2d'); g.clearRect(0, 0, cv.width, cv.height);
+  if (b.type === 'region') { g.fillStyle = b.value ? `hsla(${(b.value * 47) % 360},80%,55%,0.6)` : 'rgba(0,0,0,0.4)'; g.fillRect(0, 0, T, T);
+    g.fillStyle = '#fff'; g.font = 'bold 18px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(b.value || 'hapus', HT, HT); return; }
+  if (b.type === 'auto') { drawTile(g, A1 + b.kind * 48, 0, 0); return; }
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) drawTile(g, b.ids[y][x], x * T, y * T);
 }
 
 // ---------------------------------------------------------------- passage (tile flags)
 // The Passage tool edits Tilesets.json like the database's Tileset tab, from the palette or from the map (the top
 // tile of the cell). A1-A4 autotiles belong to this map's tileset; B-E/A5 tiles are saved for their sheet in every
 // tileset that has it, so the NovaTilesetEx copies on other maps agree.
+const PASS_INFO = { pass: ['○', 'Bisa lewat, menghalangi, atau di atas karakter'], dir: ['✥', 'Buka/tutup tiap sisi tile'], ladder: ['☰', 'Karakter menghadap ke atas'],
+                    bush: ['≋', 'Bagian bawah karakter tembus'], counter: ['▭', 'Bisa bicara melewatinya'], damage: ['✸', 'Lantai yang melukai'], terrain: ['#', 'Angka 0-7 untuk event & skrip'] };
 function renderPassBar() {
-  $('passBar').innerHTML = PASS_MODES.map(([k, label]) => `<button data-m="${k}" class="${S.passMode === k ? 'on' : ''}">${label}</button>`).join('');
-  $('passBar').querySelectorAll('button').forEach(b => b.onclick = () => { S.passMode = b.dataset.m; renderPassBar(); if (S.cur) { renderPalette(); renderOverlay(); } });
-  const hint = S.tool === 'pass' ? PASS_MODES.find(m => m[0] === S.passMode)[3] : '';
-  $('brushInfo').title = hint;
-  if (hint) $('brushInfo').textContent = hint;
-  else if (S.brush) setBrush(S.brush);
-  else $('brushInfo').textContent = 'Pilih tile di palet.';
+  $('passBar').innerHTML = PASS_MODES.map(([k, label]) => `<button class="mode" role="radio" aria-checked="${S.passMode === k}" data-m="${k}">` +
+    `<span class="ic" aria-hidden="true">${PASS_INFO[k][0]}</span><b>${label}</b><small>${PASS_INFO[k][1]}</small></button>`).join('');
+  $('passBar').querySelectorAll('button').forEach(b => b.onclick = () => { S.passMode = b.dataset.m; renderPassBar(); updateLegend(); if (S.cur) { renderPalette(); renderOverlay(); } });
+  $('passHint').textContent = PASS_MODES.find(m => m[0] === S.passMode)[3];
+}
+function updateLegend() {
+  $('legend').classList.toggle('on', !!S.cur && ((S.tool === 'pass' && (S.passMode === 'pass' || S.passMode === 'dir')) || $('showPass').checked));
+}
+// Passability on the map draws only the exceptions: a red tint where the cell blocks, red bars on the sides it closes,
+// and (when asked for) a small green ring where it is open.
+function softPass(g, dirs, dx, dy) {
+  if (dirs.every(v => v)) {
+    if (!S.showOk) return;
+    g.lineWidth = 3; g.strokeStyle = 'rgba(0,0,0,.55)'; g.beginPath(); g.arc(dx + HT, dy + HT, 6, 0, Math.PI * 2); g.stroke();
+    g.lineWidth = 1.5; g.strokeStyle = 'rgba(111,240,160,.95)'; g.stroke(); g.lineWidth = 1; return;
+  }
+  if (dirs.every(v => !v)) {
+    g.fillStyle = 'rgba(255,112,136,.30)'; g.fillRect(dx, dy, T, T);
+    g.lineWidth = 1.5; g.strokeStyle = 'rgba(255,112,136,.95)'; g.beginPath();
+    g.moveTo(dx + 18, dy + 18); g.lineTo(dx + 30, dy + 30); g.moveTo(dx + 30, dy + 18); g.lineTo(dx + 18, dy + 30); g.stroke(); g.lineWidth = 1; return;
+  }
+  g.fillStyle = 'rgba(255,112,136,.95)';
+  if (!dirs[0]) g.fillRect(dx + 4, dy + T - 5, T - 8, 4);
+  if (!dirs[1]) g.fillRect(dx + 1, dy + 4, 4, T - 8);
+  if (!dirs[2]) g.fillRect(dx + T - 5, dy + 4, 4, T - 8);
+  if (!dirs[3]) g.fillRect(dx + 4, dy + 1, T - 8, 4);
 }
 
 const firstIdOf = slot => slot === 4 ? A5 : (slot - 5) * 256;
@@ -992,7 +1401,7 @@ function flagMark(g, mode, f, dx, dy) {
 function cellFlagMark(g, x, y) {
   const dx = x * T, dy = y * T, mode = S.passMode;
   if (mode === 'pass' || mode === 'dir') {
-    if (mode === 'pass') passMark(g, passage(x, y), false, dx, dy); else dirMark(g, passage(x, y), dx, dy);
+    if (mode === 'pass') softPass(g, passage(x, y), dx, dy); else dirMark(g, passage(x, y), dx, dy);
     const top = topTarget(x, y);
     if (top && (flagOf(top.id) & 0x10)) { g.font = 'bold 13px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#ffe08a'; g.fillText('☆', dx + 9, dy + 10); }
     return;
@@ -1058,7 +1467,11 @@ function addEvent(x, y, name, pages, note) {
 function deleteEvent() {
   const ev = selEvent(); if (!ev) return;
   editEvents(() => { const l = evs(); l[ev.id] = null; while (l.length > 1 && !l[l.length - 1]) l.pop(); });
-  status(`Event "${ev.name}" dihapus (Ctrl+Z untuk membatalkan).`);
+  const mapId = S.cur.id, step = S.undo.length;
+  toast(`Event "${ev.name}" dihapus.`, '', 'Urungkan', () => {
+    if (S.cur && S.cur.id === mapId && S.undo.length === step) undo();
+    else status('Sudah ada perubahan lain sesudahnya; pakai Urungkan (Ctrl+Z) di map itu.', 'err');
+  });
 }
 function copyEvent() {
   const ev = selEvent(); if (!ev) return;
@@ -1092,53 +1505,77 @@ function imageLabel(im) {
   return 'Tanpa gambar';
 }
 
+// Conditions of a page in a few words, for the closed "Kondisi" header.
+function pageConditions(p) {
+  const c = p.conditions, db = S.setup.db, out = [];
+  if (c.switch1Valid) out.push('Switch ' + pad(c.switch1Id) + ' ' + dbName(db.switches[c.switch1Id]));
+  if (c.switch2Valid) out.push('Switch ' + pad(c.switch2Id) + ' ' + dbName(db.switches[c.switch2Id]));
+  if (c.variableValid) out.push('Var ' + pad(c.variableId) + ' ≥ ' + c.variableValue);
+  if (c.selfSwitchValid) out.push('Self ' + c.selfSwitchCh);
+  if (c.itemValid) out.push('Item ' + dbName(db.items[c.itemId]));
+  if (c.actorValid) out.push('Aktor ' + dbName(db.actors[c.actorId]));
+  return out.join(' · ') || 'Selalu aktif';
+}
+function scrollToCell(x, y) {
+  const vp = $('viewport'), t = T * S.zoom;
+  vp.scrollTo({ left: x * t - vp.clientWidth / 2, top: y * t - vp.clientHeight / 2, behavior: 'smooth' });
+}
 function renderEventPanel() {
   const box = $('evBox');
   if (!S.cur || S.tool !== 'event') return;
   const ev = selEvent();
   if (!ev) {
-    box.innerHTML = `<div class="evsec"><h3>Event</h3><div class="hint">
-      Klik petak untuk memilih. <b>Klik 2x</b> petak kosong (atau Enter) untuk membuat event.<br>
-      Seret event untuk memindahkannya. Ctrl+C / Ctrl+V: salin / tempel. Delete: hapus.<br>
-      Isi perintah event (teks, cabang, variabel …) tetap diedit di editor RPG Maker.</div>
-      ${S.sel ? `<div class="row"><button id="evNew" class="primary">Event baru di (${S.sel.x}, ${S.sel.y})…</button>
-      <button id="evPaste"${S.evClip ? '' : ' disabled'}>Tempel</button></div>` : ''}</div>`;
-    if (S.sel) { $('evNew').onclick = () => openNewEvent(S.sel.x, S.sel.y); $('evPaste').onclick = pasteEvent; }
+    const list = evs().filter(Boolean), q = (S.evFilter || '').toLowerCase();
+    box.innerHTML = `<section class="card"><h3>Event di map ini</h3>
+      <p class="help">Pilih event di map atau di daftar. Klik 2x kotak kosong (atau Enter) untuk event baru. Seret event untuk memindahnya; Ctrl+C / Ctrl+V salin dan tempel; Delete menghapus.</p>
+      <div class="row">${S.sel ? `<button class="btn primary" id="evNew">+ Event baru di (${S.sel.x}, ${S.sel.y})…</button>` : '<span class="help">Klik kotak kosong di map untuk membuat event di sana.</span>'}
+        <button class="btn" id="evPaste"${S.evClip && S.sel ? '' : ' disabled'} title="Ctrl+V">Tempel</button></div>
+      <label class="sr" for="evFilter">Cari event</label><input id="evFilter" class="search" placeholder="Cari nama event…  (${list.length} event)" value="${esc(S.evFilter || '')}">
+      <div class="evlist" id="evList">${list.map(e => `<button data-ev="${e.id}" ${q && !e.name.toLowerCase().includes(q) ? 'hidden' : ''}><code>EV${pad(e.id, 3)}</code><span>${esc(e.name)}</span><small>${e.x}, ${e.y}</small></button>`).join('')
+        || '<p class="help">Belum ada event di map ini.</p>'}</div></section>`;
+    if ($('evNew')) $('evNew').onclick = () => openNewEvent(S.sel.x, S.sel.y);
+    $('evPaste').onclick = pasteEvent;
+    $('evFilter').oninput = () => { S.evFilter = $('evFilter').value; const f = S.evFilter.toLowerCase();
+      box.querySelectorAll('[data-ev]').forEach(b => b.hidden = !!f && !b.querySelector('span').textContent.toLowerCase().includes(f)); };
+    box.querySelectorAll('[data-ev]').forEach(b => b.onclick = () => {
+      const e = evs()[+b.dataset.ev]; S.sel = { x: e.x, y: e.y }; S.page = 0; scrollToCell(e.x, e.y); renderOverlay(); renderEventPanel();
+    });
     return;
   }
   S.page = Math.min(S.page, ev.pages.length - 1);
   const p = ev.pages[S.page], c = p.conditions, db = S.setup.db;
+  S.evOpen = S.evOpen || new Set(['cond', 'img', 'cmds']);
+  const sec = (k, title, sum, body) => `<details class="sec" data-sec="${k}"${S.evOpen.has(k) ? ' open' : ''}><summary>${title}<small>${esc(sum)}</small></summary><div>${body}</div></details>`;
+  const fld = (label, control) => `<div class="field"><span class="lbl">${label}</span>${control}</div>`;
+  const lbl = (list, v) => (list.find(x => x[0] === v) || [0, '?'])[1];
   box.innerHTML = `
-    <div class="evsec"><h3>Event ${pad(ev.id, 3)} · (${ev.x}, ${ev.y})</h3>
-      <div class="row"><span class="k">Nama</span><input type="text" data-f="e.name" data-s="1" value="${esc(ev.name)}"></div>
-      <div class="row"><span class="k">Catatan</span><input type="text" data-f="e.note" data-s="1" value="${esc(ev.note)}"></div>
-      <div class="row"><span class="k"></span><button id="evCopy" title="Ctrl+C">Salin</button><button id="evDel" title="Delete">Hapus event</button></div></div>
-    <div class="row pages"><span class="k">Page</span>${ev.pages.map((_, i) => `<button data-pg="${i}" class="${i === S.page ? 'on' : ''}">${i + 1}</button>`).join('')}
-      <button id="pgNew" title="Page baru">+</button><button id="pgDup">Gandakan</button><button id="pgDel"${ev.pages.length > 1 ? '' : ' disabled'}>Hapus page</button></div>
-    <div class="evsec"><h3>Kondisi page ${S.page + 1}</h3>
-      <div class="row">${check('p.conditions.switch1Valid', c.switch1Valid, 'Switch')} ${field('p.conditions.switch1Id', dbList(db.switches), c.switch1Id)}</div>
-      <div class="row">${check('p.conditions.switch2Valid', c.switch2Valid, 'Switch')} ${field('p.conditions.switch2Id', dbList(db.switches), c.switch2Id)}</div>
-      <div class="row">${check('p.conditions.variableValid', c.variableValid, 'Variable')} ${field('p.conditions.variableId', dbList(db.variables), c.variableId)}
-        ≥ <input type="number" data-f="p.conditions.variableValue" value="${c.variableValue}" style="width:80px"></div>
-      <div class="row">${check('p.conditions.selfSwitchValid', c.selfSwitchValid, 'Self switch')} ${field('p.conditions.selfSwitchCh', SELF, c.selfSwitchCh, true)}</div>
-      <div class="row">${check('p.conditions.itemValid', c.itemValid, 'Punya item')} ${field('p.conditions.itemId', dbList(db.items), c.itemId)}</div>
-      <div class="row">${check('p.conditions.actorValid', c.actorValid, 'Ada aktor')} ${field('p.conditions.actorId', dbList(db.actors), c.actorId)}</div></div>
-    <div class="evsec"><h3>Gambar</h3>
-      <div class="row"><canvas class="prev" id="evPrev" width="48" height="48"></canvas>
-        <div><div>${esc(imageLabel(p.image))}</div>
-        <div class="row"><button id="evImg">Pilih gambar…</button>${p.image.characterName ? 'Arah ' + field('p.image.direction', DIRS, p.image.direction) : ''}</div></div></div></div>
-    <div class="evsec"><h3>Gerak</h3>
-      <div class="row"><span class="k">Jenis</span>${field('p.moveType', MOVES, p.moveType)}</div>
-      ${p.moveType === 3 ? `<div class="row hint">Rute kustom: ${p.moveRoute.list.length - 1} langkah (ubah di editor RPG Maker).</div>` : ''}
-      <div class="row"><span class="k">Kecepatan</span>${field('p.moveSpeed', SPEEDS, p.moveSpeed)}</div>
-      <div class="row"><span class="k">Frekuensi</span>${field('p.moveFrequency', FREQS, p.moveFrequency)}</div>
-      <div class="row">${check('p.walkAnime', p.walkAnime, 'Animasi jalan')} ${check('p.stepAnime', p.stepAnime, 'Animasi diam')}
-        ${check('p.directionFix', p.directionFix, 'Arah tetap')} ${check('p.through', p.through, 'Tembus')}</div></div>
-    <div class="evsec"><h3>Pemicu dan prioritas</h3>
-      <div class="row"><span class="k">Prioritas</span>${field('p.priorityType', PRIORITY, p.priorityType)}</div>
-      <div class="row"><span class="k">Pemicu</span>${field('p.trigger', TRIGGER, p.trigger)}</div></div>
-    <div class="evsec"><h3>Isi page ${S.page + 1} (baca saja)</h3><div class="cmds">${commandsHtml(p.list)}</div>
-      <div class="hint">Ubah isi perintah di editor RPG Maker.</div></div>`;
+    <section class="card"><div class="row evhead"><code>EV${pad(ev.id, 3)}</code><span class="muted">di (${ev.x}, ${ev.y}) · seret di map untuk memindah</span></div>
+      ${fld('Nama', `<input type="text" data-f="e.name" data-s="1" value="${esc(ev.name)}">`)}
+      ${fld('Catatan', `<input type="text" data-f="e.note" data-s="1" value="${esc(ev.note)}">`)}
+      <div class="row"><button class="btn" id="evBack" title="Kembali ke daftar semua event">← Daftar</button><span class="grow"></span><button class="btn" id="evCopy" title="Ctrl+C">Salin</button><button class="btn danger" id="evDel" title="Delete">Hapus</button></div></section>
+    <section class="card"><h3>Page</h3>
+      <div class="pages">${ev.pages.map((_, i) => `<button data-pg="${i}" class="${i === S.page ? 'on' : ''}" aria-pressed="${i === S.page}">${i + 1}</button>`).join('')}
+        <span class="grow"></span><button id="pgNew" title="Page baru">+ Page</button><button id="pgDup">Gandakan</button><button id="pgDel"${ev.pages.length > 1 ? '' : ' disabled'}>Hapus</button></div>
+      ${sec('cond', 'Kondisi', pageConditions(p), `
+        <div class="row">${check('p.conditions.switch1Valid', c.switch1Valid, 'Switch')} ${field('p.conditions.switch1Id', dbList(db.switches), c.switch1Id)}</div>
+        <div class="row">${check('p.conditions.switch2Valid', c.switch2Valid, 'Switch')} ${field('p.conditions.switch2Id', dbList(db.switches), c.switch2Id)}</div>
+        <div class="row">${check('p.conditions.variableValid', c.variableValid, 'Variable')} ${field('p.conditions.variableId', dbList(db.variables), c.variableId)}</div>
+        <div class="row"><span class="muted">nilai ≥</span><input type="number" data-f="p.conditions.variableValue" value="${c.variableValue}" style="width:90px"></div>
+        <div class="row">${check('p.conditions.selfSwitchValid', c.selfSwitchValid, 'Self switch')} ${field('p.conditions.selfSwitchCh', SELF, c.selfSwitchCh, true)}</div>
+        <div class="row">${check('p.conditions.itemValid', c.itemValid, 'Punya item')} ${field('p.conditions.itemId', dbList(db.items), c.itemId)}</div>
+        <div class="row">${check('p.conditions.actorValid', c.actorValid, 'Ada aktor')} ${field('p.conditions.actorId', dbList(db.actors), c.actorId)}</div>`)}
+      ${sec('img', 'Gambar', imageLabel(p.image), `
+        <div class="row"><canvas class="prev" id="evPrev" width="48" height="48"></canvas>
+          <div class="field"><button id="evImg">Pilih gambar…</button>${p.image.characterName ? fld('Arah', field('p.image.direction', DIRS, p.image.direction)) : ''}</div></div>`)}
+      ${sec('trig', 'Pemicu & prioritas', lbl(TRIGGER, p.trigger), fld('Pemicu', field('p.trigger', TRIGGER, p.trigger)) + fld('Prioritas', field('p.priorityType', PRIORITY, p.priorityType)))}
+      ${sec('move', 'Gerak', lbl(MOVES, p.moveType), fld('Jenis', field('p.moveType', MOVES, p.moveType)) +
+        (p.moveType === 3 ? `<p class="help">Rute kustom: ${p.moveRoute.list.length - 1} langkah (ubah di editor RPG Maker).</p>` : '') +
+        fld('Kecepatan', field('p.moveSpeed', SPEEDS, p.moveSpeed)) + fld('Frekuensi', field('p.moveFrequency', FREQS, p.moveFrequency)) +
+        `<div class="row">${check('p.walkAnime', p.walkAnime, 'Animasi jalan')} ${check('p.stepAnime', p.stepAnime, 'Animasi diam')}</div>
+         <div class="row">${check('p.directionFix', p.directionFix, 'Arah tetap')} ${check('p.through', p.through, 'Tembus')}</div>`)}
+      ${sec('cmds', 'Perintah', 'lihat saja', `<div class="cmds">${commandsHtml(p.list)}</div><p class="help">Isi perintah tetap diedit di RPG Maker; Nova Tools menyimpannya apa adanya.</p>`)}
+    </section>`;
+  box.querySelectorAll('details.sec').forEach(d => d.ontoggle = () => { d.open ? S.evOpen.add(d.dataset.sec) : S.evOpen.delete(d.dataset.sec); });
   box.querySelectorAll('[data-f]').forEach(el => el.onchange = () => {
     const keys = el.dataset.f.split('.'), root = keys.shift(), last = keys.pop();
     const v = el.type === 'checkbox' ? el.checked : el.dataset.s ? el.value : (+el.value || 0);
@@ -1148,6 +1585,7 @@ function renderEventPanel() {
   $('pgNew').onclick = () => editEvents(() => { const e = selEvent(); e.pages.push(newPage()); S.page = e.pages.length - 1; });
   $('pgDup').onclick = () => editEvents(() => { const e = selEvent(); e.pages.splice(S.page + 1, 0, JSON.parse(JSON.stringify(e.pages[S.page]))); S.page++; });
   $('pgDel').onclick = () => editEvents(() => { selEvent().pages.splice(S.page, 1); S.page = Math.max(0, S.page - 1); });
+  $('evBack').onclick = () => { S.sel = null; renderOverlay(); renderEventPanel(); };
   $('evCopy').onclick = copyEvent; $('evDel').onclick = deleteEvent;
   $('evImg').onclick = () => openImagePicker(p.image, im => { closeModal(); editEvents(() => { selEvent().pages[S.page].image = im; }); });
   drawEvPreview();
@@ -1367,18 +1805,12 @@ function textCmds(text) {
   return out;
 }
 
+// New event: the kinds on the left, the chosen kind's form on the right, in one dialog.
+const TEMPLATES = [['npc', '☺', 'NPC bicara', 'Bicara saat diajak ngobrol'], ['door', '⇥', 'Pintu / pindah map', 'Pintu, atau titik pindah yang diinjak'],
+                   ['chest', '▣', 'Peti harta', 'Item, senjata, armor atau gold, sekali'], ['blank', '○', 'Event kosong', 'Atur sendiri di panel']];
 function openNewEvent(x, y) {
   S.sel = { x, y };
-  openModal(`<h2>Event baru di (${x}, ${y})</h2>
-    <div class="body tpls">
-      <button data-tpl="blank"><b>Kosong</b><span>Event biasa tanpa isi; atur sendiri di panel.</span></button>
-      <button data-tpl="npc"><b>NPC bicara</b><span>Karakter yang bicara saat diajak ngobrol.</span></button>
-      <button data-tpl="door"><b>Pintu / pindah map</b><span>Pintu beranimasi, atau titik pindah tak terlihat yang diinjak.</span></button>
-      <button data-tpl="chest"><b>Peti harta</b><span>Memberi item, senjata, armor atau gold, sekali saja.</span></button>
-    </div>
-    <div class="foot"><button id="mCancel">Batal</button></div>`);
-  $('modalBox').querySelectorAll('[data-tpl]').forEach(b => b.onclick = () =>
-    b.dataset.tpl === 'blank' ? createEvent(x, y, '', [newPage()]) : templateForm(b.dataset.tpl, x, y));
+  templateForm(S.tplKind || 'npc', x, y);
 }
 
 function createEvent(x, y, name, pages) {
@@ -1395,8 +1827,9 @@ function templateForm(kind, x, y) {
     door: { name: 'Pintu', kind: 'door', image: charImage(hasChar('!Door1') ? '!Door1' : ''), se: 'Open1', walkIn: true,
             map: S.cur.id, tx: null, ty: null, dir: 0, fade: 0 },
     chest: { name: 'Peti', image: charImage(hasChar('!Chest') ? '!Chest' : ''), what: 'item', id: 1, amount: 1, msg: true },
+    blank: { name: '' },
   }[kind];
-  const title = { npc: 'NPC bicara', door: 'Pintu / pindah map', chest: 'Peti harta' }[kind];
+  S.tplKind = kind;
   const seOpts = [['', '(tanpa suara)']].concat(S.setup.se.map(n => [n, n]));
   const val = id => $(id) && ($(id).type === 'checkbox' ? $(id).checked : $(id).value);
   const collect = () => {
@@ -1411,7 +1844,8 @@ function templateForm(kind, x, y) {
   const imageRow = () => `<div class="row"><span class="k">Gambar</span><canvas class="prev" id="tfPrev" width="48" height="48"></canvas>
     <div>${esc(imageLabel(st.image))}<div class="row"><button id="tfImg">Pilih gambar…</button></div></div></div>`;
   const render = () => {
-    let body = `<div class="row"><span class="k">Nama</span><input type="text" id="tfName" value="${esc(st.name)}"></div>`;
+    let body = `<div class="row"><span class="k">Nama</span><input type="text" id="tfName" value="${esc(st.name)}" placeholder="${kind === 'blank' ? 'EV' + '…  (kosong = nomor otomatis)' : ''}"></div>`;
+    if (kind === 'blank') body += `<div class="row"><span class="k"></span><span class="hint">Event dengan satu page kosong. Gambar, pemicu dan kondisinya diatur di panel kanan; perintahnya di RPG Maker.</span></div>`;
     if (kind === 'npc') body += imageRow() +
       `<div class="row"><span class="k">Teks</span><textarea id="tfText" rows="7" placeholder="Halo, selamat datang di Nova!">${esc(st.text)}</textarea></div>
        <div class="row"><span class="k"></span><span class="hint">Baris kosong = jendela teks baru. Lebih dari 4 baris dipecah otomatis.</span></div>
@@ -1434,9 +1868,16 @@ function templateForm(kind, x, y) {
            Jumlah <input type="number" id="tfAmount" min="1" value="${st.amount}" style="width:90px"></div>
          <div class="row"><span class="k"></span><label><input type="checkbox" id="tfMsg"${st.msg ? ' checked' : ''}>Tampilkan pesan "Mendapatkan …!"</label></div>`;
     }
-    openModal(`<h2>${title} di (${x}, ${y})</h2><div class="body">${body}</div>
-      <div class="foot"><span class="grow" id="tfErr"></span><button id="tfBack">Kembali</button><button id="mCancel">Batal</button><button id="tfOk" class="primary">Buat event</button></div>`);
-    $('tfBack').onclick = () => openNewEvent(x, y);
+    openModal(`<h2>Event baru di (${x}, ${y})</h2><div class="body ntpl">
+      <div class="tplist" role="radiogroup" aria-label="Jenis event">${TEMPLATES.map(([k, ic, l, d]) =>
+        `<button class="mode" role="radio" aria-checked="${k === kind}" data-tpl="${k}"><span class="ic" aria-hidden="true">${ic}</span><b>${l}</b><small>${d}</small></button>`).join('')}</div>
+      <div class="tform">${body}</div></div>
+      <div class="foot"><span class="grow" id="tfErr"></span><button id="mCancel">Batal</button><button id="tfOk" class="primary">Buat event</button></div>`);
+    $('modalBox').querySelectorAll('[data-tpl]').forEach(b => b.onclick = () => {
+      if (b.dataset.tpl === kind) return;
+      templateForm(b.dataset.tpl, x, y); const f = $('modalBox').querySelector(`[data-tpl="${b.dataset.tpl}"]`); if (f) f.focus();
+    });
+    if (!$('modalBox').contains(document.activeElement)) $('tfName').focus();
     if ($('tfPrev')) drawEventImage($('tfPrev').getContext('2d'), st.image, 0, 0);
     if ($('tfImg')) $('tfImg').onclick = () => { collect(); openImagePicker(st.image, im => { st.image = im; render(); }, render); };
     if ($('tfKind')) $('tfKind').onchange = () => { collect(); render(); };
@@ -1456,7 +1897,7 @@ function templateForm(kind, x, y) {
       collect();
       const err = kind === 'door' && st.tx === null ? 'Pilih posisi tujuan di peta dulu.' : '';
       if (err) { $('tfErr').textContent = err; return; }
-      createEvent(x, y, st.name, templatePages(kind, st));
+      createEvent(x, y, st.name, kind === 'blank' ? [newPage()] : templatePages(kind, st));
     };
   };
   render();
@@ -1519,11 +1960,16 @@ async function drawMapPreview(id, cv) {
 // ---------------------------------------------------------------- tools, maps, saving
 function setTool(t) {
   S.tool = t;
-  $('tools').innerHTML = TOOLS.map(([k, label, key]) => `<button data-t="${k}" class="${S.tool === k ? 'on' : ''}" title="${key}">${label}</button>`).join(' ');
-  $('tools').querySelectorAll('button').forEach(b => b.onclick = () => setTool(b.dataset.t));
-  document.body.classList.toggle('evmode', t === 'event');
-  document.body.classList.toggle('passmode', t === 'pass');
-  renderPassBar();
+  const tool = ([k, label, key]) => `<button class="tool" data-t="${k}" aria-pressed="${S.tool === k}" aria-keyshortcuts="${key}" title="${label} (${key})">` +
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">${TOOL_ICON[k]}</svg><span>${label}</span><kbd aria-hidden="true">${key}</kbd></button>`;
+  $('tools').innerHTML = '<h2>Gambar</h2>' + TOOLS.slice(0, 6).map(tool).join('') + '<hr><h2>Data</h2>' + TOOLS.slice(6).map(tool).join('');
+  $('tools').querySelectorAll('.tool').forEach(b => b.onclick = () => setTool(b.dataset.t));
+  document.body.dataset.tool = t;
+  const label = TOOLS.find(x => x[0] === t)[1];
+  $('inspTitle').textContent = label; $('stripRLbl').textContent = label; $('stripR').setAttribute('aria-label', 'Buka panel kanan: ' + label);
+  if (TOOL_HELP[t]) $('toolHelp').textContent = TOOL_HELP[t];
+  $('palHint').textContent = t === 'pass' ? 'Klik tile = ubah passage-nya · geser = beberapa tile' : t === 'event' ? 'Palet tidak dipakai di alat Event' : 'Klik tile = kuas · geser = beberapa tile';
+  renderPassBar(); updateLegend();
   if (S.cur) { renderOverlay(); renderEventPanel(); renderPalette(); }
 }
 
@@ -1536,8 +1982,8 @@ function renderMapList() {
   const walk = (pid, depth) => (byParent[pid] || []).forEach(m => {
     const kids = byParent[m.id], open = q || S.open.has(m.id);
     if (!q || m.name.toLowerCase().includes(q))
-      out.push(`<div class="mi ${S.cur && S.cur.id === m.id ? 'on' : ''}" data-id="${m.id}" style="padding-left:${6 + depth * 14}px">` +
-               `<span class="tw" data-tw="${m.id}">${kids ? (open ? '▾' : '▸') : ''}</span>${m.name} <small>${m.width}×${m.height}</small></div>`);
+      out.push(`<div class="mi ${S.cur && S.cur.id === m.id ? 'on' : ''}" data-id="${m.id}" style="padding-left:${6 + depth * 14}px" title="Klik: buka · Ctrl/⌘+klik: buka di tab belakang">` +
+               `<span class="tw" data-tw="${m.id}">${kids ? (open ? '▾' : '▸') : ''}</span>${esc(m.name)}${tabOf(m.id) ? '<i class="open" title="Terbuka di tab"></i>' : ''} <small>${m.width}×${m.height}</small></div>`);
     if (kids && open) walk(m.id, depth + 1);
   });
   walk(0, 0);
@@ -1545,39 +1991,122 @@ function renderMapList() {
   $('mapList').querySelectorAll('.mi').forEach(el => el.onclick = e => {
     const tw = e.target.dataset.tw;
     if (tw) { const id = +tw; S.open.has(id) ? S.open.delete(id) : S.open.add(id); renderMapList(); return; }
-    openMap(+el.dataset.id);
+    openMap(+el.dataset.id, e.ctrlKey || e.metaKey);
   });
 }
 
-async function openMap(id) {
-  if (S.dirty && !confirm('Perubahan di map ini belum disimpan. Buang dan buka map lain?')) return;
-  status('Memuat map…');
-  if (S.flagEdits.size) S.setup.ext = (await (await fetch('/api/setup')).json()).ext;    // drop unsaved passage edits
-  S.flagEdits.clear(); S.mapDirty = false;
-  const res = await (await fetch('/api/map?id=' + id)).json();
-  S.cur = { id, map: res.map, mtime: res.mtime, tileset: res.tileset };
-  S.undo = []; S.redo = []; S.touched = new Set(); S.touchedAuto = new Set(); S.touchedGround = new Set(); S.palSel = null;
-  S.sel = null; S.page = 0; S.evDrag = null;
-  const names = res.tileset.tilesetNames.concat(
-    [...new Set(res.map.data.filter(isExt).map(i => (extInfo(i).sheet || {}).name))]);
-  await loadAll(names);
-  const w = res.map.width * T, h = res.map.height * T;
+// ---- map tabs: several maps open at once; each tab keeps its own map, undo, selection and scroll.
+// Passage edits belong to tilesets, so they stay pending across tabs and are saved with the next Simpan.
+S.tabs = [];
+const tabOf = id => S.tabs.find(t => t.id === id);
+const saveTabs = () => { try { localStorage.setItem('novaTabs', JSON.stringify({ ids: S.tabs.map(t => t.id), active: S.cur ? S.cur.id : null })); } catch (e) { /* not kept */ } };
+const tabDirty = t => S.cur && S.cur.id === t.id ? S.mapDirty : !!(t.state && t.state.mapDirty);
+function renderMapTabs() {
+  const box = $('mapTabs');
+  box.innerHTML = S.tabs.map(t => { const on = S.cur && S.cur.id === t.id, dirty = tabDirty(t), n = mapName(t.id);
+    return `<div class="mtab${on ? ' on' : ''}" data-tab="${t.id}"><button role="tab" class="tname" aria-selected="${!!on}" title="${esc(n)}${dirty ? ' · belum disimpan' : ''}">` +
+      `${esc(n.replace(/^Nova - /, ''))}${dirty ? '<span class="star" aria-label="belum disimpan"> *</span>' : ''}</button>` +
+      `<button class="tx" data-close-tab="${t.id}" aria-label="Tutup ${esc(n)}" title="Tutup (klik tengah juga bisa)">×</button></div>`; }).join('') +
+    `<button class="tnew" id="tabNew" aria-label="Buka map lain" title="Buka map lain (Ctrl+P)">+</button>`;
+  box.querySelectorAll('.mtab').forEach(el => {
+    el.querySelector('.tname').onclick = () => activate(+el.dataset.tab);
+    el.onauxclick = e => { if (e.button === 1) { e.preventDefault(); closeTab(+el.dataset.tab); } };
+    el.onmousedown = e => { if (e.button === 1) e.preventDefault(); };          // no autoscroll on middle click
+  });
+  box.querySelectorAll('[data-close-tab]').forEach(b => b.onclick = () => closeTab(+b.dataset.closeTab));
+  $('tabNew').onclick = () => setSide('maps');
+  const on = box.querySelector('.mtab.on'); if (on) on.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+async function openMap(id, background) {
+  if (!tabOf(id)) { S.tabs.push({ id, state: null }); saveTabs(); }
+  if (background && S.cur) { renderMapTabs(); renderMapList(); status(`${mapName(id)} dibuka di tab baru.`); return; }
+  await activate(id);
+}
+function stashTab() {
+  const t = S.cur && tabOf(S.cur.id); if (!t) return;
+  t.state = { cur: S.cur, undo: S.undo, redo: S.redo, mapDirty: S.mapDirty, sel: S.sel, page: S.page,
+              scroll: [$('viewport').scrollLeft, $('viewport').scrollTop] };
+}
+// Pending passage edits drawn into a freshly loaded tileset (another tab may share its sheets).
+function applyFlagEdits(ts) {
+  const merge = (old, v) => ((old || 0) & ~FLAG_MASK) | (v & FLAG_MASK);
+  S.flagEdits.forEach(e => {
+    if (e.kind !== undefined) { if (e.tileset === ts.id) for (let k = 0; k < 48; k++) ts.flags[A1 + e.kind * 48 + k] = merge(ts.flags[A1 + e.kind * 48 + k], e.v); return; }
+    ts.tilesetNames.forEach((name, s) => { if (s >= 4 && name === e.sheet && e.n < (s === 4 ? 128 : 256)) ts.flags[firstIdOf(s) + e.n] = merge(ts.flags[firstIdOf(s) + e.n], e.v); });
+  });
+}
+async function activate(id) {
+  if (S.cur && S.cur.id === id) { setSide('tiles'); return; }
+  const token = S.actToken = (S.actToken || 0) + 1, t = tabOf(id);
+  if (!t) return;
+  if (!t.state) {
+    status('Memuat map…');
+    const r = await fetch('/api/map?id=' + id);
+    if (!r.ok) { status(`Map ${id} tidak bisa dibuka.`, 'err'); S.tabs = S.tabs.filter(x => x !== t); saveTabs(); renderMapTabs(); return; }
+    const res = await r.json();
+    t.state = { cur: { id, map: res.map, mtime: res.mtime, tileset: res.tileset }, undo: [], redo: [], mapDirty: false, sel: null, page: 0, scroll: null };
+    applyFlagEdits(res.tileset);
+  }
+  const st = t.state, cur = st.cur;
+  await loadAll(cur.tileset.tilesetNames.concat([...new Set(cur.map.data.filter(isExt).map(i => (extInfo(i).sheet || {}).name))]));
+  if (token !== S.actToken) return;                 // another tab was chosen meanwhile
+  stashTab();
+  S.cur = cur; S.undo = st.undo; S.redo = st.redo; S.mapDirty = st.mapDirty; S.sel = st.sel; S.page = st.page;
+  S.touched = new Set(); S.touchedAuto = new Set(); S.touchedGround = new Set(); S.palSel = null; S.evDrag = null; S.stroke = null;
+  const w = cur.map.width * T, h = cur.map.height * T;
   ['mapCanvas', 'overlay'].forEach(c => { $(c).width = w; $(c).height = h; });
-  $('stage').style.width = w + 'px'; $('stage').style.height = h + 'px';
+  $('stage').style.width = w + 'px'; $('stage').style.height = h + 'px'; $('stage').style.display = '';
   S.mapCtx = $('mapCanvas').getContext('2d'); S.overCtx = $('overlay').getContext('2d');
   $('emptyMsg').style.display = 'none';
   applyZoom();
   renderAll();
-  if (!palSheets().some(([k]) => k === S.tab)) S.tab = 'A';
+  loadPinned(); closeSheetPop();
+  if (!palSheets().some(([k]) => k === S.tab) || (S.tab === 'X' && !S.pinned.some(p => p.slot === S.extSheet))) S.tab = 'A';
   renderTabs(); renderPalette(); renderMapList(); renderEventPanel();
-  const info = S.maps.find(m => m.id === id);
-  $('mapTitle').textContent = `${info.name}  ·  ${res.map.width}×${res.map.height}  ·  tileset ${res.tileset.name}`;
-  markDirty(false);
-  status('Map dimuat.');
+  const info = S.maps.find(m => m.id === id) || { name: 'Map ' + id, parentId: 0 };
+  const parent = S.maps.find(m => m.id === info.parentId);
+  $('mapTitle').innerHTML = `<span>${parent ? `<span class="muted">${esc(parent.name)} ›</span> ` : ''}<b>${esc(info.name)}</b></span> ▾`;
+  $('mapMeta').textContent = `${cur.map.width}×${cur.map.height} · tileset ${cur.tileset.name}`;
+  document.title = `${info.name} - Nova Tools`;
+  setSide('tiles'); updateLegend();
+  markDirty(S.mapDirty || S.flagEdits.size > 0);
+  renderMapTabs(); saveTabs();
+  requestAnimationFrame(() => { if (st.scroll) [$('viewport').scrollLeft, $('viewport').scrollTop] = st.scroll; });
+}
+function showNoMap() {
+  S.cur = null; S.undo = []; S.redo = []; S.mapDirty = false; S.sel = null;
+  $('stage').style.display = 'none'; $('emptyMsg').style.display = '';
+  $('mapTitle').innerHTML = '<span>Pilih map</span> ▾'; $('mapMeta').textContent = ''; document.title = 'Nova Tools - Map Editor';
+  markDirty(false); renderMapTabs(); renderMapList(); saveTabs(); updateLegend();
+  $('evBox').innerHTML = ''; $('palTabs').innerHTML = ''; $('pal').width = 0; $('pal').height = 0;
+}
+function closeTab(id, force) {
+  const t = tabOf(id); if (!t) return;
+  if (tabDirty(t) && !force) return askCloseTab(id);
+  const i = S.tabs.indexOf(t), active = S.cur && S.cur.id === id;
+  S.tabs.splice(i, 1);
+  if (active) {
+    const next = S.tabs[i] || S.tabs[i - 1];
+    S.cur = null;                                    // nothing to stash: this tab is gone
+    if (next) activate(next.id); else showNoMap();
+  } else { renderMapTabs(); renderMapList(); }
+  saveTabs();
+}
+// The one confirm left: closing a tab would throw its unsaved changes away for good.
+function askCloseTab(id) {
+  const n = mapName(id);
+  openModal(`<h2>${esc(n)} belum disimpan</h2><div class="body"><p>Map ini punya perubahan yang belum disimpan. Simpan dulu sebelum tabnya ditutup?</p></div>
+    <div class="foot"><span class="grow"></span><button id="mCancel">Batal</button><button id="ctDrop">Buang perubahan</button><button id="ctSave" class="primary">Simpan & tutup</button></div>`);
+  $('ctDrop').onclick = () => { closeModal(); closeTab(id, true); status(`${n} ditutup tanpa menyimpan.`); };
+  $('ctSave').onclick = async () => { closeModal(); await activate(id); await save(false); if (!S.mapDirty) closeTab(id, true); };
+  $('ctSave').focus();
 }
 
 function applyZoom() {
-  S.zoom = +$('zoom').value;
+  S.zoom = ZOOMS[S.zoomI];
+  $('zLbl').textContent = Math.round(S.zoom * 100) + '%'; $('vbMiniLbl').textContent = 'Tampilan · ' + $('zLbl').textContent;
+  $('zOut').disabled = S.zoomI === 0; $('zIn').disabled = S.zoomI === ZOOMS.length - 1;
+  try { localStorage.setItem('novaZoom', S.zoom); } catch (e) { /* not kept */ }
   $('stage').style.transform = `scale(${S.zoom})`;
   $('stage').style.width = (S.cur ? W() * T : 0) + 'px';
   $('viewport').style.setProperty('--z', S.zoom);
@@ -1609,47 +2138,132 @@ async function save(force) {
   }
   if (!res.ok) { status(out.message || out.error, 'err'); alert(out.message || out.error); return; }
   S.cur.mtime = out.mtime;
-  S.mapDirty = false; markDirty(false);
+  S.mapDirty = false; markDirty(false); renderMapTabs();
   status('Tersimpan ke data/Map' + String(S.cur.id).padStart(3, '0') + '.json (salinan lama di _backups/map_editor).', 'ok');
 }
 
-function status(t, cls) { $('status').textContent = t; $('status').className = cls || ''; }
+// Messages appear as toasts; the plain progress notes ("Memuat…") are left out.
+function status(t, cls) {
+  if (!cls && (/…$/.test(t) || t === 'Map dimuat.' || t === 'Pilih map di kiri.')) return;
+  toast(t, cls);
+}
+function toast(text, cls, action, fn) {
+  const t = document.createElement('div'); t.className = 'toast' + (cls ? ' ' + cls : ''); t.setAttribute('role', cls === 'err' ? 'alert' : 'status');
+  t.innerHTML = `<span>${esc(text)}</span>` + (action ? `<button class="btn">${esc(action)}</button>` : '') + `<button class="btn ghost" aria-label="Tutup pesan">✕</button>`;
+  const close = () => { t.classList.add('out'); setTimeout(() => t.remove(), 200); };
+  if (action) t.children[1].onclick = () => { fn(); close(); };
+  t.lastElementChild.onclick = close;
+  $('toasts').appendChild(t); setTimeout(close, cls === 'err' ? 10000 : action ? 8000 : 5000);
+}
 
 $('save').onclick = () => save(false);
 $('undo').onclick = undo; $('redo').onclick = redo;
 $('mapFilter').oninput = renderMapList;
-$('zoom').onchange = applyZoom;
-['showGrid', 'showPass', 'showEvents', 'showRegions'].forEach(id => $(id).onchange = () => { if (S.cur) { renderOverlay(); renderPalette(); } });
-$('palZoom').onchange = () => {
-  S.palZoom = +$('palZoom').value;
-  try { localStorage.setItem('novaPalZoom', S.palZoom); } catch (e) { /* not kept */ }
-  renderPalette();
+$('zIn').onclick = () => { S.zoomI = Math.min(ZOOMS.length - 1, S.zoomI + 1); applyZoom(); };
+$('zOut').onclick = () => { S.zoomI = Math.max(0, S.zoomI - 1); applyZoom(); };
+['showGrid', 'showPass', 'showEvents', 'showRegions'].forEach(id => $(id).onchange = () => { updateLegend(); if (S.cur) { renderOverlay(); renderPalette(); } });
+$('showOk').onchange = () => {
+  S.showOk = $('showOk').checked;
+  $('okLbl').textContent = S.showOk ? 'Bisa dilewati' : 'Bisa dilewati (tanpa tanda) · tandai juga ○';
+  try { localStorage.setItem('novaShowOk', S.showOk ? '1' : '0'); } catch (e) { /* not kept */ }
+  if (S.cur) renderOverlay();
 };
-// Splitters: panel width and map-list height, kept between sessions.
-function sideSizes(w, h) {
-  const aside = document.querySelector('aside');
-  if (w !== undefined) aside.style.width = (w ? Math.max(240, Math.min(w, innerWidth - 320)) + 'px' : '');
-  if (h !== undefined) $('mapsBox').style.height = (h ? Math.max(80, Math.min(h, aside.clientHeight - 160)) + 'px' : '');
-  if (S.cur && palColsFit() !== S.palCols) renderPalette();
+// Palette size 25-100 % in steps of 25; 16 columns when the panel has room for them.
+function showPalZoom() {
+  const v = Math.round(S.palZoom * 100);
+  $('palZoom').value = v; $('palZoomLbl').textContent = v + '%'; $('palZoom').setAttribute('aria-valuetext', v + '%');
 }
-window.addEventListener('resize', () => { if (S.cur && palColsFit() !== S.palCols) renderPalette(); });
-function splitter(el, cls, key, sizeOf, apply) {
-  el.onmousedown = e => {
-    e.preventDefault();
-    const start = cls === 'col' ? e.clientX : e.clientY, size = sizeOf();
-    el.classList.add('drag'); document.body.classList.add('resizing', cls);
-    const move = ev => apply(size + (cls === 'col' ? ev.clientX : ev.clientY) - start);
-    const up = () => {
-      window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up);
-      el.classList.remove('drag'); document.body.classList.remove('resizing', cls);
-      try { localStorage.setItem(key, Math.round(sizeOf())); } catch (err) { /* not kept */ }
-    };
-    window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+$('palZoom').oninput = () => {
+  S.palZoom = +$('palZoom').value / 100; showPalZoom();
+  try { localStorage.setItem('novaPalZoom', S.palZoom); } catch (e) { /* not kept */ }
+  if (S.cur) renderPalette();
+};
+
+// Left panel: the palette or the map list.
+function setSide(k) {
+  document.querySelectorAll('[data-side]').forEach(b => b.setAttribute('aria-selected', b.dataset.side === k));
+  $('tilesPane').hidden = k !== 'tiles'; $('mapsPane').hidden = k !== 'maps';
+  if (k === 'maps') { if ($('app').classList.contains('noside')) togglePanel('side'); $('mapFilter').focus(); }
+  else if (S.cur && palColsFit() !== S.palCols) renderPalette();
+}
+document.querySelectorAll('[data-side]').forEach(b => b.onclick = () => setSide(b.dataset.side));
+$('mapTitle').onclick = () => setSide('maps');
+
+// Side panels: resizable by their splitters, folded into a thin strip with « » or [ ], sizes kept between sessions.
+const PANELS = { side: { el: 'side', split: 'splitL', strip: 'stripL', prop: '--side-cur', key: 'novaSideW', dir: 1, cls: 'noside' },
+                 insp: { el: 'insp', split: 'splitR', strip: 'stripR', prop: '--insp-cur', key: 'novaInspW', dir: -1, cls: 'noinsp' } };
+const tok = n => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(n));
+function setPanelW(p, w) {
+  const other = p === PANELS.side ? PANELS.insp : PANELS.side;
+  const otherW = $('app').classList.contains(other.cls) ? tok('--strip-w') : $(other.el).offsetWidth;
+  const room = innerWidth - tok('--rail-w') - otherW - 2 * tok('--split-w') - tok('--main-min');
+  w = Math.max(tok('--side-min'), Math.min(w, tok('--side-max'), room));
+  $('app').style.setProperty(p.prop, w + 'px');
+  afterLayout();
+  return w;
+}
+function afterLayout() { if (S.cur && palColsFit() !== S.palCols) renderPalette(); keepViewbar(); }
+function togglePanel(k) {
+  const p = PANELS[k], hide = !$('app').classList.contains(p.cls);
+  $('app').classList.toggle(p.cls, hide);
+  document.querySelector(`[data-collapse=${k}]`).setAttribute('aria-expanded', !hide);
+  if (document.activeElement && document.activeElement.closest('.strip, .collapse')) (hide ? $(p.strip) : document.querySelector(`[data-collapse=${k}]`)).focus();
+  try { localStorage.setItem(p.key + ':hide', hide ? '1' : '0'); } catch (e) { /* not kept */ }
+  afterLayout();
+}
+Object.entries(PANELS).forEach(([k, p]) => {
+  const sp = $(p.split), keep = () => { try { localStorage.setItem(p.key, $(p.el).offsetWidth); } catch (e) { /* not kept */ } };
+  sp.onpointerdown = e => {
+    e.preventDefault(); sp.setPointerCapture(e.pointerId);
+    const x0 = e.clientX, w0 = $(p.el).offsetWidth; sp.classList.add('drag'); document.body.classList.add('resizing');
+    sp.onpointermove = ev => setPanelW(p, w0 + p.dir * (ev.clientX - x0));
+    sp.onpointerup = () => { sp.onpointermove = sp.onpointerup = null; sp.classList.remove('drag'); document.body.classList.remove('resizing'); keep(); };
   };
-  el.ondblclick = () => { apply(0); try { localStorage.removeItem(key); } catch (err) { /* nothing kept */ } };
+  sp.onkeydown = e => {
+    const d = e.key === 'ArrowLeft' ? -16 : e.key === 'ArrowRight' ? 16 : 0;
+    if (d) { e.preventDefault(); setPanelW(p, $(p.el).offsetWidth + p.dir * d); keep(); }
+  };
+  sp.ondblclick = () => { $('app').style.removeProperty(p.prop); try { localStorage.removeItem(p.key); } catch (e) { /* nothing kept */ } afterLayout(); };
+  $(p.strip).onclick = () => togglePanel(k);
+  document.querySelector(`[data-collapse=${k}]`).onclick = () => togglePanel(k);
+});
+window.addEventListener('resize', afterLayout);
+
+// The view bar can be dragged anywhere over the map by its grip (like VS Code's debug toolbar) and folds into a pill.
+function placeViewbar(x, y, save) {
+  const vb = $('viewbar'), m = document.querySelector('main');
+  x = Math.max(0, Math.min(x, m.clientWidth - vb.offsetWidth)); y = Math.max($('mapTabs').offsetHeight, Math.min(y, m.clientHeight - vb.offsetHeight));
+  Object.assign(vb.style, { left: x + 'px', top: y + 'px', right: 'auto' });
+  S.vb = { x, y };
+  if (save) try { localStorage.setItem('novaViewbar', JSON.stringify(S.vb)); } catch (e) { /* not kept */ }
 }
-splitter($('splitSide'), 'col', 'novaSideW', () => document.querySelector('aside').offsetWidth, w => sideSizes(w));
-splitter($('splitMaps'), 'row', 'novaMapsH', () => $('mapsBox').offsetHeight, h => sideSizes(undefined, h));
+function keepViewbar() { if (S.vb) placeViewbar(S.vb.x, S.vb.y); }
+(() => {
+  const grip = $('vbGrip'), vb = $('viewbar');
+  grip.onpointerdown = e => {
+    e.preventDefault(); grip.setPointerCapture(e.pointerId); document.body.classList.add('moving');
+    const m = document.querySelector('main').getBoundingClientRect(), r = vb.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top;
+    grip.onpointermove = ev => placeViewbar(ev.clientX - m.left - dx, ev.clientY - m.top - dy);
+    grip.onpointerup = () => { grip.onpointermove = grip.onpointerup = null; document.body.classList.remove('moving'); if (S.vb) placeViewbar(S.vb.x, S.vb.y, true); };
+  };
+  grip.onkeydown = e => {
+    const d = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const m = document.querySelector('main').getBoundingClientRect(), r = vb.getBoundingClientRect();
+    placeViewbar(r.left - m.left + d[0], r.top - m.top + d[1], true);
+  };
+  grip.ondblclick = () => { Object.assign(vb.style, { left: '', top: '', right: '' }); S.vb = null; try { localStorage.removeItem('novaViewbar'); } catch (e) { /* nothing kept */ } };
+})();
+function setVbMini(on, save) {
+  const hadFocus = document.activeElement && document.activeElement.closest('#vbHide, #vbMini');
+  $('viewbar').classList.toggle('mini', on);
+  if (hadFocus) $(on ? 'vbMini' : 'vbHide').focus();
+  if (save) try { localStorage.setItem('novaViewbarMini', on ? '1' : '0'); } catch (e) { /* not kept */ }
+  keepViewbar();
+}
+$('vbHide').onclick = () => setVbMini(true, true);
+$('vbMini').onclick = () => setVbMini(false, true);
 
 $('overlay').addEventListener('dblclick', e => {
   if (!S.cur || S.tool !== 'event') return;
@@ -1659,10 +2273,10 @@ $('overlay').addEventListener('dblclick', e => {
 $('modal').addEventListener('mousedown', e => { if (e.target === $('modal') && S.modalCancel) S.modalCancel(); });
 window.addEventListener('keydown', e => {
   if ($('modal').classList.contains('on')) { if (e.key === 'Escape' && S.modalCancel) S.modalCancel(); return; }
-  const tag = e.target.tagName;
-  if ((tag === 'INPUT' && e.target.type !== 'checkbox') || tag === 'TEXTAREA' || tag === 'SELECT') return;
-  const ctrl = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
+  const tag = e.target.tagName, ctrl = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
   if (ctrl && k === 's') { e.preventDefault(); save(false); return; }
+  if (ctrl && k === 'p') { e.preventDefault(); setSide('maps'); return; }
+  if ((tag === 'INPUT' && !['checkbox', 'radio'].includes(e.target.type)) || tag === 'TEXTAREA' || tag === 'SELECT') return;
   if (ctrl && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
   if (ctrl && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); return; }
   if (S.cur && S.tool === 'event') {
@@ -1672,20 +2286,38 @@ window.addEventListener('keydown', e => {
     if (k === 'enter' && S.sel && !selEvent()) { e.preventDefault(); openNewEvent(S.sel.x, S.sel.y); return; }
   }
   if (ctrl || e.altKey) return;
+  if (e.key === '[') { togglePanel('side'); return; }
+  if (e.key === ']') { togglePanel('insp'); return; }
+  if (k === 'h') { setVbMini(!$('viewbar').classList.contains('mini'), true); return; }
   const t = TOOLS.find(x => x[2].toLowerCase() === k);
   if (t) setTool(t[0]);
 });
-window.addEventListener('beforeunload', e => { if (S.dirty) { e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('beforeunload', e => { if (S.dirty || S.flagEdits.size || S.tabs.some(tabDirty)) { e.preventDefault(); e.returnValue = ''; } });
 
 (async function init() {
   setTool('pen');
   try { const z = +localStorage.getItem('novaPalZoom'); if (z) S.palZoom = z; } catch (e) { /* default size */ }
-  $('palZoom').value = String(S.palZoom);
-  try { sideSizes(+localStorage.getItem('novaSideW') || 0, +localStorage.getItem('novaMapsH') || 0); } catch (e) { /* default sizes */ }
+  if (![0.25, 0.5, 0.75, 1].includes(S.palZoom)) S.palZoom = 0.75;
+  showPalZoom();
+  try {
+    Object.values(PANELS).forEach(p => {
+      const w = +localStorage.getItem(p.key); if (w) setPanelW(p, w);
+      if (localStorage.getItem(p.key + ':hide') === '1') { $('app').classList.add(p.cls); document.querySelector(`[data-collapse=${p === PANELS.side ? 'side' : 'insp'}]`).setAttribute('aria-expanded', 'false'); }
+    });
+    const z = ZOOMS.indexOf(+localStorage.getItem('novaZoom')); if (z >= 0) S.zoomI = z;
+    S.showOk = localStorage.getItem('novaShowOk') === '1'; $('showOk').checked = S.showOk; if (S.showOk) $('okLbl').textContent = 'Bisa dilewati';
+    const vb = JSON.parse(localStorage.getItem('novaViewbar')); if (vb) requestAnimationFrame(() => placeViewbar(vb.x, vb.y));
+    if (localStorage.getItem('novaViewbarMini') === '1') setVbMini(true);
+  } catch (e) { /* default layout */ }
+  applyZoom();
   S.setup = await (await fetch('/api/setup')).json();
   const list = await (await fetch('/api/maps')).json();
   S.maps = list.maps;
-  renderMapList();
+  renderMapList(); renderMapTabs();
+  let kept = null; try { kept = JSON.parse(localStorage.getItem('novaTabs')); } catch (e) { /* first visit */ }
+  if (kept && Array.isArray(kept.ids)) S.tabs = kept.ids.filter(id => S.maps.some(m => m.id === id)).map(id => ({ id, state: null }));
+  const first = kept && tabOf(kept.active) ? kept.active : S.tabs.length ? S.tabs[0].id : null;
+  if (first) await activate(first); else { renderMapTabs(); setSide('maps'); }
   status(list.editorOpen ? 'Catatan: editor RPG Maker sedang terbuka - lihat peringatan saat menyimpan.' : 'Pilih map di kiri.');
 })();
 </script>

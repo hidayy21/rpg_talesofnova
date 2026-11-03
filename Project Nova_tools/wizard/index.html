@@ -2,131 +2,478 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nova Tools - Tileset Wizard</title>
 <style>
+  /* Nova Tools tokens: the existing navy + cyan look, collected in one place (every visual value lives here). */
   :root {
-    --bg: #07101f; --panel: #0e1c33; --panel2: #13284a; --line: #2b4a72; --text: #e6f2ff; --dim: #93acc8;
-    --accent: #62d6ff; --warn: #ffb35c; --bad: #ff7088; --good: #6ff0a0;
+    --bg: #07101f; --panel: #0e1c33; --panel-2: #13284a; --panel-3: #1b3560; --canvas-bg: #050a14;
+    --line: #2b4a72; --line-strong: #5a80ad;          /* control borders: 3.9:1 on --panel */
+    --ink: #e6f2ff; --ink-mute: #a3bad3; --ink-faint: #7f97b3;
+    --accent: #62d6ff; --accent-soft: rgba(98, 214, 255, 0.16); --on-accent: #04192a;
+    --action: #1677b8; --action-hover: #1b8ad4; --on-action: #ffffff;
+    --ok: #6ff0a0; --warn: #ffb35c; --bad: #ff7088; --star: #ffe08a;
+    --bad-tint: rgba(255, 112, 136, 0.30); --warn-tint: rgba(255, 179, 92, 0.85);
+    --ok-soft: rgba(111, 240, 160, 0.14); --warn-soft: rgba(255, 179, 92, 0.16);
+    --grid: rgba(255, 255, 255, 0.10); --shade: rgba(0, 0, 0, 0.55); --scrim: rgba(2, 6, 14, 0.72);
+    --check-a: #1a2a40; --check-b: #142236;
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px; --s8: 32px; --s12: 48px;
+    --r-sm: 6px; --r: 10px; --r-pill: 999px; --hair: 1px; --ring: 2px;
+    --text-label: 12px; --text-body: 14px; --text-title: 19px; --leading: 1.5;
+    --w-normal: 400; --w-medium: 500; --w-semi: 600; --w-bold: 700;
+    --font: "Segoe UI", system-ui, -apple-system, sans-serif; --mono: ui-monospace, Menlo, Consolas, monospace;
+    --control-h: 32px; --touch-min: 24px; --header-h: 52px; --rail-w: 76px; --side-w: 300px; --insp-w: 300px; --split-w: 6px; --tabs-h: 38px; --strip-w: 36px; --side-min: 240px; --side-max: 560px; --main-min: 360px;
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    --dur: 140ms; --ease: cubic-bezier(0.2, 0, 0.2, 1);
   }
+  @media (pointer: coarse) { :root { --control-h: 44px; --touch-min: 44px; } }
+  @media (prefers-reduced-motion: reduce) { :root { --dur: 0ms; } }
+
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
-  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px 16px;
-           background: linear-gradient(90deg, rgba(98,214,255,.18), rgba(98,214,255,0) 60%), var(--panel); border-bottom: 1px solid var(--line); }
-  header h1 { font-size: 18px; margin: 0 12px 0 0; letter-spacing: .5px; }
-  label { color: var(--dim); font-size: 12px; display: flex; flex-direction: column; gap: 3px; }
-  input, select { background: #08162b; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
-  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-  button { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; font: inherit; cursor: pointer; }
-  button:hover:not(:disabled) { border-color: var(--accent); }
-  button:disabled { opacity: .4; cursor: not-allowed; }
-  button.primary { background: #1677b8; border-color: #3fa8ff; font-weight: 600; }
-  nav a { color: var(--dim); text-decoration: none; padding: 4px 10px; border-radius: 14px; border: 1px solid transparent; }
-  nav a.on { color: var(--text); background: #1677b8; border-color: var(--accent); }
-  nav a:hover { border-color: var(--accent); }
-  #status { flex: 1; min-width: 200px; color: var(--dim); }
-  #status.ok { color: var(--good); } #status.err { color: var(--bad); }
-  main { display: flex; gap: 12px; padding: 12px 16px; align-items: flex-start; }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
-  #browser { flex: 1 1 auto; min-width: 0; }
-  #slots { flex: 0 0 430px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 90px); overflow: auto; position: sticky; top: 12px; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 0 0 8px; }
-  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-  .tab { padding: 4px 10px; border-radius: 14px; font-size: 13px; }
-  .tab small { color: var(--dim); margin-left: 4px; }
-  .tab.on { background: #1677b8; border-color: var(--accent); }
-  .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
-  .tools .sep { width: 1px; height: 22px; background: var(--line); }
-  #selInfo { color: var(--dim); min-width: 220px; }
-  #sheetWrap { overflow: auto; max-height: calc(100vh - 210px); border: 1px solid var(--line); border-radius: 6px;
-               background: repeating-conic-gradient(#1a2a40 0 25%, #142236 0 50%) 0 0 / 24px 24px; }
-  canvas { display: block; image-rendering: pixelated; }
-  #sheet { cursor: crosshair; }
-  .slot { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: var(--w-normal) var(--text-body)/var(--leading) var(--font);
+         display: flex; flex-direction: column; overflow: hidden; }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: var(--ring) solid var(--accent); outline-offset: var(--ring); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* buttons */
+  .btn { min-height: var(--control-h); padding: 0 var(--s3); border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong);
+         background: var(--panel-2); cursor: pointer; display: inline-flex; align-items: center; gap: var(--s2); white-space: nowrap; }
+  .btn:hover { border-color: var(--accent); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.primary { background: var(--action); border-color: var(--action); color: var(--on-action); font-weight: var(--w-semi); }
+  .btn.primary:hover { background: var(--action-hover); }
+  /* a primary button with nothing to do stays readable, it just stops looking like the next step */
+  .btn.primary:disabled { opacity: 1; background: var(--panel-2); border-color: var(--line-strong); color: var(--ink-mute); font-weight: var(--w-medium); }
+  .btn.primary .k { font-size: var(--text-label); opacity: .8; font-weight: var(--w-normal); }
+  .btn.ghost { background: transparent; border-color: transparent; }
+  .btn.ghost:hover { border-color: var(--line-strong); }
+  .btn.danger { color: var(--bad); }
+  .btn svg, .rail svg { width: 18px; height: 18px; flex: none; }
+  kbd { font: var(--w-semi) var(--text-label)/1 var(--mono); color: var(--ink-mute); border: var(--hair) solid var(--line);
+        border-radius: var(--r-sm); padding: 2px 5px; background: var(--bg); }
+
+  /* header */
+  header { height: var(--header-h); flex: none; display: flex; align-items: center; gap: var(--s3); padding: 0 var(--s4);
+           background: var(--panel); border-bottom: var(--hair) solid var(--line); }
+  .brand { font-weight: var(--w-bold); font-size: var(--text-title); letter-spacing: .3px; }
+  .nav { display: flex; gap: var(--s1); }
+  .nav a { color: var(--ink-mute); text-decoration: none; padding: var(--s1) var(--s3); border-radius: var(--r-pill); }
+  .nav a[aria-current] { color: var(--ink); background: var(--panel-3); }
+  .crumb { display: flex; align-items: center; gap: var(--s2); min-width: 0; padding-left: var(--s3); border-left: var(--hair) solid var(--line); }
+  .crumb .btn { max-width: 340px; overflow: hidden; text-overflow: ellipsis; }
+  .crumb small { color: var(--ink-mute); white-space: nowrap; }
+  .grow { flex: 1; }
+  .savechip[hidden] { display: none; }
+  .savechip { display: inline-flex; align-items: center; gap: var(--s2); color: var(--ink-mute); white-space: nowrap; }
+  .savechip i { width: 8px; height: 8px; border-radius: var(--r-pill); background: var(--ok); }
+  .savechip.dirty { color: var(--warn); } .savechip.dirty i { background: var(--warn); }
+
+  /* body grid */
+  #app { flex: 1; min-height: 0; display: grid; --side-col: var(--side-cur, var(--side-w)); --insp-col: var(--insp-cur, var(--insp-w));
+         --split-l: var(--split-w); --split-r: var(--split-w);
+         grid-template-columns: var(--rail-w) var(--side-col) var(--split-l) minmax(0, 1fr) var(--split-r) var(--insp-col); }
+  #app > .rail { grid-column: 1; } #side { grid-column: 2; } #splitL { grid-column: 3; } #app > main { grid-column: 4; } #splitR { grid-column: 5; } #insp { grid-column: 6; }
+  #stripL { grid-column: 2; } #stripR { grid-column: 6; }
+  #app.noside { --side-col: var(--strip-w); --split-l: 0px; } #app.noside #side, #app.noside #splitL { display: none; }
+  #app.noinsp { --insp-col: var(--strip-w); --split-r: 0px; } #app.noinsp #insp, #app.noinsp #splitR { display: none; }
+  .strip { display: none; flex-direction: column; align-items: center; gap: var(--s3); padding: var(--s3) 0; border: 0; cursor: pointer;
+           background: var(--panel); color: var(--ink-mute); grid-row: 1; }
+  .strip:hover { color: var(--ink); background: var(--panel-2); }
+  #stripL { border-right: var(--hair) solid var(--line); } #stripR { border-left: var(--hair) solid var(--line); }
+  #app.noside #stripL, #app.noinsp #stripR { display: flex; }
+  .strip b { font-size: var(--text-title); line-height: 1; }
+  .strip span { writing-mode: vertical-rl; font-weight: var(--w-semi); letter-spacing: .5px; }
+  .phead { display: flex; align-items: center; gap: var(--s2); padding: var(--s2) var(--s2) var(--s2) var(--s4); border-bottom: var(--hair) solid var(--line);
+           position: sticky; top: 0; background: var(--panel); z-index: 1; }
+  .phead h2 { margin: 0; font-size: var(--text-body); font-weight: var(--w-bold); flex: 1; }
+  .collapse { min-width: var(--control-h); justify-content: center; padding: 0; font-size: var(--text-title); }
+  .splitter { background: var(--line); cursor: col-resize; border: 0; padding: 0; touch-action: none; }
+  .splitter:hover, .splitter.drag, .splitter:focus-visible { background: var(--accent); }
+  body.resizing { cursor: col-resize; user-select: none; }
+  .sidehead { position: relative; }
+  .ptab { display: inline-flex; align-items: stretch; border-radius: var(--r-sm); border: var(--hair) solid var(--line); background: var(--panel-2); }
+  .ptab.on { border-color: var(--accent); background: var(--panel-3); }
+  .sheets .ptab button { border: 0; background: transparent; min-width: 0; }
+  .sheets .ptab button[role=tab] { padding: 0 var(--s1) 0 var(--s2); color: var(--ink-mute); }
+  .sheets .ptab.on button[role=tab] { color: var(--ink); }
+  .sheets .ptab .x { padding: 0 var(--s2); color: var(--ink-faint); border-left: var(--hair) solid var(--line); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+  .sheets .ptab .x:hover { color: var(--bad); }
+  .sheets .add { border-style: dashed; }
+  .pop { position: absolute; left: var(--s3); right: var(--s3); top: 100%; z-index: 6; margin-top: calc(-1 * var(--s1)); background: var(--panel);
+         border: var(--hair) solid var(--line-strong); border-radius: var(--r); box-shadow: var(--shadow); padding: var(--s2); display: flex; flex-direction: column; gap: var(--s2); }
+  .pop[hidden] { display: none; }
+  .pop .list { max-height: 320px; overflow: auto; display: flex; flex-direction: column; }
+  .pop .list button { text-align: left; min-height: var(--control-h); border: 0; background: transparent; border-radius: var(--r-sm); padding: 0 var(--s2); cursor: pointer; display: flex; gap: var(--s2); align-items: center; }
+  .pop .list button:hover, .pop .list button:focus-visible { background: var(--panel-2); }
+  .pop .list small { margin-left: auto; color: var(--ink-faint); }
+  .rail { background: var(--panel); border-right: var(--hair) solid var(--line); display: flex; flex-direction: column;
+          gap: var(--s1); padding: var(--s2) var(--s1); overflow: auto; }
+  .rail h2 { margin: var(--s2) 0 0; font-size: var(--text-label); color: var(--ink-faint); text-align: center; font-weight: var(--w-semi); text-transform: uppercase; letter-spacing: .6px; }
+  .tool { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: var(--s2) 0; border-radius: var(--r-sm);
+          border: var(--hair) solid transparent; background: transparent; cursor: pointer; color: var(--ink-mute); min-height: var(--touch-min); }
+  .tool span { font-size: var(--text-label); }
+  .tool kbd { font-size: 10px; padding: 1px 4px; } /* optical: shortcut hint sits under the label, smaller than body text by design */
+  .tool:hover { color: var(--ink); background: var(--panel-2); }
+  .tool[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+  .tool[aria-pressed="true"] kbd { color: var(--on-accent); border-color: var(--on-accent); background: transparent; }
+  .rail hr { width: 60%; border: 0; border-top: var(--hair) solid var(--line); margin: var(--s1) auto; }
+
+  aside { min-height: 0; display: flex; flex-direction: column; background: var(--panel); }
+  #side { border-right: var(--hair) solid var(--line); }
+  #insp { border-left: var(--hair) solid var(--line); overflow: auto; }
+  .seg { display: flex; gap: 2px; padding: 2px; background: var(--bg); border-radius: var(--r-sm); border: var(--hair) solid var(--line); }
+  .seg button, .seg label { flex: 1; min-height: calc(var(--control-h) - 4px); border: 0; border-radius: var(--r-sm); background: transparent;
+         color: var(--ink-mute); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 var(--s2); white-space: nowrap; }
+  .seg [aria-selected="true"], .seg input:checked + span { color: var(--ink); background: var(--panel-3); }
+  .seg label { position: relative; padding: 0; } .seg label span { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: var(--r-sm); padding: 0 var(--s2); }
+  .seg input { position: absolute; opacity: 0; }
+  .seg input:focus-visible + span { outline: var(--ring) solid var(--accent); }
+  .sidehead { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s2); border-bottom: var(--hair) solid var(--line); }
+  .sheets { display: flex; gap: var(--s1); flex-wrap: wrap; }
+  .sheets button { min-height: var(--control-h); min-width: 40px; border-radius: var(--r-sm); border: var(--hair) solid var(--line);
+                   background: var(--panel-2); cursor: pointer; color: var(--ink-mute); padding: 0 var(--s2); }
+  .sheets button[aria-selected="true"] { color: var(--ink); border-color: var(--accent); background: var(--panel-3); }
+  .palwrap { flex: 1; overflow: auto; padding: var(--s2) var(--s3); background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 24px 24px; position: relative; }
+  #pal { display: block; cursor: pointer; image-rendering: pixelated; }
+  #palSel { position: absolute; border: var(--ring) solid var(--accent); box-shadow: 0 0 0 var(--hair) #000; pointer-events: none; display: none; }
+  #palFoot { flex-wrap: wrap; } #palInfo { flex-basis: 100%; font-size: var(--text-label); }
+  .pzoom { display: flex; align-items: center; gap: var(--s2); flex: 1 1 100%; min-width: 0; }
+  .pzoom input { flex: 1 1 0; min-width: 0; margin: 0; accent-color: var(--accent); min-height: var(--touch-min); }
+  .pzoom output { flex: none; width: 4.5ch; margin-left: calc(-1 * var(--s1)); text-align: left; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .sidefoot { padding: var(--s2) var(--s3); display: flex; align-items: center; gap: var(--s2); border-top: var(--hair) solid var(--line); color: var(--ink-mute); }
+  .search { min-height: var(--control-h); width: 100%; border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong); background: var(--bg); padding: 0 var(--s3); }
+  #maplist { flex: 1; overflow: auto; padding: var(--s2); }
+  .mi { display: flex; align-items: center; gap: var(--s2); width: 100%; min-height: var(--control-h); text-align: left; border: 0; background: transparent;
+        border-radius: var(--r-sm); cursor: pointer; color: var(--ink); padding: 0 var(--s2); }
+  .mi:hover { background: var(--panel-2); }
+  .mi[aria-current] { background: var(--panel-3); box-shadow: inset 3px 0 0 var(--accent); }
+  .mi small { color: var(--ink-mute); margin-left: auto; }
+  .mi .caret { width: 14px; color: var(--ink-faint); }
+
+  /* canvas */
+  main { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--canvas-bg); position: relative; }
+  #viewport { flex: 1; overflow: auto; position: relative; }
+  #stage { position: relative; margin: var(--s4); }
+  #mapImg { display: block; image-rendering: pixelated; }
+  #over { position: absolute; left: 0; top: 0; }
+  .viewbar { position: absolute; top: var(--s3); right: var(--s4); max-width: calc(100% - var(--s8)); flex-wrap: wrap; justify-content: flex-end; z-index: 2; display: flex; gap: var(--s2); align-items: center;
+             background: var(--panel); border: var(--hair) solid var(--line); border-radius: var(--r); padding: var(--s1); box-shadow: var(--shadow); }
+  .grip { min-height: calc(var(--control-h) - 4px); width: var(--s6); padding: 0; border: 0; border-radius: var(--r-sm); background: transparent;
+          color: var(--ink-faint); cursor: grab; display: flex; align-items: center; justify-content: center; touch-action: none; }
+  .grip svg { width: 16px; height: 16px; }
+  .grip:hover { color: var(--ink); background: var(--panel-2); }
+  body.moving, body.moving .grip { cursor: grabbing; user-select: none; }
+  .vbhide { min-width: var(--control-h); padding: 0; justify-content: center; }
+  .vbmini { display: none; align-items: center; gap: var(--s2); min-height: calc(var(--control-h) - 4px); padding: 0 var(--s3) 0 var(--s1); border: 0;
+            border-radius: var(--r-pill); background: transparent; color: var(--ink-mute); cursor: pointer; }
+  .vbmini:hover { color: var(--ink); background: var(--panel-2); }
+  .vbmini svg { width: 18px; height: 18px; }
+  .viewbar.mini > :not(.grip):not(.vbmini) { display: none; }
+  .viewbar.mini .vbmini { display: inline-flex; }
+  .maptabs { flex: none; display: flex; align-items: flex-end; gap: 2px; min-height: var(--tabs-h); padding: var(--s1) var(--s2) 0; overflow-x: auto;
+             background: var(--panel); border-bottom: var(--hair) solid var(--line); scrollbar-width: thin; }
+  .mtab { display: inline-flex; align-items: center; flex: none; max-width: 220px; border: var(--hair) solid transparent; border-bottom: 0;
+          border-radius: var(--r-sm) var(--r-sm) 0 0; color: var(--ink-mute); background: transparent; }
+  .mtab:hover { background: var(--panel-2); color: var(--ink); }
+  .mtab.on { background: var(--canvas-bg); color: var(--ink); border-color: var(--line); box-shadow: inset 0 2px 0 var(--accent); }
+  .mtab > button { border: 0; background: transparent; color: inherit; cursor: pointer; min-height: calc(var(--tabs-h) - var(--s1)); }
+  .mtab .tname { padding: 0 var(--s1) 0 var(--s3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
+  .mtab .star { color: var(--warn); font-weight: var(--w-bold); padding-left: 2px; }
+  .mtab .tx { padding: 0 var(--s2); color: var(--ink-faint); border-radius: var(--r-sm); }
+  .mtab .tx:hover { color: var(--bad); }
+  .maptabs .tnew { border: 0; background: transparent; color: var(--ink-faint); cursor: pointer; min-height: calc(var(--tabs-h) - var(--s1)); padding: 0 var(--s3); }
+  .maptabs .tnew:hover { color: var(--ink); }
+  .mi .open { width: 6px; height: 6px; border-radius: var(--r-pill); background: var(--accent); flex: none; }
+  .viewbar { top: calc(var(--tabs-h) + var(--s3)); }
+  .chip { min-height: calc(var(--control-h) - 4px); padding: 0 var(--s3); border-radius: var(--r-pill); border: var(--hair) solid var(--line-strong);
+          background: transparent; cursor: pointer; color: var(--ink-mute); display: inline-flex; align-items: center; gap: var(--s1); }
+  .chip[aria-pressed="true"] { color: var(--ink); background: var(--accent-soft); border-color: var(--accent); }
+  .chip[aria-pressed="true"]::before { content: "✓"; color: var(--accent); }
+  .zoom { display: flex; align-items: center; gap: 2px; padding-left: var(--s2); border-left: var(--hair) solid var(--line); }
+  .zoom output { min-width: 48px; text-align: center; color: var(--ink-mute); }
+  .legend { position: absolute; left: var(--s4); bottom: var(--s3); z-index: 2; display: none; gap: var(--s4); align-items: center;
+            background: var(--panel); border: var(--hair) solid var(--line); border-radius: var(--r); padding: var(--s2) var(--s3); box-shadow: var(--shadow); color: var(--ink-mute); }
+  .legend.on { display: flex; }
+  .legend span { display: inline-flex; align-items: center; gap: var(--s2); }
+  .sw { width: 16px; height: 16px; border-radius: 3px; border: var(--hair) solid var(--line-strong); }
+  .sw.bad { background: var(--bad-tint); border-color: var(--bad); } .sw.part { background: linear-gradient(135deg, var(--warn-tint) 0 35%, transparent 35%); }
+  .sw.ok { border: 0; color: var(--ok); width: auto; height: auto; font-style: normal; font-weight: var(--w-bold); }
+  .okmark { display: inline-flex; align-items: center; gap: var(--s2); cursor: pointer; }
+  .okmark input { accent-color: var(--ok); width: 16px; height: 16px; margin: 0; }
+  .sw.star { border: 0; color: var(--star); width: auto; height: auto; }
+  footer { flex: none; display: flex; gap: var(--s4); align-items: center; padding: var(--s1) var(--s4); min-height: 30px;
+           background: var(--panel); border-top: var(--hair) solid var(--line); color: var(--ink-mute); white-space: nowrap; overflow: hidden; }
+  footer b { color: var(--ink); font-weight: var(--w-semi); }
+  .lay { display: inline-flex; gap: var(--s1); }
+  .lay span { padding: 0 var(--s2); border-radius: var(--r-sm); background: var(--panel-2); font-size: var(--text-label); }
+  .pill { display: inline-flex; align-items: center; gap: var(--s1); padding: 0 var(--s2); border-radius: var(--r-pill); font-size: var(--text-label); font-weight: var(--w-semi); }
+  .pill.ok { color: var(--ok); background: var(--ok-soft); } .pill.bad { color: var(--bad); background: var(--bad-tint); } .pill.warn { color: var(--warn); background: var(--warn-soft); }
+
+  /* inspector */
+  .card { padding: var(--s4); border-bottom: var(--hair) solid var(--line); display: flex; flex-direction: column; gap: var(--s3); }
+  .card h3 { margin: 0; font-size: var(--text-label); text-transform: uppercase; letter-spacing: .6px; color: var(--ink-faint); font-weight: var(--w-semi); }
+  .card h4 { margin: 0; font-size: var(--text-title); font-weight: var(--w-bold); }
+  .help { margin: 0; color: var(--ink-mute); font-size: var(--text-label); }
+  .field { display: flex; flex-direction: column; gap: var(--s1); }
+  .field > label, .field > .lbl { font-weight: var(--w-semi); }
+  .field input[type=text], .field input[type=number], .field select, .field textarea {
+          min-height: var(--control-h); border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong); background: var(--bg); padding: var(--s1) var(--s3); }
+  .field textarea { resize: vertical; }
+  .row { display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; }
+  .brush { display: flex; gap: var(--s3); align-items: center; }
+  .brush .prev { width: 72px; height: 72px; flex: none; border-radius: var(--r-sm); border: var(--hair) solid var(--line);
+                 background-color: var(--check-b); image-rendering: pixelated; }
+  .brush div { display: flex; flex-direction: column; gap: 2px; }
+  .muted { color: var(--ink-mute); }
+  .modes { display: flex; flex-direction: column; gap: var(--s1); }
+  .mode { display: grid; grid-template-columns: 28px 1fr; gap: 0 var(--s2); align-items: center; text-align: left; padding: var(--s2);
+          border-radius: var(--r-sm); border: var(--hair) solid var(--line); background: var(--panel-2); cursor: pointer; }
+  .mode b { font-weight: var(--w-semi); } .mode small { grid-column: 2; color: var(--ink-mute); font-size: var(--text-label); }
+  .mode .ic { grid-row: span 2; font-size: var(--text-title); text-align: center; color: var(--accent); }
+  .mode[aria-checked="true"] { border-color: var(--accent); background: var(--panel-3); box-shadow: inset 3px 0 0 var(--accent); }
+  .howto { padding: var(--s3); border-radius: var(--r-sm); background: var(--accent-soft); border: var(--hair) solid var(--accent); }
+  .note { padding: var(--s3); border-radius: var(--r-sm); background: var(--warn-soft); color: var(--ink); font-size: var(--text-label); }
+  .zero { padding: var(--s6) var(--s4); color: var(--ink-mute); text-align: center; }
+  .evlist { display: flex; flex-direction: column; max-height: 360px; overflow: auto; }
+  .evlist button { display: flex; gap: var(--s2); align-items: center; text-align: left; min-height: var(--control-h); border: 0; background: transparent;
+                   border-radius: var(--r-sm); padding: 0 var(--s2); cursor: pointer; color: var(--ink); }
+  .evlist button:hover { background: var(--panel-2); }
+  .evlist code, .evhead code { font: var(--text-label) var(--mono); color: var(--ink-mute); }
+  .evlist small { margin-left: auto; color: var(--ink-faint); }
+  .pages { display: flex; gap: var(--s1); }
+  .pages button { min-width: 36px; min-height: var(--control-h); border-radius: var(--r-sm); border: var(--hair) solid var(--line); background: var(--panel-2); cursor: pointer; }
+  .pages button[aria-selected="true"] { border-color: var(--accent); background: var(--panel-3); }
+  details { border: var(--hair) solid var(--line); border-radius: var(--r-sm); background: var(--panel-2); }
+  summary { cursor: pointer; padding: var(--s2) var(--s3); font-weight: var(--w-semi); display: flex; gap: var(--s2); align-items: center; }
+  summary small { margin-left: auto; color: var(--ink-mute); font-weight: var(--w-normal); }
+  details > div { padding: 0 var(--s3) var(--s3); display: flex; flex-direction: column; gap: var(--s3); }
+  .cmds { font: var(--text-label)/1.7 var(--mono); background: var(--canvas-bg); border-radius: var(--r-sm); padding: var(--s2) var(--s3); white-space: pre; overflow: auto; }
+  .cmds .t { color: var(--ink); } .cmds .m { color: var(--accent); } .cmds .d { color: var(--ink-mute); }
+  .sample { font-size: var(--text-label); color: var(--warn); }
+
+  /* dialog */
+  .scrim { position: fixed; inset: 0; background: var(--scrim); display: none; align-items: center; justify-content: center; z-index: 10; padding: var(--s4); }
+  .scrim.on { display: flex; }
+  .dialog { width: 920px; max-width: 100%; max-height: 92vh; display: flex; flex-direction: column; background: var(--panel);
+            border: var(--hair) solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); }
+  .dialog > header { height: auto; padding: var(--s4); }
+  .dialog h2 { margin: 0; font-size: var(--text-title); }
+  .dbody { flex: 1; min-height: 0; display: grid; grid-template-columns: 240px 1fr; overflow: hidden; }
+  .tpl { padding: var(--s3); display: flex; flex-direction: column; gap: var(--s2); border-right: var(--hair) solid var(--line); overflow: auto; }
+  .tpl .mode small { grid-column: 2; }
+  .dform { padding: var(--s4); overflow: auto; display: flex; flex-direction: column; gap: var(--s4); }
+  .dest { position: relative; height: 240px; overflow: auto; border-radius: var(--r-sm); border: var(--hair) solid var(--line); background: var(--canvas-bg); cursor: crosshair; }
+  .dest img { display: block; width: 552px; image-rendering: pixelated; }
+  .dest i { position: absolute; width: 12px; height: 12px; border: var(--ring) solid var(--star); box-shadow: 0 0 0 var(--hair) #000; display: none; }
+  .dfoot { padding: var(--s3) var(--s4); display: flex; gap: var(--s2); align-items: center; border-top: var(--hair) solid var(--line); }
+
+  /* toast */
+  #toasts { position: fixed; left: 50%; bottom: var(--s12); transform: translateX(-50%); display: flex; flex-direction: column; gap: var(--s2); z-index: 20; }
+  .toast { display: flex; gap: var(--s3); align-items: center; padding: var(--s2) var(--s2) var(--s2) var(--s4); background: var(--panel-3);
+           border: var(--hair) solid var(--line-strong); border-radius: var(--r); box-shadow: var(--shadow);
+           transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .toast.out { opacity: 0; transform: translateY(8px); }
+
+  .mocknote { position: absolute; right: var(--s4); bottom: var(--s3); z-index: 5; max-width: 320px; }
+  .mocknote summary { background: var(--warn-soft); border-radius: var(--r-sm); color: var(--warn); }
+  .mocknote div { display: block; background: var(--panel); border-radius: var(--r-sm); margin-top: var(--s1); padding: var(--s3); font-size: var(--text-label); color: var(--ink-mute); padding-top: var(--s2); }
+
+  /* narrow screens: everything stacks; the map keeps its own 2-D scroll area (maps are exempt from reflow) */
+  @media (max-width: 1100px) {
+    #app, #app.noside { --side-col: 0px; --split-l: 0px; }
+    #side, #splitL, #app.noside #stripL, [data-collapse=side] { display: none; }
+  }
+  @media (max-width: 760px) {
+    body { overflow: auto; }
+    header { height: auto; flex-wrap: wrap; padding: var(--s2) var(--s3); }
+    .crumb { border-left: 0; padding-left: 0; width: 100%; flex-wrap: wrap; }
+    .crumb .btn { max-width: 100%; white-space: normal; text-align: left; }
+    .legend { position: static; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: var(--s2); }
+    footer { flex-wrap: wrap; white-space: normal; gap: var(--s1) var(--s3); }
+    #app { display: flex; flex-direction: column; }
+    .splitter, #app .strip, .collapse { display: none; } #app.noinsp #insp { display: block; }
+    .rail { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: var(--hair) solid var(--line); }
+    .rail h2, .rail hr { display: none; }
+    .tool { flex: 1 0 64px; }
+    #side { display: flex; height: 360px; }
+    main { height: 60vh; }
+    .viewbar { position: static; flex-wrap: wrap; margin: var(--s2); } .grip { display: none; }
+    #insp { border-left: 0; }
+    .dbody { grid-template-columns: 1fr; overflow: auto; }
+    .tpl { border-right: 0; border-bottom: var(--hair) solid var(--line); }
+    .mocknote { display: none; }
+  }
+  @media (forced-colors: active) {
+    .tool[aria-pressed="true"], .chip[aria-pressed="true"], .mode[aria-checked="true"], .sheets [aria-selected="true"], .seg input:checked + span { outline: var(--ring) solid Highlight; }
+    .savechip i { forced-color-adjust: none; }
+  }
+
+  /* ---------------------------------------------------------------- Tileset Wizard */
+  #wapp { flex: 1; min-height: 0; display: grid; --side-col: var(--side-cur, var(--side-w)); --insp-col: var(--insp-cur, 380px);
+          grid-template-columns: var(--side-col) var(--split-w) minmax(0, 1fr) var(--split-w) var(--insp-col); }
+  #wapp > #side { grid-column: 1; } #wapp > #splitL { grid-column: 2; } #wapp > main { grid-column: 3; } #wapp > #splitR { grid-column: 4; } #wapp > #insp { grid-column: 5; }
+  .tsname { display: flex; align-items: center; gap: var(--s2); padding-left: var(--s3); border-left: var(--hair) solid var(--line); }
+  .tsname label { color: var(--ink-mute); white-space: nowrap; }
+  .tsname input { min-height: var(--control-h); width: 220px; border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong); background: var(--bg); padding: 0 var(--s3); }
+  .tag { display: inline-flex; align-items: center; gap: var(--s1); padding: 2px var(--s2); border-radius: var(--r-pill); font-size: var(--text-label); font-weight: var(--w-semi); white-space: nowrap; }
+  .tag.new { color: var(--ok); background: var(--ok-soft); } .tag.upd { color: var(--warn); background: var(--warn-soft); } .tag.none { color: var(--ink-mute); background: var(--panel-2); }
+  .filter { padding: 0 var(--s3) var(--s3); }
+  #sheetList { flex: 1; overflow: auto; padding: 0 var(--s2) var(--s3); }
+  #sheetList h3 { margin: var(--s3) var(--s2) var(--s1); font-size: var(--text-label); color: var(--ink-faint); text-transform: uppercase; letter-spacing: .6px; font-weight: var(--w-semi); }
+  .si { display: flex; align-items: center; gap: var(--s2); width: 100%; min-height: var(--control-h); text-align: left; border: 0; background: transparent;
+        border-radius: var(--r-sm); cursor: pointer; color: var(--ink); padding: 0 var(--s2); }
+  .si:hover { background: var(--panel-2); }
+  .si[aria-current] { background: var(--panel-3); box-shadow: inset 3px 0 0 var(--accent); }
+  .si small { margin-left: auto; color: var(--ink-faint); font-size: var(--text-label); }
+  .si .dot { width: 6px; height: 6px; border-radius: var(--r-pill); background: var(--accent); flex: none; }
+  #sheetView { margin: var(--s4); position: relative; display: inline-block; }
+  #sheetCv { display: block; image-rendering: pixelated; cursor: crosshair;
+             background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 24px 24px; }
+  .actbar { position: absolute; left: 50%; bottom: var(--s4); transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: var(--s3);
+            background: var(--panel); border: var(--hair) solid var(--line-strong); border-radius: var(--r); box-shadow: var(--shadow); padding: var(--s2) var(--s2) var(--s2) var(--s4);
+            max-width: calc(100% - var(--s8)); flex-wrap: wrap; }
+  .actbar .what { display: flex; flex-direction: column; min-width: 150px; }
+  .actbar .what b { font-weight: var(--w-semi); }
+  .actbar .what span { color: var(--ink-mute); font-size: var(--text-label); }
+  .slotpick { display: flex; gap: 2px; padding: 2px; background: var(--bg); border-radius: var(--r-sm); border: var(--hair) solid var(--line); }
+  .slotpick button { min-width: 40px; min-height: calc(var(--control-h) - 4px); border: 0; border-radius: var(--r-sm); background: transparent; color: var(--ink-mute); cursor: pointer; font-weight: var(--w-semi); }
+  .slotpick button[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+  .slotpick button:disabled { opacity: .35; cursor: not-allowed; }
+  .slot { border: var(--hair) solid var(--line); border-radius: var(--r); background: var(--panel-2); display: flex; flex-direction: column; gap: var(--s2); padding: var(--s3); }
+  .slot.target { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
   .slot.warn { border-color: var(--warn); }
-  .slot-head { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; }
-  .slot-head b { width: 26px; font-size: 16px; color: var(--accent); }
-  .slot-head .cap { margin-left: auto; color: var(--dim); font-size: 12px; }
-  .slot canvas { background: #08162b; border-radius: 4px; cursor: pointer; }
-  .slot .msg { color: var(--warn); font-size: 12px; margin-top: 4px; }
-  .hint { color: var(--dim); font-size: 12px; }
-  #ack { color: var(--warn); }
-  label.row { flex-direction: row; gap: 6px; align-items: center; color: var(--text); font-size: 13px; }
-  kbd { background: #08162b; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 12px; }
+  .slot .shead { display: flex; align-items: center; gap: var(--s2); }
+  .slot { cursor: pointer; }
+  .slot .shead { flex-wrap: wrap; }
+  .slot .shead .seg { flex: 1 1 200px; min-width: 0; flex-wrap: wrap; }
+  .slot .shead .seg label span { padding: 0 var(--s1); }
+  .slot .letter { font-size: var(--text-title); font-weight: var(--w-bold); color: var(--accent); min-width: 44px; min-height: var(--control-h);
+                  border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong); background: var(--bg); cursor: pointer; }
+  .slot .letter[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); border-color: var(--accent); }
+  .slot .tgt { font-size: var(--text-label); color: var(--accent); font-weight: var(--w-semi); }
+  #toasts { top: calc(var(--header-h) + var(--s3)); bottom: auto; }
+  #statusChip { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1 1 0; text-align: right; }
+  .brand, .nav a, #createBtn { white-space: nowrap; flex: none; }
+  .slot select { width: 100%; min-height: var(--control-h); border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong);
+                 background: var(--bg); color: var(--ink); padding: 0 var(--s3); font: inherit; }
+  @media (max-width: 760px) { .seg { flex-wrap: wrap; } }
+  .cap { display: flex; align-items: center; gap: var(--s2); font-size: var(--text-label); color: var(--ink-mute); }
+  .cap .bar { flex: 1; height: 6px; border-radius: var(--r-pill); background: var(--bg); overflow: hidden; }
+  .cap .bar i { display: block; height: 100%; background: var(--accent); }
+  .cap.full .bar i { background: var(--bad); } .cap.full { color: var(--bad); }
+  .slot canvas { width: 100%; image-rendering: pixelated; border-radius: var(--r-sm); background: var(--bg); cursor: pointer; display: block; }
+  .slot .msg { font-size: var(--text-label); color: var(--warn); }
+  .slots { display: flex; flex-direction: column; gap: var(--s3); }
+  .check { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s1); }
+  .check li { display: flex; gap: var(--s2); align-items: baseline; }
+  .check li::before { content: "✓"; color: var(--ok); font-weight: var(--w-bold); width: 14px; flex: none; }
+  .check li.no { color: var(--ink-mute); } .check li.no::before { content: "○"; color: var(--warn); }
+  #selMark { position: absolute; border: 3px solid var(--accent); box-shadow: 0 0 0 var(--hair) #000, inset 0 0 0 999px var(--accent-soft); pointer-events: none; display: none; }
+  .createbar { position: sticky; bottom: 0; background: var(--panel); border-top: var(--hair) solid var(--line); padding: var(--s3) var(--s4); display: flex; gap: var(--s2); align-items: center; }
+  .createbar .btn.primary { flex: 1; justify-content: center; }
+  @media (max-width: 1100px) { #wapp { --side-col: 0px; } #wapp > #side, #wapp > #splitL { display: none; } }
+  @media (max-width: 760px) {
+    #wapp { display: flex; flex-direction: column; } #wapp > #side { display: flex; height: 300px; } #wapp > main { height: 60vh; min-width: 0; width: 100%; }
+    #wapp #viewport { max-width: 100%; }
+    .tsname { border-left: 0; padding-left: 0; width: 100%; flex-wrap: wrap; } .tsname input { flex: 1; width: auto; }
+    .actbar { position: static; transform: none; margin: var(--s2); }
+  }
 </style>
 </head>
 <body>
 <header>
-  <h1>Nova Tools</h1>
-  <nav><a href="/">Map Editor</a> <a href="/wizard" class="on">Tileset Wizard</a></nav>
-  <label>Nama tileset <input id="name" list="names" placeholder="mis. Town Plus" size="22"></label>
-  <datalist id="names"></datalist>
-  <label>Lantai/dinding (A1–A4) dari <select id="base"></select></label>
-  <button id="create" class="primary">Buat Tileset</button>
-  <span id="status">Memuat…</span>
+  <span class="brand">Nova Tools</span>
+  <nav class="nav" aria-label="Halaman"><a href="/">Map Editor</a><a href="/wizard" aria-current="page">Tileset Wizard</a></nav>
+  <div class="tsname">
+    <label for="tsName">Tileset</label>
+    <input id="tsName" list="tsNames" placeholder="Nama tileset baru atau yang ada…" autocomplete="off">
+    <datalist id="tsNames"></datalist>
+    <span id="tsTag" class="tag none">Belum diberi nama</span>
+  </div>
+  <span class="grow"></span>
+  <span class="savechip" id="statusChip" role="status"><span id="statusText">Pilih tile di tengah, tambahkan ke slot di kanan.</span></span>
+  <button class="btn primary" id="createBtn" disabled>Buat tileset</button>
 </header>
-<main>
-  <section id="browser" class="panel">
-    <h2>Semua sheet objek</h2>
-    <div class="tabs" id="tabs"></div>
-    <div class="tools">
-      <span id="selInfo">Klik tile, atau drag untuk memilih furniture beberapa tile.</span>
-      <span class="sep"></span>
-      <span class="hint">Tambah ke:</span>
-      <span id="addBtns"></span>
-      <span class="sep"></span>
-      <label style="flex-direction:row;align-items:center;gap:4px"><input type="checkbox" id="showFlags"> passability</label>
-      <select id="zoom"><option value="0.5">50%</option><option value="0.75" selected>75%</option><option value="1">100%</option></select>
-    </div>
-    <div id="sheetWrap"><canvas id="sheet"></canvas></div>
-  </section>
-  <aside id="slots">
-    <div class="panel">
-      <h2>Tileset baru</h2>
-      <div id="target" class="hint"></div>
-      <div id="riskBox" style="display:none;margin-top:8px">
-        <label class="row"><input type="checkbox" id="remap" checked> Sesuaikan map yang memakai tileset ini otomatis (disarankan)</label>
-        <div id="impact" class="hint" style="margin:4px 0 0 22px"></div>
-        <label class="row" id="ackWrap" style="display:none"><input type="checkbox" id="ack"> <span id="ackText"></span></label>
+
+<div id="wapp">
+  <aside id="side" aria-label="Daftar sheet">
+    <div class="sidehead">
+      <label class="sr" for="sheetSearch">Cari sheet</label><input id="sheetSearch" class="search" placeholder="Cari sheet…  (mis. Inside, PM_)">
+      <div class="seg" role="radiogroup" aria-label="Jenis sheet">
+        <label><input type="radio" name="kind" value="all" checked><span>Semua</span></label>
+        <label><input type="radio" name="kind" value="BE"><span>Objek B-E</span></label>
+        <label><input type="radio" name="kind" value="A5"><span>Lantai A5</span></label>
       </div>
     </div>
-    <div id="slotList"></div>
-    <div class="hint">Klik tile di pratinjau slot untuk menghapusnya dari daftar pilihan.
-      Pilihan diisi dari kiri atas; tile 0 dibiarkan kosong seperti sheet B bawaan.</div>
+    <div id="sheetList"></div>
   </aside>
-</main>
+  <button class="splitter" id="splitL" role="separator" aria-orientation="vertical" aria-label="Lebar daftar sheet (panah kiri/kanan, klik 2x: ukuran awal)"></button>
+
+  <main>
+    <div class="viewbar" id="viewbar" role="toolbar" aria-label="Tampilan sheet">
+      <button class="grip" id="vbGrip" aria-label="Geser bar tampilan (panah untuk memindah, klik 2x: posisi awal)" title="Geser · klik 2x: posisi awal"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>
+      <button class="chip" aria-pressed="false" id="passChip">Passability</button>
+      <div class="zoom"><button class="btn ghost" id="zOut" aria-label="Perkecil">−</button><output id="zLbl">75%</output><button class="btn ghost" id="zIn" aria-label="Perbesar">+</button></div>
+      <button class="btn ghost vbhide" id="vbHide" aria-label="Sembunyikan bar tampilan (H)" title="Sembunyikan · H"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+      <button class="vbmini" id="vbMini" aria-label="Tampilkan bar tampilan (H)" title="Tampilkan · H"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span id="vbMiniLbl">Tampilan · 75%</span></button>
+    </div>
+    <div id="viewport"><div id="sheetView"><canvas id="sheetCv" role="img" aria-label="Sheet"></canvas><div id="selMark" class="mark"></div></div></div>
+    <div class="actbar" id="actbar" aria-live="polite">
+      <div class="what"><b id="selWhat">Belum ada tile dipilih</b><span id="selSub">Klik tile, atau seret untuk furnitur beberapa tile.</span></div>
+      <div class="slotpick" id="slotPick" role="group" aria-label="Slot tujuan"></div>
+      <button class="btn primary" id="addBtn" disabled>Tambah</button>
+    </div>
+  </main>
+
+  <button class="splitter" id="splitR" role="separator" aria-orientation="vertical" aria-label="Lebar panel isi tileset (panah kiri/kanan, klik 2x: ukuran awal)"></button>
+  <aside id="insp" aria-label="Isi tileset">
+    <div class="phead"><h2>Isi tileset</h2></div>
+    <section class="card" id="baseCard"></section>
+    <section class="card"><div class="row"><h3>Slot</h3><span class="grow"></span><span class="help">Tile baru masuk ke slot bertanda biru</span></div>
+      <div class="slots" id="slots"></div>
+      <p class="help">Pilihan diisi dari kiri atas; tile 0 dibiarkan kosong seperti sheet B bawaan. Klik tile di pratinjau untuk mengeluarkannya.</p></section>
+    <section class="card" id="riskCard" hidden></section>
+    <section class="card"><h3>Sebelum dibuat</h3><ul class="check" id="checklist"></ul>
+      <p class="help" id="createWhere"></p>
+      <div class="note">Tutup RPG Maker dulu: editor itu menimpa Tilesets.json setiap kali menyimpan.</div></section>
+  </aside>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+
 <script>
 'use strict';
-const SLOTS = ['A5', 'B', 'C', 'D', 'E'];
-const SLOT_INDEX = { A5: 4, B: 5, C: 6, D: 7, E: 8 };
-const T = 48;
+// Tileset Wizard: pick tiles from any sheet, put them in the A5/B-E slots of a new or existing tileset, and let
+// compose_tileset.py write it into the database. The packing preview matches compose_tileset.py.
 const $ = id => document.getElementById(id);
-const S = { state: null, images: {}, sheet: null, sel: null, drag: null, zoom: 0.75,
-            name: '', base: 2, slots: {} };
+const SLOTS = ['A5', 'B', 'C', 'D', 'E'], SLOT_INDEX = { A5: 4, B: 5, C: 6, D: 7, E: 8 }, T = 48;
+const halvesOf = k => k === 'A5' ? 1 : 2;
+const esc = s => String(s === undefined || s === null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const S = { state: null, sheet: null, zoom: 0.75, sel: null, drag: null, pass: false, target: 'B', name: '', base: 2, slots: {}, kind: 'all', remap: true, ack: false };
 
+// ---------------------------------------------------------------- data
+const images = {};
 function img(name) {
-  if (!S.images[name]) {
+  if (!images[name]) {
     const im = new Image();
     im.onload = () => { drawSheet(); drawSlots(); };
     im.src = '/tileset/' + encodeURIComponent(name) + '.png';
-    S.images[name] = im;
+    images[name] = im;
   }
-  return S.images[name];
+  return images[name];
 }
+const ready = n => { const im = img(n); return im.complete && im.naturalWidth > 0; };
 const sheetInfo = name => S.state.sheets.find(s => s.name === name);
-const tilesetById = id => S.state.tilesets.find(t => t.id === id);
-const tilesetByName = name => S.state.tilesets.find(t => t.name === name);
-const halvesOf = name => (sheetInfo(name) && sheetInfo(name).kind === 'A5') ? 1 : 2;
-
+const kindOf = name => (sheetInfo(name) || {}).kind;
+const tsById = id => S.state.tilesets.find(t => t.id === id);
+const tsByName = n => S.state.tilesets.find(t => t.name.toLowerCase() === n.trim().toLowerCase());
 // RPG Maker numbering: left half (8 columns) top to bottom, then the right half.
 const num = (half, col, row) => half * 128 + row * 8 + col;
 const cellOf = n => ({ half: Math.floor(n / 128), col: n % 8, row: Math.floor((n % 128) / 8) });
-const tileXY = n => { const c = cellOf(n); return [(c.half * 8 + c.col) * T, c.row * T]; };
-
-function flagOf(sheet, n) {
-  const info = sheetInfo(sheet); if (!info) return 0;
-  return tilesetById(info.tilesetId).flags[info.first + n] || 0;
-}
-function flagMark(f) { return (f & 0x10) ? '☆' : ((f & 0x0f) === 0x0f ? '✕' : '○'); }
+function flagOf(sheet, n) { const i = sheetInfo(sheet); return i ? (tsById(i.tilesetId).flags[i.first + n] || 0) : 0; }
+const passWord = f => (f & 0x10) ? '☆ di atas karakter' : (f & 0x0f) === 0x0f ? '✕ menghalangi' : '○ bisa dilewati';
 
 // Same first-fit packing as compose_tileset.py, so the preview matches the result.
 function pack(picks, halves) {
@@ -135,25 +482,19 @@ function pack(picks, halves) {
   const spots = [];
   for (const p of picks) {
     let spot = null;
-    search: for (let h = 0; h < halves; h++)
-      for (let r = 0; r <= 16 - p.h; r++)
-        for (let c = 0; c <= 8 - p.w; c++) {
-          let free = true;
-          for (let j = 0; j < p.h && free; j++) for (let i = 0; i < p.w && free; i++) free = !used[h][r + j][c + i];
-          if (free) {
-            for (let j = 0; j < p.h; j++) for (let i = 0; i < p.w; i++) used[h][r + j][c + i] = true;
-            spot = { half: h, col: c, row: r }; break search;
-          }
-        }
+    search: for (let h = 0; h < halves; h++) for (let r = 0; r <= 16 - p.h; r++) for (let c = 0; c <= 8 - p.w; c++) {
+      let free = true;
+      for (let j = 0; j < p.h && free; j++) for (let i = 0; i < p.w && free; i++) free = !used[h][r + j][c + i];
+      if (free) { for (let j = 0; j < p.h; j++) for (let i = 0; i < p.w; i++) used[h][r + j][c + i] = true; spot = { half: h, col: c, row: r }; break search; }
+    }
     if (!spot) return null;
     spots.push(spot);
   }
   return spots;
 }
 
-// ---------------------------------------------------------------- state / recipe
+// ---------------------------------------------------------------- recipe
 function defaultSlots() { const o = {}; SLOTS.forEach(k => o[k] = { mode: 'base', sheet: '', picks: [] }); return o; }
-
 function loadRecipe(r) {
   S.slots = defaultSlots();
   SLOTS.forEach(k => {
@@ -168,7 +509,6 @@ function loadRecipe(r) {
     S.slots[k] = { mode: 'picks', sheet: '', picks };
   });
 }
-
 function buildRecipe() {
   const r = { name: S.name.trim(), base: S.base };
   SLOTS.forEach(k => {
@@ -180,193 +520,67 @@ function buildRecipe() {
   return r;
 }
 
+// ---------------------------------------------------------------- header: the name decides new or update
 function onName() {
-  S.name = $('name').value;
-  const existing = tilesetByName(S.name.trim());
-  const recipe = S.state.recipes[S.name.trim()];
-  if (recipe) loadRecipe(recipe);
-  else if (existing && S.lastName !== S.name) S.slots = defaultSlots();
-  if (existing) S.base = existing.id;
-  else if (recipe) S.base = recipe.base;
-  S.lastName = S.name;
-  $('ack').checked = false;
-  render();
+  S.name = $('tsName').value;
+  const n = S.name.trim(), ex = tsByName(n), recipe = S.state.recipes[n];
+  if (recipe && S.lastName !== n) loadRecipe(recipe);
+  else if (ex && S.lastName !== n) S.slots = defaultSlots();
+  if (ex) S.base = ex.id; else if (recipe) S.base = recipe.base;
+  S.lastName = n; S.ack = false;
+  const tag = $('tsTag');
+  if (!n) { tag.className = 'tag none'; tag.textContent = 'Belum diberi nama'; }
+  else if (ex) { tag.className = 'tag upd'; tag.textContent = `Memperbarui #${ex.id} · ${ex.maps.length ? ex.maps.length + ' map memakai' : 'belum dipakai map'}`; }
+  else { tag.className = 'tag new'; tag.textContent = recipe ? 'Tileset baru · dari resep tersimpan' : 'Tileset baru'; }
+  renderSide(); renderSlots(); renderSheetList();
 }
 
-// ---------------------------------------------------------------- UI
-function render() {
-  $('base').innerHTML = S.state.tilesets.map(t => `<option value="${t.id}">${t.id}: ${t.name}</option>`).join('');
-  $('base').value = S.base;
-  const existing = tilesetByName(S.name.trim());
-  $('base').disabled = !!existing;
-  $('target').innerHTML = !S.name.trim() ? 'Isi nama tileset di atas (nama baru = tileset baru).' :
-    existing ? `Memperbarui tileset <b>#${existing.id} ${existing.name}</b>` +
-      (existing.maps.length ? ` — dipakai ${existing.maps.length} map.` : ' — belum dipakai map.') :
-    `Tileset baru <b>${S.name.trim()}</b> akan ditambahkan di Database.`;
-  renderSlots();
-  updateCreate();
+// ---------------------------------------------------------------- sheet list
+function renderSheetList() {
+  const q = $('sheetSearch').value.trim().toLowerCase(), groups = {};
+  S.state.sheets.filter(s => (S.kind === 'all' || s.kind === S.kind) && s.name.toLowerCase().includes(q)).forEach(s => (groups[s.tileset] = groups[s.tileset] || []).push(s));
+  const inUse = new Set(SLOTS.flatMap(k => S.slots[k].mode === 'picks' ? S.slots[k].picks.map(p => p.sheet) : S.slots[k].mode === 'sheet' ? [S.slots[k].sheet] : []));
+  $('sheetList').innerHTML = Object.entries(groups).map(([g, list]) => `<h3>${esc(g)}</h3>` + list.map(s =>
+    `<button class="si" data-sheet="${esc(s.name)}" ${S.sheet === s.name ? 'aria-current="true"' : ''}>${inUse.has(s.name) ? '<i class="dot" title="Dipakai di tileset ini"></i>' : ''}${esc(s.name)}<small>${s.kind === 'A5' ? 'A5' : 'B-E'}</small></button>`).join('')).join('')
+    || `<p class="zero">Tidak ada sheet "${esc(q)}". Coba sebagian nama, misalnya "Inside".</p>`;
+  $('sheetList').querySelectorAll('[data-sheet]').forEach(b => b.onclick = () => openSheet(b.dataset.sheet));
 }
+$('sheetSearch').oninput = renderSheetList;
+document.querySelectorAll('input[name=kind]').forEach(i => i.onchange = () => { S.kind = i.value; renderSheetList(); });
+function openSheet(n) { S.sheet = n; S.sel = null; renderSheetList(); drawSheet(); renderAct(); }
 
-function renderSlots() {
-  const base = tilesetById(S.base);
-  $('slotList').innerHTML = '';
-  SLOTS.forEach(k => {
-    const s = S.slots[k], halves = k === 'A5' ? 1 : 2;
-    const baseName = base.names[SLOT_INDEX[k]];
-    const kinds = S.state.sheets.filter(x => (k === 'A5') === (x.kind === 'A5'));
-    const div = document.createElement('div');
-    div.className = 'slot';
-    div.innerHTML = `
-      <div class="slot-head"><b>${k}</b>
-        <select class="mode">
-          <option value="base">Bawaan: ${baseName || '(kosong)'}</option>
-          <option value="sheet">Sheet utuh…</option>
-          <option value="picks">Pilihan tile</option>
-          <option value="empty">Kosong</option>
-        </select>
-        <select class="sheet" style="display:${s.mode === 'sheet' ? '' : 'none'}">
-          ${kinds.map(x => `<option ${x.name === s.sheet ? 'selected' : ''}>${x.name}</option>`).join('')}
-        </select>
-        <span class="cap"></span></div>
-      <canvas width="${halves * 8 * 24}" height="${16 * 24}" style="display:${s.mode === 'picks' || s.mode === 'sheet' ? '' : 'none'};width:${s.mode === 'sheet' ? halves * 8 * 12 + 'px' : ''}"></canvas>
-      <div class="msg"></div>`;
-    div.querySelector('.mode').value = s.mode;
-    div.querySelector('.mode').onchange = e => {
-      s.mode = e.target.value;
-      if (s.mode === 'sheet' && !s.sheet) s.sheet = kinds[0] ? kinds[0].name : '';
-      render();
-    };
-    div.querySelector('.sheet').onchange = e => { s.sheet = e.target.value; drawSlots(); updateCreate(); };
-    div.querySelector('canvas').onclick = e => removePickAt(k, e);
-    $('slotList').appendChild(div);
-    s.el = div;
-  });
-  drawSlots();
-}
-
-function drawSlots() {
-  if (!S.state) return;
-  const base = tilesetById(S.base);
-  SLOTS.forEach(k => {
-    const s = S.slots[k]; if (!s.el) return;
-    const cv = s.el.querySelector('canvas'), g = cv.getContext('2d'), halves = k === 'A5' ? 1 : 2;
-    g.clearRect(0, 0, cv.width, cv.height);
-    g.imageSmoothingEnabled = true;
-    let cap = '';
-    if (s.mode === 'base' || s.mode === 'sheet') {
-      const name = s.mode === 'base' ? base.names[SLOT_INDEX[k]] : s.sheet;
-      if (name) { const im = img(name); if (im.complete) g.drawImage(im, 0, 0, im.width / 2, im.height / 2); }
-      cap = name ? 'sheet utuh' : 'kosong';
-    } else if (s.mode === 'picks') {
-      const spots = pack(s.picks, halves);
-      const tiles = s.picks.reduce((a, p) => a + p.w * p.h, 0);
-      cap = `${tiles} / ${halves * 128 - 1} tile`;
-      g.strokeStyle = 'rgba(98,214,255,.15)';
-      for (let x = 0; x <= halves * 8; x++) { g.beginPath(); g.moveTo(x * 24 + .5, 0); g.lineTo(x * 24 + .5, cv.height); g.stroke(); }
-      for (let y = 0; y <= 16; y++) { g.beginPath(); g.moveTo(0, y * 24 + .5); g.lineTo(cv.width, y * 24 + .5); g.stroke(); }
-      if (spots) s.picks.forEach((p, i) => {
-        const im = img(p.sheet); if (!im.complete) return;
-        const sp = spots[i], src = cellOf(p.n);
-        for (let j = 0; j < p.h; j++) for (let ii = 0; ii < p.w; ii++) {
-          const [sx, sy] = tileXY(num(src.half, src.col + ii, src.row + j));
-          g.drawImage(im, sx, sy, T, T, ((sp.half * 8) + sp.col + ii) * 24, (sp.row + j) * 24, 24, 24);
-        }
-      });
-      else cap = 'PENUH — hapus beberapa pilihan';
-    } else cap = 'kosong';
-    s.el.querySelector('.cap').textContent = cap;
-  });
-  updateCreate();
-}
-
-function removePickAt(k, e) {
-  const s = S.slots[k]; if (s.mode !== 'picks') return;
-  const r = e.target.getBoundingClientRect();
-  const x = Math.floor((e.clientX - r.left) / 24), y = Math.floor((e.clientY - r.top) / 24);
-  const spots = pack(s.picks, k === 'A5' ? 1 : 2); if (!spots) return;
-  const i = spots.findIndex((sp, idx) => {
-    const p = s.picks[idx], px = sp.half * 8 + sp.col;
-    return x >= px && x < px + p.w && y >= sp.row && y < sp.row + p.h;
-  });
-  if (i < 0) return;
-  const p = s.picks[i];
-  if (!confirm(`Hapus ${p.sheet} #${p.n}${p.w * p.h > 1 ? ` (${p.w}x${p.h})` : ''} dari slot ${k}?`)) return;
-  s.picks.splice(i, 1);
-  drawSlots();
-}
-
-function updateCreate() {
-  const remap = $('remap').checked;
-  const existing = tilesetByName(S.name.trim());
-  const risky = existing ? SLOTS.filter(k => S.slots[k].mode !== 'base' && existing.usedSlots.includes(k)) : [];
-  SLOTS.forEach(k => {
-    const s = S.slots[k]; if (!s.el) return;
-    const bad = risky.includes(k);
-    s.el.classList.toggle('warn', bad);
-    s.el.querySelector('.msg').textContent = !bad ? '' : remap
-      ? `Slot ${k} dipakai di map: tile di map akan dipindahkan otomatis ke posisi barunya.`
-      : `Slot ${k} sudah dipakai di map. Mengganti sheet, menghapus, atau mengubah urutan pilihan akan mengubah tile di map itu. Menambah pilihan di akhir aman.`;
-  });
-  $('riskBox').style.display = risky.length ? '' : 'none';
-  $('ackWrap').style.display = risky.length && !remap ? 'flex' : 'none';
-  $('ackText').textContent = `Saya mengerti risiko untuk slot ${risky.join(', ')} tanpa penyesuaian map`;
-  const full = SLOTS.some(k => S.slots[k].mode === 'picks' && !pack(S.slots[k].picks, k === 'A5' ? 1 : 2));
-  const anyChange = SLOTS.some(k => S.slots[k].mode !== 'base');
-  $('create').disabled = !S.name.trim() || full || !anyChange || (risky.length && !remap && !$('ack').checked);
-  if (risky.length && remap && !full) scheduleCheck(); else { S.checked = ''; $('impact').textContent = ''; }
-}
-
-// ---------------------------------------------------------------- sheet browser
-function renderTabs() {
-  const groups = {};
-  S.state.sheets.forEach(s => (groups[s.tileset] = groups[s.tileset] || []).push(s));
-  $('tabs').innerHTML = Object.keys(groups).map(g => groups[g].map(s =>
-    `<button class="tab ${S.sheet === s.name ? 'on' : ''}" data-name="${s.name}">${s.name}<small>${s.kind === 'A5' ? 'A5' : ''}</small></button>`
-  ).join('')).join('');
-  $('tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => openSheet(b.dataset.name));
-}
-
-function openSheet(name) {
-  S.sheet = name; S.sel = null;
-  renderTabs(); renderAddButtons(); drawSheet();
-}
-
+// ---------------------------------------------------------------- sheet viewer and selection
 function drawSheet() {
+  const cv = $('sheetCv'), view = $('sheetView');
+  view.querySelectorAll('.zero').forEach(e => e.remove());
+  $('zLbl').textContent = Math.round(S.zoom * 100) + '%'; $('vbMiniLbl').textContent = 'Tampilan · ' + $('zLbl').textContent;
   if (!S.sheet) return;
-  const im = img(S.sheet), cv = $('sheet');
-  if (!im.complete || !im.width) return;
-  cv.width = im.width; cv.height = im.height;
-  cv.style.width = im.width * S.zoom + 'px'; cv.style.height = im.height * S.zoom + 'px';
-  const g = cv.getContext('2d');
-  g.clearRect(0, 0, cv.width, cv.height);
-  g.drawImage(im, 0, 0);
-  g.strokeStyle = 'rgba(255,255,255,.12)';
-  for (let x = 0; x <= im.width; x += T) { g.beginPath(); g.moveTo(x + .5, 0); g.lineTo(x + .5, im.height); g.stroke(); }
-  for (let y = 0; y <= im.height; y += T) { g.beginPath(); g.moveTo(0, y + .5); g.lineTo(im.width, y + .5); g.stroke(); }
-  if (im.width > 8 * T) { g.strokeStyle = 'rgba(98,214,255,.6)'; g.beginPath(); g.moveTo(8 * T + .5, 0); g.lineTo(8 * T + .5, im.height); g.stroke(); }
-  if ($('showFlags').checked) {
-    g.font = 'bold 14px sans-serif'; g.textAlign = 'right';
-    const halves = im.width / (8 * T);
-    for (let h = 0; h < halves; h++) for (let r = 0; r < 16; r++) for (let c = 0; c < 8; c++) {
-      const mark = flagMark(flagOf(S.sheet, num(h, c, r)));
-      g.fillStyle = mark === '✕' ? '#ff7088' : mark === '☆' ? '#ffe08a' : '#6ff0a0';
-      g.strokeStyle = 'rgba(0,0,0,.8)'; g.lineWidth = 3;
-      const x = (h * 8 + c + 1) * T - 3, y = r * T + 15;
-      g.strokeText(mark, x, y); g.fillText(mark, x, y); g.lineWidth = 1;
-    }
+  if (!ready(S.sheet)) { cv.hidden = true; $('selMark').style.display = 'none'; view.insertAdjacentHTML('beforeend', '<p class="zero">Memuat sheet…</p>'); return; }
+  cv.hidden = false;
+  const im = img(S.sheet), g = cv.getContext('2d');
+  cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+  cv.style.width = cv.width * S.zoom + 'px';
+  cv.setAttribute('aria-label', 'Sheet ' + S.sheet);
+  g.clearRect(0, 0, cv.width, cv.height); g.drawImage(im, 0, 0);
+  g.strokeStyle = 'rgba(255,255,255,.10)'; g.lineWidth = 1; g.beginPath();
+  for (let x = 0; x <= cv.width; x += T) { g.moveTo(x + .5, 0); g.lineTo(x + .5, cv.height); }
+  for (let y = 0; y <= cv.height; y += T) { g.moveTo(0, y + .5); g.lineTo(cv.width, y + .5); }
+  g.stroke();
+  if (cv.width > 8 * T) { g.strokeStyle = 'rgba(98,214,255,.7)'; g.lineWidth = 2; g.beginPath(); g.moveTo(8 * T, 0); g.lineTo(8 * T, cv.height); g.stroke(); }
+  if (S.pass) for (let h = 0; h < cv.width / (8 * T); h++) for (let r = 0; r < 16; r++) for (let c = 0; c < 8; c++) {
+    const f = flagOf(S.sheet, num(h, c, r)), px = (h * 8 + c) * T, py = r * T;
+    if (f & 0x10) { g.font = 'bold 18px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = 3; g.strokeStyle = 'rgba(0,0,0,.7)'; g.strokeText('☆', px + 24, py + 24); g.fillStyle = '#ffe08a'; g.fillText('☆', px + 24, py + 24); }
+    else if ((f & 0x0f) === 0x0f) { g.fillStyle = 'rgba(255,112,136,.30)'; g.fillRect(px, py, T, T); }
   }
-  const sel = S.drag ? dragRect() : S.sel;
-  if (sel) {
-    const c = cellOf(sel.n), x = (c.half * 8 + c.col) * T, y = c.row * T;
-    g.fillStyle = 'rgba(98,214,255,.25)'; g.fillRect(x, y, sel.w * T, sel.h * T);
-    g.strokeStyle = '#62d6ff'; g.lineWidth = 3; g.strokeRect(x + 1.5, y + 1.5, sel.w * T - 3, sel.h * T - 3); g.lineWidth = 1;
-  }
+  const s = S.drag ? dragRect() : S.sel;
+  if (s && s.sheet === S.sheet) {
+    const c = cellOf(s.n);
+    Object.assign($('selMark').style, { display: 'block', left: (c.half * 8 + c.col) * T * S.zoom + 'px', top: c.row * T * S.zoom + 'px', width: s.w * T * S.zoom + 'px', height: s.h * T * S.zoom + 'px' });
+  } else $('selMark').style.display = 'none';
 }
-
 function cellAt(e) {
-  const r = $('sheet').getBoundingClientRect();
-  const x = Math.floor((e.clientX - r.left) / S.zoom / T), y = Math.floor((e.clientY - r.top) / S.zoom / T);
-  return { x: Math.max(0, Math.min(x, $('sheet').width / T - 1)), y: Math.max(0, Math.min(y, 15)) };
+  const r = $('sheetCv').getBoundingClientRect(), t = T * S.zoom;
+  return { x: Math.max(0, Math.min(Math.floor((e.clientX - r.left) / t), $('sheetCv').width / T - 1)), y: Math.max(0, Math.min(Math.floor((e.clientY - r.top) / t), 15)) };
 }
 function dragRect() {
   const a = S.drag.a, b = S.drag.b, half = Math.floor(a.x / 8);
@@ -374,91 +588,248 @@ function dragRect() {
   const x0 = Math.min(a.x, bx), x1 = Math.max(a.x, bx), y0 = Math.min(a.y, b.y), y1 = Math.max(a.y, b.y);
   return { sheet: S.sheet, n: num(half, x0 - half * 8, y0), w: x1 - x0 + 1, h: y1 - y0 + 1 };
 }
-$('sheet').onmousedown = e => { const c = cellAt(e); S.drag = { a: c, b: c }; drawSheet(); };
+$('sheetCv').onmousedown = e => { if (e.button !== 0) return; e.preventDefault(); const c = cellAt(e); S.drag = { a: c, b: c }; drawSheet(); };
 window.addEventListener('mousemove', e => { if (S.drag) { S.drag.b = cellAt(e); drawSheet(); } });
-window.addEventListener('mouseup', () => {
-  if (!S.drag) return;
-  S.sel = dragRect(); S.drag = null;
-  const f = S.sel.w * S.sel.h === 1 ? ' · ' + flagMark(flagOf(S.sheet, S.sel.n)) : '';
-  $('selInfo').textContent = `${S.sheet} #${S.sel.n}` + (S.sel.w * S.sel.h > 1 ? ` (${S.sel.w}x${S.sel.h} tile)` : '') + f;
-  drawSheet(); renderAddButtons();
-});
+window.addEventListener('mouseup', () => { if (!S.drag) return; S.sel = dragRect(); S.drag = null; drawSheet(); renderAct(); });
+$('sheetCv').ondblclick = () => { if (S.sel) addPick(); };
 
-function renderAddButtons() {
-  const isA5 = S.sheet && sheetInfo(S.sheet).kind === 'A5';
-  $('addBtns').innerHTML = SLOTS.map(k =>
-    `<button data-k="${k}" ${!S.sel || (k === 'A5' && !isA5) ? 'disabled' : ''}>${k}</button>`).join(' ');
-  $('addBtns').querySelectorAll('button').forEach(b => b.onclick = () => addPick(b.dataset.k));
+// The action bar: what is selected, which slot it goes to, and the button that adds it.
+function slotAllows(k) { return !S.sel || (k === 'A5') === (kindOf(S.sel.sheet) === 'A5'); }
+function renderAct() {
+  const s = S.sel;
+  if (s) {
+    $('selWhat').textContent = `${s.sheet} #${s.n}` + (s.w * s.h > 1 ? ` · ${s.w}×${s.h} tile` : '');
+    $('selSub').textContent = s.w * s.h === 1 ? passWord(flagOf(s.sheet, s.n)) : 'Furnitur ' + s.w * s.h + ' tile, tetap utuh di slot';
+  } else { $('selWhat').textContent = 'Belum ada tile dipilih'; $('selSub').textContent = 'Klik tile, atau seret untuk furnitur beberapa tile.'; }
+  if (s && !slotAllows(S.target)) S.target = kindOf(s.sheet) === 'A5' ? 'A5' : 'B';
+  $('slotPick').innerHTML = SLOTS.map(k => `<button aria-pressed="${S.target === k}" data-k="${k}" ${slotAllows(k) ? '' : 'disabled'} title="${slotAllows(k) ? 'Slot ' + k : k === 'A5' ? 'A5 hanya untuk sheet lantai A5' : 'Sheet A5 hanya bisa masuk slot A5'}">${k}</button>`).join('');
+  $('slotPick').querySelectorAll('button').forEach(b => b.onclick = () => { S.target = b.dataset.k; renderAct(); renderSlots(); });
+  $('addBtn').disabled = !s;
+  $('addBtn').textContent = `Tambah ke ${S.target}`;
+  $('addBtn').title = 'Enter, atau klik 2x tile-nya';
+}
+$('addBtn').onclick = () => addPick();
+function addPick() {
+  const k = S.target, s = S.slots[k];
+  if (!S.sel || !slotAllows(k)) return;
+  const before = JSON.stringify(s);
+  if (s.mode !== 'picks') s.mode = 'picks';            // picks made earlier come back with it
+  if (s.picks.some(p => p.sheet === S.sel.sheet && p.n === S.sel.n && p.w === S.sel.w && p.h === S.sel.h)) { Object.assign(s, JSON.parse(before)); toast(`Sudah ada di slot ${k}.`); return; }
+  s.picks.push({ ...S.sel });
+  if (!pack(s.picks, halvesOf(k))) { Object.assign(s, JSON.parse(before)); toast(`Slot ${k} penuh. Keluarkan beberapa tile dulu, atau pakai slot lain.`, 'err'); return; }
+  renderSlots(); renderSheetList();
+  const what = `${S.sel.sheet} #${S.sel.n}`;
+  toast(`${what} masuk slot ${k}.`, '', 'Urungkan', () => { S.slots[k] = JSON.parse(before); renderSlots(); renderSheetList(); });
 }
 
-function addPick(k) {
-  const s = S.slots[k];
-  if (s.mode !== 'picks') {
-    if (s.mode !== 'base' && s.mode !== 'empty' && !confirm(`Slot ${k} berisi sheet utuh. Ganti dengan daftar pilihan?`)) return;
-    s.mode = 'picks'; s.picks = [];
-  }
-  const dup = s.picks.some(p => p.sheet === S.sel.sheet && p.n === S.sel.n && p.w === S.sel.w && p.h === S.sel.h);
-  if (dup) { status(`Sudah ada di slot ${k}.`); return; }
-  s.picks.push(Object.assign({}, S.sel));
-  if (!pack(s.picks, k === 'A5' ? 1 : 2)) { s.picks.pop(); status(`Slot ${k} penuh.`, 'err'); return; }
-  status(`Ditambahkan ke slot ${k}.`);
-  renderSlots(); updateCreate();
+// ---------------------------------------------------------------- right panel: base, slots, risk, checklist
+const seg = (name, cur, opts) => `<div class="seg" role="radiogroup">${opts.map(([v, l]) =>
+  `<label><input type="radio" name="${name}" value="${v}" ${cur === v ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div>`;
+function renderSide() {
+  const ex = tsByName(S.name);
+  $('baseCard').innerHTML = `<h3>Lantai & dinding (A1-A4)</h3>
+    <div class="field"><label for="baseSel">Diambil dari tileset</label><select id="baseSel" ${ex ? 'disabled' : ''}>${S.state.tilesets.map(t => `<option value="${t.id}" ${t.id === S.base ? 'selected' : ''}>${t.id}: ${esc(t.name)}</option>`).join('')}</select>
+    <p class="help">${ex ? `Tetap dari #${ex.id} ${esc(ex.name)}, karena tileset ini sudah ada.` : 'Slot yang dibiarkan "Bawaan" juga diambil dari tileset ini.'}</p></div>`;
+  const sel = $('baseSel'); if (sel) sel.onchange = () => { S.base = +sel.value; renderSlots(); };
 }
-
-function status(text, cls) { $('status').textContent = text; $('status').className = cls || ''; }
-
+function risky() { const ex = tsByName(S.name); return ex ? SLOTS.filter(k => S.slots[k].mode !== 'base' && ex.usedSlots.includes(k)) : []; }
+function renderSlots() {
+  const base = tsById(S.base) || S.state.tilesets[0], r = risky();
+  $('slots').innerHTML = SLOTS.map(k => {
+    const s = S.slots[k], baseName = base.names[SLOT_INDEX[k]] || '(kosong)';
+    const kinds = S.state.sheets.filter(x => (k === 'A5') === (x.kind === 'A5'));
+    let body = '';
+    if (s.mode === 'base') body = `<p class="help">Bawaan dari ${esc(base.name)}: <b>${esc(baseName)}</b></p>`;
+    if (s.mode === 'sheet') body = `<p class="help">Seluruh isi satu sheet:</p><select data-sheetsel="${k}" aria-label="Sheet utuh untuk slot ${k}">${kinds.map(x => `<option ${x.name === s.sheet ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>`;
+    if (s.mode === 'picks') {
+      const spots = pack(s.picks, halvesOf(k)), tiles = s.picks.reduce((a, p) => a + p.w * p.h, 0), max = halvesOf(k) * 128 - 1;
+      body = `<div class="cap ${spots ? '' : 'full'}"><span class="bar"><i style="width:${Math.min(100, tiles / max * 100)}%"></i></span>${tiles} / ${max} tile</div>
+        ${s.picks.length ? `<canvas data-cv="${k}" width="${halvesOf(k) * 8 * 24}" height="${16 * 24}" aria-label="Isi slot ${k}: ${s.picks.length} pilihan"></canvas>`
+          : `<p class="help">Belum ada tile. Pilih tile di sheet, lalu "Tambah ke ${k}".</p>`}`;
+    }
+    if (s.mode === 'empty') body = `<p class="help">Slot dikosongkan.</p>`;
+    return `<div class="slot ${S.target === k ? 'target' : ''} ${r.includes(k) ? 'warn' : ''}" data-slot="${k}">
+      <div class="shead"><button class="letter" data-target="${k}" aria-pressed="${S.target === k}" aria-label="Slot ${k}${S.target === k ? ', tujuan tambah' : ': jadikan tujuan tambah'}" title="${S.target === k ? 'Tile baru masuk ke sini' : 'Jadikan tujuan (atau tekan ' + k + ')'}">${k}</button>${seg('mode' + k, s.mode, [['base', 'Bawaan'], ['sheet', 'Sheet'], ['picks', 'Pilihan'], ['empty', 'Kosong']])}</div>
+      ${body}
+      ${S.target === k ? '<span class="tgt">● Tile baru masuk ke slot ini</span>' : ''}
+      ${r.includes(k) ? `<div class="msg">Slot ${k} dipakai di map. ${S.remap ? 'Tile di map ikut dipindah otomatis.' : 'Mengganti isinya akan mengubah tile di map itu; menambah di akhir aman.'}</div>` : ''}</div>`;
+  }).join('');
+  SLOTS.forEach(k => {
+    document.querySelectorAll(`input[name=mode${k}]`).forEach(i => i.onchange = () => {
+      const s = S.slots[k], before = JSON.stringify(s);
+      s.mode = i.value;
+      if (s.mode === 'sheet' && !s.sheet) s.sheet = S.state.sheets.find(x => (k === 'A5') === (x.kind === 'A5')).name;
+      renderSlots(); renderSheetList();
+      if (JSON.parse(before).picks.length && s.mode !== 'picks') toast(`Pilihan di slot ${k} disimpan sementara; pilih "Pilihan" lagi untuk memakainya.`, '', 'Kembalikan', () => { S.slots[k] = JSON.parse(before); renderSlots(); renderSheetList(); });
+    });
+  });
+  document.querySelectorAll('[data-sheetsel]').forEach(sel => sel.onchange = () => { S.slots[sel.dataset.sheetsel].sheet = sel.value; renderSheetList(); renderRisk(); renderChecks(); });
+  const setTarget = k => { if (S.target === k) return; S.target = k; renderSlots(); renderAct(); };
+  document.querySelectorAll('[data-target]').forEach(b => b.onclick = () => setTarget(b.dataset.target));
+  // a click anywhere on the card (not on its controls) also makes it the target
+  document.querySelectorAll('.slot').forEach(c => c.onclick = e => { if (!e.target.closest('button, input, select, label, canvas')) setTarget(c.dataset.slot); });
+  document.querySelectorAll('[data-cv]').forEach(cv => cv.onclick = e => removePickAt(cv.dataset.cv, e));
+  drawSlots(); renderRisk(); renderChecks();
+}
+function drawSlots() {
+  document.querySelectorAll('[data-cv]').forEach(cv => {
+    const k = cv.dataset.cv, s = S.slots[k], g = cv.getContext('2d'), spots = pack(s.picks, halvesOf(k));
+    g.clearRect(0, 0, cv.width, cv.height);
+    g.strokeStyle = 'rgba(98,214,255,.12)'; g.beginPath();
+    for (let x = 0; x <= cv.width; x += 24) { g.moveTo(x + .5, 0); g.lineTo(x + .5, cv.height); }
+    for (let y = 0; y <= cv.height; y += 24) { g.moveTo(0, y + .5); g.lineTo(cv.width, y + .5); }
+    g.stroke();
+    if (!spots) return;
+    s.picks.forEach((p, i) => {
+      if (!ready(p.sheet)) return;
+      const sp = spots[i], src = cellOf(p.n), im = img(p.sheet);
+      for (let j = 0; j < p.h; j++) for (let ii = 0; ii < p.w; ii++)
+        g.drawImage(im, (src.half * 8 + src.col + ii) * T, (src.row + j) * T, T, T, (sp.half * 8 + sp.col + ii) * 24, (sp.row + j) * 24, 24, 24);
+    });
+  });
+}
+function removePickAt(k, e) {
+  const s = S.slots[k], cv = e.target, r = cv.getBoundingClientRect(), sc = cv.width / r.width;
+  const x = Math.floor((e.clientX - r.left) * sc / 24), y = Math.floor((e.clientY - r.top) * sc / 24);
+  const spots = pack(s.picks, halvesOf(k)); if (!spots) return;
+  const i = spots.findIndex((sp, idx) => { const p = s.picks[idx], px = sp.half * 8 + sp.col; return x >= px && x < px + p.w && y >= sp.row && y < sp.row + p.h; });
+  if (i < 0) return;
+  const [p] = s.picks.splice(i, 1);
+  renderSlots(); renderSheetList();
+  toast(`${p.sheet} #${p.n}${p.w * p.h > 1 ? ` (${p.w}×${p.h})` : ''} dikeluarkan dari slot ${k}.`, '', 'Urungkan', () => { s.picks.splice(i, 0, p); renderSlots(); renderSheetList(); });
+}
+function renderRisk() {
+  const r = risky(), ex = tsByName(S.name), card = $('riskCard');
+  card.hidden = !r.length;
+  if (!r.length) { S.checked = ''; return; }
+  card.innerHTML = `<h3>Map yang memakai tileset ini</h3>
+    <p class="help">${esc(ex.name)} dipakai ${ex.maps.length} map: ${ex.maps.slice(0, 4).map(esc).join(', ')}${ex.maps.length > 4 ? ` dan ${ex.maps.length - 4} lainnya` : ''}. Slot ${r.join(', ')} sudah ada di map itu.</p>
+    <label class="row"><input type="checkbox" id="remap" ${S.remap ? 'checked' : ''}> Pindahkan tile di map itu otomatis (disarankan)</label>
+    ${S.remap ? `<div class="howto" id="impact">Menghitung dampak…</div>`
+              : `<label class="row"><input type="checkbox" id="ack" ${S.ack ? 'checked' : ''}> Saya mengerti tile di slot ${r.join(', ')} bisa berubah di map</label>`}`;
+  $('remap').onchange = () => { S.remap = $('remap').checked; S.ack = false; S.checked = ''; renderSlots(); };
+  const ack = $('ack'); if (ack) ack.onchange = () => { S.ack = ack.checked; renderChecks(); };
+  if (S.remap) scheduleCheck();
+}
 // What the automatic map adjustment would change, asked from the server without writing anything.
 function scheduleCheck() {
   const recipe = buildRecipe(), key = JSON.stringify(recipe);
-  if (key === S.checked) return;
-  S.checked = key;
+  if (key === S.checked && S.impact) { $('impact').textContent = S.impact; return; }
+  S.checked = key; S.impact = '';
   clearTimeout(S.checkTimer);
-  $('impact').textContent = 'Menghitung dampak…';
   S.checkTimer = setTimeout(async () => {
+    if (SLOTS.some(k => S.slots[k].mode === 'picks' && !pack(S.slots[k].picks, halvesOf(k)))) { if ($('impact')) $('impact').textContent = 'Ada slot yang penuh.'; return; }
     const res = await fetch('/api/compose', { method: 'POST', body: JSON.stringify({ recipe, remap: true, check: true }) });
     const out = await res.json();
     if (S.checked !== key) return;                  // the recipe changed meanwhile
-    $('impact').textContent = res.ok ? 'Dampak: ' + out.text + '.' : out.error;
+    S.impact = res.ok ? 'Dampak: ' + (out.text || 'tidak ada tile map yang berubah') + '.' : out.error;
+    if ($('impact')) $('impact').textContent = S.impact;
   }, 400);
 }
-
-function risky() {
-  const existing = tilesetByName(S.name.trim());
-  return existing ? SLOTS.filter(k => S.slots[k].mode !== 'base' && existing.usedSlots.includes(k)) : [];
+function renderChecks() {
+  const r = risky(), full = SLOTS.filter(k => S.slots[k].mode === 'picks' && !pack(S.slots[k].picks, halvesOf(k))), ex = tsByName(S.name);
+  const items = [
+    [!!S.name.trim(), S.name.trim() ? `Nama: ${S.name.trim()}` : 'Beri nama tileset di atas'],
+    [SLOTS.some(k => S.slots[k].mode !== 'base'), 'Minimal satu slot diubah dari bawaan'],
+    [!full.length, full.length ? `Slot ${full.join(', ')} penuh` : 'Tidak ada slot yang penuh'],
+  ];
+  if (r.length) items.push([S.remap || S.ack, S.remap ? 'Map yang memakai tileset ini disesuaikan otomatis' : 'Centang tanda mengerti risiko di atas']);
+  $('checklist').innerHTML = items.map(([ok, t]) => `<li class="${ok ? '' : 'no'}">${esc(t)}</li>`).join('');
+  const ok = items.every(i => i[0]), miss = items.find(i => !i[0]);
+  $('createBtn').disabled = !ok || S.busy;
+  $('createBtn').textContent = ex ? `Perbarui tileset #${ex.id}` : 'Buat tileset';
+  $('createBtn').title = miss ? 'Belum bisa: ' + miss[1] : 'Tulis tileset ke database (Tilesets.json)';
+  $('createWhere').textContent = ok ? `Semua siap. Tekan "${$('createBtn').textContent}" di kanan atas.` : 'Tombol di kanan atas aktif setelah semua butir di atas tercentang.';
 }
-
 async function create() {
-  const recipe = buildRecipe(), remap = risky().length > 0 && $('remap').checked;
-  status('Menyimpan…');
-  const res = await fetch('/api/compose', { method: 'POST', body: JSON.stringify({ recipe, remap }) });
-  const out = await res.json();
-  if (!res.ok) { status(out.error, 'err'); return; }
-  S.checked = '';
-  await reload();
-  status(`Tileset #${out.id} "${recipe.name}" tersimpan.` + (out.text ? ' ' + out.text + '.' : '') +
-         ' Buka editor → Database → Tilesets.', 'ok');
+  const recipe = buildRecipe(), remap = risky().length > 0 && S.remap;
+  S.busy = true; renderChecks(); say('Menyimpan…');
+  try {
+    const res = await fetch('/api/compose', { method: 'POST', body: JSON.stringify({ recipe, remap }) });
+    const out = await res.json();
+    if (!res.ok) { say(out.error, 'err'); toast(out.error, 'err'); return; }
+    S.checked = '';
+    await reload();
+    const msg = `Tileset #${out.id} "${recipe.name}" tersimpan.` + (out.text ? ' ' + out.text + '.' : '');
+    say(msg, 'ok');
+    toast(msg, 'ok', 'Buka Map Editor', () => { location.href = '/'; });
+  } finally { S.busy = false; renderChecks(); }
 }
+$('createBtn').onclick = create;
+
+// ---------------------------------------------------------------- shared bits: toast, status, splitters, view bar
+function say(t, cls) { $('statusText').textContent = t; $('statusChip').title = t; $('statusChip').className = 'savechip' + (cls === 'err' ? ' dirty' : ''); }
+function toast(text, cls, action, fn) {
+  const t = document.createElement('div'); t.className = 'toast' + (cls ? ' ' + cls : ''); t.setAttribute('role', cls === 'err' ? 'alert' : 'status');
+  t.innerHTML = `<span>${esc(text)}</span>` + (action ? `<button class="btn">${esc(action)}</button>` : '') + `<button class="btn ghost" aria-label="Tutup pesan">✕</button>`;
+  const close = () => { t.classList.add('out'); setTimeout(() => t.remove(), 200); };
+  if (action) t.children[1].onclick = () => { fn(); close(); };
+  t.lastElementChild.onclick = close;
+  $('toasts').appendChild(t); setTimeout(close, cls === 'err' ? 10000 : action ? 8000 : 5000);
+}
+const tok = n => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(n));
+[['splitL', 'side', '--side-cur', 1, 'novaWizSideW'], ['splitR', 'insp', '--insp-cur', -1, 'novaWizInspW']].forEach(([sp, el, prop, dir, key]) => {
+  const s = $(sp), set = w => $('wapp').style.setProperty(prop, Math.max(tok('--side-min'), Math.min(w, tok('--side-max'))) + 'px');
+  const keep = () => { try { localStorage.setItem(key, $(el).offsetWidth); } catch (e) { /* not kept */ } };
+  try { const w = +localStorage.getItem(key); if (w) set(w); } catch (e) { /* default size */ }
+  s.onpointerdown = e => {
+    e.preventDefault(); s.setPointerCapture(e.pointerId); s.classList.add('drag'); document.body.classList.add('resizing');
+    const x0 = e.clientX, w0 = $(el).offsetWidth;
+    s.onpointermove = ev => set(w0 + dir * (ev.clientX - x0));
+    s.onpointerup = () => { s.onpointermove = s.onpointerup = null; s.classList.remove('drag'); document.body.classList.remove('resizing'); keep(); };
+  };
+  s.onkeydown = e => { const d = e.key === 'ArrowLeft' ? -16 : e.key === 'ArrowRight' ? 16 : 0; if (d) { e.preventDefault(); set($(el).offsetWidth + dir * d); keep(); } };
+  s.ondblclick = () => { $('wapp').style.removeProperty(prop); try { localStorage.removeItem(key); } catch (e) { /* nothing kept */ } };
+});
+(() => {
+  const grip = $('vbGrip'), vb = $('viewbar'), m = () => document.querySelector('main');
+  const place = (x, y) => { x = Math.max(0, Math.min(x, m().clientWidth - vb.offsetWidth)); y = Math.max(0, Math.min(y, m().clientHeight - vb.offsetHeight)); Object.assign(vb.style, { left: x + 'px', top: y + 'px', right: 'auto' }); };
+  grip.onpointerdown = e => {
+    e.preventDefault(); grip.setPointerCapture(e.pointerId); document.body.classList.add('moving');
+    const mr = m().getBoundingClientRect(), r = vb.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top;
+    grip.onpointermove = ev => place(ev.clientX - mr.left - dx, ev.clientY - mr.top - dy);
+    grip.onpointerup = () => { grip.onpointermove = grip.onpointerup = null; document.body.classList.remove('moving'); };
+  };
+  grip.onkeydown = e => { const d = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] }[e.key]; if (!d) return; e.preventDefault();
+    const mr = m().getBoundingClientRect(), r = vb.getBoundingClientRect(); place(r.left - mr.left + d[0], r.top - mr.top + d[1]); };
+  grip.ondblclick = () => Object.assign(vb.style, { left: '', top: '', right: '' });
+})();
+function setVbMini(on, save) {
+  const hadFocus = document.activeElement && document.activeElement.closest('#vbHide, #vbMini');
+  $('viewbar').classList.toggle('mini', on);
+  if (hadFocus) $(on ? 'vbMini' : 'vbHide').focus();
+  if (save) try { localStorage.setItem('novaWizVbMini', on ? '1' : '0'); } catch (e) { /* not kept */ }
+}
+$('vbHide').onclick = () => setVbMini(true, true);
+$('vbMini').onclick = () => setVbMini(false, true);
+$('passChip').onclick = () => { S.pass = !S.pass; $('passChip').setAttribute('aria-pressed', S.pass); drawSheet(); };
+$('zIn').onclick = () => { S.zoom = Math.min(1, S.zoom + .25); drawSheet(); };
+$('zOut').onclick = () => { S.zoom = Math.max(.25, S.zoom - .25); drawSheet(); };
+window.addEventListener('keydown', e => {
+  const tag = e.target.tagName;
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) && !['checkbox', 'radio'].includes(e.target.type)) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'Enter' && S.sel && tag !== 'BUTTON') { e.preventDefault(); addPick(); return; }
+  if (e.key.toLowerCase() === 'h') { setVbMini(!$('viewbar').classList.contains('mini'), true); return; }
+  const k = SLOTS.find(x => x === e.key.toUpperCase());
+  if (k && slotAllows(k)) { S.target = k; renderAct(); renderSlots(); }
+});
 
 async function reload() {
   S.state = await (await fetch('/api/state')).json();
-  $('names').innerHTML = [...new Set([...S.state.tilesets.map(t => t.name), ...Object.keys(S.state.recipes)])]
-    .map(n => `<option value="${n}">`).join('');
+  $('tsNames').innerHTML = [...new Set([...S.state.tilesets.map(t => t.name), ...Object.keys(S.state.recipes)])].map(n => `<option value="${esc(n)}">`).join('');
+  if (!tsById(S.base)) S.base = S.state.tilesets[0].id;
   if (!S.slots.B) S.slots = defaultSlots();
-  render();
+  S.lastName = S.name.trim();
+  onName();
 }
-
-$('name').oninput = onName;
-$('base').onchange = e => { S.base = +e.target.value; render(); };
-$('create').onclick = create;
-$('ack').onchange = updateCreate;
-$('remap').onchange = updateCreate;
-$('showFlags').onchange = drawSheet;
-$('zoom').onchange = e => { S.zoom = +e.target.value; drawSheet(); };
-
-reload().then(() => {
+(async () => {
+  try { if (localStorage.getItem('novaWizVbMini') === '1') setVbMini(true); } catch (e) { /* shown */ }
+  await reload();
   openSheet(S.state.sheets.find(s => s.name === 'Inside_B') ? 'Inside_B' : S.state.sheets[0].name);
-  status('Pilih tile di kiri, tambahkan ke slot di kanan, beri nama, lalu Buat Tileset.');
-});
+  renderAct();
+  say('Pilih tile di tengah, tambahkan ke slot di kanan, beri nama, lalu Buat tileset.');
+})();
 </script>
 </body>
 </html>
