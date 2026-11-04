@@ -22,6 +22,12 @@ BB = {
     28: ('Grassland', 'Grassland'),      # Skyreach Hill
     29: ('GrassMaze', 'GrassMaze'),      # Briarwood
     30: ('Grassland', 'Forest'),         # Briarwood - Entrance
+    K.ACADEMY: ('Grassland', 'Town1'), K.ACADEMY_HALL: ('DecorativeTile', 'Castle2'),
+    K.ACADEMY_COURT: ('Cobblestones4', 'Castle1'), K.ACADEMY_CLASSES: ('DecorativeTile', 'Castle1'),
+    K.ACADEMY_LIBRARY: NOBLE, K.ACADEMY_UNDERCROFT: ('Cobblestones3', 'Stone1'), K.ACADEMY_UPPER: NOBLE,
+    K.ACADEMY_TOWER: ('Crystal', 'Tower'),
+    K.ACADEMY_DINING: ('DecorativeTile', 'Castle2'),
+    K.QUILL_INN: NOBLE, K.QUILL_APOTHECARY: SHOP,
 }
 
 if __name__ == '__main__':

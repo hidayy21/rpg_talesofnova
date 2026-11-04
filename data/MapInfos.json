@@ -29,5 +29,16 @@ null,
 {"id":27,"expanded":false,"name":"Prologue - Sealed Vault","order":30,"parentId":0,"scrollX":1584,"scrollY":977.3333333333334},
 {"id":28,"expanded":false,"name":"Skyreach Hill","order":2,"parentId":1,"scrollX":0,"scrollY":0},
 {"id":29,"expanded":false,"name":"Briarwood","order":3,"parentId":1,"scrollX":1081.3333333333333,"scrollY":873.3333333333334},
-{"id":30,"expanded":false,"name":"Briarwood - Entrance","order":4,"parentId":1,"scrollX":1081.3333333333333,"scrollY":802.6666666666666}
+{"id":30,"expanded":false,"name":"Briarwood - Entrance","order":4,"parentId":1,"scrollX":1081.3333333333333,"scrollY":802.6666666666666},
+{"id":31,"expanded":false,"name":"Royal Magic Academy & Quillhaven","order":31,"parentId":1,"scrollX":0,"scrollY":0},
+{"id":32,"expanded":false,"name":"Royal Magic Academy - Entrance Hall","order":32,"parentId":31,"scrollX":0,"scrollY":0},
+{"id":33,"expanded":false,"name":"Royal Magic Academy - Cloister Court","order":33,"parentId":31,"scrollX":0,"scrollY":0},
+{"id":34,"expanded":false,"name":"Royal Magic Academy - Lecture Wing","order":34,"parentId":33,"scrollX":0,"scrollY":0},
+{"id":35,"expanded":false,"name":"Royal Magic Academy - Library","order":35,"parentId":33,"scrollX":0,"scrollY":0},
+{"id":36,"expanded":false,"name":"Royal Magic Academy - Undercroft","order":36,"parentId":32,"scrollX":0,"scrollY":0},
+{"id":37,"expanded":false,"name":"Royal Magic Academy - Upper Floor","order":37,"parentId":32,"scrollX":0,"scrollY":0},
+{"id":38,"expanded":false,"name":"Royal Magic Academy - Star Tower","order":38,"parentId":33,"scrollX":0,"scrollY":0},
+{"id":39,"expanded":false,"name":"Quillhaven - Inkpot Inn","order":39,"parentId":31,"scrollX":0,"scrollY":0},
+{"id":40,"expanded":false,"name":"Quillhaven - Apothecary","order":40,"parentId":31,"scrollX":0,"scrollY":0},
+{"id":41,"expanded":false,"name":"Royal Magic Academy - Great Hall","order":41,"parentId":32,"scrollX":0,"scrollY":0}
 ]

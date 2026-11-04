@@ -25,6 +25,13 @@ MOODS = {
     28: {'grade': 'warm'},                                      # Skyreach Hill
     29: {'grade': 'mystic', 'fog': 0.5, 'fog color': '#8fa3a2', 'sunbeams': 0.3, 'vignette': 0.45},                        # Briarwood: deep, misty, a little uncanny
     30: {'grade': 'forest', 'fog': 0.25, 'fog color': '#b4c4bc'},                        # Briarwood - Entrance: the mist starts here
+    K.ACADEMY: {'grade': 'warm'},
+    K.ACADEMY_HALL: {'grade': 'arcane', 'sunbeams': 0.3, 'particles': 'dust'},
+    K.ACADEMY_COURT: {'grade': 'noble'}, K.ACADEMY_CLASSES: ROOM, K.ACADEMY_UPPER: ROOM,
+    K.ACADEMY_LIBRARY: {'grade': 'arcane', 'sunbeams': 0.25, 'particles': 'dust'},
+    K.ACADEMY_UNDERCROFT: {'grade': 'gloom', 'particles': 'dust'}, K.ACADEMY_TOWER: {'grade': 'arcane'},
+    K.ACADEMY_DINING: {'grade': 'interior', 'sunbeams': 0.4, 'particles': 'dust'},
+    K.QUILL_INN: ROOM, K.QUILL_APOTHECARY: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'},
 }
 
 

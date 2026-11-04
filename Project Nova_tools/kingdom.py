@@ -9,6 +9,11 @@ ASHVEIL_1F, ASHVEIL_2F, ASHVEIL_3F = 18, 19, 20
 PRISON_1F, PRISON_CELLS = 21, 22
 CITY_GATE = 23
 HOLLOW_FARM, ROYAL_QUARTER, TERRACES = 24, 25, 26
+# outside the capital, north up the coast road (27-30 are the prologue's Sealed Vault, Skyreach Hill and Briarwood)
+ACADEMY, ACADEMY_HALL = 31, 32
+ACADEMY_COURT, ACADEMY_CLASSES, ACADEMY_LIBRARY, ACADEMY_UNDERCROFT, ACADEMY_UPPER, ACADEMY_TOWER = 33, 34, 35, 36, 37, 38
+QUILL_INN, QUILL_APOTHECARY = 39, 40
+ACADEMY_DINING = 41
 
 NAMES = {
     WORLD: ('World Map', 'Western Continent'),
@@ -36,6 +41,17 @@ NAMES = {
     HOLLOW_FARM: ('Nova - Hollow Farm', 'Hollow Farm'),
     ROYAL_QUARTER: ('Nova - Royal Quarter', 'Royal Capital - Royal Quarter'),
     TERRACES: ('Nova - Hearthstone Terraces', 'Royal Capital - Hearthstone Terraces'),
+    ACADEMY: ('Royal Magic Academy & Quillhaven', 'Quillhaven - Royal Magic Academy'),
+    ACADEMY_HALL: ('Royal Magic Academy - Entrance Hall', 'Royal Magic Academy - Entrance Hall'),
+    ACADEMY_DINING: ('Royal Magic Academy - Great Hall', 'Royal Magic Academy - Great Hall'),
+    ACADEMY_COURT: ('Royal Magic Academy - Cloister Court', 'Royal Magic Academy - Cloister Court'),
+    ACADEMY_CLASSES: ('Royal Magic Academy - Lecture Wing', 'Royal Magic Academy - Lecture Wing'),
+    ACADEMY_LIBRARY: ('Royal Magic Academy - Library', 'Royal Magic Academy - Library & Infirmary'),
+    ACADEMY_UNDERCROFT: ('Royal Magic Academy - Undercroft', 'Royal Magic Academy - Undercroft'),
+    ACADEMY_UPPER: ('Royal Magic Academy - Upper Floor', 'Royal Magic Academy - Upper Floor'),
+    ACADEMY_TOWER: ('Royal Magic Academy - Star Tower', 'Royal Magic Academy - Star Tower'),
+    QUILL_INN: ('Quillhaven - Inkpot Inn', 'The Inkpot Inn'),
+    QUILL_APOTHECARY: ('Quillhaven - Apothecary', 'Moonwell Apothecary'),
 }
 
 # Arrival points, filled in by the map scripts' layouts (kept here so both sides of a link use one source).
@@ -73,6 +89,28 @@ ARRIVE = {
     # ... and Castle Approach's moat walk (y14) runs on west into it, as it does east into the Royal Quarter
     'terraces_from_castle': (TERRACES, 42, 14, 4),
     'castle_from_terraces': (CASTLE_APPROACH, 1, 14, 6),
+    # Royal Magic Academy, north of the capital on the World Map, with the village of Quillhaven facing its gate
+    # across the road: the road comes in from the east (the coast road) and the village lane from the south
+    'academy_from_world_east': (ACADEMY, 54, 19, 4),
+    'academy_from_world_south': (ACADEMY, 27, 48, 8),
+    'world_from_academy_east': (WORLD, 63, 26, 6),       # on the spur road between the two icons, off the coast road
+    'world_from_academy_south': (WORLD, 60, 28, 2),      # below Quillhaven's icon
+    'hall_from_academy': (ACADEMY_HALL, 9, 20, 8),
+    # inside the Academy (map_academy_castle.py)
+    'upper_from_hall': (ACADEMY_UPPER, 30, 25, 8), 'hall_from_upper': (ACADEMY_HALL, 9, 7, 2),
+    'court_from_hall_w': (ACADEMY_COURT, 13, 26, 8), 'court_from_hall_e': (ACADEMY_COURT, 23, 26, 8),
+    'hall_from_court_w': (ACADEMY_HALL, 5, 4, 2), 'hall_from_court_e': (ACADEMY_HALL, 13, 4, 2),
+    'under_from_hall': (ACADEMY_UNDERCROFT, 3, 5, 2), 'hall_from_under': (ACADEMY_HALL, 2, 19, 6),
+    'dining_from_hall': (ACADEMY_DINING, 32, 14, 4), 'hall_from_dining': (ACADEMY_HALL, 1, 12, 6),
+    'classes_from_court': (ACADEMY_CLASSES, 38, 22, 4), 'court_from_classes': (ACADEMY_COURT, 1, 16, 6),
+    'library_from_court': (ACADEMY_LIBRARY, 1, 12, 6), 'court_from_library': (ACADEMY_COURT, 34, 16, 4),
+    'tower_from_court': (ACADEMY_TOWER, 8, 15, 8), 'court_from_tower': (ACADEMY_COURT, 18, 8, 2),
+    'academy_from_hall': (ACADEMY, 27, 11, 2),
+    # Quillhaven's inn and apothecary (doors on Map031)
+    'inn_from_village': (QUILL_INN, 5, 13, 8),
+    'village_from_inn': (ACADEMY, 10, 28, 2),
+    'apothecary_from_village': (QUILL_APOTHECARY, 7, 11, 8),
+    'village_from_apothecary': (ACADEMY, 40, 28, 2),
 }
 # City layout (every edge exit lands on the facing edge of its neighbour):
 #                  Hearthstone Terraces - Castle Approach - Royal Quarter

@@ -5,6 +5,12 @@
 - **PandaMaru**: tiles in `img/tilesets/PM_*.png`, `img/characters/!$PM_Blacksmith.png` and
   `img/pictures/PM_*.png`. Terms: free with credit, **non-commercial projects only**.
 
+## Battle animations
+
+- **Andy Chen** (published by DEGICA): *Animations Collection III: Thaumaturgy* (RPG Maker MV DLC), sheets
+  `img/animations/30FPS_AC3T*.png`, the "Thaum: ..." animations.
+- **finalbossblues**: *Pixel Animations* (RPG Maker MV DLC), sheets `img/animations/Px_*.png`, the "Px: ..." animations.
+
 ## Design references
 
 Used as background reading for the layout of the Royal Capital of Nova (district placement, walls and gates,

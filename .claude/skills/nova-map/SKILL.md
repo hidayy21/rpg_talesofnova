@@ -1,6 +1,6 @@
 ---
 name: nova-map
-description: Build or change a map for Tales of Nova (RPG Maker MV) with the Nova Tools Python map library instead of the stock editor - towns, interiors, forests, dungeons, farms, winter villages. Uses every tile sheet the project has (Outside/Inside/Dungeon/World/SF plus all NovaTilesetEx extra sheets - PM_*, Nova_*), renders a preview to check the layout, validates links, then saves so the map can be touched up in the Nova Tools Map Editor. Use whenever the user asks to make, design, extend, decorate or fix a map ("buatkan map", "bikin map", "tambah map", "dekor map", "perbaiki map", "map baru", "interior", "dungeon", "hutan", "desa").
+description: Build or change a map for Tales of Nova (RPG Maker MV) with the Nova Tools Python map library instead of the stock editor - towns, interiors, forests, dungeons, farms, winter villages. Uses every tile sheet the project has (Outside/Inside/Dungeon/World/SF plus all NovaTilesetEx extra sheets - PM_*, Nova_*, Avy_*, WizardCastle - read live from the project), renders a preview to check the layout, validates links, then saves so the map can be touched up in the Nova Tools Map Editor. Use whenever the user asks to make, design, extend, decorate or fix a map ("buatkan map", "bikin map", "tambah map", "dekor map", "perbaiki map", "map baru", "interior", "dungeon", "hutan", "desa").
 ---
 
 # Building maps for Tales of Nova
@@ -41,17 +41,32 @@ Tilesets (`data/Tilesets.json`), each map picks one with its A1-A5 ground:
 | 10 | PandaMaru Forest | Outside ground + `PM_Hills_A5` cliffs/hills |
 | 11 | PandaMaru Interior | Inside ground |
 | 12 | PandaMaru Winter | Outside ground + `PM_Town_A3` |
+| 13 | Avy Town | Outside ground + `Avy_Town_A3` roofs/walls |
+| 14 | Avy Castle | Outside ground + `Avy_Castle_A4` castle walls |
+| 15 / 16 | Avy Nature / Avy Palm | `Avy_Nature_A2` / `Avy_Palm_A2` ground (forest floor, beach, palms) |
+| 17 / 18 | Avy Landmarks 1 / 2 | Outside ground, big landmark objects (towers, lighthouse, giant tree...) |
+| 19 | Avy Ship | `Avy_Ship_A2` decks, ship hulls |
+| 20 | Wizard Castle | `WizardCastle_A2/A4` floors and walls (+ Inside_B/C as C/D) - magic academy, mage towers |
 
-Object sheets: **any map can place tiles from any of these** with `L.ext(name, n)` (slot list = NovaTilesetEx
-"Extra Sheets" in `js/plugins.js`; passability comes along automatically, the preview draws them too):
-`Outside_B/C`, `Inside_B/C`, `Dungeon_B/C`, `World_B/C`, `SF_Outside_B/C`, `SF_Inside_B/C`, `Nova_Market_D`,
-`Outside_A5`, `Inside_A5`, `Dungeon_A5`, `SF_Outside_A5`, `Nova_InsideProps`, `Nova_Houses1`, `Nova_Houses2`,
-`Nova_Beds`, `Nova_Nature`, `Nova_Farm`, `PM_Market`, `PM_Village1`, `PM_Village2`, `PM_Rome_B`, `PM_Hills_A5`,
-`PM_Nature1-3`, `PM_Forest`, `PM_NobleInterior`, `PM_Beds`, `PM_Rooms`, `PM_Extras`, `PM_XmasDecoration`,
-`PM_Winter1/2`, `PM_Blockhouse`.
+That table is a snapshot: new packs are added with `import_tilesets.py` and become new tilesets. Read the live list
+from `data/Tilesets.json` before choosing.
 
-Do not stop at the kit constants: the PandaMaru and Nova sheets have the richer trees, cliffs, houses, market
-stalls, noble furniture and winter dressing. Before decorating, list the sheets that fit the theme, run
+Object sheets: **any map can place tiles from any of them** with `L.ext(name, n)` (passability comes along
+automatically, the preview draws them too). The list grows with every import, so **never work from memory - print
+the live list** (sheet name and the tileset that holds its passability):
+
+```
+python3 -c "import nova_maplib as L; [print(n, t) for n, t in sorted(L.ext_sheets().values())]"
+```
+
+As of the last update: the stock `Outside/Inside/Dungeon/World/SF_*` B/C and A5 sheets, `Nova_*` (Market_D,
+InsideProps, Houses1/2, Beds, Nature, Farm), `PM_*` (Market, Village1/2, Rome_B, Hills_A5, Nature1-3, Forest,
+NobleInterior, Beds, Rooms, Extras, XmasDecoration, Winter1/2, Blockhouse), `Avy_Town_B`-`B4`, `Avy_Castle_B`-`B4`,
+`Avy_Nature_B`-`B4`, `Avy_Landmarks_B`-`B8`, `Avy_Ship_B`-`B3`, `WizardCastle_B` - 64 sheets.
+
+Do not stop at the kit constants: the PandaMaru, Nova and Avy sheets have the richer trees, cliffs, houses, market
+stalls, noble furniture and winter dressing. Before decorating, go through the live list, pick **every** sheet that
+fits the theme (by name first, then by looking), run
 `tile_numbers.py` on them and **look at the images** (Read the PNG) to pick tiles by number. Multi-tile objects
 (trees, houses, beds) span several numbers: the number printed under a tile is what `L.ext` takes, and the tile
 below it is n+8 (B-E sheets are two 8-column halves; the right half starts at 128). Put the upper parts on layer 3 (drawn above the
@@ -59,6 +74,9 @@ player, `☆`-flagged tiles) and the base on layer 2, as `Town.big_tree` does. W
 theme, give them names in a small dict at the top of the script (or in the kit, if they will be reused) so the
 next map can use them by name. Delete the `_work/tiles_*.png` images you generated when done unless the user wants
 them kept.
+
+When you hand the map over, say which sheets you looked at and which you used (and, briefly, why the other
+fitting ones were left out), so the user can see nothing was skipped.
 
 ## Workflow
 
