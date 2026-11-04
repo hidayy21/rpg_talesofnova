@@ -5,6 +5,18 @@
 - **PandaMaru**: tiles in `img/tilesets/PM_*.png`, `img/characters/!$PM_Blacksmith.png` and
   `img/pictures/PM_*.png`. Terms: free with credit, **non-commercial projects only**.
 
+- **Kadokawa, GalacticGod** (RPG Maker MZ free material): `img/*/MZ_*.png`
+  (walking sprites, faces `MZ_Faces`, busts, SV battlers, `MZ_Damage`). Also credited per pack:
+  **Mysterious Things** (Elderly Inn Keeper), **Tonbi@Tobishima-Factory** and
+  **©Gotcha Gotcha Games Inc./YOJI OJIMA 2020** (Free Material 04: `MZ_People2_1`, `MZ_People3_1`, `MZ_People3_5`).
+  The facesets and busts of the Meat Butcher and Elderly Inn Keeper were made with AI and edited by hand.
+- **Hiddenone**: character generator hair parts (FrontHair / RearHair p600-p604, installed in the MV
+  generator folder, not in the repo).
+- *Source still to confirm*: `img/*/HF_*` (High Fantasy Heroes pack), `img/*/JH_*` and `audio/bgm/JH_*`
+  (Junkyard Heroes pack), and the sheets `$Kimono_Female`, `$Skull_Knight1-2`, `Bandits`, `Skull_Peeps`,
+  `Bugs_Birds`, `Golfers`, `Jiangshi`, `Modern_Punks`, `$Army_Troops`, `Skull_Knights` (face),
+  `Soldier_1-2`, `Skull_Peep_5-6` (SV) from `additional asset 3`.
+
 ## Battle animations
 
 - **Andy Chen** (published by DEGICA): *Animations Collection III: Thaumaturgy* (RPG Maker MV DLC), sheets
