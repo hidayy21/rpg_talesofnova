@@ -15,6 +15,20 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # back to front, as the generator stacks them for the walking sprite (RearHair2 is the back of the head: over the body)
 ORDER = ['Cloak2', 'Wing2', 'Tail2', 'Body', 'RearHair2', 'FacialMark', 'Beard2', 'Clothing2', 'Clothing1',
          'Beard1', 'RearHair1', 'Cloak1', 'FrontHair2', 'FrontHair1', 'BeastEars', 'Glasses', 'AccB', 'AccA', 'Wing1', 'Tail1']
+# the same character as a side-view battler (img/sv_actors, 576x384) and as the damage strip (img/characters Damage
+# sheets, 144x48: three frames of lying down). These sheets have one layer per part: (file part, recipe keys)
+ORDERS = {
+    # (checked: Selene's own battler, family1_1, comes out pixel for pixel)
+    'SV': [('Wing', ('Wing',)), ('Tail', ('Tail',)), ('Cloak2', ('Cloak',)), ('body', ('Body',)),
+           ('RearHair1', ('RearHair',)), ('FacialMark', ('FacialMark',)), ('Ears', ('Ears',)), ('Beard', ('Beard',)),
+           ('Clothing1', ('Clothing1', 'Clothing2')), ('Cloak1', ('Cloak',)), ('FrontHair', ('FrontHair',)),
+           ('BeastEars', ('BeastEars',)), ('Glasses', ('Glasses',)), ('AccB', ('AccB',)), ('AccA', ('AccA',))],
+    'TVD': [('Wing', ('Wing',)), ('Tail', ('Tail',)), ('Body', ('Body',)), ('RearHair', ('RearHair',)),
+            ('FacialMark', ('FacialMark',)), ('Ears', ('Ears',)), ('Beard', ('Beard',)),
+            ('Clothing', ('Clothing1', 'Clothing2')), ('Cloak', ('Cloak',)), ('FrontHair', ('FrontHair',)),
+            ('BeastEars', ('BeastEars',)), ('Glasses', ('Glasses',)), ('AccB', ('AccB',)), ('AccA', ('AccA',))],
+}
+SIZE = {'TV': (144, 192), 'SV': (576, 384), 'TVD': (144, 48)}
 # mask colour -> slot, per part family
 MASK = {
     'Body': {(249, 193, 157): 'skin', (44, 128, 203): 'eyes', (79, 65, 60): 'eyes_dark'},
@@ -38,12 +52,12 @@ def gradients():
 
 def family(part):
     for f in ('Hair', 'Beard', 'Clothing', 'Cloak', 'Acc', 'Body'):
-        if f in part: return f
+        if f.lower() in part.lower(): return f
     return None
 
 
-def layer(sex, part, n, colors):
-    path = os.path.join(GEN, 'TV', sex, 'TV_%s_p%02d.png' % (part, n))
+def layer(sex, part, n, colors, kind='TV'):
+    path = os.path.join(GEN, kind, sex, '%s_%s_p%02d.png' % (kind, part, n))
     if not os.path.isfile(path): return None
     base = Image.open(path).convert('RGBA')
     mpath = path[:-4] + '_c.png'
@@ -120,10 +134,17 @@ def hat_layer(colors):
     return out
 
 
-def compose(char):
-    """One character: 144x192 (3 frames x 4 directions)."""
+def compose(char, kind='TV'):
+    """One character: kind 'TV' the walking sprite, 144x192 (3 frames x 4 directions); 'SV' the side-view battler;
+    'TVD' the damage strip. The witch hat is on the walking sprite only."""
     sex, parts, colors = char['sex'], char['parts'], char['colors']
-    img = Image.new('RGBA', (144, 192), (0, 0, 0, 0))
+    img = Image.new('RGBA', SIZE[kind], (0, 0, 0, 0))
+    if kind != 'TV':
+        for part, keys in ORDERS[kind]:
+            n = next((parts[k] for k in keys if parts.get(k)), None)
+            lay = n and layer(sex, part, n, colors, kind)
+            if lay: img.alpha_composite(lay)
+        return img
     for part in ORDER:
         for key in (part, part.rstrip('12')):
             if key in parts and parts[key]:

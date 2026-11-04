@@ -89,6 +89,21 @@ HEROES = [   # (name, how it is made)
     ('Selene (Duskward)', lambda: G.head_swap(G.compose(hero_body('Female', 'dusk', 2)), 'family1', 0, long_hair=True)),
 ]
 HERO_SHEET = 'Nova_Heroes_Uniform'
+# Selene is a generator character all through (family1: FrontHair 6, RearHair 2 in hair colour 22, eyes 28, the white
+# Clothing 13), so her battler and damage strip in uniform are built straight from the parts:
+#   img/sv_actors/Nova_Heroes_Uniform_3.png   (the generator's own naming: sheet name + index + 1)
+#   img/characters/Nova_Damage_Uniform.png    Selene at index 2, the first (facing down) row
+SELENE = {'sex': 'Female', 'parts': {'Body': 1, 'Clothing1': 13, 'Cloak': 2, 'FrontHair': 6, 'RearHair': 2},
+          'colors': {**DUSK, 'eyes': 28, 'hair': 22}}
+HERO_SV = {'Nova_Heroes_Uniform_3': SELENE}
+DAMAGE_SHEET, DAMAGE = 'Nova_Damage_Uniform', {2: SELENE}
+
+
+def damage_sheet():
+    out = G.Image.new('RGBA', (576, 384), (0, 0, 0, 0))
+    for i, c in DAMAGE.items():
+        out.alpha_composite(G.compose(c, 'TVD'), ((i % 4) * 144, (i // 4) * 192))
+    return out
 
 
 def hero_sheet():
@@ -129,6 +144,11 @@ if __name__ == '__main__':
             print('wrote img/characters/%s.png' % name)
         hero_sheet().save(os.path.join(G.HERE, '..', 'img', 'characters', HERO_SHEET + '.png'))
         print('wrote img/characters/%s.png' % HERO_SHEET)
+        for name, c in HERO_SV.items():
+            G.compose(c, 'SV').save(os.path.join(G.HERE, '..', 'img', 'sv_actors', name + '.png'))
+            print('wrote img/sv_actors/%s.png' % name)
+        damage_sheet().save(os.path.join(G.HERE, '..', 'img', 'characters', DAMAGE_SHEET + '.png'))
+        print('wrote img/characters/%s.png' % DAMAGE_SHEET)
     S = 2
     out = Image.new('RGBA', (8 * 48 * S + 150, len(sheets) * 48 * S + 10), (70, 75, 90, 255)); d = ImageDraw.Draw(out)
     names = {**{s: ['%s %d' % (s[5:], i) for i in range(8)] for s in STUDENT_SHEETS},
