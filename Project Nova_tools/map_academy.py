@@ -27,6 +27,7 @@ CX0, CX1 = 8, 47                                # the castle front
 ROAD_Y = (18, 20)
 SOUTH = (25, 29)                                # the path out to the south
 SQUARE = (27, 31)                               # the well in the middle of the village square
+PATH = ('A2', 1)                                # dirt with a grassy fringe: paths, the square, the hen run
 BLOCKER = 767                                   # Nova_Market_D's last cell: empty and impassable (see Briarwood)
 assert K.ARRIVE['academy_from_world_east'][1:3] == (W - 2, 19) and K.ARRIVE['academy_from_world_south'][1:3] == (GX, H - 2)
 assert K.ARRIVE['academy_from_hall'][1:3] == (GX, 11)
@@ -41,8 +42,11 @@ X = {
     'round_tree': ('PM_Nature1', [(134, 135), (142, 143), (150, 151)], 1),
     'park_tree': ('Avy_Town_B', [(104, 105), (112, 113), (120, 121)], 1),
     'big_oak': ('PM_Forest', [(16, 17, 18), (24, 25, 26), (32, 33, 34)], 1),
-    'swing': ('PM_Nature1', [(246, 247), (254, 255)], 1),
-    'bush': ('PM_Forest', [(64,)], 1), 'bush2': ('PM_Forest', [(65,)], 1),
+    'great_oak': ('PM_Forest', [(None, 12, 13, 14), (None, 20, 21, 22), (27, 28, 29, 30, 31), (35, 36, 37, 38, 39),
+                               (43, 44, 45, 46), (51, 52, 53, 54, 55)], 2),      # 5x6 (seam_check.group), None = nothing there
+    'swing_red': ('PM_Nature1', [(246,), (254,)], 1), 'swing_wood': ('PM_Nature1', [(247,), (255,)], 1),   # ropes up:
+    # hang them right under a crown (238/239 above them is canopy fill, square on top and sides)
+    'bush': ('PM_Forest', [(66,)], 1), 'bush2': ('PM_Forest', [(74,)], 1),   # 64/65 are sapling crowns (trunk 72/73)
     'fern': ('PM_Forest', [(80,), (88,)], 1),
     'stump_big': ('PM_Nature1', [(216, 217, 218), (224, 225, 226)], 1),
     'axe_stump': ('PM_Nature1', [(219,)], 1),
@@ -51,7 +55,7 @@ X = {
     'birdbath': ('Avy_Town_B', [(68,), (76,)], 1),
     'planter': ('Avy_Town_B', [(58,)], 1), 'planter_green': ('Avy_Town_B', [(59,)], 1),
     'roofed_well': ('Avy_Town_B3', [(5, 6), (13, 14)], 1),
-    'wood_bench': ('Avy_Town_B3', [(220, 221), (228, 229)], 1),
+    'wood_bench': ('Avy_Town_B3', [(228, 229), (236, 237)], 1),         # 220-223 is a village miniature, not the bench
     'flower_box': ('Avy_Town_B3', [(113, 114), (121, 122)], 1),
     'mushrooms': ('Nova_Nature', [(128, 129)], 1),
     'pink_flowers': ('Nova_Nature', [(24, 25), (32, 33)], 2),
@@ -63,11 +67,13 @@ X = {
     'hay': ('PM_Village2', [(219, 220), (227, 228)], 1),
     'baskets': ('Avy_Town_B4', [(1,)], 1), 'jars': ('Avy_Town_B4', [(30,)], 1),
 }
-# 2x2 trees for the woods around the village, picked at random for a mixed wood: (crown row, trunk row)
+# 2x2 trees for the woods around the village, picked at random for a mixed wood: (crown row, trunk row). Only whole
+# trees: Outside_B 114/122 (BIG_TREE2) and PM_Forest 116-119/124-127 are seamless canopy fill, cut off on every side
+# when planted alone (seam_check.py finds such cuts)
 pair = lambda sheet, a, b: ((L.ext(sheet, a), L.ext(sheet, a + 1)), (L.ext(sheet, b), L.ext(sheet, b + 1)))
-WOOD_TREES = [BIG_TREE, BIG_TREE2, pair('PM_Nature1', 114, 122), pair('PM_Nature1', 116, 124),
-              pair('PM_Forest', 112, 120), pair('PM_Forest', 116, 124)]
-WOOD_WEIGHTS = [5, 3, 2, 2, 2, 1]
+WOOD_TREES = [BIG_TREE, pair('PM_Nature1', 118, 126), pair('PM_Nature1', 114, 122), pair('PM_Nature1', 116, 124),
+              pair('PM_Forest', 112, 120), pair('PM_Forest', 114, 122)]
+WOOD_WEIGHTS = [5, 2, 3, 3, 2, 1]
 taken, paths, keep = set(), set(), set()       # cells with an object / a path / never wooded
 
 
@@ -81,6 +87,7 @@ def ext_obj(name, x, y):
     sheet, rows, ground = X[name]
     for r, row in enumerate(rows):
         for c, n in enumerate(row):
+            if n is None: continue
             m.put(x + c, y + r, L.ext(sheet, n), 2 if r >= len(rows) - ground else 3)
             taken.add((x + c, y + r))
 
@@ -101,7 +108,7 @@ def path(points, width=1.0):
     for y in range(H):
         for x in range(W):
             if min(seg_dist((x, y), points[i], points[i + 1]) for i in range(len(points) - 1)) < width:
-                m.cell(x, y, DIRT); paths.add((x, y))
+                m.cell(x, y, PATH); paths.add((x, y))
 
 
 def fence_box(x0, y0, x1, y1, gates=()):
@@ -180,7 +187,7 @@ path([(26.5, 38), (33, 38.5), (33, 43)], 0.8)                                # e
 path([(44, 37), (46, 40), (46, 44)], 0.8)
 for y in range(H):                                                           # the square: an oval of trodden earth
     for x in range(W):
-        if ((x - SQUARE[0]) / 6.2) ** 2 + ((y - SQUARE[1]) / 3.6) ** 2 < 1: m.cell(x, y, DIRT); paths.add((x, y))
+        if ((x - SQUARE[0]) / 6.2) ** 2 + ((y - SQUARE[1]) / 3.6) ** 2 < 1: m.cell(x, y, PATH); paths.add((x, y))
 m.rect(SQUARE[0] - 1, SQUARE[1] - 1, SQUARE[0] + 2, SQUARE[1] + 1, GRASS)      # a patch of green round the well
 paths -= {(x, y) for x in range(SQUARE[0] - 1, SQUARE[0] + 3) for y in range(SQUARE[1] - 1, SQUARE[1] + 2)}
 keep_rect(SQUARE[0] - 7, SQUARE[1] - 4, SQUARE[0] + 7, SQUARE[1] + 4)
@@ -203,7 +210,7 @@ for x, y, t in ((14, inn + 1, BARREL), (15, inn + 1, BARREL), (5, inn + 1, CRATE
 # the chicken run south of the inn: a fenced pen with the coop in one corner
 PEN = (3, 31, 10, 37)
 fence_box(*PEN, gates=[(PEN[2], 34)])
-m.rect(PEN[0] + 1, PEN[1] + 1, PEN[2] - 1, PEN[3] - 1, DIRT)
+m.rect(PEN[0] + 1, PEN[1] + 1, PEN[2] - 1, PEN[3] - 1, PATH)
 coop = m.building(4, 6, 32, 1, 2, 'wood', 'planks', windows=False)
 m.put(5, coop, DOOR_HOLE)
 for name, x, y in (('nest_full', 7, 32), ('nest', 8, 32), ('hen_on_nest', 9, 32), ('hay', 8, 35), ('grain_sack', 4, 35)):
@@ -243,7 +250,10 @@ m.rect(37, 42, 40, 44, WATER)
 keep_rect(36, 41, 41, 45); taken.update((x, y) for x in range(37, 41) for y in range(42, 45))
 ext_obj('fern', 36, 43); ext_obj('rock', 41, 44)
 # the children's swing under a big oak by the south path
-ext_obj('big_oak', 30, 43); ext_obj('swing', 33, 44)
+ext_obj('great_oak', 29, 41)                                # its crown top in front of the cottage wall
+for name, x in (('swing_red', 30), ('swing_wood', 32)):     # either side of the trunk, right under the crown; on
+    sheet, ((rope,), (seat,)), _ = X[name]                  # the upper layer over the oak's own shadow tiles
+    m.put(x, 45, L.ext(sheet, rope), 3); m.put(x, 46, L.ext(sheet, seat), 3)
 keep_rect(29, 42, 35, 47)
 
 # ---------------------------------------------------------------- lone trees in the open
@@ -307,7 +317,7 @@ for y in range(21, H):
         if near_wood and r < 0.16: ext_obj(rnd.choice(('bush', 'bush2', 'rock', 'pebbles')), x, y)
         elif r < 0.07: m.put(x, y, rnd.choice(GRASS_TUFTS)); taken.add((x, y))
         elif r < 0.10: m.put(x, y, rnd.choice(FLOWERS)); taken.add((x, y))
-for name, x, y in (('pink_flowers', 2, 34), ('mushrooms', 48, 45), ('stump_big', 50, 21), ('fern', 3, 45),
+for name, x, y in (('pink_flowers', 2, 34), ('mushrooms', 48, 45), ('stump_big', 50, 21), ('fern', 2, 42),
                    ('pink_flowers', 34, 45)):
     ext_obj(name, x, y)
 
@@ -318,7 +328,9 @@ m.door('Moonwell Apothecary', 40, apo, *K.ARRIVE['apothecary_from_village'][:3],
 m.exit('To the coast road', [(W - 1, y) for y in range(ROAD_Y[0], ROAD_Y[1] + 1)], *K.ARRIVE['world_from_academy_east'])
 m.exit('To the plains', [(x, H - 1) for x in range(SOUTH[0], SOUTH[1] + 1) if not wooded(x, H - 1)],
        *K.ARRIVE['world_from_academy_south'])
-for x in (GX - 2, GX + 2): m.obj('Brazier', x, 11, '!Other2', 7, None, step=True)
+for x in (GX - 2, GX + 2): m.obj('Brazier', x, 11, '!Other2', 7, None, step=True)['note'] = '<light: 150, #ffa050, flicker, -12>'
+# night lights (NovaLighting shows them only once the ambient darkens): the violet tree glows by its own magic
+m.add_event('Violet Glow', 39, 14, [page(None, priority=0, through=True)], note='<light: 230, #b878ff>\n<minimap: hide>')
 m.sign('Signpost', GX + 4, 21, ['\\C[6]Quillhaven\\C[0] - Royal Magic Academy of Nova', 'East: the coast road, south to the Royal Capital.'])
 m.sign('Notice Board', 22, 30, ['\\C[6]Notice Board\\C[0]', '"Rooms for students\' families - ask at the Inkpot."',
        '"LOST: one familiar (toad). Answers to Bartholomew."', '"Fresh eggs daily - knock at the coop, not the hens."'])
@@ -345,7 +357,7 @@ m.npc('Pedlar', 32, 30, 'People3', 5, ('Pedlar:', 'Quills, candle-ends, lucky be
 m.npc('Hen-wife Bess', 12, 33, 'People1', 7, ('Hen-wife Bess:', 'The Academy kitchens take every egg I have.',
       'Something about a professor who eats nine a day.', 'Nine! I don\'t ask.'), direction=4)
 m.npc('Farmer', 49, 29, 'People3', 4, ('Farmer:', 'The apothecary buys my mandrakes. Ten silver a root.', 'Earplugs are extra.'), direction=8)
-m.npc('Child', 33, 46, 'People1', 0, ('Child:', 'When I grow up I\'ll go to the Academy', 'and make the carrots dance!'), move=1, freq=5, speed=4)
+m.npc('Child', 32, 46, 'People1', 0, ('Child:', 'When I grow up I\'ll go to the Academy', 'and make the carrots dance!'), move=1, freq=5, speed=4)
 m.npc('Child', 29, 37, 'People2', 0, ('Child:', 'Tag! You\'re it!'), move=1, freq=5, speed=4)
 m.npc('Washerwoman', 34, c2 + 1, 'People1', 4, ('Washerwoman:', 'Robes, robes and more robes.', 'Do you know how hard it is to get scorch marks out of velvet?'), direction=2)
 for i, (x, y) in enumerate(((5, 35), (7, 36), (9, 34))):

@@ -25,11 +25,15 @@ MOODS = {
     28: {'grade': 'warm'},                                      # Skyreach Hill
     29: {'grade': 'mystic', 'fog': 0.5, 'fog color': '#8fa3a2', 'sunbeams': 0.3, 'vignette': 0.45},                        # Briarwood: deep, misty, a little uncanny
     30: {'grade': 'forest', 'fog': 0.25, 'fog color': '#b4c4bc'},                        # Briarwood - Entrance: the mist starts here
-    K.ACADEMY: {'grade': 'warm'},
+    K.ACADEMY: {'grade': 'warm', 'bloom': 0.3, 'sunbeams': 0.6, 'vignette': 0.3, 'fog': 0.12,   # a village under a
+                'fog color': '#e6dcf2'},                                         # mage school: soft glow, faint violet haze
     K.ACADEMY_HALL: {'grade': 'arcane', 'sunbeams': 0.3, 'particles': 'dust'},
-    K.ACADEMY_COURT: {'grade': 'noble'}, K.ACADEMY_CLASSES: ROOM, K.ACADEMY_UPPER: ROOM,
+    K.ACADEMY_COURT: {'grade': 'noble', 'bloom': 0.3, 'sunbeams': 0.6, 'vignette': 0.25, 'fog': 0.1,     # the court
+                      'fog color': '#e6dcf2'},                                         # shares the village's violet haze
+    K.ACADEMY_CLASSES: ROOM, K.ACADEMY_UPPER: ROOM,
     K.ACADEMY_LIBRARY: {'grade': 'arcane', 'sunbeams': 0.25, 'particles': 'dust'},
-    K.ACADEMY_UNDERCROFT: {'grade': 'gloom', 'particles': 'dust'}, K.ACADEMY_TOWER: {'grade': 'arcane'},
+    K.ACADEMY_UNDERCROFT: {'grade': 'gloom', 'particles': 'dust'}, K.ACADEMY_TOWER: {'grade': 'arcane', 'bloom': 0.5, 'vignette': 0.4,
+                                                                                         'particles': 'fireflies'},   # motes like stars
     K.ACADEMY_DINING: {'grade': 'interior', 'sunbeams': 0.4, 'particles': 'dust'},
     K.QUILL_INN: ROOM, K.QUILL_APOTHECARY: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'},
 }

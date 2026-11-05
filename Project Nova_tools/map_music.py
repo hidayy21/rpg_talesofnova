@@ -24,7 +24,7 @@ BGM = {
     K.ACADEMY_COURT: ('Castle2', 65), K.ACADEMY_CLASSES: ('Castle2', 60), K.ACADEMY_LIBRARY: ('Castle2', 55),
     K.ACADEMY_UNDERCROFT: ('Dungeon1', 50), K.ACADEMY_UPPER: ('03_The_Calm', 55), K.ACADEMY_TOWER: ('03_The_Calm', 55),
     K.ACADEMY_DINING: ('Castle2', 70),
-    K.QUILL_INN: ('03_The_Calm', 65),
+    K.QUILL_INN: ('03_The_Calm', 65), K.QUILL_APOTHECARY: ('03_A_Gentle_Breeze', 60),
 }
 BGS = {29: ('Night', 60), 30: ('Wind1', 30)}       # Briarwood keeps its night insects
 
