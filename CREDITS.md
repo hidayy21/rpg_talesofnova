@@ -10,8 +10,11 @@
   **Mysterious Things** (Elderly Inn Keeper), **Tonbi@Tobishima-Factory** and
   **©Gotcha Gotcha Games Inc./YOJI OJIMA 2020** (Free Material 04: `MZ_People2_1`, `MZ_People3_1`, `MZ_People3_5`).
   The facesets and busts of the Meat Butcher and Elderly Inn Keeper were made with AI and edited by hand.
-- **Hiddenone**: character generator hair parts (FrontHair / RearHair p600-p604, installed in the MV
-  generator folder, not in the repo).
+- **Hiddenone**: character generator hair parts (FrontHair / RearHair p600-p604, and a fixed damage sprite for the
+  male rear hair 18), in `Project Nova_tools/generator_parts/Hiddenone/` for the Nova Tools Character page.
+- *Source still to confirm*: the other character generator parts in `Project Nova_tools/generator_parts/` -
+  `TheWholeLot` (Assassin hood, knight helmets, monster ears, horns, wings and mouths), `Clothing 20 - Female Loin
+  Cloth` and `Clothing 23 - Samurai Suit`.
 - *Source still to confirm*: `img/*/HF_*` (High Fantasy Heroes pack), `img/*/JH_*` and `audio/bgm/JH_*`
   (Junkyard Heroes pack), and the sheets `$Kimono_Female`, `$Skull_Knight1-2`, `Bandits`, `Skull_Peeps`,
   `Bugs_Birds`, `Golfers`, `Jiangshi`, `Modern_Punks`, `$Army_Troops`, `Skull_Knights` (face),

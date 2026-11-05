@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Tools - Character</title>
+<style>
+  /* Nova Tools tokens (same as the Map Editor and the Tileset Wizard) */
+  :root {
+    --bg: #07101f; --panel: #0e1c33; --panel-2: #13284a; --panel-3: #1b3560; --canvas-bg: #050a14;
+    --line: #2b4a72; --line-strong: #5a80ad;
+    --ink: #e6f2ff; --ink-mute: #a3bad3; --ink-faint: #7f97b3;
+    --accent: #62d6ff; --accent-soft: rgba(98, 214, 255, 0.16);
+    --action: #1677b8; --action-hover: #1b8ad4; --on-action: #ffffff;
+    --ok: #6ff0a0; --warn: #ffb35c; --bad: #ff7088;
+    --ok-soft: rgba(111, 240, 160, 0.14); --warn-soft: rgba(255, 179, 92, 0.16);
+    --scrim: rgba(2, 6, 14, 0.72); --check-a: #1a2a40; --check-b: #142236;
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px;
+    --r-sm: 6px; --r: 10px; --r-pill: 999px; --hair: 1px; --ring: 2px;
+    --text-label: 12px; --text-body: 14px; --text-title: 19px; --leading: 1.5;
+    --w-medium: 500; --w-semi: 600; --w-bold: 700;
+    --font: "Segoe UI", system-ui, -apple-system, sans-serif; --mono: ui-monospace, Menlo, Consolas, monospace;
+    --control-h: 32px; --header-h: 52px; --groups-w: 200px; --parts-w: 380px;
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.45); --dur: 140ms;
+  }
+  @media (pointer: coarse) { :root { --control-h: 44px; } }
+  @media (prefers-reduced-motion: reduce) { :root { --dur: 0ms; } }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 var(--text-body)/var(--leading) var(--font);
+         display: flex; flex-direction: column; overflow: hidden; }
+  button, select, input { font: inherit; color: inherit; }
+  :focus-visible { outline: var(--ring) solid var(--accent); outline-offset: var(--ring); }
+  [hidden] { display: none !important; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .btn { min-height: var(--control-h); padding: 0 var(--s3); border-radius: var(--r-sm); border: var(--hair) solid var(--line-strong);
+         background: var(--panel-2); cursor: pointer; display: inline-flex; align-items: center; gap: var(--s2); white-space: nowrap; }
+  .btn:hover { border-color: var(--accent); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.primary { background: var(--action); border-color: var(--action); color: var(--on-action); font-weight: var(--w-semi); }
+  .btn.primary:hover { background: var(--action-hover); }
+  .btn.ghost { background: transparent; border-color: transparent; }
+  select, input[type=text] { min-height: var(--control-h); background: var(--panel-2); border: var(--hair) solid var(--line-strong);
+         border-radius: var(--r-sm); padding: 0 var(--s2); }
+  header { height: var(--header-h); flex: none; display: flex; align-items: center; gap: var(--s3); padding: 0 var(--s4);
+           background: var(--panel); border-bottom: var(--hair) solid var(--line); }
+  .brand { font-weight: var(--w-bold); font-size: var(--text-title); letter-spacing: .3px; }
+  .nav { display: flex; gap: var(--s1); }
+  .nav a { color: var(--ink-mute); text-decoration: none; padding: var(--s1) var(--s3); border-radius: var(--r-pill); }
+  .nav a[aria-current] { color: var(--ink); background: var(--panel-3); }
+  .crumb { display: flex; align-items: center; gap: var(--s2); padding-left: var(--s3); border-left: var(--hair) solid var(--line); }
+  .grow { flex: 1; }
+  #app { flex: 1; min-height: 0; display: grid; grid-template-columns: var(--groups-w) minmax(0, 1fr) var(--parts-w); }
+  #groups, #parts { background: var(--panel); overflow: auto; }
+  #groups { border-right: var(--hair) solid var(--line); padding: var(--s2); display: flex; flex-direction: column; gap: 2px; }
+  #groups button { display: flex; justify-content: space-between; align-items: center; gap: var(--s2); text-align: left;
+                   min-height: var(--control-h); padding: 0 var(--s3); border: 0; border-radius: var(--r-sm); background: transparent; cursor: pointer; }
+  #groups button:hover { background: var(--panel-2); }
+  #groups button[aria-current] { background: var(--panel-3); color: var(--ink); }
+  #groups small { color: var(--ink-faint); font: var(--text-label) var(--mono); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #parts { border-left: var(--hair) solid var(--line); padding: var(--s3); }
+  h2 { font-size: var(--text-body); font-weight: var(--w-semi); margin: var(--s2) 0; }
+  h2 small { color: var(--ink-mute); font-weight: 400; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: var(--s2); }
+  .part { position: relative; aspect-ratio: 1; border: var(--hair) solid var(--line); border-radius: var(--r-sm); cursor: pointer; padding: 0;
+          background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0/12px 12px; overflow: hidden; }
+  .part img { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+  .part span { position: absolute; left: 0; right: 0; bottom: 0; font: 10px var(--mono); background: rgba(5, 10, 20, .8); color: var(--ink-mute);
+               padding: 1px 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .part.none { display: grid; place-items: center; color: var(--ink-mute); font-size: var(--text-label); }
+  .part[aria-pressed=true] { border-color: var(--accent); box-shadow: 0 0 0 var(--ring) var(--accent); }
+  .pack { color: var(--accent); }
+  .colors { margin-top: var(--s4); display: flex; flex-direction: column; gap: var(--s3); }
+  .swatches { display: flex; flex-wrap: wrap; gap: 4px; }
+  .sw { width: 30px; height: 18px; border-radius: 4px; border: var(--hair) solid var(--line); cursor: pointer; padding: 0; }
+  .sw[aria-pressed=true] { box-shadow: 0 0 0 var(--ring) var(--accent); border-color: var(--accent); }
+  .sw.orig { width: auto; padding: 0 6px; font-size: 11px; background: var(--panel-2); color: var(--ink-mute); }
+  .sw.custom { position: relative; display: inline-flex; align-items: center; overflow: hidden; }
+  .sw.custom[aria-pressed=true] { color: #fff; text-shadow: 0 1px 2px #000; }
+  .sw.custom input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; border: 0; padding: 0; }
+  .sub { margin: var(--s2) 0 var(--s1); color: var(--ink-faint); font-size: var(--text-label); }
+  details { margin-top: var(--s2); } summary { cursor: pointer; color: var(--ink-mute); font-size: var(--text-label); margin-bottom: var(--s1); }
+  main { overflow: auto; padding: var(--s4); display: flex; flex-direction: column; gap: var(--s4); }
+  .banner { border-radius: var(--r); padding: var(--s2) var(--s3); background: var(--ok-soft); border: var(--hair) solid var(--ok); }
+  .banner.warn { background: var(--warn-soft); border-color: var(--warn); }
+  .previews { display: flex; flex-wrap: wrap; gap: var(--s4); align-items: flex-start; }
+  .card { background: var(--panel); border: var(--hair) solid var(--line); border-radius: var(--r); padding: var(--s3); }
+  .card h3 { margin: 0 0 var(--s2); font-size: var(--text-label); color: var(--ink-mute); font-weight: var(--w-semi); text-transform: uppercase; letter-spacing: .6px;
+             display: flex; gap: var(--s2); align-items: center; }
+  .stage { background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0/16px 16px; border-radius: var(--r-sm); display: block; image-rendering: pixelated; }
+  #busy { position: fixed; inset: 0; background: var(--scrim); display: grid; place-items: center; z-index: 50; }
+  #busy div { background: var(--panel); border: var(--hair) solid var(--line); border-radius: var(--r); padding: var(--s4) var(--s6); box-shadow: var(--shadow); }
+  .scrim { position: fixed; inset: 0; background: var(--scrim); display: grid; place-items: center; z-index: 40; }
+  .dialog { width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; background: var(--panel); border: var(--hair) solid var(--line);
+            border-radius: var(--r); box-shadow: var(--shadow); }
+  .dialog > header { position: sticky; top: 0; }
+  .dialog h2 { margin: 0; font-size: var(--text-title); }
+  .dialog .body { padding: var(--s4); display: flex; flex-direction: column; gap: var(--s4); }
+  .dialog footer { display: flex; justify-content: flex-end; gap: var(--s2); padding: var(--s3) var(--s4); border-top: var(--hair) solid var(--line); }
+  .row { display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; }
+  .target { border: var(--hair) solid var(--line); border-radius: var(--r); padding: var(--s3); display: flex; flex-direction: column; gap: var(--s2); }
+  .target label.head { display: flex; gap: var(--s2); align-items: center; font-weight: var(--w-semi); }
+  .picker { position: relative; display: inline-block; align-self: flex-start; background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0/12px 12px; }
+  .picker img { display: block; image-rendering: pixelated; }
+  .picker .cells { position: absolute; inset: 0; display: grid; }
+  .picker .cells button { border: var(--hair) solid rgba(255, 255, 255, .12); background: transparent; cursor: pointer; padding: 0; }
+  .picker .cells button:hover { background: var(--accent-soft); }
+  .picker .cells button[aria-pressed=true] { outline: var(--ring) solid var(--accent); outline-offset: -2px; background: var(--accent-soft); }
+  .hint { color: var(--ink-mute); font-size: var(--text-label); margin: 0; }
+  #toast { position: fixed; right: var(--s4); bottom: var(--s4); max-width: 460px; background: var(--panel-2); border: var(--hair) solid var(--line-strong);
+           border-radius: var(--r); padding: var(--s3) var(--s4); box-shadow: var(--shadow); z-index: 60; white-space: pre-line; }
+  #toast.bad { border-color: var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">Nova Tools</span>
+  <nav class="nav" aria-label="Halaman"><a href="/">Map Editor</a><a href="/wizard">Tileset Wizard</a><a href="/chargen" aria-current="page">Character</a></nav>
+  <div class="crumb">
+    <label class="sr" for="sex">Jenis</label>
+    <select id="sex"><option>Female</option><option>Male</option><option>Kid</option></select>
+    <button class="btn" id="btnNew">Baru</button>
+    <select id="recipes" aria-label="Buka karakter tersimpan"><option value="">Buka karakter…</option></select>
+    <button class="btn" id="btnEdit">Edit face yang ada…</button>
+    <button class="btn" id="btnRandom" title="Acak semua part dan warna">Acak</button>
+  </div>
+  <span class="grow"></span>
+  <span id="charName" class="hint"></span>
+  <button class="btn primary" id="btnSave">Simpan…</button>
+</header>
+
+<div id="app">
+  <nav id="groups" aria-label="Bagian"></nav>
+  <main>
+    <div id="banner" class="banner" hidden></div>
+    <div class="previews">
+      <div class="card"><h3>Face</h3><img id="pvFace" class="stage" width="288" height="288" alt="Face"></div>
+      <div class="card"><h3>Walking</h3><canvas id="pvTV" class="stage" width="384" height="96"></canvas>
+        <p class="hint">Empat arah, bergerak seperti di game.</p></div>
+      <div class="card"><h3>Battler <select id="motion" aria-label="Gerakan"></select></h3><canvas id="pvSV" class="stage" width="192" height="192"></canvas></div>
+      <div class="card"><h3>Damage</h3><img id="pvTVD" class="stage" width="288" height="96" alt="Damage"></div>
+    </div>
+    <p class="hint" id="packs" style="white-space: pre-line"></p>
+  </main>
+  <aside id="parts" aria-label="Pilihan part"></aside>
+</div>
+
+<div class="scrim" id="editDlg" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <header><h2 id="editTitle">Edit face yang ada</h2><span class="grow"></span><button class="btn ghost" data-close aria-label="Tutup">✕</button></header>
+    <div class="body">
+      <p class="hint">Pilih face buatan Character Generator. Nova Tools membaca part dan warnanya, lalu kamu bisa mengganti mata, mulut, alis,
+        atau part lain. Bagian yang tidak diganti tetap persis sama. Face lukisan (bukan dari generator) tidak bisa dibaca.</p>
+      <div class="row"><label for="editSheet">Sheet</label><select id="editSheet"></select>
+        <label for="editSex">Jenis</label><select id="editSex"><option>Female</option><option>Male</option><option>Kid</option></select></div>
+      <div class="picker" id="editPicker"></div>
+    </div>
+    <footer><button class="btn" data-close>Batal</button><button class="btn primary" id="editGo" disabled>Baca face</button></footer>
+  </div>
+</div>
+
+<div class="scrim" id="saveDlg" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="saveTitle">
+    <header><h2 id="saveTitle">Simpan karakter</h2><span class="grow"></span><button class="btn ghost" data-close aria-label="Tutup">✕</button></header>
+    <div class="body">
+      <div class="row"><label for="saveName">Nama</label><input type="text" id="saveName" placeholder="mis. Mira" size="28">
+        <span class="hint">Resep disimpan di <code>Project Nova_tools/characters/</code>, bisa dibuka dan diubah lagi.</span></div>
+      <div id="targets"></div>
+    </div>
+    <footer><button class="btn" data-close>Batal</button><button class="btn primary" id="saveGo">Simpan</button></footer>
+  </div>
+</div>
+
+<div id="busy" hidden><div id="busyText">Memproses…</div></div>
+<div id="toast" hidden role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const KINDS = { Face: { label: 'Face', folder: 'img/faces', cols: 4, rows: 2, w: 144, h: 144 },
+                TV: { label: 'Walking (karakter)', folder: 'img/characters', cols: 4, rows: 2, w: 144, h: 192 },
+                SV: { label: 'Battler (side view)', folder: 'img/sv_actors', cols: 1, rows: 1, w: 576, h: 384 },
+                TVD: { label: 'Damage', folder: 'img/characters', cols: 4, rows: 8, w: 144, h: 48 } };
+const MOTIONS = ['walk', 'wait', 'chant', 'guard', 'damage', 'evade', 'thrust', 'swing', 'missile', 'skill', 'spell', 'item',
+                 'escape', 'victory', 'dying', 'abnormal', 'sleep', 'dead'];
+const S = { setup: null, char: null, group: 'frontHair', base: null, name: '', targets: null, imgs: {}, seq: 0 };
+
+function toast(msg, bad) {
+  const t = $('toast'); t.textContent = msg; t.className = bad ? 'bad' : ''; t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, bad ? 9000 : 6000);
+}
+function busy(on, text) { $('busy').hidden = !on; if (text) $('busyText').textContent = text; }
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: 'POST', body: JSON.stringify(body) } : {});
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+const clone = o => JSON.parse(JSON.stringify(o));
+const vlabel = v => v.includes('/') ? v.split('/').pop() : v;
+const vpack = v => v.includes('/') ? v.split('/')[0] : '';
+
+// ---------------------------------------------------------------- setup
+async function load() {
+  S.setup = await api('/api/chargen/setup');
+  $('motion').innerHTML = MOTIONS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+  fillRecipes();
+  $('packs').textContent = (S.setup.packs.length
+    ? 'Part bertanda + berasal dari Project Nova_tools/generator_parts/: ' + S.setup.packs.join(', ') + '.'
+    : 'Belum ada part tambahan.') + ' Part baru: taruh folder, .zip atau .rar di Project Nova_tools/generator_parts/, lalu muat ulang halaman ini.' +
+    (S.setup.skipped.length ? `\nTidak dikenali (nama file bukan format generator): ${S.setup.skipped.join(', ')}.` : '');
+  newChar($('sex').value);
+}
+function fillRecipes() {
+  $('recipes').innerHTML = '<option value="">Buka karakter…</option>' + S.setup.recipes.map(n => `<option>${n}</option>`).join('');
+}
+function newChar(sex) {
+  S.char = clone(S.setup.defaults[sex]); S.base = null; S.name = ''; S.targets = null;
+  $('sex').value = sex; refresh();
+}
+
+// ---------------------------------------------------------------- the panels
+function groupsFor(sex) {
+  return S.setup.groups.filter(g => (S.setup.variations[sex][g.id] || []).length);
+}
+function renderGroups() {
+  const sex = S.char.sex;
+  $('groups').innerHTML = groupsFor(sex).map(g => {
+    const v = S.char.parts[g.id];
+    return `<button data-g="${g.id}" ${g.id === S.group ? 'aria-current="true"' : ''}>${g.label}<small>${v ? vlabel(v) : '—'}</small></button>`;
+  }).join('');
+}
+function renderParts() {
+  const sex = S.char.sex, g = S.setup.groups.find(x => x.id === S.group);
+  if (!g) return;
+  const vs = S.setup.variations[sex][g.id] || [], cur = S.char.parts[g.id] || null;
+  let html = `<h2>${g.label} <small>${vs.length} pilihan</small></h2><div class="grid">`;
+  if (g.blank) html += `<button class="part none" data-v="" aria-pressed="${!cur}">Tidak ada</button>`;
+  html += vs.map(v => `<button class="part" data-v="${v}" aria-pressed="${v === cur}" title="${vpack(v) ? 'Pack ' + vpack(v) + ': ' : ''}${vlabel(v)}">` +
+    `<img loading="lazy" alt="" src="/api/chargen/thumb?sex=${sex}&group=${g.id}&v=${encodeURIComponent(v)}">` +
+    `<span>${vpack(v) ? '<b class="pack">+</b> ' : ''}${vlabel(v)}</span></button>`).join('');
+  html += '</div><div class="colors">';
+  for (const c of S.setup.colors.filter(c => c.groups.includes(g.id))) {
+    const cur = S.char.colors[c.mask] ?? -1, custom = typeof cur === 'string' ? cur : '';
+    const sw = (r, title) => `<button class="sw" data-m="${c.mask}" data-r="${r}" aria-pressed="${cur === r}" title="${title}" ` +
+      `style="background:linear-gradient(90deg,${S.setup.gradients[r].join(',')})"></button>`;
+    const skin = c.mask === 'F9C19D';
+    const extra = S.setup.extra.slice().sort((a, b) => skin ? b.skin - a.skin : a.skin - b.skin);
+    const rest = Array.from({ length: 70 }, (_, r) => r).filter(r => !c.rows.includes(r));
+    html += `<div><h2>${c.label}${c.groups.length > 1 ? ` <small>(juga ${c.groups.filter(x => x !== g.id).map(x => S.setup.groups.find(y => y.id === x)?.label || x).join(', ')})</small>` : ''}</h2>` +
+      `<div class="swatches"><button class="sw orig" data-m="${c.mask}" data-r="-1" aria-pressed="${cur === -1}" title="Warna asli part">Asli</button>` +
+      c.rows.map(r => sw(r, 'RPG Maker ' + r)).join('') +
+      `<label class="sw orig custom" title="Warna bebas: pilih warna apa saja"${custom ? ` aria-pressed="true" style="background:linear-gradient(90deg,#fff,${custom} 45%,#000)"` : ''}>` +
+      `Kustom<input type="color" data-custom="${c.mask}" value="${custom || '#8a5cd6'}"></label></div>` +
+      `<p class="sub">Warna tambahan Nova</p><div class="swatches">${extra.map(e => sw(e.row, e.name)).join('')}</div>` +
+      (rest.length ? `<details><summary>Warna RPG Maker lainnya</summary><div class="swatches">${rest.map(r => sw(r, 'RPG Maker ' + r)).join('')}</div></details>` : '') +
+      '</div>';
+  }
+  $('parts').innerHTML = html + '</div>';
+}
+// a custom colour: while the picker is open only the previews follow it (re-drawing the panel would close it)
+$('parts').addEventListener('input', e => {
+  const m = e.target.dataset.custom; if (!m) return;
+  S.char.colors[m] = e.target.value;
+  const lab = e.target.parentElement;
+  lab.setAttribute('aria-pressed', 'true'); lab.style.background = `linear-gradient(90deg,#fff,${e.target.value} 45%,#000)`;
+  clearTimeout(refresh.t); refresh.t = setTimeout(draw, 90);
+});
+$('parts').addEventListener('change', e => { if (e.target.dataset.custom) refresh(); });
+$('groups').addEventListener('click', e => {
+  const b = e.target.closest('button[data-g]'); if (!b) return;
+  S.group = b.dataset.g; renderGroups(); renderParts();
+});
+$('parts').addEventListener('click', e => {
+  const p = e.target.closest('.part');
+  if (p) { const v = p.dataset.v || null; if (v) S.char.parts[S.group] = v; else delete S.char.parts[S.group]; return refresh(); }
+  const s = e.target.closest('.sw[data-r]');
+  if (s) { const r = +s.dataset.r; if (r < 0) delete S.char.colors[s.dataset.m]; else S.char.colors[s.dataset.m] = r; refresh(); }
+});
+
+// ---------------------------------------------------------------- previews
+function refresh() {
+  renderGroups(); renderParts(); banner();
+  $('charName').textContent = S.name ? 'Karakter: ' + S.name : '';
+  clearTimeout(refresh.t); refresh.t = setTimeout(draw, 90);
+}
+async function draw() {
+  const seq = ++S.seq;
+  try {
+    const out = await api('/api/chargen/render', { char: S.char, base: S.base });
+    if (seq !== S.seq) return;
+    $('pvFace').src = out.Face; $('pvTVD').src = out.TVD;
+    for (const k of ['TV', 'SV']) { const im = new Image(); im.src = out[k]; await im.decode(); S.imgs[k] = im; }
+    if (S.base) S.base.kept = out.kept, banner();
+  } catch (e) { toast(e.message, true); }
+}
+function banner() {
+  const b = $('banner');
+  if (!S.base) { b.hidden = true; return; }
+  b.hidden = false;
+  b.className = 'banner' + (S.base.off ? ' warn' : '');
+  b.innerHTML = `Mengedit face <b>${S.base.sheet}</b> #${S.base.i}. ` + (S.base.off
+    ? `${S.base.off} piksel tidak cocok dengan part generator mana pun (mungkin diedit manual); piksel itu dibiarkan apa adanya.`
+    : 'Semua piksel terbaca dari part generator. Ganti part apa saja, bagian lain tetap sama persis.') +
+    ' <button class="btn ghost" id="leaveEdit">Keluar dari mode edit</button>';
+  $('leaveEdit').onclick = () => { S.base = null; refresh(); };
+}
+let tick = 0;
+setInterval(() => {
+  tick++;
+  const tv = S.imgs.TV, sv = S.imgs.SV;
+  const f = [0, 1, 2, 1][tick % 4];
+  if (tv) {
+    const g = $('pvTV').getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, 384, 96);
+    [0, 1, 2, 3].forEach((d, i) => g.drawImage(tv, f * 48, d * 48, 48, 48, i * 96, 0, 96, 96));
+  }
+  if (sv) {
+    const m = +$('motion').value, col = Math.floor(m / 6) * 3, row = m % 6, sf = [0, 1, 2, 1][tick % 4];
+    const g = $('pvSV').getContext('2d'); g.imageSmoothingEnabled = false; g.clearRect(0, 0, 192, 192);
+    g.drawImage(sv, (col + sf) * 64, row * 64, 64, 64, 0, 0, 192, 192);
+  }
+}, 180);
+
+// ---------------------------------------------------------------- header actions
+$('sex').onchange = () => {
+  const sex = $('sex').value, old = S.char, def = clone(S.setup.defaults[sex]);
+  for (const [g, v] of Object.entries(old.parts)) if ((S.setup.variations[sex][g] || []).includes(v)) def.parts[g] = v;
+  def.colors = old.colors; S.char = def; S.base = null; refresh();
+};
+$('btnNew').onclick = () => newChar($('sex').value);
+$('btnRandom').onclick = () => {
+  const sex = S.char.sex, c = clone(S.setup.defaults[sex]);
+  for (const g of groupsFor(sex)) {
+    const vs = S.setup.variations[sex][g.id], pick = vs[Math.floor(Math.random() * vs.length)];
+    if (g.blank && Math.random() < ({ beard: .85, tattoo: .85, kemono: .9, tail: .92, wing: .92, glasses: .85, accessoryA: .6, accessoryB: .6, cloak: .6 }[g.id] ?? .1)) delete c.parts[g.id];
+    else c.parts[g.id] = pick;
+  }
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  for (const col of S.setup.colors) {
+    const extra = S.setup.extra.filter(e => e.skin === (col.mask === 'F9C19D')).map(e => e.row);
+    c.colors[col.mask] = Math.random() < 0.3 ? pick(extra) : pick(col.rows);
+  }
+  S.char = c; S.base = null; refresh();
+};
+$('recipes').onchange = async () => {
+  const name = $('recipes').value; $('recipes').value = ''; if (!name) return;
+  try {
+    const r = await api('/api/chargen/recipe?name=' + encodeURIComponent(name));
+    S.char = { sex: r.sex, parts: r.parts, colors: r.colors }; S.name = r.name; S.targets = r.targets || null; S.base = null;
+    $('sex').value = r.sex; refresh();
+  } catch (e) { toast(e.message, true); }
+};
+
+// ---------------------------------------------------------------- sheet cell picker
+function picker(el, kind, sheet, cell, onPick) {
+  const k = KINDS[kind], scale = kind === 'TVD' ? 0.75 : kind === 'SV' ? 0.5 : 0.75;
+  const w = k.w * k.cols * scale, h = k.h * k.rows * scale;
+  const exists = (S.setup.sheets[kind] || []).includes(sheet);
+  el.style.width = w + 'px'; el.style.height = h + 'px';
+  el.innerHTML = (exists ? `<img alt="" width="${w}" height="${h}" src="/api/chargen/sheet?kind=${kind}&name=${encodeURIComponent(sheet)}&t=${Date.now()}">` : '') +
+    `<div class="cells" style="grid-template-columns:repeat(${k.cols},1fr);grid-template-rows:repeat(${k.rows},1fr)">` +
+    Array.from({ length: k.cols * k.rows }, (_, i) => `<button data-i="${i}" aria-pressed="${i === cell}" aria-label="Slot ${i}"></button>`).join('') + '</div>';
+  el.querySelector('.cells').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    el.querySelectorAll('.cells button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    onPick(+b.dataset.i);
+  };
+}
+
+// ---------------------------------------------------------------- edit an existing face
+const edit = { sheet: '', i: -1 };
+function openDlg(id) { $(id).hidden = false; }
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => b.closest('.scrim').hidden = true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.scrim').forEach(s => s.hidden = true); });
+$('btnEdit').onclick = () => {
+  $('editSheet').innerHTML = S.setup.sheets.Face.map(n => `<option>${n}</option>`).join('');
+  $('editSex').value = S.char.sex;
+  edit.sheet = $('editSheet').value; edit.i = -1; $('editGo').disabled = true;
+  drawEditPicker(); openDlg('editDlg');
+};
+function drawEditPicker() { picker($('editPicker'), 'Face', edit.sheet, edit.i, i => { edit.i = i; $('editGo').disabled = false; }); }
+$('editSheet').onchange = () => { edit.sheet = $('editSheet').value; edit.i = -1; $('editGo').disabled = true; drawEditPicker(); };
+$('editGo').onclick = async () => {
+  const sex = $('editSex').value;
+  $('editDlg').hidden = true; busy(true, `Membaca face ${edit.sheet} #${edit.i}… (sekitar 10 detik)`);
+  try {
+    const r = await api('/api/chargen/fit', { sheet: edit.sheet, i: edit.i, sex });
+    S.char = r.char; S.name = ''; $('sex').value = sex;
+    S.base = { sheet: edit.sheet, i: edit.i, old: clone(r.char), off: r.off };
+    S.targets = { Face: { sheet: edit.sheet, i: edit.i } };
+    S.group = 'eyes'; refresh();
+    toast(r.off ? `Face terbaca, ${r.off} piksel tidak cocok dan akan dibiarkan apa adanya.` : 'Face terbaca 100%. Silakan ganti part-nya.');
+  } catch (e) { toast(e.message, true); }
+  busy(false);
+};
+
+// ---------------------------------------------------------------- save
+const T = {};
+$('btnSave').onclick = () => {
+  $('saveName').value = S.name || '';
+  const def = S.targets || {};
+  const name = S.name || 'Nova_Character';
+  for (const kind of Object.keys(KINDS)) {
+    const t = def[kind];
+    T[kind] = { on: S.base ? kind === 'Face' : (t ? true : kind !== 'TVD'),
+                sheet: t?.sheet || (kind === 'SV' ? name : kind === 'TVD' ? name + '_Damage' : name), i: t?.i ?? 0 };
+  }
+  drawTargets(); openDlg('saveDlg');
+};
+function drawTargets() {
+  $('targets').innerHTML = Object.entries(KINDS).map(([kind, k]) => `
+    <div class="target"><label class="head"><input type="checkbox" data-on="${kind}" ${T[kind].on ? 'checked' : ''}> ${k.label}
+      <small class="hint">${k.folder}/</small></label>
+      <div class="row" ${T[kind].on ? '' : 'hidden'}><label>Sheet</label>
+        <input type="text" list="dl${kind}" data-sheet="${kind}" value="${T[kind].sheet}" size="26">
+        <datalist id="dl${kind}">${(S.setup.sheets[kind] || []).map(n => `<option value="${n}">`).join('')}</datalist>
+        <span class="hint" data-note="${kind}"></span></div>
+      ${kind === 'SV' ? '' : `<div class="picker" data-pick="${kind}" ${T[kind].on ? '' : 'hidden'}></div>`}
+    </div>`).join('');
+  for (const kind of Object.keys(KINDS)) updateTarget(kind);
+}
+function updateTarget(kind) {
+  const exists = (S.setup.sheets[kind] || []).includes(T[kind].sheet);
+  const note = $('targets').querySelector(`[data-note="${kind}"]`);
+  if (note) note.textContent = !T[kind].sheet ? '' : exists
+    ? (kind === 'SV' ? 'file ini akan ditimpa' : 'slot yang dipilih akan ditimpa, slot lain tetap')
+    : 'sheet baru';
+  const el = $('targets').querySelector(`[data-pick="${kind}"]`);
+  if (el && T[kind].on) picker(el, kind, T[kind].sheet, T[kind].i, i => T[kind].i = i);
+}
+$('targets').addEventListener('change', e => {
+  const on = e.target.dataset.on;
+  if (on) { T[on].on = e.target.checked; drawTargets(); }
+});
+$('targets').addEventListener('input', e => {
+  const k = e.target.dataset.sheet; if (!k) return;
+  T[k].sheet = e.target.value.trim(); clearTimeout(updateTarget.t); updateTarget.t = setTimeout(() => updateTarget(k), 250);
+});
+$('saveGo').onclick = async () => {
+  const name = $('saveName').value.trim();
+  if (!name) { $('saveName').focus(); return toast('Beri nama karakter dulu.', true); }
+  const targets = {};
+  for (const [kind, t] of Object.entries(T)) if (t.on && t.sheet) targets[kind] = { sheet: t.sheet, i: t.i };
+  busy(true, 'Menyimpan…');
+  try {
+    const r = await api('/api/chargen/save', { char: S.char, name, targets, base: S.base });
+    S.name = name; S.targets = targets;
+    S.setup = { ...S.setup, ...(await api('/api/chargen/setup')) };
+    fillRecipes(); $('saveDlg').hidden = true; refresh();
+    if (S.base && targets.Face && targets.Face.sheet === S.base.sheet && targets.Face.i === S.base.i) {
+      S.base.old = clone(S.char); S.base.off = S.base.kept || 0;     // the saved face is the new original
+    }
+    toast('Tersimpan:\n' + (r.written.length ? r.written.join('\n') : '(hanya resep)') + '\nResep: ' + r.recipe);
+  } catch (e) { toast(e.message, true); }
+  busy(false);
+};
+
+load().catch(e => toast(e.message, true));
+</script>
+</body>
+</html>

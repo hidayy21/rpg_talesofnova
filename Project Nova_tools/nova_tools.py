@@ -1,6 +1,7 @@
 # Nova Tools: the Map Editor and the Tileset Wizard in one window of their own.
 #
 #   python nova_tools.py              Windows: Nova Tools.bat   Mac: Nova Tools.command   (Ctrl+C to stop)
+#   python nova_tools.py --chargen    straight to the Character page: Nova Character.bat / Nova Character.command
 #
 # Map Editor: paints every tile layer of a map - floors, walls and water as joined autotiles (A1-A4), A5, objects
 # from the map's own B-E sheets and from every NovaTilesetEx sheet, wall shadows and regions. Events can be placed,
@@ -8,6 +9,8 @@
 # command lists are shown but edited in the RPG Maker editor. The Passage tool edits tile flags (passage, 4 directions,
 # ladder, bush, counter, damage, terrain tag) into Tilesets.json, like the editor's Tileset tab. Saving writes the map file in the editor's layout and keeps the old file in
 # <project>_backups/map_editor/. Only this computer can reach the server (127.0.0.1). Needs Python 3 with Pillow.
+# Character (/chargen): RPG Maker's Character Generator without the editor (chargen.py, chargen_api.py) - new
+# characters from its parts and the packs in generator_parts/, and finished faces with eyes or mouth swapped.
 import json, os, re, shutil, sys, time
 from urllib.parse import unquote
 from http.server import ThreadingHTTPServer
@@ -17,9 +20,11 @@ sys.path.insert(0, HERE)
 import tileset_wizard as W
 import compose_tileset as C
 import nova_maplib as L
+import chargen_api as CG
 
 PROJ = C.PROJ
 MAP_PAGE = os.path.join(HERE, 'mapeditor', 'index.html')
+CHAR_PAGE = os.path.join(HERE, 'chargen', 'index.html')
 PORT = 8765
 
 
@@ -144,6 +149,12 @@ class Handler(W.Handler):
             return self._send(200, open(MAP_PAGE, 'rb').read(), 'text/html; charset=utf-8')
         if path == '/wizard':
             return self._send(200, open(W.PAGE, 'rb').read(), 'text/html; charset=utf-8')
+        if path == '/chargen':
+            return self._send(200, open(CHAR_PAGE, 'rb').read(), 'text/html; charset=utf-8')
+        res = CG.handle_get(path, query)
+        if res:
+            code, body, ctype = res
+            return self._send(code, body, ctype) if ctype else self._send(code, body)
         if path == '/api/maps':
             return self._send(200, {'maps': maps(), 'editorOpen': W.editor_running()})
         if path == '/api/map':
@@ -175,6 +186,10 @@ class Handler(W.Handler):
         if self.path == '/api/tileset/flags':
             body = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))).decode('utf8'))
             return self._send(*save_flags(body['edits'], bool(body.get('force'))))
+        if self.path.startswith('/api/chargen/'):
+            body = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))).decode('utf8'))
+            code, out, _ = CG.handle_post(self.path, body)
+            return self._send(code, out)
         return W.Handler.do_POST(self)
 
 
@@ -202,4 +217,4 @@ def main(page='/'):
 
 
 if __name__ == '__main__':
-    main('/wizard' if '--wizard' in sys.argv else '/')
+    main('/wizard' if '--wizard' in sys.argv else '/chargen' if '--chargen' in sys.argv else '/')
