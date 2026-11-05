@@ -37,9 +37,9 @@
  * the editor but appear in the game. Editing events or settings of such a
  * map in the editor is fine; repainting those cells there replaces them.
  *
- * Only the extra sheets a map really uses are loaded. Up to 7 extra sheets
+ * Only the extra sheets a map really uses are loaded. Up to 23 extra sheets
  * on one map draw in exactly the right order; more still works, but tiles
- * of the 8th sheet onward may draw above other tiles of the same layer.
+ * of the 24th sheet onward may draw above other tiles of the same layer.
  *
  * Event graphics can use these tiles too (image tileId = an extra id).
  */
@@ -251,12 +251,43 @@
         }
     };
 
+    // WebGL: pixi-tilemap packs 4 sheets into each of its maxTextures (4) textures, so one tile layer holds only
+    // 16 sheets - the 9 of the tileset (A1-E, empty ones included) and 7 extra. A tile of the 17th sheet was drawn
+    // from another sheet (a well became a block of leaves). Raise it to 8 textures (32 sheets: 23 extra, every
+    // WebGL GPU has at least 8 units); beyond that the sheets go to a second layer, drawn over the first.
+    var GL_TEXTURES = 8;
+    if (typeof PIXI !== 'undefined' && PIXI.tilemap && PIXI.tilemap.TileRenderer) {
+        var _TileRenderer_onContextChange = PIXI.tilemap.TileRenderer.prototype.onContextChange;
+        PIXI.tilemap.TileRenderer.prototype.onContextChange = function() {
+            var gl = this.renderer.gl;
+            this.maxTextures = Math.max(4, Math.min(GL_TEXTURES, gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS)));
+            _TileRenderer_onContextChange.call(this);
+        };
+    }
+
+    function sheetsPerLayer() {
+        var r = Graphics._renderer, tile = r && r.plugins && r.plugins.tilemap;
+        return 4 * (tile && tile.maxTextures || 4);
+    }
+
     if (typeof ShaderTilemap !== 'undefined') {
+        var _ShaderTilemap_refreshTileset = ShaderTilemap.prototype.refreshTileset;
+        ShaderTilemap.prototype.refreshTileset = function() {
+            this.lowerLayer.texPerChild = this.upperLayer.texPerChild = sheetsPerLayer();
+            _ShaderTilemap_refreshTileset.call(this);
+        };
+
         var _ShaderTilemap_drawNormalTile = ShaderTilemap.prototype._drawNormalTile;
         ShaderTilemap.prototype._drawNormalTile = function(layer, tileId, dx, dy) {
             if (!isExtra(tileId)) return _ShaderTilemap_drawNormalTile.apply(this, arguments);
             var index = extraIndex(this, tileId);
             if (index === undefined) return;
+            var per = layer.parent ? layer.parent.texPerChild : index + 1;
+            if (index >= per) {
+                layer = layer.parent.children[Math.floor(index / per)];
+                index %= per;
+                if (!layer) return;
+            }
             var w = this._tileWidth, h = this._tileHeight, n = localOf(tileId);
             layer.addRect(index, sheetX(n) * w, sheetY(n) * h, dx, dy, w, h);
         };
