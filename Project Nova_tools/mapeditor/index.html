@@ -352,6 +352,7 @@
   <span class="savechip" id="saveChip" role="status" hidden><i></i><span></span></span>
   <button class="btn ghost" id="undo" title="Urungkan (Ctrl+Z)" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Urungkan</button>
   <button class="btn ghost" id="redo" title="Ulangi (Ctrl+Y)" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg>Ulangi</button>
+  <button class="btn" id="play" title="Mainkan map ini di game, dari petak pilihan (Ctrl+Enter)" disabled>▶ Main</button>
   <button class="btn primary" id="save" title="Simpan map ini (Ctrl+S)" disabled>✓ Tersimpan</button>
 </header>
 
@@ -887,6 +888,7 @@ function redo() { const c = S.redo.pop(); if (!c) return; replay(c, false); S.un
 function markDirty(v) {
   S.dirty = v;
   $('save').disabled = !S.cur || !v;
+  $('play').disabled = !S.cur;
   $('save').innerHTML = v ? 'Simpan <span class="k">Ctrl+S</span>' : '✓ Tersimpan';
   $('saveChip').hidden = !v;
   $('saveChip').lastElementChild.textContent = 'Belum disimpan';
@@ -2157,6 +2159,33 @@ function toast(text, cls, action, fn) {
 }
 
 $('save').onclick = () => save(false);
+// Play: a new game straight on this map (playtest.py + NovaSceneSelect), so maps nothing links to yet can be walked.
+const CLOCKS = [['', 'Jam awal game'], ['07:00', 'Pagi · 07:00'], ['12:00', 'Siang · 12:00'], ['18:00', 'Senja · 18:00'], ['22:00', 'Malam · 22:00']];
+function openPlay() {
+  if (!S.cur) return;
+  const c = S.sel || S.hover || { x: W() >> 1, y: H() >> 1 };
+  let clock = ''; try { clock = localStorage.getItem('novaPlayClock') || ''; } catch (e) { /* default */ }
+  openModal(`<h2>Main di map ini</h2>
+    <p class="help">Game dibuka sebagai game baru, langsung di map ini, tanpa perlu event atau pintu ke sini.
+      Kalau petaknya tidak bisa diinjak, dipakai petak terdekat yang bisa.</p>
+    <div class="row"><label class="field">X <input type="number" id="plX" min="0" max="${W() - 1}" value="${c.x}"></label>
+      <label class="field">Y <input type="number" id="plY" min="0" max="${H() - 1}" value="${c.y}"></label>
+      <label class="field">Waktu <select id="plClock">${CLOCKS.map(([v, l]) => `<option value="${v}"${v === clock ? ' selected' : ''}>${l}</option>`).join('')}</select></label></div>
+    ${S.dirty ? '<p class="help">Map ini belum disimpan. Game membaca map dari file, jadi map disimpan dulu.</p>' : ''}
+    <div class="foot"><span class="grow"></span><button id="mCancel">Batal</button><button id="plOk" class="primary">▶ Main</button></div>`);
+  $('plOk').onclick = async () => {
+    const x = +$('plX').value, y = +$('plY').value, clk = $('plClock').value;
+    try { localStorage.setItem('novaPlayClock', clk); } catch (e) { /* not kept */ }
+    closeModal();
+    if (S.dirty) { await save(false); if (S.dirty) return; }
+    status('Membuka game…');
+    const res = await fetch('/api/playtest', { method: 'POST', body: JSON.stringify({ id: S.cur.id, x, y, clock: clk }) });
+    const out = await res.json();
+    if (!res.ok) { status(out.error, 'err'); return; }
+    status(`Game dibuka di Map${String(S.cur.id).padStart(3, '0')} (${out.x}, ${out.y})${clk ? ' · ' + clk : ''}.`, 'ok');
+  };
+}
+$('play').onclick = openPlay;
 $('undo').onclick = undo; $('redo').onclick = redo;
 $('mapFilter').oninput = renderMapList;
 $('zIn').onclick = () => { S.zoomI = Math.min(ZOOMS.length - 1, S.zoomI + 1); applyZoom(); };
@@ -2276,6 +2305,7 @@ window.addEventListener('keydown', e => {
   const tag = e.target.tagName, ctrl = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
   if (ctrl && k === 's') { e.preventDefault(); save(false); return; }
   if (ctrl && k === 'p') { e.preventDefault(); setSide('maps'); return; }
+  if (ctrl && k === 'enter') { e.preventDefault(); openPlay(); return; }
   if ((tag === 'INPUT' && !['checkbox', 'radio'].includes(e.target.type)) || tag === 'TEXTAREA' || tag === 'SELECT') return;
   if (ctrl && k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
   if (ctrl && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); redo(); return; }

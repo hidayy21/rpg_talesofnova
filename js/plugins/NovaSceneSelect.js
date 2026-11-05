@@ -31,12 +31,36 @@
  *
  * Example:
  *   Guild: Isolde = 12, 10, 14, 8 ; v1=5 ; item=51 ; cmd=Clock set 17:30
+ *
+ * Quick start (Nova Tools' "Main" button, playtest.py): launched with
+ * "test&start=map,x,y,dir" (optionally "&clock=21:00") the title is skipped
+ * and a new game begins on that tile - any map, linked to anything or not.
  */
 
 (function() {
     'use strict';
 
     if (!Utils.isNwjs() || !Utils.isOptionValid('test')) return;
+
+    // quick start from the command line (or ?start=... in a browser): straight onto one tile of one map
+    var args = location.search.slice(1).split('&').concat(nw.App.argv.length ? nw.App.argv[0].split('&') : []);
+    var arg = function(key) {
+        var hit = args.filter(function(a) { return a.indexOf(key + '=') === 0; })[0];
+        return hit ? decodeURIComponent(hit.slice(key.length + 1)) : null;
+    };
+    var quick = /^(\d+),(\d+),(\d+)(?:,(\d+))?$/.exec(arg('start') || '');
+    if (quick) {
+        var _Scene_Boot_start = Scene_Boot.prototype.start;
+        Scene_Boot.prototype.start = function() {
+            _Scene_Boot_start.call(this);
+            if (DataManager.isBattleTest() || DataManager.isEventTest()) return;
+            DataManager.setupNewGame();
+            var clock = arg('clock');
+            if (clock) new Game_Interpreter().pluginCommand('Clock', ['set', clock]);
+            $gamePlayer.reserveTransfer(+quick[1], +quick[2], +quick[3], +(quick[4] || 2), 0);
+            SceneManager.goto(Scene_Map);
+        };
+    }
 
     var raw = PluginManager.parameters('NovaSceneSelect')['Scenes'] || '';
     try { if (raw.charAt(0) === '"') raw = JSON.parse(raw); } catch (e) { }

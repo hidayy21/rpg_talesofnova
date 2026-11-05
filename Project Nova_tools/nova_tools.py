@@ -9,6 +9,7 @@
 # command lists are shown but edited in the RPG Maker editor. The Passage tool edits tile flags (passage, 4 directions,
 # ladder, bush, counter, damage, terrain tag) into Tilesets.json, like the editor's Tileset tab. Saving writes the map file in the editor's layout and keeps the old file in
 # <project>_backups/map_editor/. Only this computer can reach the server (127.0.0.1). Needs Python 3 with Pillow.
+# Main (Play): playtests the open map from the selected tile (playtest.py), no link to it needed.
 # Character (/chargen): RPG Maker's Character Generator without the editor (chargen.py, chargen_api.py) - new
 # characters from its parts and the packs in generator_parts/, and finished faces with eyes or mouth swapped.
 import json, os, re, shutil, sys, time
@@ -21,6 +22,7 @@ import tileset_wizard as W
 import compose_tileset as C
 import nova_maplib as L
 import chargen_api as CG
+import playtest as PT
 
 PROJ = C.PROJ
 MAP_PAGE = os.path.join(HERE, 'mapeditor', 'index.html')
@@ -183,6 +185,10 @@ class Handler(W.Handler):
             code, out = save_map(int(body['id']), body['data'], body.get('events'), float(body['mtime']),
                                  bool(body.get('force')))
             return self._send(code, out)
+        if self.path == '/api/playtest':
+            body = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))).decode('utf8'))
+            spot, err = PT.launch(int(body['id']), body.get('x'), body.get('y'), body.get('clock') or None)
+            return self._send(500, {'error': err}) if err else self._send(200, {'x': spot[0], 'y': spot[1]})
         if self.path == '/api/tileset/flags':
             body = json.loads(self.rfile.read(int(self.headers.get('Content-Length', 0))).decode('utf8'))
             return self._send(*save_flags(body['edits'], bool(body.get('force'))))
