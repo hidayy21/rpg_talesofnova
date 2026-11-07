@@ -1,0 +1,41 @@
+{
+ "name": "Ley",
+ "sex": "Male",
+ "parts": {
+  "face": "p01",
+  "ears": "p01",
+  "eyes": "Whtdragon+hiddenone/Eye Generator Parts/p503",
+  "eyebrows": "p01",
+  "nose": "p05",
+  "mouth": "Whtdragon+hiddenone/Facial Features Generator Parts/p506",
+  "body": "p01",
+  "frontHair": "Whtdragon+hiddenone/Hair Generator Parts/p507",
+  "cloth": "p22",
+  "accessoryA": "p07",
+  "rearHair": "p03"
+ },
+ "colors": {
+  "FCCB0A": 83,
+  "AE8682": 110,
+  "FE9D1E": 106,
+  "D9A404": 5
+ },
+ "targets": {
+  "Face": {
+   "sheet": "Actor4",
+   "i": 3
+  },
+  "TV": {
+   "sheet": "Actor4",
+   "i": 3
+  },
+  "SV": {
+   "sheet": "ACTOR4_7",
+   "i": 0
+  },
+  "TVD": {
+   "sheet": "Damage4",
+   "i": 11
+  }
+ }
+}
