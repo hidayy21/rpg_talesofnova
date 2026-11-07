@@ -57,7 +57,8 @@ def setup():
     rows = [['#%02x%02x%02x' % tuple(grad[r][x]) for x in (0, 48, 96, 144, 192, 240)] for r in range(len(grad))]
     recipes = sorted(f[:-5] for f in os.listdir(RECIPES) if f.endswith('.json')) if os.path.isdir(RECIPES) else []
     face_groups = {g for _, g in G.LAYERS['Face']}
-    packs = sorted({v.rsplit('/', 1)[0] for s in G.SEXES for g, *_ in G.GROUPS for v in G.variations(s, g) if '/' in v})
+    packs = sorted({v.rsplit('/', 1)[0] for s in G.SEXES for g, *_ in G.GROUPS for v in G.variations(s, g)
+                    if '/' in v and not (s == 'Kid' and v.split('/')[0] in G.BORROW)})   # not the adults' hair
     return {
         'ok': bool(G.GEN), 'generator': G.GEN, 'packs': packs, 'skipped': G.skipped,
         'extra': [{'row': 70 + i, 'name': n, 'skin': 70 + i in G.EXTRA_SKIN} for i, (n, _) in enumerate(G.EXTRA)],

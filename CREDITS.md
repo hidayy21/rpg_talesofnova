@@ -12,9 +12,13 @@
   The facesets and busts of the Meat Butcher and Elderly Inn Keeper were made with AI and edited by hand.
 - **Hiddenone**: character generator hair parts (FrontHair / RearHair p600-p604, and a fixed damage sprite for the
   male rear hair 18), in `Project Nova_tools/generator_parts/Hiddenone/` for the Nova Tools Character page.
+- **whtdragon & hiddenone** (July 2018 collab): character generator parts - hair, eyes, facial features, facial
+  marks, kid clothes and swimsuits (p500 on), in `Project Nova_tools/generator_parts/Whtdragon+hiddenone/`.
+  Terms: free in commercial and non-commercial games with credit to whtdragon and hiddenone; may be edited.
 - *Source still to confirm*: the other character generator parts in `Project Nova_tools/generator_parts/` -
   `TheWholeLot` (Assassin hood, knight helmets, monster ears, horns, wings and mouths), `Clothing 20 - Female Loin
-  Cloth` and `Clothing 23 - Samurai Suit`.
+  Cloth`, `Clothing 23 - Samurai Suit`, `Clothing 27 - Cloth11 No Sleeves`, `Clothing 29 - Recolor Gloves`,
+  `AccB 14 - Metal Helm` and `AccB 18 - Full Helm`.
 - *Source still to confirm*: `img/*/HF_*` (High Fantasy Heroes pack), `img/*/JH_*` and `audio/bgm/JH_*`
   (Junkyard Heroes pack), and the sheets `$Kimono_Female`, `$Skull_Knight1-2`, `Bandits`, `Skull_Peeps`,
   `Bugs_Birds`, `Golfers`, `Jiangshi`, `Modern_Punks`, `$Army_Troops`, `Skull_Knights` (face),

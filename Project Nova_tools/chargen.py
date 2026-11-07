@@ -20,7 +20,7 @@
 #   python chargen.py fit family1 0 Female   -> the recipe of a generator face (and how close it comes)
 import io, json, os, re, shutil, sys, zipfile
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJ = os.path.join(HERE, '..')
@@ -112,9 +112,12 @@ class Source:
         self.root, self.pack, self.zip = root, pack, zipfile.ZipFile(zip_path) if zip_path else None
 
     def files(self):
-        if self.zip: return [n for n in self.zip.namelist() if n.lower().endswith('.png')]
+        """The pack's pictures; folders whose names start with _ (previews, notes) are left out."""
+        if self.zip:
+            return [n for n in self.zip.namelist() if n.lower().endswith('.png') and not re.search(r'(^|/)_', n)]
         out = []
-        for d, _, fs in os.walk(self.root):
+        for d, dirs, fs in os.walk(self.root):
+            dirs[:] = [x for x in dirs if not x.startswith('_')]
             out += [os.path.relpath(os.path.join(d, f), self.root).replace('\\', '/') for f in fs if f.lower().endswith('.png')]
         return out
 
@@ -200,8 +203,114 @@ def index(refresh=False):
                     base = v.rsplit('/', 1)[1]
                     if base in own and v not in icons.get(group, {}):
                         found[base] = found.pop(v)
+    _borrow_hair(idx)
     _index = idx
     return idx
+
+
+# ---------------------------------------------------------------- adult hair on the Kid
+# The Kid has one hairstyle. Its head is the adults' head lower down (walk, damage and battler sprites: the same size)
+# or a little smaller (face), so every Male and Female hairstyle - packs included - is offered to the Kid too, as
+# "Male/p05", "Female/<pack>/p20" ..., moved frame by frame onto the kid's head when it is read.
+BORROW = ('Male', 'Female')
+_GRID = {'TV': 48, 'TVD': 48, 'SV': 64}
+_fits, _wrappers = {}, {}
+
+
+def _head(mask, upright=True):
+    """Centre of a chibi body's thickest part - the head - in a cell's alpha mask, or None. Standing up, only the top
+    half of the cell below the silhouette's top counts, or wide hips in some poses would win (the damage sprites lie
+    head down, so not there)."""
+    rows = np.nonzero(mask.any(axis=1))[0]
+    if not len(rows): return None
+    mask = mask.copy()
+    if upright: mask[rows[0] + mask.shape[0] // 2:] = False
+    m = Image.fromarray(mask.astype(np.uint8) * 255)
+    last = None
+    while True:
+        a = np.asarray(m) > 0
+        if not a.any(): break
+        last = a
+        m = m.filter(ImageFilter.MinFilter(3))
+    if last is None: return None
+    ys, xs = np.nonzero(last)
+    return xs.mean(), ys.mean()
+
+
+def _kid_fit(sex, kind):
+    """How the adult head of sex maps onto the kid's: per cell (dx, dy) for sprites, (scale, dx, dy) for the face."""
+    key = (sex, kind)
+    if key in _fits: return _fits[key]
+    idx = _index_raw
+    if kind == 'Face':
+        def box(s):
+            src, rel, _ = idx[s]['Face']['face']['p01'][0]
+            a = _load(src, rel)[..., 3] > 0
+            ys, xs = np.nonzero(a)
+            return xs.min(), ys.min(), xs.max(), ys.max()
+        (ax0, ay0, ax1, _), (kx0, ky0, kx1, _) = box(sex), box('Kid')
+        s = (kx1 - kx0) / (ax1 - ax0)
+        _fits[key] = (s, (kx0 + kx1) / 2 - s * (ax0 + ax1) / 2, ky0 - s * ay0)   # same forehead line and centre
+        return _fits[key]
+    adult, kid = (_load(*idx[s][kind]['body']['p01']['image'])[..., 3] > 0 for s in (sex, 'Kid'))
+    n, out = _GRID[kind], {}
+    for y in range(0, kid.shape[0], n):
+        for x in range(0, kid.shape[1], n):
+            a, k = (_head(m[y:y + n, x:x + n], kind != 'TVD') for m in (adult, kid))
+            out[(x, y)] = (int(round(k[0] - a[0])), int(round(k[1] - a[1]))) if a and k else (0, 0)
+    _fits[key] = out
+    return out
+
+
+def to_kid(img, kind, sex):
+    """An adult part picture (or its colour mask) moved onto the kid's head."""
+    if kind == 'Face':
+        s, dx, dy = _kid_fit(sex, kind)
+        return img.transform(img.size, Image.AFFINE, (1 / s, 0, -dx / s, 0, 1 / s, -dy / s), Image.BICUBIC)
+    n, out = _GRID[kind], Image.new(img.mode, img.size)
+    for (x, y), (dx, dy) in _kid_fit(sex, kind).items():
+        cell = img.crop((x, y, x + n, y + n))
+        moved = Image.new(img.mode, (n, n))
+        moved.paste(cell, (dx, dy))                 # whatever leaves the cell is cut off, as in the editor's frames
+        out.paste(moved, (x, y))
+    return out
+
+
+class _KidSource:
+    def __init__(self, src, sex): self.src, self.sex, self.pack = src, sex, src.pack
+
+    def open(self, rel):
+        stem = rel.split('/')[-1]
+        kind = {'FG': 'Face', 'TV': 'TV', 'SV': 'SV', 'TVD': 'TVD'}[stem.split('_')[0]]
+        return to_kid(self.src.open(rel).convert('RGBA'), kind, self.sex)
+
+
+def _kid_src(src, sex):
+    key = (id(src), sex)
+    if key not in _wrappers: _wrappers[key] = (src, _KidSource(src, sex))   # keep src alive: the cache keys on id()
+    return _wrappers[key][1]
+
+
+def _borrow_hair(idx):
+    global _index_raw
+    _index_raw = idx
+    _fits.clear()
+    for sex in BORROW:
+        for kind in KINDS:
+            for layer, group in LAYERS[kind]:
+                if group not in ('frontHair', 'rearHair'): continue
+                for v, entry in idx[sex][kind].get(layer, {}).items():
+                    if kind == 'Face':
+                        new = [(_kid_src(src, sex), rel, mask) for src, rel, mask in entry]
+                    else:
+                        new = {k: (_kid_src(src, sex), rel) for k, (src, rel) in entry.items()}
+                    idx['Kid'][kind].setdefault(layer, {})['%s/%s' % (sex, v)] = new
+        for group in ('frontHair', 'rearHair'):
+            for v, icon_ in idx[sex]['Variation'].get(group, {}).items():
+                idx['Kid']['Variation'].setdefault(group, {})['%s/%s' % (sex, v)] = icon_
+
+
+_index_raw = None
 
 
 def _add(idx, sex, kind, name, v, src, rel, stem):

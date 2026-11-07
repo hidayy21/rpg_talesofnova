@@ -196,8 +196,11 @@ async function api(path, body) {
   return j;
 }
 const clone = o => JSON.parse(JSON.stringify(o));
-const vlabel = v => v.includes('/') ? v.split('/').pop() : v;
-const vpack = v => v.includes('/') ? v.split('/')[0] : '';
+// the Kid also gets every adult hairstyle: "Male/p05", "Female/<pack>/p20" (moved onto the kid's head by chargen.py)
+const ADULT = { Male: '♂', Female: '♀' };
+const adult = v => S.char.sex === 'Kid' && ADULT[v.split('/')[0]] ? v.split('/')[0] : '';
+const vlabel = v => v.includes('/') ? (adult(v) ? ADULT[adult(v)] + ' ' : '') + v.split('/').pop() : v;
+const vpack = v => !v.includes('/') ? '' : adult(v) ? v.split('/').slice(1, -1).join('/') : v.split('/')[0];
 
 // ---------------------------------------------------------------- setup
 async function load() {
@@ -235,7 +238,7 @@ function renderParts() {
   const vs = S.setup.variations[sex][g.id] || [], cur = S.char.parts[g.id] || null;
   let html = `<h2>${g.label} <small>${vs.length} pilihan</small></h2><div class="grid">`;
   if (g.blank) html += `<button class="part none" data-v="" aria-pressed="${!cur}">Tidak ada</button>`;
-  html += vs.map(v => `<button class="part" data-v="${v}" aria-pressed="${v === cur}" title="${vpack(v) ? 'Pack ' + vpack(v) + ': ' : ''}${vlabel(v)}">` +
+  html += vs.map(v => `<button class="part" data-v="${v}" aria-pressed="${v === cur}" title="${adult(v) ? 'Rambut ' + adult(v) + ', dipasang ke kepala Kid: ' : ''}${vpack(v) ? 'Pack ' + vpack(v) + ': ' : ''}${v.split('/').pop()}">` +
     `<img loading="lazy" alt="" src="/api/chargen/thumb?sex=${sex}&group=${g.id}&v=${encodeURIComponent(v)}">` +
     `<span>${vpack(v) ? '<b class="pack">+</b> ' : ''}${vlabel(v)}</span></button>`).join('');
   html += '</div><div class="colors">';
@@ -411,8 +414,9 @@ function drawTargets() {
     <div class="target"><label class="head"><input type="checkbox" data-on="${kind}" ${T[kind].on ? 'checked' : ''}> ${k.label}
       <small class="hint">${k.folder}/</small></label>
       <div class="row" ${T[kind].on ? '' : 'hidden'}><label>Sheet</label>
-        <input type="text" list="dl${kind}" data-sheet="${kind}" value="${T[kind].sheet}" size="26">
-        <datalist id="dl${kind}">${(S.setup.sheets[kind] || []).map(n => `<option value="${n}">`).join('')}</datalist>
+        <input type="text" data-sheet="${kind}" value="${T[kind].sheet}" size="26" aria-label="Nama sheet ${k.label}">
+        <select data-choose="${kind}" aria-label="Pilih sheet ${k.label} yang sudah ada"><option value="">atau pilih yang ada…</option>
+          ${(S.setup.sheets[kind] || []).map(n => `<option value="${n}">${n}</option>`).join('')}</select>
         <span class="hint" data-note="${kind}"></span></div>
       ${kind === 'SV' ? '' : `<div class="picker" data-pick="${kind}" ${T[kind].on ? '' : 'hidden'}></div>`}
     </div>`).join('');
@@ -430,6 +434,12 @@ function updateTarget(kind) {
 $('targets').addEventListener('change', e => {
   const on = e.target.dataset.on;
   if (on) { T[on].on = e.target.checked; drawTargets(); }
+  const k = e.target.dataset.choose;            // a sheet picked from the dropdown: into the name field
+  if (k && e.target.value) {
+    T[k].sheet = e.target.value;
+    $('targets').querySelector(`[data-sheet="${k}"]`).value = e.target.value;
+    e.target.value = ''; updateTarget(k);
+  }
 });
 $('targets').addEventListener('input', e => {
   const k = e.target.dataset.sheet; if (!k) return;
