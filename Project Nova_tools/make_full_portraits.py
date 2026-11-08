@@ -8,7 +8,7 @@ from collections import deque
 import numpy as np
 from PIL import Image, ImageFilter
 
-sys.path.insert(0, 'D:/RPG Maker MV/Project Nova_tools')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))     # this folder's import_portraits, not an old copy
 import import_portraits as IP
 
 SRC = 'D:/RPG Maker MV/Project Nova_full portrait/'
@@ -132,7 +132,7 @@ def card(name, bust):
     a[..., 3] = (a[..., 3].astype(np.float32) * ramp[:, None]).astype(np.uint8)
     b = Image.fromarray(a, 'RGBA')
     theme = IP.THEMES.get(name, IP.DEFAULT_THEME)
-    seed = {'Kael': 1, 'Yuki': 2, 'Mira': 3, 'Diana': 4, 'Roland': 5, 'Barion': 6, 'Lysandre': 8}.get(name, 7) * 97
+    seed = {'Kael': 1, 'Yuki': 2, 'Mira': 3, 'Diana': 4, 'Roland': 5, 'Barion': 6, 'Lysandre': 8, 'Ley': 9}.get(name, 7) * 97
     c = Image.alpha_composite(IP.background(theme, seed), IP.rim(b, theme[3]))
     return IP.vignette(Image.alpha_composite(c, b)), b
 

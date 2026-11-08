@@ -51,6 +51,15 @@ CHARACTERS = [
          [('Age', '32'), ('Rank', 'Knight Commander')],
          'A loyal knight commander sworn to protect the Royal Kingdom of Nova. He stands firm where others would '
          'fall.', picture='Full_Roland'),
+    char('ley', 'Leyfric Carlson', 'Party', 'Phantom Soldier', ('Actor4', 3), None,
+         [('Age', '21'), ('Rank', 'Foot Soldier'), ('Weapon', 'Spear')],
+         'Ley to the few who remember his name. An ordinary foot soldier, and has been since he was seventeen, when a '
+         'friend talked him into joining. Quiet, plain, easy to forget: people often notice him only once he speaks.',
+         'He likes to joke, but his voice is so soft that nobody hears it. Then someone else tells the same joke, '
+         'louder, and gets the laugh.',
+         'When the village he was posted to was attacked, the captain fell and the line broke. One foot soldier did '
+         'not: Ley held his ground against an enemy general, and was the only one of them still breathing.',
+         picture='Full_Ley'),
 
     # ---------------------------------------------------------------- the Ashveil family
     char('vivienne', 'Vivienne Ashveil', 'Ashveil Family', 'Mother', ('family1', 3), at(V_CH1, 3),

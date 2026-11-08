@@ -137,6 +137,43 @@
   "picture": "Full_Roland"
  },
  {
+  "id": "ley",
+  "name": "Leyfric Carlson",
+  "group": "Party",
+  "title": "Phantom Soldier",
+  "face": [
+   "Actor4",
+   3
+  ],
+  "unlock": null,
+  "facts": [
+   [
+    "Age",
+    "21"
+   ],
+   [
+    "Rank",
+    "Foot Soldier"
+   ],
+   [
+    "Weapon",
+    "Spear"
+   ]
+  ],
+  "text": [
+   {
+    "text": "Ley to the few who remember his name. An ordinary foot soldier, and has been since he was seventeen, when a friend talked him into joining. Quiet, plain, easy to forget: people often notice him only once he speaks."
+   },
+   {
+    "text": "He likes to joke, but his voice is so soft that nobody hears it. Then someone else tells the same joke, louder, and gets the laugh."
+   },
+   {
+    "text": "When the village he was posted to was attacked, the captain fell and the line broke. One foot soldier did not: Ley held his ground against an enemy general, and was the only one of them still breathing."
+   }
+  ],
+  "picture": "Full_Ley"
+ },
+ {
   "id": "vivienne",
   "name": "Vivienne Ashveil",
   "group": "Ashveil Family",

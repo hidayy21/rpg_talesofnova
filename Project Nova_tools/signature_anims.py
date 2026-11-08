@@ -51,6 +51,8 @@ SIGNATURES = {
     'Bloodrose Requiem': (recolor(105, 300, 320, [255, 60, 120, 180]), ['Bloodrose Requiem']),
     'Chains of Lilith': (recolor(104, 320), ['Chains of Lilith']),
     'Undying Hunger': (recolor(53, 300), ['Undying Hunger']),
+    # Ley - the end of everything (the skill's note adds every hit, slash, pierce, claw and element on top)
+    'Ragnarok': (recolor(110, 270, None, [255, 255, 255, 220]), ['Ragnarok']),
 }
 
 
