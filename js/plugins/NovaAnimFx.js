@@ -43,6 +43,10 @@
  *                           circle), then the skill's animation on the targets
  *   <cast wait: 20>         frames to wait before the skill's animation
  *                           (default: the cast's length minus Cast Overlap)
+ *   <extra animations: 6, 66, 71>  more animations on every target with
+ *                           the skill's own one
+ *   <extra interval: 4>     frames between them (default 6, 0 = all at once)
+ *   <extra sound: 4>        only the first 4 play their sounds (default all)
  *
  * Plugin commands: none.
  */
@@ -131,5 +135,74 @@
         }
         this._novaCastDone = false;
         _showAnimation.call(this, subject, targets, animationId);
+        playExtras(item, targets);
+    };
+
+    // ---------------------------------------------------------------- MV fix: screen animations hid all others
+    // MV keeps one copy of a screen animation (position 3) per frame, but it keys its checks by the animation
+    // object, which becomes the same "[object Object]" for every animation: once a screen animation starts, any
+    // other animation started in that frame got no cells (only its flashes) and no sound. Keyed by id instead.
+    Sprite_Animation.prototype.createSprites = function() {
+        var key = this._animation.id;
+        if (!Sprite_Animation._checker2[key]) {
+            this.createCellSprites();
+            if (this._animation.position === 3) Sprite_Animation._checker2[key] = true;
+            this.createScreenFlashSprite();
+        }
+        if (Sprite_Animation._checker1[key]) {
+            this._duplicated = true;
+        } else {
+            this._duplicated = false;
+            if (this._animation.position === 3) Sprite_Animation._checker1[key] = true;
+        }
+    };
+
+    // ---------------------------------------------------------------- extra animations
+    // <extra animations: 6, 66, 71>  played on every target together with the skill's own animation
+    // <extra interval: 4>            frames between two of them (default 6; 0 = all at the same moment)
+    // <extra sound: 4>               only the first 4 play their sounds (default all), so a pile-up isn't deafening
+    function playExtras(item, targets) {
+        var tag = item && item.meta && item.meta['extra animations'];
+        if (!tag) return;
+        var meta = item.meta;
+        var interval = meta['extra interval'] !== undefined ? Number(meta['extra interval']) : 6;
+        var ids = String(tag).split(',').map(Number).filter(function(id) { return $dataAnimations[id]; });
+        var sound = meta['extra sound'] !== undefined ? Number(meta['extra sound']) : ids.length;
+        targets.forEach(function(target) {
+            ids.forEach(function(id, i) {
+                target._animations.push({ animationId: id, mirror: false, delay: (i + 1) * interval,
+                                          novaExtra: true, novaMute: i >= sound });
+            });
+        });
+    }
+
+    // An extra's sprite never flashes the whole screen (dozens of them would wash it out; the skill's own
+    // animation keeps its screen flash), and a muted one skips its sounds. Target flashes still play.
+    var _shiftAnimation = Game_Battler.prototype.shiftAnimation;
+    Game_Battler.prototype.shiftAnimation = function() {
+        var data = _shiftAnimation.call(this);
+        this._novaExtraNext = data && data.novaExtra ? data : null;
+        return data;
+    };
+
+    var _spriteBattlerStartAnimation = Sprite_Battler.prototype.startAnimation;
+    Sprite_Battler.prototype.startAnimation = function(animation, mirror, delay) {
+        _spriteBattlerStartAnimation.call(this, animation, mirror, delay);
+        var data = this._battler && this._battler._novaExtraNext;
+        if (data) {
+            var sprite = this._animationSprites[this._animationSprites.length - 1];
+            if (sprite) { sprite._novaExtra = true; sprite._novaMute = data.novaMute; }
+            this._battler._novaExtraNext = null;
+        }
+    };
+
+    var _processTimingData = Sprite_Animation.prototype.processTimingData;
+    Sprite_Animation.prototype.processTimingData = function(timing) {
+        if (this._novaExtra) {
+            timing = Object.assign({}, timing);
+            if (timing.flashScope === 2) timing.flashScope = 0;
+            if (this._novaMute) timing.se = null;
+        }
+        _processTimingData.call(this, timing);
     };
 })();
