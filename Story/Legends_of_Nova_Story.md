@@ -9,15 +9,70 @@
 ### Sejarah Politik Benua Barat
 
 - Dua kerajaan terbesar di Benua Barat: **Kerajaan Nova** dan **Arulustus Empire**.
-- Keduanya berada dalam **ketegangan panas selama 100 tahun**, yang berakhir lewat **perang 16 tahun lalu**, dimenangkan Nova. Ignatius Dracoheart berjasa besar dalam kemenangan ini.
+- Keduanya berada dalam **ketegangan selama ±300 tahun**. Selama dua abad pertama ketegangan itu berupa sengketa perbatasan, perang dagang, dan intrik diplomasi, **tanpa perang terbuka**. **Perang yang sesungguhnya baru pecah ±100 tahun terakhir**: serangkaian perang yang diselingi gencatan senjata, dan berakhir lewat **perang besar 16 tahun lalu**, dimenangkan Nova. Ignatius Dracoheart berjasa besar dalam kemenangan ini.
 - Usia saat perang (16 tahun lalu): Ignatius 53, Cassius 35 (sudah di intelijen), Vivienne 32, Valeria 28, Kaine 11, Seraphine 9, Kael 3. Selene lahir setahun kemudian (lihat Timeline Keluarga).
 - Perang tersebut memulai **masa damai baru**. Meski begitu, kekuatan militer tetap diperlukan untuk **berjaga-jaga** dan untuk melawan **simpatisan sisa-sisa perang**.
 - **Keluarga kerajaan:** raja Nova adalah keturunan **Magnus Blackwood** (Champion of Earth), raja Arulustus keturunan **Roderick Tempest** (Champion of Thunder). Nama keluarga Blackwood dan Tempest **masih aktif**.
-  - Raja Nova sekarang: **Cedric Nova Blackwood IX**. Air mancur di alun-alun ibu kota dipersembahkan untuk leluhurnya, **King Cedric IV**. Nama raja Arulustus belum ditentukan.
-  - **Queen Seraphina Nova Blackwood** (*Seraphina the Wise*) — **ratu pertama Nova yang memerintah tanpa seorang raja**. Masa kejayaannya **23 tahun**, sampai putranya, **Pangeran Oswin Nova Blackwood**, dewasa dan siap menggantikannya. Patungnya berdiri di Queen's Garden, Royal Quarter.
+  - Raja Nova sekarang: **Cedric Nova Blackwood IX**, **69 tahun**, salah satu raja dengan **masa pemerintahan terlama** dalam sejarah Nova (rekor tetap milik leluhurnya, Cedric I the Cornerstone, 55 tahun). Ia naik takhta di usia **22** (47 tahun lalu) setelah ayahnya wafat. Ia memimpin Nova melewati puncak perang melawan Arulustus sampai kemenangan 16 tahun lalu.
+    - Putranya dan pewaris takhta: **Pangeran Leopold Nova Blackwood II** (Pangeran Leo).
+    - **Sahabat kecil Ignatius Dracoheart.** Keduanya seumuran dan tumbuh bersama sejak Cedric masih pangeran. Dua tahun setelah naik takhta, Cedric mengangkat Ignatius menjadi Lord Commander di usia 24.
+  - Air mancur di alun-alun ibu kota dipersembahkan untuk leluhurnya, **King Cedric IV**. Nama raja Arulustus belum ditentukan.
+  - **Queen Seraphina the Wise** (Seraphina Nova Blackwood) — **penguasa wanita pertama Nova**. Ia istri **King Cedric Nova Blackwood V**; setiap raja yang menikah memang punya permaisuri bergelar queen, tetapi Seraphina-lah yang pertama **memerintah sendiri**. Ia naik takhta setelah suaminya **wafat**, dan memerintah **23 tahun** sampai putranya, **Pangeran Oswin Nova Blackwood**, dewasa dan siap menggantikannya. Dialah yang menyembunyikan **Crown of the First King** dan membuat mahkota baru untuk dipakai sehari-hari (lihat Konflik Nova). Patungnya berdiri di Queen's Garden, Royal Quarter.
   - Alun-alun ibu kota memasang **patung Magnus Blackwood**, leluhur wangsa raja.
+  - **Catatan angka regnal:** "IX" berarti raja **kesembilan yang bernama Cedric**, bukan raja kesembilan Nova. Di antara para Cedric ada raja-raja bernama lain (misalnya Oswin), sehingga total penguasa Nova jauh lebih banyak dari sembilan.
+
+#### Timeline Wangsa Blackwood
+
+Rata-rata masa pemerintahan ±30 tahun → ±470 tahun berdirinya kerajaan menghasilkan **±15–16 penguasa**, dan sembilan di antaranya bernama Cedric (nama sang pendiri, jadi paling sering dipakai). Angka tahun adalah perkiraan.
+
+| Kapan | Peristiwa |
+|---|---|
+| ±500 tahun lalu | **Age of Heroes** berakhir: 8 Elemental Champion menyegel Evil Force. Magnus Blackwood berusia 34. |
+| ±470 tahun lalu | **Kerajaan Nova berdiri.** Raja pertama adalah putra Magnus, **Cedric I the Cornerstone** (*usulan nama*). Magnus sendiri menolak mahkota; ia memilih menjadi "gunung", dan putranya menjadi batu penjuru kerajaan. Nama Cedric lalu menjadi nama kebanggaan wangsa. Cedric I memerintah **55 tahun**, rekor terlama yang belum terpecahkan sampai sekarang. |
+| ±350 tahun lalu *(usulan)* | **Myria dan Maximus Moonvale** menghentikan fragmen Evil Force, **kebocoran pertama** sejak Age of Heroes. Pencapaian mereka diragukan bangsawan lain; keluarga Moonvale mulai mundur. |
+| ±300 tahun lalu | Ketegangan Nova–Arulustus dimulai: sengketa perbatasan, perang dagang, dan intrik diplomasi, **tanpa perang terbuka**. |
+| ±290 tahun lalu | **King Cedric IV** memerintah; air mancur di alun-alun ibu kota dibangun atas namanya. |
+| ±235 tahun lalu | **King Cedric V** wafat. Putranya, Oswin, masih kanak-kanak. **Seraphina** naik takhta sebagai penguasa wanita pertama Nova. |
+| ±235–212 tahun lalu | Atas ide Seraphina, **Crown of the First King** (mahkota asli Cedric I, berisi kristal Magnus) disimpan di **ruangan tersegel di bawah takhta**, dan raja-raja sesudahnya memakai **mahkota baru** dengan permata palsu buatan Royal Mage **Alistar Duskveil**, yang membawa essence kristal asli. |
+| ±212 tahun lalu | Seraphina menyerahkan takhta kepada putranya yang telah dewasa, **King Oswin I**. Mercusuar pelabuhan dan perpustakaan "dua ratus tahun" berasal dari era Seraphina–Oswin. |
+| ±116 tahun lalu | **Perang terbuka pertama** Nova–Arulustus pecah. Seabad berikutnya diisi serangkaian perang yang diselingi gencatan senjata. |
+| 69 tahun lalu | **Cedric IX** lahir, tahun yang sama dengan Ignatius Dracoheart, sahabat kecilnya. |
+| 47 tahun lalu | Ayahnya wafat; **Cedric IX naik takhta** di usia 22. |
+| 45 tahun lalu | Dua tahun setelah naik takhta, Cedric IX mengangkat sahabatnya, **Ignatius**, menjadi Lord Commander termuda (keduanya 24). |
+| 16 tahun lalu | **Perang besar** berakhir dengan kemenangan Nova, menutup ketegangan ±300 tahun. Cedric IX berusia 53. |
+| Sekarang | **King Cedric Nova Blackwood IX**, 69 tahun, tahun ke-47 pemerintahannya, salah satu yang terlama dalam sejarah Nova. |
   - **Simbolisme:** petir lawan bumi. Bumi menang, karena tanah menetralkan petir, dan Nova memang memenangkan perang.
 - **Sisa loyalis Arulustus** berkonflik dengan Kerajaan Nova, dibekingi Order of Caelum. Nantinya di dalam Arulustus pecah **civil war**: pemerintahan yang sekarang melawan para loyalis.
+
+#### Konflik Nova — Penobatan Raja Leo
+
+- **Putra mahkota:** **Pangeran Leopold Nova Blackwood II**, dipanggil **Pangeran Leo** (setelah naik takhta: **Raja Leo**).
+- **Pemicu:** King Cedric IX **menyerahkan takhta** kepada Leo. Dalam upacara penobatan, Cedric **melepas mahkota dari kepalanya sendiri** dan memakaikannya kepada putranya.
+- **Asumsi Order of Caelum:** kristal Roderick Tempest terpasang di **mahkota raja Arulustus**, jadi Order mengira pola yang sama berlaku di Nova: permata di mahkota yang dipakai raja dianggap sebagai kristal segel Magnus Blackwood.
+- **Istana diserang** saat penobatan. **Party ikut andil melindungi raja baru**, Raja Leo.
+- **Order berhasil merebut mahkota itu.** Anehnya, **Cedric dan penasihat kerajaan sama sekali tidak tampak khawatir**. Petunjuk kecil bagi pemain yang jeli.
+- **Plot twist:** permata di mahkota itu **palsu**, meski membawa essence kristal asli (lihat di bawah). Kristal Magnus terpasang di **Crown of the First King**, mahkota asli milik **Cedric I the Cornerstone**. **Order tidak pernah menemukannya.**
+- **Asal-usulnya: ide Queen Seraphina the Wise.** Ia memerintahkan pembuatan **mahkota baru dengan permata palsu** (karya Alistar Duskveil) untuk dipakai sehari-hari, lalu menyimpan mahkota asli di ruangan tersembunyi. Sejak itu, setiap raja Nova memakai mahkota Seraphina.
+
+##### Ruangan tersegel di bawah takhta
+
+- Terletak **di bawah kursi takhta**, dan **disegel**.
+- **Hanya dua orang yang tahu:** **raja yang sedang menjabat** dan **penasihat kerajaan**, jabatan yang **diwariskan turun-temurun**. Bahkan Ignatius, sahabat raja, tidak tahu, begitu pula **Royal Mage pengkhianat** yang bekerja untuk Order.
+- **Cara membuka:** **beberapa tetes darah keturunan Cedric I** ditambah **mantra khusus**.
+- **[Belum]** Nama penasihat kerajaan dan keluarganya.
+
+##### Adegan setelah konflik
+
+- Setelah konflik Nova selesai dan party kembali melanjutkan pengejaran, ada **scene khusus tanpa party**: Cedric memanggil Leo, membuka ruangan di bawah takhta, lalu menunjukkan **Crown of the First King** beserta **kristal Magnus yang asli**. Inilah serah terima rahasia dari raja lama ke raja baru.
+- **Dramatic irony:** pemain tahu kebenarannya, tetapi party dan Order tidak.
+
+##### Dampak ke akhir cerita
+
+- Order mengumpulkan kedelapan kristal, tetapi **satu di antaranya palsu**: permata buatan Alistar Duskveil dari mahkota Seraphina. Karena itu, di klimaks **Evil Force gagal keluar**, sejalan dengan prinsip bahwa Evil Force tidak pernah benar-benar bangkit dalam game ini.
+- **Kenapa Order tidak sadar permatanya palsu:**
+  - Permata palsu itu **memiliki essence kristal Magnus yang asli**. Ia dibuat atas perintah Seraphina oleh **Alistar Duskveil**, salah satu **Royal Mage terkuat pada masanya**.
+  - **Setiap kristal segel sudah tertempel pada suatu benda** (mahkota, dll.), sehingga sulit diperiksa satu per satu.
+  - Order **tidak punya cara menguji kristal sampai ritual dimulai**, dan kesombongan Lucian membuatnya tidak curiga.
 
 ### Guild
 
@@ -29,11 +84,33 @@
 - Tingkatan lisensi mage: **Training**, lalu **Class 5 → 4 → 3 → 2 → 1** (Class 1 tertinggi).
 - Lulusan Royal Magic Academy langsung menempati **Class 5 atau Class 4**, tergantung hasil ujian kelulusan.
 - Naik class lewat **ujian kenaikan class**. Normalnya butuh sekitar **2 tahun** untuk naik satu class.
-- **Royal Mage** — julukan bagi mage **Class 1 yang tergabung dalam Royal Magic Council**. Mage Class 1 yang bukan anggota Council tidak mendapat julukan ini.
+- **Royal Mage** — julukan bagi mage **Class 1 yang bekerja untuk istana** (tergabung dalam Royal Magic Council). Mage Class 1 yang tidak bekerja untuk istana tidak mendapat julukan ini.
+  - **Jumlahnya tidak dibatasi**, tetapi **saat ini hanya ada 3**. Salah satunya **Valeria Dracoheart**.
+  - **Salah satu dari ketiganya diam-diam bekerja untuk Order of Caelum.** Meski begitu, ia **tidak tahu soal ruangan tersegel** di bawah takhta (lihat Konflik Nova).
+  - **[Belum]** Nama Royal Mage ketiga dan siapa pengkhianatnya.
+
+### Militer Kerajaan
+
+- Pangkat militer tertinggi di bawah raja: **Lord Commander**. Jumlahnya **4 orang**. **Seraphine Ashveil** dan **Roland Talonheart** adalah dua di antaranya. Ignatius Dracoheart dulu juga memegang pangkat ini (diangkat di usia 24).
+- Gelar **Lord Commander** melekat pada jabatan, jadi tetap dipakai untuk perempuan (Sera tetap *Lord Commander*, bukan *Lady Commander*).
+- **Sapaan:**
+  - Prajurit dan bawahan: **"Commander"** (*"Yes, Commander!"*).
+  - Resmi, di istana atau pengumuman: **Lord Commander + nama keluarga** (*Lord Commander Talonheart*, *Lord Commander Ashveil*).
+  - Gelar kesatria pribadi: **Sir + nama depan** untuk pria (*Sir Roland*), **Dame + nama depan** untuk perempuan (*Dame Seraphine*).
+- **[Usulan]** Di bawahnya ada **Knight Captain**, yang memimpin satu pasukan di bawah seorang Lord Commander. *Commander Vale* di Barracks adalah **Lord Commander yang sudah pensiun** (tetap disapa "Commander" sebagai penghormatan), dan dulu melatih Roland.
+- **[Belum]** Dua Lord Commander lainnya. Kandidat salah satunya: Lord Commander baru yang muncul di Bab 7 (lihat Story_Plan).
 
 ## Legenda Masa Lalu
 
-- **Asterion Duskveil** — pahlawan, *Champion of Darkness*, ratusan tahun lalu. Keturunannya (keluarga Ashveil) memiliki aptitude terhadap elemen kegelapan.
+- **Age of Heroes** — zaman para Elemental Champion, berakhir **±500 tahun lalu** saat Evil Force disegel (lihat Timeline Wangsa Blackwood).
+- **Asterion Duskveil** — pahlawan, *Champion of Darkness*, ratusan tahun lalu. Keturunannya memiliki aptitude terhadap elemen kegelapan.
+  - **Keluarga Duskveil** adalah **garis keturunan resmi (main branch)** Asterion. Tokoh terkenalnya: **Alistar Duskveil**, salah satu Royal Mage terkuat di era Seraphina the Wise (±235–212 tahun lalu), pembuat permata palsu di mahkota Seraphina (lihat Konflik Nova).
+  - **Keluarga Ashveil** (keluarga Kael) adalah **cabang yang sudah jauh** dari garis utama.
+  - **Duskveil masih ada sampai sekarang**, dan **hubungannya dengan Ashveil cukup baik**.
+  - Keturunan Duskveil **tersebar di seluruh planet**. Mereka **tidak punya wilayah, kastil, atau house sendiri** seperti magical family lain.
+  - Karena itu Duskveil **bukan magical family secara utuh**. Yang bertahan adalah **darah dan nama** Duskveil, yang terus diwariskan.
+  - Duskveil **tidak memiliki satu kepala keluarga utama**. Bahkan di beberapa daerah ada orang bernama Duskveil yang **tidak tahu bahwa mereka keturunan Asterion**.
+  - **Hal yang sama berlaku untuk Ashveil.** Keturunan Asterion memang **tidak punya komunitas resmi**. Ini cerminan Asterion sendiri: pria yang **seperti enigma** dan **tidak suka bergerombol**.
 - **Jeanne Ignatia** — pahlawan, *Champion of Fire*, salah satu sahabat Asterion. Garis keturunannya mengalir lewat ibu Kael.
 - **Caelum Dawncrest** — pahlawan, *Champion of Light*, salah satu rekan Asterion dan Jeanne. Jiwanya bereinkarnasi menjadi Kael.
 - Asterion, Jeanne, dan Caelum adalah tiga dari **8 hero (Elemental Champion)**. Lima lainnya:
@@ -112,14 +189,14 @@ Kael **bukan** reinkarnasi Asterion maupun Jeanne. Mereka adalah **leluhur biolo
 ### Keluarga Ashveil
 
 - **Cassius Ashveil** (ayah, 51 tahun) — salah satu **orang terkuat di kerajaan**, bekerja di **bagian intelijen**. Pekerjaannya rahasia: ia sering keluar kerajaan **sendirian** untuk misi rahasia dan intelijen, sehingga **jarang terlihat**.
-  - Anak-anaknya **tahu** ia bekerja untuk kerajaan, tetapi **tidak tahu detail pekerjaannya**. Bahkan Seraphine, yang seorang commander, tidak tahu detail misinya karena **selalu berubah-ubah**.
+  - Anak-anaknya **tahu** ia bekerja untuk kerajaan, tetapi **tidak tahu detail pekerjaannya**. Bahkan Seraphine, yang seorang Lord Commander, tidak tahu detail misinya karena **selalu berubah-ubah**.
   - **Masa lalu:** dulu prajurit kerajaan di bawah pasukan **Ignatius**. Keahlian bertarung dan strateginya menarik perhatian Ignatius, yang menjadikannya **tangan kiri**-nya.
   - Setelah Cassius mendekati Vivienne, Ignatius merasa **"dikhianati"**. Ia menghasut para petinggi untuk **"mempromosikan"** Cassius ke bagian intelijen, dengan niat buruk agar Cassius **terbunuh dalam misi**. Namun Cassius **selalu berhasil selamat**, dan karier intelijennya justru membuatnya menjadi salah satu orang terkuat di kerajaan.
   - Hanya membawa darah Asterion, sehingga awakening-nya **Darkness murni** (lihat Awakening Garis Darah).
 - **Kaine Ashveil** (anak pertama, kakak laki-laki, 27 tahun) — berpetualang di laut. Rambut merah, aptitude utama **Fire**.
-- **Seraphine Ashveil** (anak kedua, kakak perempuan, 25 tahun) — mengabdi pada kerajaan sebagai kesatria, berpangkat **commander**, setara dengan Roland Talonheart.
-  - Namanya terinspirasi dari **Queen Seraphina the Wise**, ratu pertama Nova yang memerintah tanpa raja, dari wangsa Blackwood (patungnya ada di Royal Quarter).
-  - Diangkat menjadi commander di usia **23**, salah satu yang **termuda**. Rekor sebelumnya dipegang **kakeknya, Ignatius Dracoheart**, di usia **24**. Rambut merah, aptitude utama **Fire**.
+- **Seraphine Ashveil** (anak kedua, kakak perempuan, 25 tahun) — mengabdi pada kerajaan sebagai kesatria, berpangkat **Lord Commander**, setara dengan Roland Talonheart.
+  - Namanya terinspirasi dari **Queen Seraphina the Wise**, penguasa wanita pertama Nova, dari wangsa Blackwood (patungnya ada di Royal Quarter).
+  - Diangkat menjadi Lord Commander di usia **23**, salah satu yang **termuda**. Rekor sebelumnya dipegang **kakeknya, Ignatius Dracoheart**, di usia **24**. Rambut merah, aptitude utama **Fire**.
 - **Kaelen Ashveil** (Kael, anak ketiga) — protagonis.
 - **Selene Ashveil** (anak bungsu, adik perempuan, 15 tahun) — rambut hitam. Seperti Kael, aptitude utamanya **Shadow**.
 - **Vivienne Ashveil** (ibu, 48 tahun, lahir sebagai Dracoheart) — melahirkan Kaine di usia 21 dan Selene di usia 33. Keturunan Jeanne Ignatia, putri sulung kepala **clan Dracoheart**. Tidak bangkit. Meninggalkan clan untuk ikut suaminya (lihat Keluarga Dracoheart).
@@ -132,12 +209,13 @@ Kael **bukan** reinkarnasi Asterion maupun Jeanne. Mereka adalah **leluhur biolo
 - **Clan Dracoheart** — keturunan Jeanne Ignatia. Salah satu **magical family**, dan menempati **peringkat 2**.
 - **Ignatius Dracoheart** (kakek Kael, ayah Vivienne, 69 tahun) — **kepala clan** Dracoheart. Dijuluki **Ignatius the Hero**; sebelumnya **Ignatius the Sword of Nova**. Berhasil bangkit (**Ruler of Flames**).
   - Berjasa besar dalam **kemenangan Nova atas Arulustus Empire** 16 tahun lalu, yang mengubah julukannya dari *the Sword of Nova* menjadi *the Hero*.
-  - Di masa mudanya seorang **Knight Commander**, diangkat di usia **24** (rekor termuda sebelum Seraphine), 45 tahun lalu, saat Vivienne berumur 3 (ia menjadi ayah di usia 21). Saat perang melawan Arulustus (16 tahun lalu) ia berusia **53**, panglima yang masih turun langsung ke medan perang. Bertarung dengan **magic dan pedang**, sama seperti Seraphine.
+  - Di masa mudanya seorang **Lord Commander**, diangkat di usia **24** (rekor termuda sebelum Seraphine), 45 tahun lalu, saat Vivienne berumur 3 (ia menjadi ayah di usia 21). Saat perang melawan Arulustus (16 tahun lalu) ia berusia **53**, panglima yang masih turun langsung ke medan perang. Bertarung dengan **magic dan pedang**, sama seperti Seraphine.
+  - **Sahabat kecil King Cedric IX**: seumuran, tumbuh bersama sejak Cedric masih pangeran. Sang raja pula yang mengangkatnya menjadi Lord Commander.
   - Hanya memiliki **dua putri**: Vivienne (sulung) dan Valeria. Kedua putrinya sama-sama berhuruf awal **V**.
   - **Membenci Cassius**, mantan tangan kirinya, yang ia anggap mengkhianatinya dengan mendekati putri sulungnya, lalu membawanya keluar clan (ikut memicu perebutan tahta). Ia sempat menjebloskan Cassius ke intelijen agar tewas dalam misi, tetapi gagal.
   - Pada akhirnya ia **merestui pernikahan** mereka, tetapi hubungan keduanya **tidak pernah akur**, dimainkan secara **komedik**.
   - Meski begitu, ia **sangat mencintai cucu-cucunya**.
-    - **Seraphine** adalah cucu yang **paling dibanggakan**: ia bergabung dengan pasukan kerajaan dan bahkan menjadi knight commander, mengikuti jejaknya.
+    - **Seraphine** adalah cucu yang **paling dibanggakan**: ia bergabung dengan pasukan kerajaan dan bahkan menjadi Lord Commander, mengikuti jejaknya.
     - **Kaine** sering **dimarahi** karena malah memilih menjadi "pelaut".
     - Sangat **akrab dengan Selene dan Kael**. Pada acara kelulusan Kael dari Royal Magic Academy, ia **maju sendiri** untuk menyerahkan **kartu lisensi pertama** Kael. Academy mengizinkannya karena ia seorang **veteran perang**.
 - **Valeria Dracoheart** (tante Kael, adik Vivienne, 44 tahun) — berhasil bangkit. Dijuluki **The Fire Empress**, dan digadang-gadang menjadi **kepala clan penerus** kakek.
@@ -155,19 +233,19 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 
 | Kapan | Peristiwa | Usia saat itu |
 |---|---|---|
-| 69 tahun lalu | Ignatius lahir | — |
+| 69 tahun lalu | Ignatius lahir, seumuran dengan Pangeran Cedric (kini King Cedric IX), sahabat kecilnya | — |
 | 51 tahun lalu | Cassius lahir | — |
 | 48 tahun lalu | Vivienne lahir, putri sulung Ignatius | Ignatius 21 |
-| 45 tahun lalu | Ignatius diangkat **Knight Commander**, rekor termuda | Ignatius 24 · Vivienne 3 |
+| 45 tahun lalu | Ignatius diangkat **Lord Commander** oleh sahabatnya, King Cedric IX; rekor termuda | Ignatius 24 · Vivienne 3 |
 | 44 tahun lalu | Valeria lahir, putri bungsu Ignatius | Ignatius 25 · Vivienne 4 |
 | ±29 tahun lalu *(perkiraan)* | Cassius, prajurit di bawah Ignatius, menjadi **tangan kirinya** | Cassius 22 · Ignatius 40 |
 | ±28 tahun lalu *(perkiraan)* | Cassius dan Vivienne menikah; Vivienne meninggalkan clan Dracoheart. Ignatius merasa dikhianati dan "mempromosikan" Cassius ke **intelijen** agar tewas dalam misi | Cassius 23 · Vivienne 20 · Ignatius 41 |
 | 27 tahun lalu | **Kaine** lahir | Vivienne 21 · Cassius 24 |
 | 25 tahun lalu | **Seraphine** lahir | Vivienne 23 · Cassius 26 |
 | 19 tahun lalu | **Kael** lahir | Vivienne 29 · Cassius 32 |
-| **16 tahun lalu** | **Perang Nova vs Arulustus Empire** berakhir dengan kemenangan Nova, menutup ketegangan 100 tahun. Ignatius berjasa besar dan julukannya berubah dari *the Sword of Nova* menjadi *the Hero* | Ignatius 53 · Cassius 35 · Vivienne 32 · Valeria 28 · Kaine 11 · Sera 9 · Kael 3 |
+| **16 tahun lalu** | **Perang Nova vs Arulustus Empire** berakhir dengan kemenangan Nova, menutup ketegangan ±300 tahun (perang terbuka sejak ±100 tahun terakhir). Ignatius berjasa besar dan julukannya berubah dari *the Sword of Nova* menjadi *the Hero* | Ignatius 53 · Cassius 35 · Vivienne 32 · Valeria 28 · Kaine 11 · Sera 9 · Kael 3 |
 | 15 tahun lalu | **Selene** lahir, "anak pertama masa damai" keluarga Ashveil | Vivienne 33 · Cassius 36 |
-| 2 tahun lalu | Seraphine diangkat **commander**, memecahkan rekor kakeknya yang bertahan 43 tahun | Sera 23 |
+| 2 tahun lalu | Seraphine diangkat **Lord Commander**, memecahkan rekor kakeknya yang bertahan 43 tahun | Sera 23 |
 | ±1 tahun lalu | Kael lulus dari Royal Magic Academy; Ignatius maju sendiri menyerahkan kartu lisensi pertamanya | Kael 18 |
 | 5 bulan lalu | **Prolog**: misi Briarwood, Isolde di Guild, jalan malam ke Skyreach Hill | Kael 18–19 |
 | Sekarang | **Bab 1**: Kael lulus ujian Class 3 | Kael 19 |
@@ -299,14 +377,40 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Anggota ketiga party (Kael, Yuki, Mira).
 - Dalam trio, **Mira yang harus menghentikan** Kael dan Yuki saat mereka mulai mengacau.
 
+#### Keluarga Moonvale
+
+**Myria dan Maximus Moonvale**
+- Saudara **kembar** yang hidup **±350 tahun lalu** *(usulan)*, sekitar seratus tahun setelah Kerajaan Nova berdiri.
+- Dikenang sebagai **pahlawan**: mereka berhasil menghentikan **kekuatan jahat** yang mengancam.
+- Kekuatan jahat itu **bukan Evil Force itu sendiri**, melainkan **fragmen Evil Force** yang merasuki atau menciptakan sesuatu. Ini **kebocoran pertama** sejak Age of Heroes, tanda awal bahwa segel tidak abadi.
+- Namun **keluarga bangsawan lain meragukan pencapaian mereka**, karena **tidak ada Moonvale lain yang punya pencapaian luar biasa**. Biasanya sebuah keluarga magic memiliki affinity atau pencapaian serupa dari generasi ke generasi: minimal melahirkan mage-mage hebat, meski bukan penyelamat dunia. Moonvale tidak. Si kembar terlihat seperti **kebetulan**, bukan bukti kehebatan keluarga.
+
+**Reputasi keluarga**
+- Keluarga penyihir yang **mengalami kemunduran** setelah era Myria dan Maximus.
+- Dianggap **keluarga lemah** oleh sebagian masyarakat dan bangsawan.
+- Meskipun leluhur mereka dihormati, **keturunan mereka tidak mendapatkan pengakuan yang sama**.
+
+**Filosofi kekuatan Moonvale**
+- Kekuatan Moonvale **bukan** berasal dari mana yang besar atau elemental affinity istimewa. Myria, Maximus, dan keturunannya **tidak memiliki kekuatan spesial** seperti keluarga Ashveil.
+- Keunggulan mereka justru:
+  - **Kecerdasan dan rasa ingin tahu.**
+  - **Menguasai berbagai jenis mantra.**
+  - **Fleksibilitas** dalam menggunakan sihir.
+  - **Menciptakan mantra baru** dengan mengombinasikan fundamental magic yang sudah ada.
+- **Kontras tematik:** Ashveil dan Dracoheart kuat karena **darah** (warisan Champion); Moonvale kuat karena **ilmu** yang dipelajari. Dalam trio, Kael mewakili bakat warisan, Mira mewakili kerja keras dan kecerdikan.
+- **[Belum]** Konflik Mira sendiri. *(Usulan: fragmen yang dulu disegel si kembar muncul kembali atau diincar Order, dan Mira membuktikan bahwa kisah leluhurnya benar.)*
+
+**After story**
+- **Mira menjadi salah satu Royal Mage**, yaitu mage Class 1 anggota Royal Magic Council. Ia **Moonvale pertama** yang mendapat pengakuan resmi setelah ±350 tahun, sekaligus bukti bahwa kekuatan Moonvale nyata walau tidak menurun lewat darah.
+
 ### Contoh Dinamika Trio
 
 1. **Walikota korup** — Kael marah dan bilang akan pergi menghajarnya. Yuki menghentikannya… tapi alih-alih menenangkan, ia malah menyarankan pergi di malam hari lalu **menculiknya**. Mira terkejut dan memarahi mereka berdua.
 
 ### Roland Talonheart — "The Lion"
 
-- 32 tahun. **Knight commander** Kerajaan Nova, pelindung party. *(dari profil aktor)*
-- Pangkatnya **sama** dengan Seraphine Ashveil (commander).
+- 32 tahun. **Lord Commander** Kerajaan Nova, pelindung party. *(dari profil aktor)*
+- Pangkatnya **sama** dengan Seraphine Ashveil (Lord Commander).
 
 ## Antagonis Utama — Order of Caelum
 
@@ -333,11 +437,11 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 
 - *(Nama belum ditentukan.)* Kekuatan jahat yang dahulu **disegel oleh para pahlawan**.
 - **Segelnya mulai melemah.** Evil Force **mencemari magic flow melalui celah-celah segel** yang mulai rusak. Inilah **penyebab sebenarnya** rusaknya magic flow.
-- Dalam game ini Evil Force **tidak pernah benar-benar bangkit**.
+- Dalam game ini Evil Force **tidak pernah benar-benar bangkit**. Salah satu alasannya: kristal Magnus yang direbut Order **palsu** (lihat Konflik Nova).
 - Evil Force **memiliki kehendak** dan mampu **memanipulasi** dari balik segel, misalnya menanamkan bukti palsu untuk mengelabui Order of Caelum (lihat Masa Lalu Yuki).
 - Salah satu **taringnya** pernah ditemukan dan ditempa menjadi **katana** di Benua Timur.
 - **Dua jenis benda** yang terkait dengannya:
-  - **Kristal segel (8):** **setiap Elemental Champion punya satu kristal**. Inilah artefak yang dikumpulkan Order. Lokasi yang sudah diketahui: kristal Jeanne Ignatia di **clan Dracoheart**, kristal Neraya Ocevara di **pulau asal Neraya**, kristal Roderick Tempest dipasang di **mahkota raja Arulustus**, kristal Magnus Blackwood disimpan di **ruangan khusus di Kerajaan Nova**.
+  - **Kristal segel (8):** **setiap Elemental Champion punya satu kristal**. Inilah artefak yang dikumpulkan Order. Lokasi yang sudah diketahui: kristal Jeanne Ignatia di **clan Dracoheart**, kristal Neraya Ocevara di **pulau asal Neraya**, kristal Roderick Tempest dipasang di **mahkota raja Arulustus**, kristal Magnus Blackwood terpasang di **Crown of the First King** (mahkota Cedric I) di **ruangan tersembunyi istana Nova**, bukan di mahkota yang dipakai raja (lihat Konflik Nova).
   - **Fragmen Evil Force (beberapa):** bagian tubuh Evil Force, kadang ditempa menjadi benda. **Mumeitō** adalah salah satunya. Bukan kristal segel.
 
 ## Prolog (Playable + Tutorial)
