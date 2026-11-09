@@ -35,13 +35,13 @@ def inn():
     r.rect(2, 9, 7, 11, RUG_B)
     for x in (3, 6):
         r.put(x, 10, TABLE_ROUND); r.put(x, 10, TEAPOT if x == 3 else BREAKFAST, 3)
-        r.put(x - 1, 10, CHAIR); r.put(x + 1, 10, CHAIR)
+        r.two(x - 1, 9, CHAIR_A); r.two(x + 1, 9, CHAIR_A)          # whole chairs: backrest over the seat
     r.put(1, H - 2, PLANT_B); r.put(8, H - 2, PLANT_A)
     # dining room: two long tables, ale and stew
     for y in (6, 10):
         r.counter(11, y, 15, y, TABLE_A)
         for x in range(11, 16):
-            r.put(x, y - 1, CHAIR); r.put(x, y + 1, CHAIR)
+            r.two(x, y - 2, CHAIR_A); r.put(x, y + 1, STOOL_A)    # chairs behind, stools in front
         for x, t in zip(range(11, 16), (MUG_ALE, MEAL_MEAT, BOWL, PIE, MUG)): r.put(x, y, t, 3)
     r.put(12, 1, WIN_MID[1]); r.put(15, 1, WIN_MID[1]); r.two(16, 2, WINE_RACK)
     r.put(10, 2, BARREL); r.put(16, H - 2, BARREL); r.put(10, H - 2, POT_A)
