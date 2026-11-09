@@ -236,7 +236,7 @@ def build_vault():
     m.add_event('Opening', 1, 11, director([
         *transparent(True), *plugin('Clock hud hide'), *plugin('Minimap hide'), *plugin('Clock stop'),
         *fadeout(), *bgm('Theme2', 70),
-        *scroll('Long ago, when the world was young and wild,', 'seven heroes rose against an evil force',
+        *scroll('Long ago, when the world was young and wild,', 'eight heroes rose against an evil force',
                 'that threatened the planet.', '',
                 'They were called the Elemental Champions.', '',
                 'Together they sealed the evil away,', 'and the world forgot it had ever been afraid.', '',

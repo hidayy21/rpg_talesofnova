@@ -27,24 +27,28 @@
 
 ## Legenda Masa Lalu
 
-- **Ashborn Morningstar** — pahlawan, *Champion of Darkness*, ratusan tahun lalu. Keturunannya (keluarga Ashveil) memiliki aptitude terhadap elemen kegelapan.
-- **Jeanne Ignatia** — pahlawan, *Champion of Flame*, salah satu sahabat Ashborn. Garis keturunannya mengalir lewat ibu Kael.
-- **Caelum Dawncrest** — pahlawan, *Champion of Light*, salah satu rekan Ashborn dan Jeanne. Jiwanya bereinkarnasi menjadi Kael.
-- Ashborn, Jeanne, dan Caelum adalah tiga dari **7 hero (Elemental Champion)**. Empat lainnya:
-  - **Rafael Eisendorf** — *Champion of Water*.
+- **Asterion Duskveil** — pahlawan, *Champion of Darkness*, ratusan tahun lalu. Keturunannya (keluarga Ashveil) memiliki aptitude terhadap elemen kegelapan.
+- **Jeanne Ignatia** — pahlawan, *Champion of Fire*, salah satu sahabat Asterion. Garis keturunannya mengalir lewat ibu Kael.
+- **Caelum Dawncrest** — pahlawan, *Champion of Light*, salah satu rekan Asterion dan Jeanne. Jiwanya bereinkarnasi menjadi Kael.
+- Asterion, Jeanne, dan Caelum adalah tiga dari **8 hero (Elemental Champion)**. Lima lainnya:
+  - **Rafael Eisendorf** — *Champion of Ice*.
   - **Magnus Blackwood** — *Champion of Earth* (batu).
-  - **Sylphia Haizel** — *Champion of Wind*.
+  - **Sylphi Haizea** — *Champion of Wind*.
   - **Roderick Tempest** — *Champion of Thunder*.
+  - **Neraya Ocevara** — *Hidden Champion of Water*.
 
-| Elemen | Champion |
-|---|---|
-| Darkness | Ashborn Morningstar |
-| Flame | Jeanne Ignatia |
-| Light | Caelum Dawncrest |
-| Water | Rafael Eisendorf |
-| Earth | Magnus Blackwood |
-| Wind | Sylphia Haizel |
-| Thunder | Roderick Tempest |
+Usia di tabel adalah usia mereka **saat mengalahkan Evil Force**. Penampilan mereka di usia itu: `Elemental_Champions.png` (kartu per Champion) dan `Elemental_Champions_group.png` (bersama).
+
+| Elemen | Champion | Usia |
+|---|---|---|
+| Darkness | Asterion Duskveil | 34 |
+| Fire | Jeanne Ignatia | 27 |
+| Light | Caelum Dawncrest | 29 |
+| Ice | Rafael Eisendorf | 29 |
+| Earth | Magnus Blackwood | 34 |
+| Wind | Sylphi Haizea | 31 |
+| Thunder | Roderick Tempest | 30 |
+| Water | Neraya Ocevara *(Hidden Champion)* | 26 |
 
 ### Siklus Reinkarnasi Elemental Champion
 
@@ -64,16 +68,16 @@
 - Ia menargetkan naik class dalam **1 tahun** (normalnya 2 tahun), dan berhasil.
 - Di awal cerita, ia baru saja **lulus ujian kenaikan class** dan mendapat lisensi **Mage Class 3**.
 - Memilih fokus pada **Shadow Magic**.
-- Keturunan Ashborn (dari ayah, keluarga Ashveil) dan Jeanne Ignatia (dari ibu) → aptitude **Shadow** dan **Fire**. Aptitude ini dimiliki juga oleh semua saudaranya.
+- Keturunan Asterion (dari ayah, keluarga Ashveil) dan Jeanne Ignatia (dari ibu) → aptitude **Shadow** dan **Fire**. Aptitude ini dimiliki juga oleh semua saudaranya.
 - Anak ketiga dari empat bersaudara.
 
 #### Darah & Jiwa
 
-Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biologisnya**. Secara jiwa, Kael adalah **reinkarnasi Caelum Dawncrest, Champion of Light**, dan itulah identitas spiritualnya yang sebenarnya.
+Kael **bukan** reinkarnasi Asterion maupun Jeanne. Mereka adalah **leluhur biologisnya**. Secara jiwa, Kael adalah **reinkarnasi Caelum Dawncrest, Champion of Light**, dan itulah identitas spiritualnya yang sebenarnya.
 
 | Elemen | Asal |
 |---|---|
-| **Darkness** | Warisan darah Ashborn Morningstar |
+| **Darkness** | Warisan darah Asterion Duskveil |
 | **Fire** | Warisan darah Jeanne Ignatia |
 | **Light** | Jiwanya sendiri, reinkarnasi Caelum Dawncrest |
 
@@ -105,14 +109,14 @@ Kael **bukan** reinkarnasi Ashborn maupun Jeanne. Mereka adalah **leluhur biolog
   - Anak-anaknya **tahu** ia bekerja untuk kerajaan, tetapi **tidak tahu detail pekerjaannya**. Bahkan Seraphine, yang seorang commander, tidak tahu detail misinya karena **selalu berubah-ubah**.
   - **Masa lalu:** dulu prajurit kerajaan di bawah pasukan **Ignatius**. Keahlian bertarung dan strateginya menarik perhatian Ignatius, yang menjadikannya **tangan kiri**-nya.
   - Setelah Cassius mendekati Vivienne, Ignatius merasa **"dikhianati"**. Ia menghasut para petinggi untuk **"mempromosikan"** Cassius ke bagian intelijen, dengan niat buruk agar Cassius **terbunuh dalam misi**. Namun Cassius **selalu berhasil selamat**, dan karier intelijennya justru membuatnya menjadi salah satu orang terkuat di kerajaan.
-  - Hanya membawa darah Ashborn, sehingga awakening-nya **Darkness murni** (lihat Awakening Garis Darah).
+  - Hanya membawa darah Asterion, sehingga awakening-nya **Darkness murni** (lihat Awakening Garis Darah).
 - **Kaine Ashveil** (anak pertama, kakak laki-laki, 27 tahun) — berpetualang di laut. Rambut merah, aptitude utama **Fire**.
 - **Seraphine Ashveil** (anak kedua, kakak perempuan, 25 tahun) — mengabdi pada kerajaan sebagai kesatria, berpangkat **commander**, setara dengan Roland Talonheart.
   - Diangkat menjadi commander di usia **23**, salah satu yang **termuda**. Rekor sebelumnya dipegang **kakeknya, Ignatius Dracoheart**, di usia **24**. Rambut merah, aptitude utama **Fire**.
 - **Kaelen Ashveil** (Kael, anak ketiga) — protagonis.
 - **Selene Ashveil** (anak bungsu, adik perempuan, 15 tahun) — rambut hitam. Seperti Kael, aptitude utamanya **Shadow**.
 - **Vivienne Ashveil** (ibu, 48 tahun, lahir sebagai Dracoheart) — melahirkan Kaine di usia 21 dan Selene di usia 33. Keturunan Jeanne Ignatia, putri sulung kepala **clan Dracoheart**. Tidak bangkit. Meninggalkan clan untuk ikut suaminya (lihat Keluarga Dracoheart).
-- Semua anak memiliki kedua aptitude; yang berbeda hanya elemen utamanya. Rambut merah mengikuti garis Jeanne (api), rambut hitam mengikuti garis Ashborn (kegelapan).
+- Semua anak memiliki kedua aptitude; yang berbeda hanya elemen utamanya. Rambut merah mengikuti garis Jeanne (api), rambut hitam mengikuti garis Asterion (kegelapan).
 - Nama keempat anak berselang-seling huruf awalnya: **K – S – K – S**.
 - Wajah: `family1` (Selene = 0, Seraphine = 1, Kaine = 2).
 
@@ -166,8 +170,8 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 
 #### Awakening Garis Darah
 
-- **Awakening resmi garis Ashborn:** semua keturunan Ashborn bisa membangkitkan awakening **Darkness murni** yang punya **nama resmi**: **King of Darkness**. Sengaja **corny**, mengikuti gaya penamaan polos zaman dulu (*Champion of Darkness*, *Champion of Flame*).
-  - Nama ini berasal dari **catatan sejarah**, bukan dari Ashborn sendiri. Keturunan terdekat yang berhasil bangkit berjarak **3 generasi** dari Ashborn, sehingga keturunannya hanya mempelajari awakening ini dari **buku sejarah**.
+- **Awakening resmi garis Asterion:** semua keturunan Asterion bisa membangkitkan awakening **Darkness murni** yang punya **nama resmi**: **King of Darkness**. Sengaja **corny**, mengikuti gaya penamaan polos zaman dulu (*Champion of Darkness*, *Champion of Fire*).
+  - Nama ini berasal dari **catatan sejarah**, bukan dari Asterion sendiri. Keturunan terdekat yang berhasil bangkit berjarak **3 generasi** dari Asterion, sehingga keturunannya hanya mempelajari awakening ini dari **buku sejarah**.
   - Keturunan para Elemental Champion **banyak** tersebar di dunia, tetapi hanya sedikit yang berhasil bangkit. Keluarga Ashveil adalah **anomali**: ayah dan **seluruh anaknya** bisa bangkit. Ini **sengaja tidak dijelaskan**. Cukup ada NPC/karakter yang menyinggungnya **sambil lalu**, lalu dijawab: *"Lupakan saja, selama mereka ada di pihak kita."*
   - Ayah memilikinya sebagai satu-satunya awakening (langsung true awakening, tanpa awakening pertama/kedua).
   - Visual: bayangan pekat **tanpa nyala sama sekali**, seolah cahaya di sekitarnya ikut tertelan.
@@ -176,11 +180,11 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 
   | | Catatan sejarah | Nama asli |
   |---|---|---|
-  | Ashborn Morningstar | King of Darkness | **Shadow Warlord** |
+  | Asterion Duskveil | King of Darkness | **Shadow Warlord** |
   | Jeanne Ignatia | Ruler of Flames | **Crimson Valkyrie** |
 
   - Para Champion menamai diri mereka sebagai **prajurit** (Warlord, Valkyrie); sejarah mengangkat mereka menjadi **penguasa** (King, Ruler). Anak-anak Ashveil lalu tanpa sadar membuat versi yang jauh lebih megah lagi (Overlord, Sovereign, Emperor, Monarch).
-- Pada anak-anak Ashveil, darah Ashborn **sudah bercampur dengan darah Jeanne** (Fire), sehingga awakening mereka berwujud **Darkness + Fire** dan tampak berbeda dari bentuk resminya.
+- Pada anak-anak Ashveil, darah Asterion **sudah bercampur dengan darah Jeanne** (Fire), sehingga awakening mereka berwujud **Darkness + Fire** dan tampak berbeda dari bentuk resminya.
 - Mereka membangkitkannya **di waktu berbeda, tanpa saling tahu**, dan **tanpa mengetahui nama resminya**, sehingga masing-masing memberinya **nama sendiri**.
 - Kaine dan Seraphine: **Fire dominan**. Kael: Darkness dominan.
 - **Awakening kedua (Kaine, Seraphine, Selene):** Darkness yang selama ini tertidur naik hingga **setara** dengan Fire. Keseimbangan sempurna Darkness + Fire adalah **puncak tertinggi yang bisa dicapai lewat darah**.
@@ -189,7 +193,7 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - **Pola nama awakening kedua:** nama alam bawah + gelar penguasa (*Pandemonium Overlord*, *Purgatory Sovereign*, *Tartarus Monarch*). Nama Kael satu-satunya yang **bukan** alam bawah (*Twilight*), sebuah tanda bahwa kekuatannya berasal dari tempat lain.
 - **Ide adegan (komedi, anti-klimaks):** saat ketiga anak (Kael, Kaine, Seraphine) akhirnya tahu satu sama lain, mereka berdebat nama siapa yang paling keren. Lalu ayah memberi tahu bahwa nama resminya ternyata **"King of Darkness"**. Mereka bertiga kecewa berat, karena nama buatan mereka jauh lebih megah daripada nama resminya.
   - Di momen itu Kael berkomentar bahwa ia **hampir menamai tekniknya "Shadow Warlord"**.
-- **Plot twist (belakangan):** nama awakening asli **Ashborn Morningstar** sendiri ternyata adalah **Shadow Warlord**, dan milik **Jeanne Ignatia** adalah **Crimson Valkyrie**. Ironinya, Kael tanpa sadar hampir memakai nama leluhurnya. *(Ini menambah detail, bukan merevisi sejarah Ashborn dan Jeanne.)*
+- **Plot twist (belakangan):** nama awakening asli **Asterion Duskveil** sendiri ternyata adalah **Shadow Warlord**, dan milik **Jeanne Ignatia** adalah **Crimson Valkyrie**. Ironinya, Kael tanpa sadar hampir memakai nama leluhurnya. *(Ini menambah detail, bukan merevisi sejarah Asterion dan Jeanne.)*
 
 | | Kael | Kaine | Seraphine | Selene |
 |---|---|---|---|---|
@@ -353,16 +357,17 @@ Skenario lengkap dengan dialog: [Prolog_Scenario.md](Prolog_Scenario.md).
 ## Catatan Terbuka
 
 - ~~Motivasi Kael kurang kuat~~ → terjawab: anomali magic yang ditunjukkan guru + pesan "pergilah, lihatlah dunia" + mimpi menjadi mage nomor satu.
-- ~~Nama dan elemen empat Elemental Champion lainnya~~ → terjawab (lihat Legenda Masa Lalu). Kisah dan keturunan mereka belum ditentukan.
+- ~~Nama dan elemen lima Elemental Champion lainnya~~ → terjawab (lihat Legenda Masa Lalu). Kisah dan keturunan mereka belum ditentukan.
+- Kenapa Neraya Ocevara disebut **Hidden** Champion of Water.
 - Kapan Ebonflame dan Twilight Emperor terjadi dalam alur cerita.
 - Ultimate Kael.
 - Detail awakening kedua (visual, pemicu, teknik) Kaine dan Seraphine.
 - Selene: awakening pertama, ultimate, gaya bertarung, dan kapan ia bangkit.
-- Bagaimana dan di mana Kael mengetahui bahwa awakening asli Ashborn bernama Shadow Warlord.
+- Bagaimana dan di mana Kael mengetahui bahwa awakening asli Asterion bernama Shadow Warlord.
 - Kenapa anak-anak tidak tahu nama resminya (ayah jarang di rumah? sengaja dirahasiakan?).
 - Magical family peringkat 1, dan daftar magical family lainnya.
 - Judul: "Legends of Nova" (folder project RPG Maker masih bernama `rpg_talesofnova`).
 
 ## Batasan Penulisan
 
-- **Jangan mengubah atau memutarbalikkan sejarah/legenda** Ashborn dan Jeanne. Misteri cerita berpusat pada organisasi dan magic flow, bukan revisi sejarah.
+- **Jangan mengubah atau memutarbalikkan sejarah/legenda** Asterion dan Jeanne. Misteri cerita berpusat pada organisasi dan magic flow, bukan revisi sejarah.

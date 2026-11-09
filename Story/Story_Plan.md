@@ -17,14 +17,14 @@
 
 **Skor rivalitas [Usulan]:** di akhir setiap bab tampil skor Kael vs Yuki, siapa yang mengalahkan musuh paling banyak (sesuai bible).
 
-## Konsep Pengikat: 7 Pilar Segel [Usulan]
+## Konsep Pengikat: 8 Pilar Segel [Usulan]
 
-- Segel Evil Force ditopang **7 pilar**, satu per elemen Champion, tersebar di benua.
+- Segel Evil Force ditopang **8 pilar**, satu per elemen Champion, tersebar di benua.
 - Retakan di pilar-pilar ini adalah sumber **Tainted Shard**. Order of Caelum "memanen" korupsinya menjadi kristal hitam (peti bandit di Bab 1).
 - Setiap bab mengunjungi satu pilar.
 - **Pilar Light** ada di **Sealed Vault** (adegan pembuka Prolog). Hanya Champion of Light yang asli, yaitu Kael, yang bisa menyegelnya kembali.
-- **Pilar Flame** terkait clan Dracoheart, **pilar Darkness** terkait keluarga Ashveil.
-- Ini **menambah detail**, tidak mengubah sejarah Ashborn dan Jeanne (Batasan Penulisan di bible).
+- **Pilar Fire** terkait clan Dracoheart, **pilar Darkness** terkait keluarga Ashveil.
+- Ini **menambah detail**, tidak mengubah sejarah Asterion dan Jeanne (Batasan Penulisan di bible).
 
 ## Urutan Party Bergabung [Tetap]
 
@@ -140,13 +140,13 @@ Bible belum memberinya nama. Usulan:
 - **Nama awakening:** di catatan diskusi tertulis "Twilight Force". Rencana ini tetap memakai **Twilight Emperor** sampai diputuskan lain.
 - **Tambahan:**
   - Bloodrose, Diana, Barion, dan Lysandre masuk bible.
-  - Konsep 7 pilar segel, kalau disetujui.
+  - Konsep 8 pilar segel, kalau disetujui.
   - Nama antagonis dan knight commander baru.
 
 ## Keputusan yang Masih Terbuka
 
 1. **Jumlah bab:** 12 penuh (Bab 2–13), atau dipadatkan?
-2. **Konsep 7 pilar segel:** dipakai atau tidak?
+2. **Konsep 8 pilar segel:** dipakai atau tidak?
 3. **Nama antagonis.**
 4. **Konflik di desa perbatasan (Bab 5).** Usulan: warga dituduh menyembunyikan sisa pasukan perang, padahal Order yang mengadu domba.
 5. **Konflik di villa Bloodrose (Bab 7).** Usulan: salah paham. Party datang memburu jejak kristal hitam yang mengarah ke villa, dan penghuni villa mengira party adalah utusan Order.

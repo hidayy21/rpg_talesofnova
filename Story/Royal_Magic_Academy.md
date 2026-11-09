@@ -59,7 +59,7 @@ Sprite ada di `img/characters/Nova_Faculty1.png` dan `Nova_Faculty2.png`. Gambar
 
 Staf lain (sprite biasa): **Juru Masak** di dapur bawah tanah (800 telur seminggu) dan **Hantu Perpustakaan** yang sudah 200 tahun hanya bisa satu mantra, yaitu "Shhh!".
 
-> **Catatan nama:** profesor ini semula bernama *Ignatia Rook*, lalu diganti menjadi **Elspeth Rook** karena terlalu mirip dengan **Ignatius** (veteran perang) dan **Jeanne Ignatia** (Champion of Flame) di Story Bible.
+> **Catatan nama:** profesor ini semula bernama *Ignatia Rook*, lalu diganti menjadi **Elspeth Rook** karena terlalu mirip dengan **Ignatius** (veteran perang) dan **Jeanne Ignatia** (Champion of Fire) di Story Bible.
 
 ## Denah [Usulan]
 
