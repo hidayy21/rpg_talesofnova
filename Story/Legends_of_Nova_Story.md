@@ -68,6 +68,8 @@ Rata-rata masa pemerintahan ±30 tahun → ±470 tahun berdirinya kerajaan mengh
 
 ##### Dampak ke akhir cerita
 
+- **Kristal terakhir:** mahkota dari penobatan ini adalah **kristal terakhir** yang diambil Order. Setelah itu **bab final** dimulai.
+
 - Order mengumpulkan kedelapan kristal, tetapi **satu di antaranya palsu**: permata buatan Alistar Duskveil dari mahkota Seraphina. Karena itu, di klimaks **Evil Force gagal keluar**, sejalan dengan prinsip bahwa Evil Force tidak pernah benar-benar bangkit dalam game ini.
 - **Kenapa Order tidak sadar permatanya palsu:**
   - Permata palsu itu **memiliki essence kristal Magnus yang asli**. Ia dibuat atas perintah Seraphina oleh **Alistar Duskveil**, salah satu **Royal Mage terkuat pada masanya**.
@@ -452,7 +454,7 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Class: **Foot Soldier** (tombak, skill type *Phantom Spear*). Skill khasnya *Fade* (status *Unnoticed*) dan *Quiet Joke*.
   - Awakening pertama: **Average Joe**.
   - Awakening kedua: **Jack of All Trades**, yang membuka **Ragnarok**.
-- **[Belum]** Kapan dan di mana Ley bergabung (belum ada di Urutan Party Bergabung), serta desa dan jenderal musuh mana yang ia lawan.
+- **Pergi bersama Roland** setelah konflik villa Bloodrose (Bab 7). **[Usulan]** Bergabung bersama Roland di desa perbatasan (Bab 5) dan kembali bersamanya di Bab 11 (lihat Story_Plan).
 
 ## Antagonis Utama — Order of Caelum
 

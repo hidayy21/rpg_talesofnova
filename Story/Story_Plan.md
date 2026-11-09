@@ -37,6 +37,7 @@
    - **Konflik Nova:** Cedric IX menyerahkan takhta kepada putranya, **Pangeran Leopold Nova Blackwood II** (**Leo**), dengan melepas mahkota dari kepalanya dan memakaikannya kepada Leo. Order mengira kristal Magnus ada di mahkota itu (meniru pola Arulustus), lalu **menyerang istana**; party ikut **melindungi Raja Leo**. Order **berhasil merebut mahkota**, tetapi Cedric dan penasihat kerajaan tidak tampak khawatir.
    - **Twist:** permata mahkota itu palsu, karya Royal Mage **Alistar Duskveil** (main branch keturunan Asterion), dan membawa essence kristal asli sehingga Order tidak curiga. Atas ide **Seraphina the Wise**, mahkota asli, **Crown of the First King** milik Cedric I, disimpan di **ruangan tersegel di bawah takhta**. Hanya raja yang menjabat dan **penasihat kerajaan** (jabatan turun-temurun) yang tahu; segel dibuka dengan **darah keturunan Cedric I** dan mantra khusus. **Order tidak pernah menemukannya.**
    - Setelah party pergi: **scene Cedric menunjukkan Crown of the First King dan kristal asli kepada Leo**.
+   - **Urutan:** mahkota ini adalah **kristal terakhir** yang diambil Order. Setelah penobatan, **bab final dimulai**.
    - **Dampak akhir:** satu dari 8 kristal yang dikumpulkan Order **palsu**, sehingga di klimaks **Evil Force gagal keluar**.
 5. **Total artefak: 8**, berbentuk **kristal**: **setiap Champion punya satu kristal segel**.
 6. **Konflik internal keluarga Dracoheart**, berakhir dengan **Valeria menjadi kepala keluarga utama Dracoheart**.
@@ -62,7 +63,7 @@
 | Jeanne Ignatia (Fire) | Clan Dracoheart | Suksesi Dracoheart (no. 6) |
 | Neraya Ocevara (Water) | **Pulau asal Neraya**, cocok dengan sebutannya sebagai *Hidden Champion* | Konflik laut (no. 7) |
 | Roderick Tempest (Thunder) | **Arulustus:** dipasang di **mahkota raja** | Loyalis / civil war (no. 3–4) |
-| Magnus Blackwood (Earth) | **Kerajaan Nova:** terpasang di **Crown of the First King** (mahkota Cedric I), di **ruangan tersembunyi** istana. Bukan di mahkota yang dipakai raja. | Penobatan Raja Leo (no. 4) |
+| Magnus Blackwood (Earth) | **Kerajaan Nova:** terpasang di **Crown of the First King** (mahkota Cedric I), di **ruangan tersembunyi** istana. Bukan di mahkota yang dipakai raja. | Penobatan Raja Leo (no. 4). **[Tetap]** Kristal terakhir yang diambil Order (yang palsu), tepat sebelum bab final. |
 | 4 lainnya | **[Belum]** | |
 
 ### Dua keluarga kerajaan [Tetap]
@@ -73,21 +74,25 @@
 - **Nama "Aurelian" tidak dipakai** (terlalu mirip "Arulustus"), untuk raja maupun antagonis. Air mancur di alun-alun sudah diganti menjadi *King Cedric IV*.
 - **Format nama raja Nova:** *[nama] Nova Blackwood IX*.
 
-**[Usulan]** Kristal segel adalah kunci pilar Champion masing-masing (lihat Konsep Pengikat). Kalau kedelapannya disatukan di Sealed Vault, segelnya terbuka: itulah klimaks Bab 13. **[Tetap]** Segel gagal terbuka karena kristal Magnus yang dibawa Order palsu (lihat Konflik Utama no. 4).
+**[Usulan]** Kristal segel adalah kunci pilar Champion masing-masing (lihat Konsep Pengikat). Kalau kedelapannya disatukan di Sealed Vault, segelnya terbuka: itulah klimaks bab final (Bab 14). **[Tetap]** Segel gagal terbuka karena kristal Magnus yang dibawa Order palsu (lihat Konflik Utama no. 4).
 
 ## Urutan Party Bergabung [Tetap]
 
 Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (belum bergabung) → Barion → Roland bergabung lagi → Lysandre bergabung.
+
+**[Usulan] Ley:** bergabung bersama Roland (Bab 5), pergi bersama Roland (Bab 7), kembali bersama Roland (Bab 11).
 
 | Tokoh | Profil (database) | Bergabung | Keterangan |
 |---|---|---|---|
 | **Mira** | Mirabelle Moonvale, 18, prodigy Royal Academy, keluarga Moonvale yang tersisihkan | Bab 2 | **[Usulan]** Sedang riset lapangan Academy di kota tambang gurun. Ia satu-satunya yang bisa membaca data retakan pilar Earth. |
 | **Roland** (sementara) | Roland Talonheart, 32, Lord Commander, "The Lion" | Bab 5 | **[Tetap]** Party bertemu Roland dan pasukannya di **desa perbatasan wilayah**. Terjadi konflik, lalu Roland bergabung sementara. **Bukan** karena perintah. |
 | **Diana** | Diana Hartwell, 27, ranger hutan, mantan pemanah kerajaan, "Silent Hawk" | Bab 6 | **[Usulan]** Di hutan, party diselamatkan panah dari kegelapan. Diana memburu binatang yang terkorupsi. Roland mengenalinya sebagai pemanah kerajaan yang menghilang. |
-| *Roland pergi* | | Bab 7 | **[Tetap]** Party bertemu pasukan kerajaan yang dipimpin seorang Lord Commander **(tokoh baru, belum dibuat)**, dan mendapat kabar ada krisis. Roland memutuskan ikut pasukan itu dan meninggalkan party. |
+| **Ley** (sementara) | Leyfric Carlson, 21, foot soldier, "Phantom Soldier" | Bab 5 | **[Usulan]** Prajurit di pasukan Roland. Saat desa perbatasan diserang dan kaptennya gugur, **hanya Ley yang bertahan melawan jenderal musuh** (latar dari catatan aktor). Bergabung sementara bersama Roland. |
+| *Roland pergi* | | Bab 7 | **[Tetap]** Party bertemu pasukan kerajaan yang dipimpin seorang Lord Commander **(tokoh baru, belum dibuat)**, dan mendapat kabar ada krisis. Roland memutuskan ikut pasukan itu dan meninggalkan party. **[Tetap]** Ley ikut pergi bersama Roland. |
 | *Lysandre (bertemu)* | Lysandre Bloodrose, 22, half-blood succubus, putri David Bloodrose II | Bab 7 | **[Tetap]** Party bertemu Lysandre di **villa Bloodrose**, kediaman turun-temurun yang megah. Ayahnya adalah master rumah itu. Konflik membuat party melawan penghuni rumah, tetapi masalahnya akhirnya beres. Lysandre **belum bergabung**. |
 | **Barion** | Barion, 31, dragonslayer, sudah membunuh 4 naga | Bab 8 | **[Tetap]** Bab laut bersama Kaine, di **pulau asal Neraya** (lihat Konflik Utama no. 7). **[Usulan, dari rencana lama]** Naga di pulau itu terkorupsi kristal hitam. Barion sudah memburunya sebagai "naga kelima", lalu bergabung karena kesal: naga itu "dicuri" darinya oleh sesuatu yang lain. Ia pengacau ketiga, dan penderitaan Mira bertambah. |
 | **Roland** (tetap) | | Bab 11 | **[Tetap]** Datang ke villa Bloodrose bersama Sera dan Isolde. Bergabung untuk **mengawasi** party. |
+| **Ley** (tetap) | | Bab 11 | **[Usulan]** Datang bersama Roland. **Tidak ada yang sadar Ley ikut datang** sampai ia bersuara (sesuai sifatnya dan skill *Fade / Unnoticed*). |
 | **Lysandre** | | Bab 11 | **[Tetap]** Bergabung setelah kebangkitan Kael di villa. |
 
 **Catatan database:** usia di profil berbeda dengan di catatan aktor. Diana tertulis 27 dan 26; Barion tertulis 31 dan 30.
@@ -101,17 +106,18 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 | 3 | Kota danau: airnya keruh dan warga jatuh sakit. Agen Order menyamar sebagai tabib. *(Pilar Water pindah ke pulau Neraya; pilar kota danau **[Belum]**.)* | **Ebonflame** (Kael bangkit saat melindungi orang lain) |
 | 4 | Pulang sebentar ke ibu kota (meta-joke Ibu, oleh-oleh Selene). Balasan surat dari Isolde. Order mencuri sesuatu dari ibu kota. | **Homura muncul: Yuki kalah**, diselamatkan Kael |
 | **Babak II — Perbatasan** | | |
-| 5 | Desa perbatasan: Roland dan pasukannya. Ada konflik. | **Roland bergabung (sementara)** |
+| 5 | Desa perbatasan: Roland dan pasukannya. **[Usulan]** Desa diserang sisa loyalis Arulustus yang diadu domba Order; kapten gugur, Ley bertahan melawan jenderal musuh. | **Roland dan Ley bergabung (sementara)** |
 | 6 | Hutan: misteri Diana. | **Diana bergabung** |
-| 7 | Villa Bloodrose: konflik dengan penghuni rumah, lalu berdamai. Kenal Lysandre dan ayahnya. Pulangnya party bertemu pasukan Lord Commander baru yang membawa kabar krisis. | **Roland pergi** |
+| 7 | Villa Bloodrose: konflik dengan penghuni rumah, lalu berdamai. Kenal Lysandre dan ayahnya. Pulangnya party bertemu pasukan Lord Commander baru yang membawa kabar krisis (**[Usulan]** loyalis Arulustus mulai bergerak). | **Roland dan Ley pergi** |
 | 8 | Laut bersama Kaine: pulau asal Neraya, artefak Neraya, bertemu Champion of Water yang baru. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung**; **Duel dengan Homura: Hyōjin no Jotei** di tengah pertarungan (Yuki true awakening, mendahului Kael sesuai bible). Homura kabur. |
-| 9 | Krisis memuncak. | |
+| 9 | **[Usulan] Civil War Arulustus:** loyalis (dibekingi Order) melawan pemerintahan sekarang. Order merebut kristal Roderick dari mahkota raja Arulustus. | |
 | **Titik tengah** | | |
-| 10 | Homura menghadang party; Yuki menghadapinya sendiri, Kael dan party lain mengejar antagonis utama. Kael kalah dan terkena kutukan Light. | **Duel terakhir: Yuki mengalahkan Homura**; Kael keluar dari party |
-| 11 | **Yuki menjadi MC sementara**, dibebani rasa bersalah karena tidak ikut bertarung. Pencarian obat berakhir di villa Bloodrose. | **Twilight Emperor**; **Roland, lalu Lysandre bergabung** |
+| 10 | **[Usulan]** Puncak civil war. Homura menghadang party; Yuki menghadapinya sendiri, Kael dan party lain mengejar antagonis utama. Kael kalah dan terkena kutukan Light. | **Duel terakhir: Yuki mengalahkan Homura**; Kael keluar dari party |
+| 11 | **Yuki menjadi MC sementara**, dibebani rasa bersalah karena tidak ikut bertarung. Pencarian obat berakhir di villa Bloodrose. | **Twilight Emperor**; **Roland (dan Ley), lalu Lysandre bergabung** |
 | **Babak III — Twilight** | | |
-| 12 | Kebenaran soal Evil Force (perpustakaan Bloodrose + catatan riset Isolde): Order hanyalah pion. Reuni keluarga dan **komedi nama awakening** (Kael, Kaine, Sera, Cassius; Kael kini bisa pamer Twilight). Krisis suksesi Dracoheart. Awakening Selene (Tartarus Monarch). | |
-| 13 | Sealed Vault (pilar Light): final melawan pemimpin Order. Antagonis kalah, **Isolde bangun**. Ending. | |
+| 12 | Kebenaran soal Evil Force (perpustakaan Bloodrose + catatan riset Isolde): Order hanyalah pion. Reuni keluarga dan **komedi nama awakening** (Kael, Kaine, Sera, Cassius; Kael kini bisa pamer Twilight). **[Usulan]** **Konflik Dracoheart**: Valeria menjadi kepala keluarga, Order merebut kristal Jeanne. Awakening Selene (Tartarus Monarch). | |
+| 13 | **Penobatan Raja Leo.** Order menyerang istana dan merebut mahkota. **[Tetap]** Ini **kristal terakhir** yang diambil Order (palsu), lalu bab final dimulai. Scene Cedric menunjukkan Crown of the First King kepada Leo. | |
+| 14 | **Bab final.** Sealed Vault (pilar Light): final melawan pemimpin Order. Evil Force gagal keluar karena kristal Magnus palsu. Antagonis kalah, **Isolde bangun**. Ending. | |
 
 **Kalau terlalu panjang:** Bab 8 dan 9 bisa digabung, atau Bab 5 dan 6.
 
@@ -194,20 +200,20 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 
 ## Keputusan yang Masih Terbuka
 
-1. **Jumlah bab:** 12 penuh (Bab 2–13), atau dipadatkan?
+1. **Jumlah bab:** **[Usulan]** 13 bab (Bab 2–14) setelah penobatan dan civil war mendapat bab sendiri. Dipadatkan atau tidak?
 2. **Konsep 8 pilar segel:** dipakai atau tidak?
 3. ~~Nama antagonis~~ → **Lucian Valcrest**.
 4. **Konflik di desa perbatasan (Bab 5).** Usulan: warga dituduh menyembunyikan sisa pasukan perang, padahal Order yang mengadu domba.
 5. **Konflik di villa Bloodrose (Bab 7).** Usulan: salah paham. Party datang memburu jejak kristal hitam yang mengarah ke villa, dan penghuni villa mengira party adalah utusan Order.
 6. **Lord Commander baru** (Bab 7): nama, kepribadian, hubungan dengan Roland dan Sera.
-7. **Krisis yang membuat Roland pergi** (Bab 7): ancaman perang dengan Arulustus, atau hal lain?
+7. **Krisis yang membuat Roland pergi** (Bab 7): **[Usulan]** loyalis Arulustus mulai bergerak, menuju civil war di Bab 9–10.
 8. **Misteri Diana.** Usulan: regunya dulu dikorbankan dalam operasi yang ditutup-tutupi, dengan jejak Order (atau intelijen kerajaan, terhubung ke Cassius) di baliknya.
 9. **Bloodrose:** lokasi villa, hubungan dengan Evil Force, dan nama ayah Lysandre (David Bloodrose II? Profil Lysandre menyebutnya begitu).
 10. **Naga:** makhluk biasa yang langka, atau terkait Champion/elemen?
 11. **Quest Yuki saat Kael sekarat (Bab 11):** isi quest sebelum jejaknya mengarah ke villa.
-12. **Krisis suksesi Dracoheart:** tetap di Babak III atau dipindah? *(Hasil akhirnya sudah [Tetap]: Valeria menjadi kepala keluarga. Nasib Ignatius belum.)*
+12. **Krisis suksesi Dracoheart:** **[Usulan]** tetap di Babak III (Bab 12). *(Hasil akhirnya sudah [Tetap]: Valeria menjadi kepala keluarga. Nasib Ignatius belum.)*
 13. **Arulustus:** world map kedua, atau di map yang sama?
 14. ~~Pemilik kristal di Arulustus dan Nova~~ → Roderick (Thunder) dan Magnus (Earth). Lokasi 4 kristal lainnya masih terbuka.
 15. **Pilar kota danau (Bab 3)** setelah pilar Water pindah ke pulau Neraya.
 16. **Peran Kaine dan Sera di akhir cerita** (sudah [Tetap] bahwa keduanya penting, bentuknya belum).
-17. **Ley:** kapan dan bagaimana bergabung (ditunda).
+17. **Ley:** **[Usulan]** bergabung bersama Roland di Bab 5, pergi bersamanya di Bab 7 **[Tetap]**, kembali di Bab 11.
