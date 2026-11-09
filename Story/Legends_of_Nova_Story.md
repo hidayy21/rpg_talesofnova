@@ -69,8 +69,9 @@ Rata-rata masa pemerintahan ±30 tahun → ±470 tahun berdirinya kerajaan mengh
 ##### Dampak ke akhir cerita
 
 - **Kristal terakhir:** mahkota dari penobatan ini adalah **kristal terakhir** yang diambil Order. Setelah itu **bab final** dimulai.
+- **Bukan satu-satunya tiruan:** kristal Asterion yang dicuri Order dari Royal Magic Academy juga tiruan Alistar Duskveil. Yang asli dibawa Ley tanpa diketahui siapa pun (lihat Leyfric Carlson).
 
-- Order mengumpulkan kedelapan kristal, tetapi **satu di antaranya palsu**: permata buatan Alistar Duskveil dari mahkota Seraphina. Karena itu, di klimaks **Evil Force gagal keluar**, sejalan dengan prinsip bahwa Evil Force tidak pernah benar-benar bangkit dalam game ini.
+- Order mengumpulkan kedelapan kristal, tetapi **dua di antaranya palsu**: permata buatan Alistar Duskveil dari mahkota Seraphina, dan kristal Asterion tiruan Alistar dari Royal Magic Academy. Karena itu, di klimaks **Evil Force gagal keluar**, sejalan dengan prinsip bahwa Evil Force tidak pernah benar-benar bangkit dalam game ini.
 - **Kenapa Order tidak sadar permatanya palsu:**
   - Permata palsu itu **memiliki essence kristal Magnus yang asli**. Ia dibuat atas perintah Seraphina oleh **Alistar Duskveil**, salah satu **Royal Mage terkuat pada masanya**.
   - **Setiap kristal segel sudah tertempel pada suatu benda** (mahkota, dll.), sehingga sulit diperiksa satu per satu.
@@ -454,7 +455,12 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Class: **Foot Soldier** (tombak, skill type *Phantom Spear*). Skill khasnya *Fade* (status *Unnoticed*) dan *Quiet Joke*.
   - Awakening pertama: **Average Joe**.
   - Awakening kedua: **Jack of All Trades**, yang membuka **Ragnarok**.
-- **Pergi bersama Roland** setelah konflik villa Bloodrose (Bab 7). **[Usulan]** Bergabung bersama Roland di desa perbatasan (Bab 5) dan kembali bersamanya di Bab 11 (lihat Story_Plan).
+- **Bergabung di Bab 4**, sebelum Roland. Ia prajurit penjaga **Undercroft Royal Magic Academy** saat Order mencuri kristal Asterion.
+- **Pergi bersama Roland** setelah konflik villa Bloodrose (Bab 7).
+- **Kotak kecil sang kapten:** kristal Asterion di brankas Academy adalah **tiruan Alistar Duskveil**; yang asli selalu dibawa kapten penjaga. Saat Order menyerang, kapten yang sekarat menyerahkan **sebuah kotak kecil** kepada Ley, satu-satunya yang masih berdiri: *"Jangan serahkan ke siapa pun. Jangan bilang siapa pun."*
+  - Ini kedua kalinya kapten Ley gugur di depannya.
+  - **Kotak itu tidak pernah disebut lagi** sampai bab final. Di sana Ley membukanya, dan **Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor**.
+  - **Ley tetap pria biasa:** bukan orang terpilih, tidak berdarah Champion. Yang membuatnya spesial adalah **kesetiaan** dan keberadaannya yang **tidak terasa**.
 
 ## Antagonis Utama — Order of Caelum
 
@@ -485,7 +491,7 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Evil Force **memiliki kehendak** dan mampu **memanipulasi** dari balik segel, misalnya menanamkan bukti palsu untuk mengelabui Order of Caelum (lihat Masa Lalu Yuki).
 - Salah satu **taringnya** pernah ditemukan dan ditempa menjadi **katana** di Benua Timur.
 - **Dua jenis benda** yang terkait dengannya:
-  - **Kristal segel (8):** **setiap Elemental Champion punya satu kristal**. Inilah artefak yang dikumpulkan Order. Lokasi yang sudah diketahui: kristal Jeanne Ignatia di **clan Dracoheart**, kristal Neraya Ocevara di **pulau asal Neraya**, kristal Roderick Tempest dipasang di **mahkota raja Arulustus**, kristal Magnus Blackwood terpasang di **Crown of the First King** (mahkota Cedric I) di **ruangan tersembunyi istana Nova**, bukan di mahkota yang dipakai raja (lihat Konflik Nova).
+  - **Kristal segel (8):** **setiap Elemental Champion punya satu kristal**. Inilah artefak yang dikumpulkan Order. Kristal Asterion yang dicuri Order dari **Royal Magic Academy** ternyata tiruan (lihat Leyfric Carlson). Lokasi yang sudah diketahui: kristal Jeanne Ignatia di **clan Dracoheart**, kristal Neraya Ocevara di **pulau asal Neraya**, kristal Roderick Tempest dipasang di **mahkota raja Arulustus**, kristal Magnus Blackwood terpasang di **Crown of the First King** (mahkota Cedric I) di **ruangan tersembunyi istana Nova**, bukan di mahkota yang dipakai raja (lihat Konflik Nova).
   - **Fragmen Evil Force (beberapa):** bagian tubuh Evil Force, kadang ditempa menjadi benda. **Mumeitō** adalah salah satunya. Bukan kristal segel.
 
 ## Prolog (Playable + Tutorial)
