@@ -12,6 +12,7 @@
 - Keduanya berada dalam **ketegangan panas selama 100 tahun**, yang berakhir lewat **perang 16 tahun lalu**, dimenangkan Nova. Ignatius Dracoheart berjasa besar dalam kemenangan ini.
 - Usia saat perang (16 tahun lalu): Ignatius 53, Cassius 35 (sudah di intelijen), Vivienne 32, Valeria 28, Kaine 11, Seraphine 9, Kael 3. Selene lahir setahun kemudian (lihat Timeline Keluarga).
 - Perang tersebut memulai **masa damai baru**. Meski begitu, kekuatan militer tetap diperlukan untuk **berjaga-jaga** dan untuk melawan **simpatisan sisa-sisa perang**.
+- **Sisa loyalis Arulustus** berkonflik dengan Kerajaan Nova, dibekingi Order of Caelum. Nantinya di dalam Arulustus pecah **civil war**: pemerintahan yang sekarang melawan para loyalis.
 
 ### Guild
 
@@ -134,6 +135,7 @@ Kael **bukan** reinkarnasi Asterion maupun Jeanne. Mereka adalah **leluhur biolo
     - **Kaine** sering **dimarahi** karena malah memilih menjadi "pelaut".
     - Sangat **akrab dengan Selene dan Kael**. Pada acara kelulusan Kael dari Royal Magic Academy, ia **maju sendiri** untuk menyerahkan **kartu lisensi pertama** Kael. Academy mengizinkannya karena ia seorang **veteran perang**.
 - **Valeria Dracoheart** (tante Kael, adik Vivienne, 44 tahun) — berhasil bangkit. Dijuluki **The Fire Empress**, dan digadang-gadang menjadi **kepala clan penerus** kakek.
+  - Sebuah **konflik internal Dracoheart** berakhir dengan **Valeria menjadi kepala keluarga utama**. Konflik ini terasa seperti filler, padahal **kristal segel milik Jeanne Ignatia** ada di dalamnya.
   - Dulu menjadi **guru elemen api** untuk Kaine, Seraphine, dan Kael. Kesibukannya bertambah setelah ia diangkat menjadi salah satu **Royal Mage**.
   - Tujuan sebenarnya mengajari api: agar mereka **tidak membangkitkan Shadow**. Ternyata tidak berpengaruh: ketiganya tetap bisa menggunakan keduanya.
   - Alasannya: **politik clan**, dan karena ia **tidak suka pada ayah Kael**, yang menurutnya sudah "menculik" kakaknya dengan "bualan cinta".
@@ -307,6 +309,9 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Menjadi alasan guru Kael pensiun dini dan menghilang.
 - Kakak Yuki adalah salah satu anggotanya.
 - Prinsip cerita: **semua karakter utama pada akhirnya terkoneksi** lewat organisasi ini.
+- **Tujuan Order: menghancurkan Evil Force.** Mereka mengira, dan memang benar, bahwa magic flow rusak akibat ulah Evil Force. Untuk itu mereka mengumpulkan **8 kristal segel** (lihat Evil Force).
+- Mereka **tertipu sejarah palsu** yang ditanamkan Evil Force: kristal-kristal itu justru **membuka segel**, bukan menghancurkannya.
+- Order **membekingi sisa loyalis Arulustus**, karena dua kristal segel berada di Arulustus dan di Nova.
 
 ### Pemimpin
 
@@ -316,6 +321,7 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Punya **savior complex**: ia **menganggap dirinya Champion of Light**, karena kuatnya affinity Light yang ia miliki. Padahal affinity tidak sama dengan jiwa Champion (lihat Siklus Reinkarnasi). Reinkarnasi yang asli adalah Kael.
 - **Tidak memiliki hubungan apa pun** dengan guru Kael.
 - Ia yakin bisa **mengendalikan Evil Force**, dan menghalalkan segala cara: mengumpulkan **artefak dan kekuatan** yang untuk mendapatkannya saja menuntut **banyak korban**.
+  - Tujuan ini **berbeda dari yang dipercaya anggotanya**: Order mengira mereka akan **menghancurkan** Evil Force, sementara pemimpinnya diam-diam ingin **mengendalikannya**.
 
 ### Evil Force
 
@@ -324,6 +330,9 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Dalam game ini Evil Force **tidak pernah benar-benar bangkit**.
 - Evil Force **memiliki kehendak** dan mampu **memanipulasi** dari balik segel, misalnya menanamkan bukti palsu untuk mengelabui Order of Caelum (lihat Masa Lalu Yuki).
 - Salah satu **taringnya** pernah ditemukan dan ditempa menjadi **katana** di Benua Timur.
+- **Dua jenis benda** yang terkait dengannya:
+  - **Kristal segel (8):** **setiap Elemental Champion punya satu kristal**. Inilah artefak yang dikumpulkan Order. Lokasi yang sudah diketahui: kristal Jeanne Ignatia di **clan Dracoheart**, kristal Neraya Ocevara di **pulau asal Neraya**, satu dipasang di **mahkota raja Arulustus**, satu disimpan di **ruangan khusus di Kerajaan Nova**.
+  - **Fragmen Evil Force (beberapa):** bagian tubuh Evil Force, kadang ditempa menjadi benda. **Mumeitō** adalah salah satunya. Bukan kristal segel.
 
 ## Prolog (Playable + Tutorial)
 

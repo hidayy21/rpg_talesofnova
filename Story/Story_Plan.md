@@ -26,6 +26,43 @@
 - **Pilar Fire** terkait clan Dracoheart, **pilar Darkness** terkait keluarga Ashveil.
 - Ini **menambah detail**, tidak mengubah sejarah Asterion dan Jeanne (Batasan Penulisan di bible).
 
+## Konflik Utama [Tetap]
+
+1. **Order of Caelum mengumpulkan artefak (kunci)** untuk menaklukkan Evil Force.
+   - **Tujuan Order: menghancurkan** Evil Force. **Tujuan pemimpinnya: mengendalikan** Evil Force, diam-diam, berbeda dari yang dipercaya anggotanya.
+2. **Evil Force mengelabui Order.** Ia menanamkan sejarah palsu: artefak-artefak itu sebenarnya **membuka segel**, bukan menghancurkannya.
+   - Niat awal Order: memakai artefak untuk **menghancurkan Evil Force**, karena mereka memang mengira (dengan benar) bahwa magic flow rusak akibat ulah Evil Force.
+3. **Sisa loyalis Arulustus vs Kerajaan Nova.** Di dalam Arulustus sendiri nantinya pecah **civil war**: pemerintahan yang sekarang melawan para loyalis.
+4. **Order of Caelum membekingi para loyalis**, karena dua artefak berada di Arulustus dan di Nova.
+5. **Total artefak: 8**, berbentuk **kristal**: **setiap Champion punya satu kristal segel**.
+6. **Konflik internal keluarga Dracoheart**, berakhir dengan **Valeria menjadi kepala keluarga utama Dracoheart**.
+   - Terasa seperti filler, padahal **artefak milik Jeanne Ignatia** ada di konflik ini, jadi tetap terhubung ke cerita utama.
+7. **Konflik di laut**, di pulau tempat desa/kota asal **Neraya Ocevara**. Di sini **artefak milik Neraya** berada.
+   - Party bertemu **Champion of Water yang baru** (reinkarnasi Neraya). Kemungkinan satu-satunya Champion yang ditemui selain Kael.
+   - Party juga bertemu **Kaine dan kru kapalnya**, serta **Barion**.
+   - Akhir konflik: **Barion bergabung** ke party. **Kaine melanjutkan petualangan lautnya** dengan pengetahuan baru tentang Order of Caelum.
+8. **Akhir cerita:** **Kaine dan Sera berperan penting**, meski tidak secara langsung melawan bos terakhir.
+
+### Dua jenis benda [Tetap]
+
+| | Kristal segel | Fragmen Evil Force |
+|---|---|---|
+| Jumlah | **8**, satu per Champion | **Beberapa** |
+| Wujud | Kristal | Bagian tubuh Evil Force, kadang ditempa menjadi benda (mis. **Mumeitō**, taring yang ditempa menjadi katana) |
+| Peran | Kunci segel. Order mengira bisa menghancurkan Evil Force dengannya, padahal membuka segel. | *(Peran lebih lanjut belum diputuskan.)* |
+
+### Lokasi kristal segel
+
+| Kristal | Lokasi | Konflik |
+|---|---|---|
+| Jeanne Ignatia (Fire) | Clan Dracoheart | Suksesi Dracoheart (no. 6) |
+| Neraya Ocevara (Water) | **Pulau asal Neraya**, cocok dengan sebutannya sebagai *Hidden Champion* | Konflik laut (no. 7) |
+| *(Champion belum)* | **Arulustus:** dipasang di **mahkota raja** | Loyalis / civil war (no. 3–4) |
+| *(Champion belum)* | **Kerajaan Nova:** disimpan di **ruangannya sendiri** | Loyalis / civil war (no. 3–4) |
+| 4 lainnya | **[Belum]** | |
+
+**[Usulan]** Kristal segel adalah kunci pilar Champion masing-masing (lihat Konsep Pengikat). Kalau kedelapannya disatukan di Sealed Vault, segelnya terbuka: itulah klimaks Bab 13.
+
 ## Urutan Party Bergabung [Tetap]
 
 Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (belum bergabung) → Barion → Roland bergabung lagi → Lysandre bergabung.
@@ -37,7 +74,7 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 | **Diana** | Diana Hartwell, 27, ranger hutan, mantan pemanah kerajaan, "Silent Hawk" | Bab 6 | **[Usulan]** Di hutan, party diselamatkan panah dari kegelapan. Diana memburu binatang yang terkorupsi. Roland mengenalinya sebagai pemanah kerajaan yang menghilang. |
 | *Roland pergi* | | Bab 7 | **[Tetap]** Party bertemu pasukan kerajaan yang dipimpin seorang knight commander **(tokoh baru, belum dibuat)**, dan mendapat kabar ada krisis. Roland memutuskan ikut pasukan itu dan meninggalkan party. |
 | *Lysandre (bertemu)* | Lysandre Bloodrose, 22, half-blood succubus, putri David Bloodrose II | Bab 7 | **[Tetap]** Party bertemu Lysandre di **villa Bloodrose**, kediaman turun-temurun yang megah. Ayahnya adalah master rumah itu. Konflik membuat party melawan penghuni rumah, tetapi masalahnya akhirnya beres. Lysandre **belum bergabung**. |
-| **Barion** | Barion, 31, dragonslayer, sudah membunuh 4 naga | Bab 8 | **[Tetap]** Bab laut bersama Kaine. Naga di pulau pilar Wind terkorupsi kristal hitam. Barion sudah memburunya sebagai "naga kelima", lalu bergabung karena kesal: naga itu "dicuri" darinya oleh sesuatu yang lain. Ia pengacau ketiga, dan penderitaan Mira bertambah. |
+| **Barion** | Barion, 31, dragonslayer, sudah membunuh 4 naga | Bab 8 | **[Tetap]** Bab laut bersama Kaine, di **pulau asal Neraya** (lihat Konflik Utama no. 7). **[Usulan, dari rencana lama]** Naga di pulau itu terkorupsi kristal hitam. Barion sudah memburunya sebagai "naga kelima", lalu bergabung karena kesal: naga itu "dicuri" darinya oleh sesuatu yang lain. Ia pengacau ketiga, dan penderitaan Mira bertambah. |
 | **Roland** (tetap) | | Bab 11 | **[Tetap]** Datang ke villa Bloodrose bersama Sera dan Isolde. Bergabung untuk **mengawasi** party. |
 | **Lysandre** | | Bab 11 | **[Tetap]** Bergabung setelah kebangkitan Kael di villa. |
 
@@ -49,13 +86,13 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 |---|---|---|
 | **Babak I — Jejak Kristal Hitam** (Kerajaan Nova, world map sekarang) | | |
 | 2 | Pagi saat berangkat, penjaga gerbang melapor: peti kristal di Briarwood sudah hilang sebelum patroli datang. Ada jejak roda ke barat. Party mengikutinya ke Crossroads, lalu ke kota tambang gurun (pilar Earth). | **Mira bergabung** |
-| 3 | Kota danau: airnya keruh dan warga jatuh sakit. Agen Order menyamar sebagai tabib (pilar Water). | **Ebonflame** (Kael bangkit saat melindungi orang lain) |
+| 3 | Kota danau: airnya keruh dan warga jatuh sakit. Agen Order menyamar sebagai tabib. *(Pilar Water pindah ke pulau Neraya; pilar kota danau **[Belum]**.)* | **Ebonflame** (Kael bangkit saat melindungi orang lain) |
 | 4 | Pulang sebentar ke ibu kota (meta-joke Ibu, oleh-oleh Selene). Balasan surat dari Isolde. Order mencuri sesuatu dari ibu kota. | **Homura muncul: Yuki kalah**, diselamatkan Kael |
 | **Babak II — Perbatasan** | | |
 | 5 | Desa perbatasan: Roland dan pasukannya. Ada konflik. | **Roland bergabung (sementara)** |
 | 6 | Hutan: misteri Diana. | **Diana bergabung** |
 | 7 | Villa Bloodrose: konflik dengan penghuni rumah, lalu berdamai. Kenal Lysandre dan ayahnya. Pulangnya party bertemu pasukan knight commander baru yang membawa kabar krisis. | **Roland pergi** |
-| 8 | Laut bersama Kaine: naga di pulau pilar Wind. | **Barion bergabung** |
+| 8 | Laut bersama Kaine: pulau asal Neraya, artefak Neraya, bertemu Champion of Water yang baru. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung** |
 | 9 | Krisis memuncak. | **Rematch Homura: Hyōjin no Jotei** (Yuki true awakening, mendahului Kael sesuai bible) |
 | **Titik tengah** | | |
 | 10 | Kael kalah dari antagonis utama dan terkena kutukan Light. | Kael keluar dari party |
@@ -124,12 +161,12 @@ Bible belum memberinya nama. Usulan:
 | Skyreach Hill (58,30), Briarwood (54,38) | *(sudah ada)* | Prolog, 1 |
 | Crossroads Sign (30,44) | Desa persinggahan: hub, Guild cabang, penginapan | 2 |
 | Gurun barat daya (±15,55) | Kota tambang + reruntuhan, pilar Earth | 2 |
-| Danau barat (±19,31) | Kota danau, pilar Water | 3 |
+| Danau barat (±19,31) | Kota danau (pilar **[Belum]**) | 3 |
 | Hutan tengah (±42,36) | Hutan Diana | 6 |
 | Ujung jalan utara (±26,12) | Desa perbatasan / benteng jalur salju. Ditutup sampai babaknya tiba, seperti gerbang di Bab 1. | 5 |
 | Pantai timur laut (±63,16) | Desa nelayan + mercusuar (tile Avy). Tempat Kaine berlabuh. | 4 / 8 |
 | Pantai selatan (±45,63) | Kota pelabuhan untuk perjalanan laut | 8 |
-| Pulau tenggara (±58,77) | Pulau naga, pilar Wind | 8 |
+| Pulau tenggara (±58,77) | Pulau asal Neraya: kristal dan pilar Water | 8 |
 | Teluk salju barat laut (±11,17) | Kuil kuno opsional (late game) | — |
 | Villa Bloodrose | **[Belum]** Lokasinya: di Kerajaan Nova, di Arulustus, atau wilayah sendiri? | 7, 11 |
 
@@ -142,6 +179,8 @@ Bible belum memberinya nama. Usulan:
   - Bloodrose, Diana, Barion, dan Lysandre masuk bible.
   - Konsep 8 pilar segel, kalau disetujui.
   - Nama antagonis dan knight commander baru.
+  - **Konflik Utama [Tetap]:** 8 artefak, tipu daya Evil Force, loyalis Arulustus dan civil war, suksesi Dracoheart (Valeria menjadi kepala keluarga), pulau Neraya.
+- ~~Tujuan Order~~ → sudah masuk bible: Order ingin menghancurkan, pemimpinnya ingin mengendalikan. Kristal segel dan fragmen Evil Force juga sudah masuk.
 
 ## Keputusan yang Masih Terbuka
 
@@ -156,5 +195,9 @@ Bible belum memberinya nama. Usulan:
 9. **Bloodrose:** lokasi villa, hubungan dengan Evil Force, dan nama ayah Lysandre (David Bloodrose II? Profil Lysandre menyebutnya begitu).
 10. **Naga:** makhluk biasa yang langka, atau terkait Champion/elemen?
 11. **Quest Yuki saat Kael sekarat (Bab 11):** isi quest sebelum jejaknya mengarah ke villa.
-12. **Krisis suksesi Dracoheart:** tetap di Babak III atau dipindah?
+12. **Krisis suksesi Dracoheart:** tetap di Babak III atau dipindah? *(Hasil akhirnya sudah [Tetap]: Valeria menjadi kepala keluarga. Nasib Ignatius belum.)*
 13. **Arulustus:** world map kedua, atau di map yang sama?
+14. **Pemilik kristal** di mahkota raja Arulustus dan di ruang penyimpanan Nova, serta lokasi 4 kristal lainnya.
+15. **Pilar kota danau (Bab 3)** setelah pilar Water pindah ke pulau Neraya.
+16. **Peran Kaine dan Sera di akhir cerita** (sudah [Tetap] bahwa keduanya penting, bentuknya belum).
+17. **Ley:** kapan dan bagaimana bergabung (ditunda).
