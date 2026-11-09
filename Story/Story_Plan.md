@@ -264,6 +264,15 @@ Lucian memakai pola yang sama dengan julukan usulannya: *Second Dawn: Radiant Ti
 - **[Usulan] Umpan:** Lucian selalu meng-counter Kael, dan Earth mengalahkan Thunder. Pemain yang jeli bisa **sengaja memakai Thunder untuk memancing Lucian mengambil Earth palsu**, sehingga Lucian membuang satu fase tanpa amplify.
 - **Party tetap punya penjelasan sendiri:** Evil Force gagal keluar karena kristal Darkness yang dibawa Order palsu, dan yang asli ada di kotak Ley. Mereka tidak perlu tahu soal Earth.
 - **Ending:** party mengembalikan kristal-kristal ke kerajaan, termasuk Earth palsu. Kerajaan menerimanya dengan tenang tanpa berkata apa-apa. **[Usulan]** Satu tatapan atau senyum kecil Cedric ke Leo sebagai kedipan terakhir untuk pemain.
+- **[Tetap] Scene setelah party keluar istana:** Kael merasakan resonansi aneh dari mahkota yang dipakai raja. Kael tidak mengerti, party tidak mengerti, tetapi pemain tahu: mahkota itu menyimpan **kristal Magnus yang asli**.
+  - **[Usulan]** Di ending, Leo sudah memakai **Crown of the First King** (mahkota asli), karena ancaman sudah berlalu. Itulah sumber resonansinya. Kemampuan Kael membaca aliran magic sudah dikenalkan sejak tutorial mana flow detection di Prolog.
+  - **[Usulan]** Pembagian pembicara: Mira yang bertanya (paling analitis), Yuki yang menyudahi (paling santai).
+
+  > **Kael:** "Strange... I felt an odd resonance from the crown the prince— er, the king was wearing."
+  > **Mira:** "Odd how?"
+  > **Kael:** "I don't know. I can't explain it. It hums on the same frequency as the seal crystals."
+  > **Yuki:** "Eh, forget it. What matters is the crystals are back."
+  > **Kael:** "...Yeah. You're right."
 
 ## Antagonis Utama [Tetap]
 

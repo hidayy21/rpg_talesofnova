@@ -64,7 +64,7 @@ Rata-rata masa pemerintahan ±30 tahun → ±470 tahun berdirinya kerajaan mengh
 ##### Adegan setelah konflik
 
 - Setelah konflik Nova selesai dan party kembali melanjutkan pengejaran, ada **scene khusus tanpa party**: Cedric memanggil Leo, membuka ruangan di bawah takhta, lalu menunjukkan **Crown of the First King** beserta **kristal Magnus yang asli**. Inilah serah terima rahasia dari raja lama ke raja baru.
-- **Dramatic irony:** pemain tahu kebenarannya, tetapi party dan Order tidak. **Party tidak pernah diberi tahu**, bahkan sampai ending: di final, saat Lucian memakai kristal Earth, tidak terjadi apa-apa, dan setelah itu party mengembalikan kristal palsu itu ke kerajaan, yang menerimanya tanpa berkata apa-apa.
+- **Dramatic irony:** pemain tahu kebenarannya, tetapi party dan Order tidak. **Party tidak pernah diberi tahu**, bahkan sampai ending: di final, saat Lucian memakai kristal Earth, tidak terjadi apa-apa, dan setelah itu party mengembalikan kristal palsu itu ke kerajaan, yang menerimanya tanpa berkata apa-apa. Setelah keluar istana, Kael hanya merasakan **resonansi aneh** dari mahkota yang dipakai raja, *"seperti memancarkan frekuensi yang sama dengan kristal segel"*, lalu party melupakannya karena *"yang penting kristalnya sudah kembali"*.
 
 ##### Dampak ke akhir cerita
 
