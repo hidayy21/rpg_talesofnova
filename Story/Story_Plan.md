@@ -61,7 +61,7 @@
 | Kristal | Lokasi | Bab | Hasil |
 |---|---|---|---|
 | Caelum Dawncrest (Light) | **[Usulan]** Pusaka pendiri Order, **dipegang Lucian sejak awal**. Ironi: ia membawa kristal milik jiwa yang kini ada di Kael. | Prolog | Order (sejak awal) |
-| Asterion Duskveil (Darkness) | **[Tetap]** Brankas **Undercroft Royal Magic Academy**. Yang di brankas adalah **tiruan** buatan Alistar Duskveil; yang asli dibawa sendiri oleh **kapten penjaga** (lihat Twist Kristal Ley). | 4 | Order mencuri tiruannya. **Yang asli jatuh ke tangan Ley.** |
+| Asterion Duskveil (Darkness) | **[Tetap]** **Royal Magic Academy**, di balik **Pintu Besi Hitam** di Undercroft (map 36). Di dalam Academy, Order tidak sanggup menyentuhnya. | 4 | Order menyergap **konvoi pemindahan** dan merebut peti berisi **tiruan**. **Yang asli jatuh ke tangan Ley** (lihat Twist Kristal Ley). |
 | Sylphi Haizea (Wind) | **[Usulan]** Kuil angin di **hutan tengah**. Retakannya melahirkan binatang terkorupsi yang diburu Diana. | 6 | **Party menang** dan menyimpan kristalnya |
 | Neraya Ocevara (Water) | **Pulau asal Neraya**, cocok dengan sebutannya sebagai *Hidden Champion* | 8 | **Party menang**; Homura kabur tanpa kristal |
 | Roderick Tempest (Thunder) | **Arulustus:** dipasang di **mahkota raja** | 9 | Order, lewat civil war |
@@ -79,12 +79,19 @@ Supaya party tidak terasa kalah terus, **party memenangkan sebagian besar perebu
 4. **Bab 14, penobatan:** Order menyerang istana. Dalam kekacauan itu **Royal Mage pengkhianat** (sudah disebut di bible) membantu Order **merebut Ice dan Fire dari party**, dan Order mengambil mahkota sebagai **kristal terakhir [Tetap]**.
 5. **Bab 15, final [Tetap]:** Order mengira kedelapan kristal lengkap, padahal **Earth dan Darkness tiruan**. Evil Force gagal keluar.
 
-**[Belum]** Siapa Royal Mage pengkhianat. Sebaiknya sudah muncul sejak awal (misalnya di Academy pada Bab 4) supaya pengkhianatannya terasa.
+**[Belum]** Siapa Royal Mage pengkhianat. Ia yang mengatur pemindahan kristal Asterion di Bab 4, jadi sebaiknya sudah muncul sejak bab itu (misalnya saat party menyelidiki ke Academy) supaya pengkhianatannya di Bab 14 terasa.
 
 ### Twist Kristal Ley [Tetap]
 
-- **Protokol rahasia Academy:** sejak era **Alistar Duskveil**, kristal Asterion di brankas Undercroft adalah **tiruan** buatannya, dengan teknik yang sama seperti permata mahkota Nova (membawa essence kristal asli). Prinsipnya: *jangan simpan barang asli di tempat yang akan dicari pencuri.* **Kristal asli selalu dibawa sendiri oleh kapten penjaga**, diwariskan dari kapten ke kapten.
-- **Bab 4:** Order menerobos Undercroft dengan bantuan Royal Mage pengkhianat dan membawa kabur tiruannya. Regu penjaga tumbang. **Kapten yang sekarat menyerahkan sebuah kotak kecil kepada Ley**, satu-satunya yang masih berdiri: *"Jangan serahkan ke siapa pun. Jangan bilang siapa pun."* Order tidak menyadari Ley sama sekali.
+- **Kristal Asterion disimpan di Royal Magic Academy**, di balik **Pintu Besi Hitam** di Undercroft (map 36; pintu tanpa gagang dan lubang kunci, dingin dan berdengung). Academy penuh penyihir hebat: **Order tidak sanggup merebutnya selama kristal itu di dalam**.
+- **Protokol rahasia sejak era Alistar Duskveil:** setiap kali kristal dipindahkan, **peti yang dikawal berisi tiruan** buatan Alistar, dengan teknik yang sama seperti permata mahkota Nova (membawa essence kristal asli). **Kristal asli dibawa sendiri oleh kapten pengawal**, dan hanya dia yang tahu. Prinsipnya: *jangan bawa barang asli di tempat yang akan dicari pencuri.*
+- **Bab 4, penyergapan konvoi:**
+  1. **Royal Mage pengkhianat mengatur pemindahan** kristal ke brankas Royal Magic Council di ibu kota, dengan alasan masuk akal: gangguan magic flow membuat kristal "tidak aman" dekat para murid. Dewan setuju.
+  2. Pemindahan dibuat diam-diam agar tidak menarik perhatian, jadi pengawalnya **regu prajurit biasa**, termasuk Ley. Tidak ada penyihir hebat yang ikut.
+  3. Pengkhianat membocorkan rute dan jadwalnya. **Order menyergap konvoi** di jalan antara Quillhaven dan ibu kota. Homura ada di sana; party yang kebetulan lewat ikut bertarung, dan **Yuki kalah dari Homura**.
+  4. Order membawa kabur peti berisi tiruan. Regu pengawal tumbang. **Kapten yang sekarat menyerahkan sebuah kotak kecil kepada Ley**, satu-satunya yang masih berdiri: *"Jangan serahkan ke siapa pun. Jangan bilang siapa pun."* Order tidak menyadari Ley sama sekali.
+  5. Party lalu **menyelidiki ke Academy**, dengan Mira sebagai jalan masuk karena ia murid di sana. Pemain melihat **Pintu Besi Hitam terbuka dan kosong** untuk pertama kalinya.
+- **Academy tidak kalah:** ia tidak pernah diserang. Kelemahannya ada di dalam, yaitu satu orang yang dipercaya. Ini sekaligus menanam kecurigaan untuk pengkhianatan di penobatan (Bab 14).
   - Ini **kedua kalinya** kapten Ley gugur di depannya (yang pertama saat desa diserang, lihat catatan aktor).
 - **Setelah adegan itu, kotak kecil tidak pernah disebut lagi.** Pemain yang jeli akan terus bertanya: *"bukankah ada yang terlupakan?"*
   - Kotak itu ikut bersama Ley saat ia pergi bersama Roland (Bab 7), saat Lucian merebut kristal dari party (Bab 10), dan saat pengkhianat beraksi di penobatan (Bab 14). Tidak ada yang tahu, karena tidak ada yang memperhatikan Ley.
@@ -110,7 +117,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 | Tokoh | Profil (database) | Bergabung | Keterangan |
 |---|---|---|---|
 | **Mira** | Mirabelle Moonvale, 18, prodigy Royal Academy, keluarga Moonvale yang tersisihkan | Bab 2 | **[Usulan]** Sedang riset lapangan Academy di kota tambang gurun. Ia satu-satunya yang bisa membaca data retakan pilar Earth. |
-| **Ley** (sementara) | Leyfric Carlson, 21, foot soldier, "Phantom Soldier" | Bab 4 | **[Tetap]** Prajurit penjaga Undercroft Royal Magic Academy. Satu-satunya yang masih berdiri setelah Order mencuri kristal Asterion; kaptennya yang sekarat menitipkan sebuah kotak kecil (lihat Twist Kristal Ley). **[Usulan]** Karena hanya ia saksi yang tersisa, Ley ditugaskan ikut party mengejar jejak Order, yang mengarah ke perbatasan: ia harus **melapor ke Lord Commander Roland**. Itulah alasan party ke desa perbatasan di Bab 5. |
+| **Ley** (sementara) | Leyfric Carlson, 21, foot soldier, "Phantom Soldier" | Bab 4 | **[Tetap]** Prajurit biasa di regu yang mengawal **pemindahan kristal Asterion** dari Royal Magic Academy. Satu-satunya yang masih berdiri setelah Order menyergap konvoi; kaptennya yang sekarat menitipkan sebuah kotak kecil (lihat Twist Kristal Ley). **[Usulan]** Karena hanya ia saksi yang tersisa, Ley ditugaskan ikut party mengejar jejak Order, yang mengarah ke perbatasan: ia harus **melapor ke Lord Commander Roland**. Itulah alasan party ke desa perbatasan di Bab 5. |
 | **Roland** (sementara) | Roland Talonheart, 32, Lord Commander, "The Lion" | Bab 5 | **[Tetap]** Party bertemu Roland dan pasukannya di **desa perbatasan wilayah**. Terjadi konflik, lalu Roland bergabung sementara. **Bukan** karena perintah. |
 | **Diana** | Diana Hartwell, 27, ranger hutan, mantan pemanah kerajaan, "Silent Hawk" | Bab 6 | **[Usulan]** Di hutan, party diselamatkan panah dari kegelapan. Diana memburu binatang yang terkorupsi. Roland mengenalinya sebagai pemanah kerajaan yang menghilang. |
 | *Roland pergi* | | Bab 7 | **[Tetap]** Party bertemu pasukan kerajaan yang dipimpin seorang Lord Commander **(tokoh baru, belum dibuat)**, dan mendapat kabar ada krisis. Roland memutuskan ikut pasukan itu dan meninggalkan party. **[Tetap]** Ley ikut pergi bersama Roland. **[Usulan]** Roland, salah satu dari sedikit orang yang tahu reputasi Ley (bertahan melawan jenderal musuh), memanggilnya kembali ke pasukan. |
@@ -129,7 +136,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 | **Babak I — Jejak Kristal Hitam** (Kerajaan Nova, world map sekarang) | | |
 | 2 | Pagi saat berangkat, penjaga gerbang melapor: peti kristal di Briarwood sudah hilang sebelum patroli datang. Ada jejak roda ke barat. Party mengikutinya ke Crossroads, lalu ke kota tambang gurun (pilar Earth). | **Mira bergabung** |
 | 3 | Kota danau: airnya keruh dan warga jatuh sakit. Agen Order menyamar sebagai tabib. *(Pilar Water pindah ke pulau Neraya; pilar kota danau **[Belum]**.)* | **Ebonflame** (Kael bangkit saat melindungi orang lain) |
-| 4 | Pulang sebentar ke ibu kota (meta-joke Ibu, oleh-oleh Selene). Balasan surat dari Isolde. Order mencuri **kristal Asterion (tiruan)** dari Undercroft Royal Magic Academy. Kapten penjaga yang sekarat menitipkan kotak kecil kepada Ley. | **Homura muncul: Yuki kalah**, diselamatkan Kael; **Ley bergabung** |
+| 4 | Pulang sebentar ke ibu kota (meta-joke Ibu, oleh-oleh Selene). Balasan surat dari Isolde. Di jalan, Order **menyergap konvoi** yang memindahkan kristal Asterion dari Royal Magic Academy dan merebut peti berisi **tiruan**. Kapten pengawal yang sekarat menitipkan kotak kecil kepada Ley. Party menyelidiki ke Academy dan Quillhaven: Pintu Besi Hitam terbuka dan kosong. | **Homura muncul: Yuki kalah**, diselamatkan Kael; **Ley bergabung** |
 | **Babak II — Perbatasan** | | |
 | 5 | Desa perbatasan: Ley melapor ke Roland. **[Usulan]** Desa diserang sisa loyalis Arulustus yang diadu domba Order. Roland ternyata tahu reputasi Ley, dan party baru sadar Ley sekuat itu. | **Roland bergabung (sementara)** |
 | 6 | Hutan: misteri Diana. **[Usulan]** Kuil angin (kristal Sylphi) retak dan melahirkan binatang terkorupsi. Party mengalahkan agen Order dan menyimpan kristal Wind. | **Diana bergabung** |

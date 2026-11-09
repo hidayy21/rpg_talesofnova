@@ -96,7 +96,7 @@ Semua ini baru disinggung dalam dialog dan belum punya quest:
 
 1. **Ley line berdengung dan bola Archmage yang meredup.** Bisa dihubungkan dengan retakan **pilar segel** dan Tainted Shard (Story_Plan). Archmage akan "minta bantuan" kalau bola redup ketiga kalinya.
 2. **Bintang yang gelisah** (Lyra Venn) dan cincin mesin bintang yang berputar terbalik: pertanda.
-3. **Pintu Besi Hitam** di Ruang Bawah Tanah: tanpa gagang dan lubang kunci, dingin dan berdengung. Konon terbuka sekali seabad. Kandidat dungeon atau segel tersembunyi.
+3. **Pintu Besi Hitam** di Ruang Bawah Tanah: tanpa gagang dan lubang kunci, dingin dan berdengung. Konon terbuka sekali seabad. **[Tetap]** Di baliknya tersimpan **kristal segel Asterion Duskveil** (Champion of Darkness). Dingin dan dengungnya berasal dari kristal itu, dan rumor "terbuka sekali seabad" muncul karena hanya segelintir orang yang tahu kapan pintu dibuka. Di Bab 4 kristal dipindahkan atas usul seorang Royal Mage pengkhianat, lalu konvoinya disergap Order. Setelah itu party melihat pintu ini terbuka dan kosong (lihat Story_Plan, Twist Kristal Ley).
 4. **Seksi Terlarang dan Founding Grimoires**: target "menyusup ke perpustakaan" atau sumber info tentang Champion.
 5. **Jendela sayap timur**: 13 dari luar, 12 dari dalam. Ada ruangan rahasia.
 6. **Aula Besar saat event**: pesta penyambutan atau upacara kelulusan (makanan muncul, semua profesor dan murid hadir). Bisa dibuat lewat switch saat adegannya ada.
