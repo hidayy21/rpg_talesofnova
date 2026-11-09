@@ -459,10 +459,12 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - **Bergabung di Bab 4**, sebelum Roland. Ia prajurit biasa di regu yang mengawal **pemindahan kristal Asterion** dari Royal Magic Academy, saat Order menyergap konvoi itu.
 - **Pergi bersama Roland** setelah konflik villa Bloodrose (Bab 7).
 - **Kembali bersama Roland** di villa Bloodrose (Bab 11), lalu bergabung lagi bersama Roland dan Lysandre.
-- **Kotak kecil sang kapten:** setiap kali kristal Asterion dipindahkan dari Academy, peti yang dikawal berisi **tiruan Alistar Duskveil**; yang asli dibawa sendiri oleh kapten pengawal. Saat Order menyergap konvoi, kapten yang sekarat menyerahkan **sebuah kotak kecil** kepada Ley, satu-satunya yang masih berdiri: *"Jangan serahkan ke siapa pun. Jangan bilang siapa pun."*
-  - **Ley tidak tahu isinya.** Selain kapten, semuanya dirahasiakan, bahkan dari regu pengawal.
+- **Kotak kecil sang kapten:** setiap kali kristal Asterion dipindahkan dari Academy, peti yang dikawal berisi **tiruan Alistar Duskveil**; yang asli dibawa sendiri oleh kapten pengawal. Saat Order menyergap konvoi, kapten yang sekarat menyerahkan **sebuah kotak kecil** kepada Ley, satu-satunya yang masih berdiri.
+  - **Ley tidak tahu isinya**, dan tidak tahu bahwa itu kristal asli yang harus dibawa ke kerajaan. Selain kapten, semuanya dirahasiakan, bahkan dari regu pengawal.
   - Ini kedua kalinya kapten Ley gugur di depannya.
-  - **Kotak itu tidak pernah disebut lagi** sampai bab final, dan **Ley sendiri pun lupa** soal kotak itu. Di bab final ia baru teringat dan membukanya, ikut terkejut melihat isinya, dan **Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor**.
+  - Ley mengira kotak itu barang pribadi sang kapten, jadi ia ikut berpetualang juga untuk **mencari kampung halaman kapten** dan menyerahkannya kepada keluarganya.
+  - **Istri dan anak kapten** bingung dan bilang kotak itu mungkin bukan untuk mereka, melainkan milik kerajaan. Kotak dibuka, dan Ley melihat sebuah batu kristal gelap, tetapi tidak mengenalinya: ia belum pernah melihat bentuk asli kristal segel, karena selama ini kristal selalu tertempel pada artefak. Party sedang di gedung lain dan tidak tahu.
+  - Setelah itu kotak tidak pernah disebut lagi. Di bab final, saat **Lucian menggunakan kristal-kristalnya**, Ley melihat bentuk asli kristal segel untuk pertama kalinya dan **sadar** batu di kotaknya adalah kristal yang sama. **Kael memakai kristal Asterion yang asli itu untuk memperkuat Twilight Emperor**.
   - **Ley tetap pria biasa:** bukan orang terpilih, tidak berdarah Champion. Yang membuatnya spesial adalah ia **satu-satunya yang masih berdiri** dan keberadaannya yang **tidak terasa**.
 
 ## Antagonis Utama — Order of Caelum
