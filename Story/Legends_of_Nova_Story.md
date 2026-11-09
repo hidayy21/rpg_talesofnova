@@ -366,10 +366,11 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 
 1. **Kekalahan pertama:** Yuki sempat **kalah** dari kakaknya, lalu **diselamatkan oleh Kael**. Kael hanya **menangkis dan bertarung sebentar**; ini tetap pertarungan Yuki.
 2. Momen ini membuat Yuki **sadar bahwa rasa dendamnya justru menghalangi dirinya**.
-3. **Jeda panjang:** pertarungan ulang baru terjadi **beberapa arc kemudian**.
-4. **Pertarungan ulang:** **Hyōjin no Jotei** muncul **tepat saat pertarungan kedua dimulai**, sebagai **kejutan bagi pemain**. Yuki menjadi **anggota party pertama yang mendapatkan true awakening**, mendahului Twilight Emperor milik Kael.
-5. Di tengah pertarungan, ada momen Yuki **berhenti dan ragu**, karena yang ia lawan tetaplah kakaknya. Sang kakak justru **memanfaatkan keraguan itu**, dan pertarungan berlanjut.
-6. **Akhir:** Yuki mengalahkan dan **membunuh** kakaknya. **Bukan kisah pengampunan yang puitis**: ia harus menuntaskannya untuk **mengakhiri kesedihan masa lalunya dan move on**.
+3. **Jeda panjang:** pertemuan berikutnya baru terjadi **beberapa arc kemudian**.
+4. **Pertemuan kedua, di pulau naga asal Neraya:** **Hyōjin no Jotei** muncul **tepat saat pertarungan dimulai**, sebagai **kejutan bagi pemain**. Yuki menjadi **anggota party pertama yang mendapatkan true awakening**, mendahului Twilight Emperor milik Kael. Duel ini **terputus tanpa pemenang**.
+5. **Pertemuan ketiga, saat Kael sekarat** setelah kalah dari pemimpin Order: Yuki memimpin party dan harus menang **tanpa Kael**, yang dulu menyelamatkannya.
+6. Di tengah pertarungan, ada momen Yuki **berhenti dan ragu**, karena yang ia lawan tetaplah kakaknya. Sang kakak justru **memanfaatkan keraguan itu**, dan pertarungan berlanjut.
+7. **Akhir:** Yuki mengalahkan dan **membunuh** kakaknya. **Bukan kisah pengampunan yang puitis**: ia harus menuntaskannya untuk **mengakhiri kesedihan masa lalunya dan move on**.
 
 ### Mirabelle Moonvale (Mira)
 
@@ -411,6 +412,46 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 
 - 32 tahun. **Lord Commander** Kerajaan Nova, pelindung party. *(dari profil aktor)*
 - Pangkatnya **sama** dengan Seraphine Ashveil (Lord Commander).
+
+### Diana Hartwell — "Hawkeye"
+
+- 27 tahun. **Ranger hutan**, **mantan pemanah Kerajaan Nova**. Ada **misteri** yang menyelimuti dirinya. *(dari profil aktor)*
+- Pemburu yang **pendiam** dan **sangat akurat**. Class: **Ranger** (busur; skill puncak *Thousandfold Hawk*).
+- **Bergabung di Bab 6**, di hutan, setelah Roland bergabung sementara (lihat Story_Plan, Urutan Party Bergabung).
+  - **[Usulan]** Party diselamatkan panah dari kegelapan. Diana sedang memburu binatang yang terkorupsi. Roland mengenalinya sebagai pemanah kerajaan yang menghilang.
+- **[Belum]** Misteri Diana. *(Usulan: regunya dulu dikorbankan dalam operasi yang ditutup-tutupi, dengan jejak Order atau intelijen kerajaan di baliknya.)*
+- **[Belum]** Julukan: database memakai **"Hawkeye"**, Story_Plan menyebut **"Silent Hawk"**. Usia juga berbeda (profil 27, catatan aktor 26).
+
+### Barion — "The Beast"
+
+- 31 tahun. **Petualang** yang **brash** (kasar dan blak-blakan), sudah **membunuh empat naga**. Kapaknya menyimpan bekas luka dari setiap perburuan. *(dari profil aktor)*
+- Class: **Dragonslayer** (kapak; skill puncak *Twilight of Wyrms*).
+- **Bergabung di Bab 8**, bab laut bersama Kaine di **pulau asal Neraya** (lihat Story_Plan, Konflik Utama no. 7).
+  - **[Usulan]** Naga di pulau itu terkorupsi kristal hitam. Barion memburunya sebagai **"naga kelima"**, lalu bergabung karena kesal: naga itu "dicuri" darinya oleh sesuatu yang lain.
+- Dalam party ia menjadi **pengacau ketiga** bersama Kael dan Yuki, dan **penderitaan Mira bertambah**.
+- **[Belum]** Usia: profil 31, catatan aktor 30.
+
+### Lysandre Bloodrose — "The Half-Blood Princess"
+
+- 22 tahun. **Half-blood succubus**, putri **David Bloodrose II** dan seorang **ibu manusia**. *(dari profil aktor)*
+- Class: **Succubus**. Berperan sebagai **tank dengan blood drain** (cakar; skill puncak *Bloodrose Requiem*).
+- Tinggal di **villa Bloodrose**, kediaman turun-temurun yang megah; ayahnya adalah master rumah itu. Ayahnya **berdarah setengah iblis dan berumur panjang**, dan **pernah melihat cahaya Caelum** di Age of Heroes.
+- **Bab 7 — bertemu:** konflik membuat party melawan penghuni villa, lalu masalahnya beres dan mereka berdamai. Lysandre **belum bergabung**.
+- **Bab 11 — bergabung:** Lysandre dan ayahnya membantu mencari buku spell untuk menyelamatkan Kael. Ia bergabung **setelah kebangkitan Twilight Emperor** di villa.
+- **[Belum]** Alasan bergabung. *(Usulan: sumpah lama keluarga Bloodrose kepada Caelum, keinginan Lysandre melihat dunia di luar villa, atau keduanya.)*
+- **[Belum]** Lokasi villa, hubungan Bloodrose dengan Evil Force, dan apakah nama ayahnya memang David Bloodrose II.
+
+### Leyfric Carlson (Ley) — "Phantom Soldier"
+
+- 21 tahun. **Foot soldier** sejak umur **17**. Mudah terlewatkan, dan **justru itulah keunggulannya**. *(dari profil aktor)*
+- **Pria biasa.** Jadi prajurit karena **diajak teman**.
+- **Suka bercanda tapi suaranya pelan**: orang lain mengulang leluconnya lebih keras, dan merekalah yang dianggap lucu.
+- **Satu-satunya yang bertahan (dan masih hidup)** melawan seorang **jenderal musuh** saat desanya diserang, padahal **kapten pasukannya sudah gugur**.
+- Sebenarnya **kuat**, tetapi tetap foot soldier karena **pendiam** dan **keberadaannya hampir tidak terasa**.
+- Class: **Foot Soldier** (tombak, skill type *Phantom Spear*). Skill khasnya *Fade* (status *Unnoticed*) dan *Quiet Joke*.
+  - Awakening pertama: **Average Joe**.
+  - Awakening kedua: **Jack of All Trades**, yang membuka **Ragnarok**.
+- **[Belum]** Kapan dan di mana Ley bergabung (belum ada di Urutan Party Bergabung), serta desa dan jenderal musuh mana yang ia lawan.
 
 ## Antagonis Utama — Order of Caelum
 

@@ -104,16 +104,18 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 | 5 | Desa perbatasan: Roland dan pasukannya. Ada konflik. | **Roland bergabung (sementara)** |
 | 6 | Hutan: misteri Diana. | **Diana bergabung** |
 | 7 | Villa Bloodrose: konflik dengan penghuni rumah, lalu berdamai. Kenal Lysandre dan ayahnya. Pulangnya party bertemu pasukan Lord Commander baru yang membawa kabar krisis. | **Roland pergi** |
-| 8 | Laut bersama Kaine: pulau asal Neraya, artefak Neraya, bertemu Champion of Water yang baru. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung** |
-| 9 | Krisis memuncak. | **Rematch Homura: Hyōjin no Jotei** (Yuki true awakening, mendahului Kael sesuai bible) |
+| 8 | Laut bersama Kaine: pulau asal Neraya, artefak Neraya, bertemu Champion of Water yang baru. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung**; **Homura muncul lagi: Hyōjin no Jotei** (Yuki true awakening, mendahului Kael sesuai bible). Duel terputus tanpa pemenang. |
+| 9 | Krisis memuncak. | |
 | **Titik tengah** | | |
 | 10 | Kael kalah dari antagonis utama dan terkena kutukan Light. | Kael keluar dari party |
-| 11 | **Yuki menjadi MC sementara.** Pencarian obat berakhir di villa Bloodrose. | **Twilight Emperor**; **Roland, lalu Lysandre bergabung** |
+| 11 | **Yuki menjadi MC sementara.** **Rematch Homura: Yuki menang** tanpa Kael. Pencarian obat berakhir di villa Bloodrose. | **Twilight Emperor**; **Roland, lalu Lysandre bergabung** |
 | **Babak III — Twilight** | | |
 | 12 | Kebenaran soal Evil Force (perpustakaan Bloodrose + catatan riset Isolde): Order hanyalah pion. Reuni keluarga dan **komedi nama awakening** (Kael, Kaine, Sera, Cassius; Kael kini bisa pamer Twilight). Krisis suksesi Dracoheart. Awakening Selene (Tartarus Monarch). | |
 | 13 | Sealed Vault (pilar Light): final melawan pemimpin Order. Antagonis kalah, **Isolde bangun**. Ending. | |
 
-**Kalau terlalu panjang:** Bab 8 dan 9 bisa digabung (Homura ada di pulau naga yang sama), atau Bab 5 dan 6.
+**Kalau terlalu panjang:** Bab 8 dan 9 bisa digabung, atau Bab 5 dan 6.
+
+**Tiga pertemuan Yuki dengan Homura [Tetap]:** Bab 4 (Yuki kalah, diselamatkan Kael) → Bab 8 di pulau naga (Hyōjin no Jotei, duel terputus) → Bab 11 saat Kael sekarat (Yuki menang). Jarak Hyōjin no Jotei dan Twilight Emperor jadi dekat, dan Yuki tetap awakening lebih dulu.
 
 ## Titik Tengah: Kael Jatuh dan Bangkit [Tetap, detail Usulan ditandai]
 
@@ -123,6 +125,7 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
    - Sesuai bible: Yuki tampil sebagai pemimpin saat Kael tidak ada.
    - Party saat itu: Yuki, Mira, Diana, Barion.
 3. **Beberapa quest** mencari obat, sampai ketahuan bahwa yang dibutuhkan adalah sebuah **spell** yang kemungkinan tersimpan di **perpustakaan keluarga Bloodrose**.
+   - **[Tetap]** Salah satunya: **rematch Homura**, dan Yuki menang tanpa Kael. **[Usulan]** Order mengirim Homura untuk menghabisi Kael yang sekarat, atau untuk merebut buku spell.
 4. Party sudah berteman dengan Bloodrose sejak Bab 7, jadi mereka datang ke villa. **Lysandre dan ayahnya** membantu menemukan buku spell itu.
 5. **Mira gagal** merapal spell tersebut. Kondisi Kael makin kritis.
 6. Malam itu **Roland, Sera, dan Isolde** tiba di villa Bloodrose.
