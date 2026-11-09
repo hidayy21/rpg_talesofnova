@@ -460,9 +460,10 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - **Pergi bersama Roland** setelah konflik villa Bloodrose (Bab 7).
 - **Kembali bersama Roland** di villa Bloodrose (Bab 11), lalu bergabung lagi bersama Roland dan Lysandre.
 - **Kotak kecil sang kapten:** setiap kali kristal Asterion dipindahkan dari Academy, peti yang dikawal berisi **tiruan Alistar Duskveil**; yang asli dibawa sendiri oleh kapten pengawal. Saat Order menyergap konvoi, kapten yang sekarat menyerahkan **sebuah kotak kecil** kepada Ley, satu-satunya yang masih berdiri: *"Jangan serahkan ke siapa pun. Jangan bilang siapa pun."*
+  - **Ley tidak tahu isinya.** Selain kapten, semuanya dirahasiakan, bahkan dari regu pengawal.
   - Ini kedua kalinya kapten Ley gugur di depannya.
-  - **Kotak itu tidak pernah disebut lagi** sampai bab final. Di sana Ley membukanya, dan **Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor**.
-  - **Ley tetap pria biasa:** bukan orang terpilih, tidak berdarah Champion. Yang membuatnya spesial adalah **kesetiaan** dan keberadaannya yang **tidak terasa**.
+  - **Kotak itu tidak pernah disebut lagi** sampai bab final, dan **Ley sendiri pun lupa** soal kotak itu. Di bab final ia baru teringat dan membukanya, ikut terkejut melihat isinya, dan **Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor**.
+  - **Ley tetap pria biasa:** bukan orang terpilih, tidak berdarah Champion. Yang membuatnya spesial adalah ia **satu-satunya yang masih berdiri** dan keberadaannya yang **tidak terasa**.
 
 ## Antagonis Utama — Order of Caelum
 

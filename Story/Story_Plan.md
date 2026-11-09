@@ -84,22 +84,24 @@ Supaya party tidak terasa kalah terus, **party memenangkan sebagian besar perebu
 ### Twist Kristal Ley [Tetap]
 
 - **Kristal Asterion disimpan di Royal Magic Academy**, di balik **Pintu Besi Hitam** di Undercroft (map 36; pintu tanpa gagang dan lubang kunci, dingin dan berdengung). Academy penuh penyihir hebat: **Order tidak sanggup merebutnya selama kristal itu di dalam**.
-- **Protokol rahasia sejak era Alistar Duskveil:** setiap kali kristal dipindahkan, **peti yang dikawal berisi tiruan** buatan Alistar, dengan teknik yang sama seperti permata mahkota Nova (membawa essence kristal asli). **Kristal asli dibawa sendiri oleh kapten pengawal**, dan hanya dia yang tahu. Prinsipnya: *jangan bawa barang asli di tempat yang akan dicari pencuri.*
+- **Protokol rahasia sejak era Alistar Duskveil:** setiap kali kristal dipindahkan, **peti yang dikawal berisi tiruan** buatan Alistar, dengan teknik yang sama seperti permata mahkota Nova (membawa essence kristal asli). **Kristal asli dibawa sendiri oleh kapten pengawal**, dan **hanya dia yang tahu**. Regu pengawal pun tidak diberi tahu apa pun. Prinsipnya: *jangan bawa barang asli di tempat yang akan dicari pencuri.*
 - **Bab 4, penyergapan konvoi:**
   1. **Royal Mage pengkhianat mengatur pemindahan** kristal ke brankas Royal Magic Council di ibu kota, dengan alasan masuk akal: gangguan magic flow membuat kristal "tidak aman" dekat para murid. Dewan setuju.
   2. Pemindahan dibuat diam-diam agar tidak menarik perhatian, jadi pengawalnya **regu prajurit biasa**, termasuk Ley. Tidak ada penyihir hebat yang ikut.
   3. Pengkhianat membocorkan rute dan jadwalnya. **Order menyergap konvoi** di jalan antara Quillhaven dan ibu kota. Homura ada di sana; party yang kebetulan lewat ikut bertarung, dan **Yuki kalah dari Homura**.
   4. Order membawa kabur peti berisi tiruan. Regu pengawal tumbang. **Kapten yang sekarat menyerahkan sebuah kotak kecil kepada Ley**, satu-satunya yang masih berdiri: *"Jangan serahkan ke siapa pun. Jangan bilang siapa pun."* Order tidak menyadari Ley sama sekali.
+     - **Ley tidak tahu isi kotak itu.** Selain kapten, semuanya dirahasiakan.
+     - Ini **kedua kalinya** kapten Ley gugur di depannya (yang pertama saat desa diserang, lihat catatan aktor).
   5. Party lalu **menyelidiki ke Academy**, dengan Mira sebagai jalan masuk karena ia murid di sana. Pemain melihat **Pintu Besi Hitam terbuka dan kosong** untuk pertama kalinya.
   6. **Event Selene:** di Academy party bertemu **Selene**, yang **sudah menjadi murid** di sana (masuk setelah Kael berangkat di Bab 1). **[Usulan]** Ia yang memberi tahu rumor murid soal Pintu Besi Hitam ("terbuka sekali seabad") dan bahwa pintu itu kini terbuka; ia murid baru di asrama **Duskward**, cocok dengan aptitude Shadow-nya; dan ia senang bisa pamer kakaknya ke teman-temannya.
 - **Academy tidak kalah:** ia tidak pernah diserang. Kelemahannya ada di dalam, yaitu satu orang yang dipercaya. Ini sekaligus menanam kecurigaan untuk pengkhianatan di penobatan (Bab 14).
-  - Ini **kedua kalinya** kapten Ley gugur di depannya (yang pertama saat desa diserang, lihat catatan aktor).
 - **Setelah adegan itu, kotak kecil tidak pernah disebut lagi.** Pemain yang jeli akan terus bertanya: *"bukankah ada yang terlupakan?"*
-  - Kotak itu ikut bersama Ley saat ia pergi bersama Roland (Bab 7), saat Lucian merebut kristal dari party (Bab 10), dan saat pengkhianat beraksi di penobatan (Bab 14). Tidak ada yang tahu, karena tidak ada yang memperhatikan Ley.
-- **Bab final:** Order mengira kedelapan kristal lengkap. Ley membuka kotaknya, dan **Kael memakai kristal Asterion untuk memperkuat Twilight Emperor** melawan Lucian.
+  - **Ley sendiri pun lupa.** Kotak itu terselip di bawaannya dan tidak pernah ia buka.
+  - Kotak itu ikut bersama Ley saat ia pergi bersama Roland (Bab 7), saat Lucian merebut kristal dari party (Bab 10), dan saat pengkhianat beraksi di penobatan (Bab 14). Tidak ada yang tahu, termasuk Ley, dan tidak ada yang memperhatikan Ley.
+- **Bab final:** Order mengira kedelapan kristal lengkap. **[Usulan]** Saat kristal-kristal disatukan di Sealed Vault, sesuatu di bawaan Ley ikut **berdengung dan dingin**, sama seperti Pintu Besi Hitam. Ley merogoh tasnya: *"Oh... aku lupa soal ini."* Ia membuka kotaknya, dan **ia sendiri ikut terkejut**. **Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor** melawan Lucian.
   - Twilight adalah senja, perbatasan gelap dan terang: jiwa Caelum (Light) dalam darah Asterion (Darkness).
-- **Ley tetap pria biasa.** Ia tidak dipilih takdir dan tidak berdarah Champion. Ia hanya **satu-satunya yang masih berdiri**, dua kali, dan **setia** pada perintah terakhir kaptennya. Sifat "tak terasa" yang selama ini membuatnya diremehkan justru menyelamatkan dunia.
-- **Cermin dengan twist mahkota:** Raja Cedric menyimpan rahasia karena jabatan, Ley karena kesetiaan. Satu di puncak kerajaan, satu di paling bawah. Kedua tiruan dibuat orang yang sama, Alistar Duskveil.
+- **Ley tetap pria biasa.** Ia tidak dipilih takdir dan tidak berdarah Champion. Ia hanya **satu-satunya yang masih berdiri**, dua kali, dan menyimpan titipan kaptennya tanpa pernah menyerahkannya ke siapa pun, walau ia lupa dan tidak tahu isinya. Sifat "tak terasa" yang selama ini membuatnya diremehkan justru menyelamatkan dunia: tidak ada yang mencari kristal di tangan prajurit yang bahkan tidak diingat orang.
+- **Cermin dengan twist mahkota:** Raja Cedric menyimpan rahasia dengan sadar, karena jabatan; Ley menyimpannya **tanpa tahu** sedang menyimpan rahasia. Satu di puncak kerajaan, satu di paling bawah. Kedua tiruan dibuat orang yang sama, Alistar Duskveil.
 
 ### Dua keluarga kerajaan [Tetap]
 
