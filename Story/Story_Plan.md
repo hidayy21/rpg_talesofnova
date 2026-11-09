@@ -212,7 +212,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 - **Tahap 2:** **Kael 1v1 melawan Lucian.** Di sinilah **Twilight Emperor** diperkuat oleh kristal segel.
 - **Kristal tetap:** **Kael memakai Darkness** (kristal Asterion yang asli, dari kotak Ley) dan **Lucian memakai Light**, keduanya **sejak awal tahap 2**.
 - **Kristal rotasi:** masing-masing menambah **satu kristal lagi** yang bisa diganti. Amplify-nya jadi **dua elemen sekaligus**: Darkness + satu elemen untuk Kael, Light + satu elemen untuk Lucian.
-- **Pool rotasi:** Water, Thunder, Ice, Wind, dan **Earth palsu**. Pemain memilih kristal mana yang dipakai, dan Lucian juga berganti kristal.
+- **Pool rotasi:** Water, Thunder, Ice, Wind, **Earth palsu**, dan **Darkness tiruan (FAKE)**. Pemain memilih kristal mana yang dipakai, dan Lucian juga berganti kristal.
 - **Event di tengah pertarungan:** Kael mengambil **kristal Fire**, dan Fire masuk ke pool.
 - **Earth palsu bisa dipilih, tetapi tidak memberi amplify.** Pemain yang jeli (ingat Cedric yang tenang saat mahkota direbut) tidak akan tertipu.
 - **Inti tantangannya:** kejelian dan strategi. Beberapa elemen lebih kuat atau saling melemahkan, misalnya **Api kalah dari Air** dan **Air kalah dari Petir**.
@@ -247,9 +247,10 @@ Lingkaran enam elemen: **Fire → Ice → Wind → Earth → Thunder → Water �
 
 Lucian memakai pola yang sama dengan julukan usulannya: *Second Dawn: Radiant Tide*, *Radiant Storm*, dst.
 
-**[Belum]**
-- **Pool bersama atau terpisah?** Usulan: bersama. Kristal yang dipegang Kael tidak bisa dipakai Lucian, jadi pemain juga bisa **menahan** elemen yang mengancam Kael.
-- **Kristal Darkness tiruan di tangan Lucian.** Usulan: saat Ley mengeluarkan kristal asli, tiruan di tangan Lucian meredup dan retak, dan Lucian sadar ia tertipu.
+**[Tetap] Pool bersama**
+- Kael dan Lucian mengambil dari **pool yang sama**. Kristal yang sedang dipegang satu pihak tidak bisa dipakai pihak lain, jadi pemain juga bisa **menahan** elemen yang mengancam Kael.
+- **Kristal Darkness tiruan ikut di pool**, dengan label **(FAKE)**. Efeknya sama dengan Earth palsu: **tidak memberi amplify**.
+- **Earth palsu tidak berlabel**, karena kepalsuannya belum terungkap. Hanya Darkness yang sudah ketahuan palsu sejak kristal asli muncul dari kotak Ley.
 
 ## Antagonis Utama [Tetap]
 
