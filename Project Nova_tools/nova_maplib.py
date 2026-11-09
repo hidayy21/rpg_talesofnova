@@ -103,6 +103,11 @@ def is_wall_kind(sheet, kind):
 BASE = {'A1': A1, 'A2': A2, 'A3': A3, 'A4': A4}
 
 
+def _is_waterfall(v):
+    """A1 waterfall kinds: the odd ones from 5 up (their shape only follows left/right neighbours)."""
+    return bool(v) and v != 'edge' and v[0] == 'A1' and v[1] >= 5 and v[1] % 2 == 1
+
+
 def _kind_of(v):
     """A raw ('ID', tile) autotile still counts as its kind for its neighbours' shapes."""
     if v and v[0] == 'ID' and v[1] >= A1:
@@ -156,7 +161,11 @@ class MapBuilder:
                         out[L][y * w + x] = A5 + k; continue
                     if sheet == 'ID':
                         out[L][y * w + x] = k; continue
-                    same = lambda xx, yy, v=v: (lambda g: g == 'edge' or _kind_of(g) == v)(self.get(xx, yy, L))
+                    # as in the editor: water runs on into a waterfall, and the map edge continues floors but not walls
+                    water = sheet == 'A1' and not _is_waterfall(v)
+                    edge_same = not is_wall_kind(sheet, k)
+                    same = lambda xx, yy, v=v, water=water, edge_same=edge_same: (lambda g: (edge_same if g == 'edge' else
+                                                             _kind_of(g) == v or (water and _is_waterfall(_kind_of(g)))))(self.get(xx, yy, L))
                     if sheet == 'A1' and k >= 5 and k % 2 == 1:   # waterfall: only left/right neighbours matter
                         shape = (0 if same(x - 1, y) else 1) + (0 if same(x + 1, y) else 2)
                     else:

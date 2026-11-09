@@ -741,7 +741,14 @@ const WQ = [{ in: [2, 2], side: [0, 2], tb: [2, 0], out: [0, 0] },
 const QN = [[[0, -1], [-1, 0], [-1, -1]], [[0, -1], [1, 0], [1, -1]], [[0, 1], [-1, 0], [-1, 1]], [[0, 1], [1, 0], [1, 1]]];
 let shapeIndex = null;
 function shapeFor(x, y, z, kind) {
-  const same = (xx, yy) => !inMap(xx, yy) || (isAuto(at(xx, yy, z)) && kindOf(at(xx, yy, z)) === kind);
+  // as in RPG Maker's editor: water runs on into a waterfall without a shoreline (above and below it), and the map
+  // edge continues floors and water but not walls/roofs (they get their border line there)
+  const water = sheetOfKind(kind)[0] === 'A1' && !isWaterfallKind(kind);
+  const same = (xx, yy) => {
+    if (!inMap(xx, yy)) return !isWallKind(kind);
+    const id = at(xx, yy, z);
+    return isAuto(id) && (kindOf(id) === kind || (water && isWaterfallKind(kindOf(id))));
+  };
   if (isWaterfallKind(kind)) return (same(x - 1, y) ? 0 : 1) + (same(x + 1, y) ? 0 : 2);
   const floor = !isWallKind(kind), qs = floor ? FQ : WQ, st = [];
   for (let q = 0; q < 4; q++) {
