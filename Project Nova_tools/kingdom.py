@@ -17,6 +17,9 @@ ACADEMY_DINING = 41
 # chapter 5: the walled border town at the end of the north road, before the pass to Arulustus
 FROSTHOLLOW = 42
 FROST_INN, FROST_STORE, FROST_SMITHY = 43, 44, 45      # its interiors
+# (46 Wild Forest 1 and 47 Ice Cave are the user's own maps)
+# chapters 7 and 11: the Bloodrose family seat (where it sits on the World Map is still open in Story_Plan.md)
+VILLA_BLOODROSE = 48
 
 NAMES = {
     WORLD: ('World Map', 'Western Continent'),
@@ -24,6 +27,7 @@ NAMES = {
     FROST_INN: ('Frosthollow - Hearthfire Inn', 'Hearthfire Inn'),
     FROST_STORE: ('Frosthollow - General Store', 'Frosthollow General Store'),
     FROST_SMITHY: ('Frosthollow - Smithy', "Hilda's Forge"),
+    VILLA_BLOODROSE: ('Villa Bloodrose', 'Villa Bloodrose'),
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
     MARKET: ('Nova - Market District', 'Royal Capital - Market District'),
     RESIDENTIAL: ('Nova - Residential Quarter', 'Royal Capital - Lantern Row'),
@@ -70,6 +74,8 @@ ARRIVE = {
     'frost_inn_from_town': (FROST_INN, 11, 13, 8), 'town_from_frost_inn': (FROSTHOLLOW, 19, 23, 2),
     'frost_store_from_town': (FROST_STORE, 7, 11, 8), 'town_from_frost_store': (FROSTHOLLOW, 51, 22, 2),
     'frost_smithy_from_town': (FROST_SMITHY, 8, 11, 8), 'town_from_frost_smithy': (FROSTHOLLOW, 42, 26, 2),
+    # Villa Bloodrose: arrive at the foot of the south road (no World Map link until its location is decided)
+    'bloodrose_from_world': (VILLA_BLOODROSE, 21, 48, 8),
     # Grand Plaza
     'plaza_from_residential': (PLAZA, 1, 16, 6),  # west road
     'plaza_from_market': (PLAZA, 42, 16, 4),      # east road

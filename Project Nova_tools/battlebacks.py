@@ -30,6 +30,7 @@ BB = {
     K.QUILL_INN: NOBLE, K.QUILL_APOTHECARY: SHOP,
     K.FROSTHOLLOW: ('Snowfield', 'Snowfield'),
     K.FROST_INN: NOBLE, K.FROST_STORE: SHOP, K.FROST_SMITHY: SHOP,
+    K.VILLA_BLOODROSE: ('Cobblestones4', 'DemonCastle1'),
 }
 
 if __name__ == '__main__':
