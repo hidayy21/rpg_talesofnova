@@ -457,6 +457,7 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
   - Awakening kedua: **Jack of All Trades**, yang membuka **Ragnarok**.
 - **Bergabung di Bab 4**, sebelum Roland. Ia prajurit penjaga **Undercroft Royal Magic Academy** saat Order mencuri kristal Asterion.
 - **Pergi bersama Roland** setelah konflik villa Bloodrose (Bab 7).
+- **Kembali bersama Roland** di villa Bloodrose (Bab 11), lalu bergabung lagi bersama Roland dan Lysandre.
 - **Kotak kecil sang kapten:** kristal Asterion di brankas Academy adalah **tiruan Alistar Duskveil**; yang asli selalu dibawa kapten penjaga. Saat Order menyerang, kapten yang sekarat menyerahkan **sebuah kotak kecil** kepada Ley, satu-satunya yang masih berdiri: *"Jangan serahkan ke siapa pun. Jangan bilang siapa pun."*
   - Ini kedua kalinya kapten Ley gugur di depannya.
   - **Kotak itu tidak pernah disebut lagi** sampai bab final. Di sana Ley membukanya, dan **Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor**.

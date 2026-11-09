@@ -105,9 +105,7 @@ Supaya party tidak terasa kalah terus, **party memenangkan sebagian besar perebu
 
 ## Urutan Party Bergabung [Tetap]
 
-Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (belum bergabung) → Barion → Roland bergabung lagi → Lysandre bergabung.
-
-**Ley:** bergabung di Bab 4 sebelum Roland **[Tetap]**, pergi bersama Roland (Bab 7) **[Tetap]**, kembali bersama Roland (Bab 11) **[Usulan]**.
+Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → bertemu Lysandre (belum bergabung) → Barion → Roland, Ley, dan Lysandre bergabung.
 
 | Tokoh | Profil (database) | Bergabung | Keterangan |
 |---|---|---|---|
@@ -119,7 +117,7 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 | *Lysandre (bertemu)* | Lysandre Bloodrose, 22, half-blood succubus, putri David Bloodrose II | Bab 7 | **[Tetap]** Party bertemu Lysandre di **villa Bloodrose**, kediaman turun-temurun yang megah. Ayahnya adalah master rumah itu. Konflik membuat party melawan penghuni rumah, tetapi masalahnya akhirnya beres. Lysandre **belum bergabung**. |
 | **Barion** | Barion, 31, dragonslayer, sudah membunuh 4 naga | Bab 8 | **[Tetap]** Bab laut bersama Kaine, di **pulau asal Neraya** (lihat Konflik Utama no. 7). **[Usulan, dari rencana lama]** Naga di pulau itu terkorupsi kristal hitam. Barion sudah memburunya sebagai "naga kelima", lalu bergabung karena kesal: naga itu "dicuri" darinya oleh sesuatu yang lain. Ia pengacau ketiga, dan penderitaan Mira bertambah. |
 | **Roland** (tetap) | | Bab 11 | **[Tetap]** Datang ke villa Bloodrose bersama Sera dan Isolde. Bergabung untuk **mengawasi** party. |
-| **Ley** (tetap) | | Bab 11 | **[Usulan]** Datang bersama Roland. **Tidak ada yang sadar Ley ikut datang** sampai ia bersuara (sesuai sifatnya dan skill *Fade / Unnoticed*). |
+| **Ley** (tetap) | | Bab 11 | **[Tetap]** Datang bersama Roland. **[Usulan]** **Tidak ada yang sadar Ley ikut datang** sampai ia bersuara (sesuai sifatnya dan skill *Fade / Unnoticed*). |
 | **Lysandre** | | Bab 11 | **[Tetap]** Bergabung setelah kebangkitan Kael di villa. |
 
 **Catatan database:** usia di profil berbeda dengan di catatan aktor. Diana tertulis 27 dan 26; Barion tertulis 31 dan 30.
@@ -244,5 +242,5 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 14. ~~Pemilik kristal di Arulustus dan Nova~~ → Roderick (Thunder) dan Magnus (Earth). Lokasi 4 kristal lainnya → **[Usulan]** lihat Lokasi kristal segel.
 15. **Pilar kota danau (Bab 3)** setelah pilar Water pindah ke pulau Neraya.
 16. **Peran Kaine dan Sera di akhir cerita** (sudah [Tetap] bahwa keduanya penting, bentuknya belum).
-17. ~~Ley~~ → bergabung di Bab 4, pergi bersama Roland di Bab 7, membawa kristal Asterion yang asli (lihat Twist Kristal Ley).
+17. ~~Ley~~ → bergabung di Bab 4, pergi bersama Roland di Bab 7, kembali di Bab 11, membawa kristal Asterion yang asli (lihat Twist Kristal Ley).
 18. **Royal Mage pengkhianat:** siapa, dan kapan pertama muncul.
