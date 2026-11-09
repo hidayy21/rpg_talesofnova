@@ -202,6 +202,7 @@ Kael **bukan** reinkarnasi Asterion maupun Jeanne. Mereka adalah **leluhur biolo
   - Diangkat menjadi Lord Commander di usia **23**, salah satu yang **termuda**. Rekor sebelumnya dipegang **kakeknya, Ignatius Dracoheart**, di usia **24**. Rambut merah, aptitude utama **Fire**.
 - **Kaelen Ashveil** (Kael, anak ketiga) — protagonis.
 - **Selene Ashveil** (anak bungsu, adik perempuan, 15 tahun) — rambut hitam. Seperti Kael, aptitude utamanya **Shadow**.
+  - Masuk **Royal Magic Academy** setelah Kael berangkat berpetualang. Di Bab 4, saat party menyelidiki Academy, ia **sudah menjadi murid** di sana.
 - **Vivienne Ashveil** (ibu, 48 tahun, lahir sebagai Dracoheart) — melahirkan Kaine di usia 21 dan Selene di usia 33. Keturunan Jeanne Ignatia, putri sulung kepala **clan Dracoheart**. Tidak bangkit. Meninggalkan clan untuk ikut suaminya (lihat Keluarga Dracoheart).
 - Semua anak memiliki kedua aptitude; yang berbeda hanya elemen utamanya. Rambut merah mengikuti garis Jeanne (api), rambut hitam mengikuti garis Asterion (kegelapan).
 - Nama keempat anak berselang-seling huruf awalnya: **K – S – K – S**.

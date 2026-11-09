@@ -7,6 +7,7 @@
 
 - **[Tetap]** Sekolah sihir kerajaan. Lulusannya langsung menjadi **Mage Class 5 atau Class 4**, tergantung ujian kelulusan. Lisensi dan misi diurus **Guild** di ibu kota, sedangkan ujian diurus Academy.
 - **[Tetap]** Kael lulus dari sini ±1 tahun sebelum cerita dimulai. Isolde Wyndmere dulu mengajar di sini. Mira (Mirabelle Moonvale) adalah prodigy Academy.
+- **[Tetap]** **Selene Ashveil**, adik Kael (15), menjadi murid baru setelah Kael berangkat. Party bertemu dengannya di sini pada Bab 4. **[Usulan]** Asrama Duskward.
 - **[Usulan]** Berdiri **±700 tahun** lalu, lebih tua daripada tembok ibu kota.
 - **[Usulan]** Pendiri: **Aldric Vane, First Archmage**. Patungnya ada di air mancur Halaman Tengah dengan semboyan *"Every spell begins as a question."*
 - **[Usulan]** Jumlah murid sekitar **240 orang**, terbagi ke dua asrama. Hall Steward menyiapkan 240 piring di Aula Besar.
