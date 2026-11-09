@@ -13,7 +13,7 @@
 | **Tales of Symphonia / Vesperia** | Penjahat yang yakin dirinya penyelamat, krisis mana, dan skit (obrolan pendek party). |
 | **Suikoden II** | Ancaman perang antar negara sebagai latar, dimanipulasi pihak ketiga. |
 
-**Pola tiap bab [Usulan]:** tiba di kota → papan Guild cabang (2–3 sub quest) → misteri lokal → dungeon → bos → cuplikan Order of Caelum → kartu bab. Setiap kota punya satu oleh-oleh untuk *Souvenirs for Selene*.
+**Pola tiap bab [Usulan]:** tiba di kota → papan Guild cabang (2–3 sub quest) → misteri lokal → dungeon → bos → cuplikan Order of Caelum → kartu bab. Setiap kota punya satu oleh-oleh untuk *Souvenirs for Selene*. **[Tetap]** Mulai Bab 4 oleh-oleh diserahkan kepada Selene **di Royal Magic Academy**, bukan di rumah.
 
 **Skor rivalitas [Usulan]:** di akhir setiap bab tampil skor Kael vs Yuki, siapa yang mengalahkan musuh paling banyak (sesuai bible).
 
@@ -137,7 +137,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 | **Babak I — Jejak Kristal Hitam** (Kerajaan Nova, world map sekarang) | | |
 | 2 | Pagi saat berangkat, penjaga gerbang melapor: peti kristal di Briarwood sudah hilang sebelum patroli datang. Ada jejak roda ke barat. Party mengikutinya ke Crossroads, lalu ke kota tambang gurun (pilar Earth). | **Mira bergabung** |
 | 3 | Kota danau: airnya keruh dan warga jatuh sakit. Agen Order menyamar sebagai tabib. *(Pilar Water pindah ke pulau Neraya; pilar kota danau **[Belum]**.)* | **Ebonflame** (Kael bangkit saat melindungi orang lain) |
-| 4 | Pulang sebentar ke ibu kota (meta-joke Ibu, oleh-oleh Selene). Balasan surat dari Isolde. Di jalan, Order **menyergap konvoi** yang memindahkan kristal Asterion dari Royal Magic Academy dan merebut peti berisi **tiruan**. Kapten pengawal yang sekarat menitipkan kotak kecil kepada Ley. Party menyelidiki ke Academy dan Quillhaven: Pintu Besi Hitam terbuka dan kosong. **Selene sudah menjadi murid Academy**: party bertemu dengannya di sana. | **Homura muncul: Yuki kalah**, diselamatkan Kael; **Ley bergabung** |
+| 4 | Pulang sebentar ke ibu kota (meta-joke Ibu). Balasan surat dari Isolde. Di jalan, Order **menyergap konvoi** yang memindahkan kristal Asterion dari Royal Magic Academy dan merebut peti berisi **tiruan**. Kapten pengawal yang sekarat menitipkan kotak kecil kepada Ley. Party menyelidiki ke Academy dan Quillhaven: Pintu Besi Hitam terbuka dan kosong. **Selene sudah menjadi murid Academy**: party bertemu dengannya di sana, dan sejak itu oleh-oleh diserahkan di Academy. | **Homura muncul: Yuki kalah**, diselamatkan Kael; **Ley bergabung** |
 | **Babak II — Perbatasan** | | |
 | 5 | Desa perbatasan: Ley melapor ke Roland. **[Usulan]** Desa diserang sisa loyalis Arulustus yang diadu domba Order. Roland ternyata tahu reputasi Ley, dan party baru sadar Ley sekuat itu. | **Roland bergabung (sementara)** |
 | 6 | Hutan: misteri Diana. **[Usulan]** Kuil angin (kristal Sylphi) retak dan melahirkan binatang terkorupsi. Party mengalahkan agen Order dan menyimpan kristal Wind. | **Diana bergabung** |

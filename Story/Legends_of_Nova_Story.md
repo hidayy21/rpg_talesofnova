@@ -522,7 +522,7 @@ Skenario lengkap dengan dialog: [Prolog_Scenario.md](Prolog_Scenario.md).
    - Pencarian kakak Yuki (lihat Masa Lalu Yuki) diceritakan setelah urusan bandit.
 6. **Pamit ke ibu dan adik.** Ibunya meledek: jangan berlebihan, toh nanti Kael juga pasti pulang sesekali. *(Meta-joke: akan ada beberapa sidequest yang membawa pemain kembali ke ibu kota Nova.)*
    - Di sini **Yuki pertama kali makan makanan dari Benua Barat**, di rumah keluarga Ashveil.
-   - Adik Kael meminta **oleh-oleh** → membuka **sidequest oleh-oleh** (dikumpulkan dari kota-kota yang dikunjungi, diserahkan saat pulang ke Nova).
+   - Adik Kael meminta **oleh-oleh** → membuka **sidequest oleh-oleh** (dikumpulkan dari kota-kota yang dikunjungi). Mulai Bab 4 oleh-oleh **diserahkan kepada Selene di Royal Magic Academy**, bukan di rumah, karena Selene sudah menjadi murid di sana.
 7. Dari sini Kael secara tidak sengaja terseret ke permasalahan yang sedang terjadi di Benua Barat.
 
 ## Catatan Terbuka
