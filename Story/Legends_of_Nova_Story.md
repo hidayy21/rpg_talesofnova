@@ -111,7 +111,7 @@ Rata-rata masa pemerintahan ±30 tahun → ±470 tahun berdirinya kerajaan mengh
   - Karena itu Duskveil **bukan magical family secara utuh**. Yang bertahan adalah **darah dan nama** Duskveil, yang terus diwariskan.
   - Duskveil **tidak memiliki satu kepala keluarga utama**. Bahkan di beberapa daerah ada orang bernama Duskveil yang **tidak tahu bahwa mereka keturunan Asterion**.
   - **Hal yang sama berlaku untuk Ashveil.** Keturunan Asterion memang **tidak punya komunitas resmi**. Ini cerminan Asterion sendiri: pria yang **seperti enigma** dan **tidak suka bergerombol**.
-- **Jeanne Ignatia** — pahlawan, *Champion of Fire*, salah satu sahabat Asterion. Garis keturunannya mengalir lewat **keluarga Dracoheart** dan lewat ibu Kael.
+- **Jeanne Ignatia** — pahlawan, *Champion of Fire*, salah satu sahabat Asterion. Garis keturunannya mengalir lewat **keluarga Dracoheart** (termasuk di antaranya adalah ibu Kael).
 - **Caelum Dawncrest** — pahlawan, *Champion of Light*, salah satu rekan Asterion dan Jeanne. Jiwanya bereinkarnasi menjadi Kael.
 - Asterion, Jeanne, dan Caelum adalah tiga dari **8 hero (Elemental Champion)**. Lima lainnya:
   - **Rafael Eisendorf** — *Champion of Ice*.
