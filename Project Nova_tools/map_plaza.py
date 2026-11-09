@@ -33,7 +33,7 @@ y = m.building(34, 41, 0, 2, 7, 'khaki', 'tudor', win_tiles=(WIN, WIN_FLOWER_P, 
 m.put(36, 1, CHIMNEY_A); m.put(40, 1, CHIMNEY_B)
 m.building(42, 43, 0, 3, 6, 'green', 'stone', windows=False)
 
-# ---------------------------------------------------------------- west: garden (north) and founder's memorial (south)
+# ---------------------------------------------------------------- west: garden (north) and the Champion's statue (south)
 m.rect(2, 11, 11, 13, GRASS)
 m.big_tree(3, 11); m.big_tree(8, 11)
 for x in (2, 6, 11): m.put(x, 13, FLOWERS[x % 4])
@@ -76,7 +76,7 @@ m.put(30, 31, CRATE_APPLE); m.put(15, 31, BARREL)
 # ---------------------------------------------------------------- events
 # fountain jets (animated)
 for x in (21, 22):
-    m.obj('Fountain', x, 16, '!Other2', 2, ['The fountain of King Aurelian.', 'Coins glitter at the bottom of the basin.'])
+    m.obj('Fountain', x, 16, '!Other2', 2, ['The fountain of King Cedric IV.', 'Coins glitter at the bottom of the basin.'])
 # doors
 m.locked_door('Royal Gazette', 5, gz, ['A notice on the door:', '"The Royal Gazette - next issue at dawn."'])
 m.locked_door("Adventurers' Guild", 13, 8, ['The old Guild Hall. A notice on the door:',
@@ -88,8 +88,8 @@ m.locked_door('Teahouse', 39, 29, ['A small teahouse. The shutters are drawn.'])
 m.sign('Notice Board', 37, 13, ['\\C[6]Notice Board\\C[0]',
        'WANTED: escorts for the Saltwind Harbor caravans.',
        'LOST: grey tabby, answers to "Biscuit". - Whisker & Paw'])
-m.sign("Founder's Statue", 6, 22, ['\\C[6]Aurelian I, Founder of Nova\\C[0]',
-       '"Let every street lead home, and every home to the crown."'])
+m.sign('Champion Statue', 6, 22, ['\\C[6]Magnus Blackwood, Champion of Earth\\C[0]',
+       '"Stand like the mountain, and let the storm break on you."'])
 # exits
 for x in (0, 1): m.put(x, 0, BARRICADE_H)      # the NW alley is closed (Baker's Lane lies west of Lantern Row)
 m.exit('To Residential', [(0, y) for y in range(15, 19)], K.RESIDENTIAL, 42, 15, 4)
@@ -110,7 +110,7 @@ m.npc('Plaza Guard', 25, 12, 'People3', 7, ('Royal Guard:', 'Keep the peace in t
 m.npc('Bard', 16, 19, 'People2', 6, ('Bard:', '♪ Oh the Snowblade came from the East... ♪', 'Spare a coin for a song?'), direction=6)
 m.npc('Flower Girl', 36, 22, 'People1', 3, ('Flower Girl:', 'Fresh lilies from the valley!', 'They say the Queen loves white roses.'), direction=8)
 m.npc('Flower Seller', 39, 22, 'People4', 1, ('Flower Seller:', 'Every bloom here was cut this morning.'), direction=8)
-m.npc('Old Scholar', 8, 22, 'People2', 2, ('Old Scholar:', 'Aurelian founded Nova on a fishing village.',
+m.npc('Old Scholar', 8, 22, 'People2', 2, ('Old Scholar:', 'Nova was founded on a fishing village.',
       'The harbor is older than the crown itself.'), direction=8)
 m.npc('Townsman', 27, 17, 'People1', 0, ('Townsman:', 'Have you tried the Golden Crust bakery?', 'Through the alley at the north-west corner.'), move=1)
 m.npc('Child', 17, 14, 'People4', 3, ('Child:', 'I threw a coin in the fountain and wished for a dragon!'), move=1, speed=4)

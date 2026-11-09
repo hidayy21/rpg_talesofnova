@@ -2,7 +2,7 @@
 # houses of the court (in medieval towns the nobility lived close to the castle). The castle wall and moat carry
 # on along the top; the moat walk comes in from Castle Approach (west), Crown Avenue runs down to the Market's
 # north alley (south). North row: Royal Chancery, Royal Treasury, Royal Archives. South: a noble manor with its
-# garden, the Queen's Garden with the founder's statue, and the Royal Chapel.
+# garden, the Queen's Garden with Queen Seraphina's statue, and the Royal Chapel.
 #   python map_royal_quarter.py preview.png [--grid]   -> preview image
 #   python map_royal_quarter.py --save                 -> write Map025 (editor must be closed)
 import sys, os
@@ -80,7 +80,7 @@ cp = m.building(33, 44, 29, 4, 5, 'dressed', 'white', windows=False)        # Ro
 for x in (34, 36, 41, 43): m.put(x, cp - 2, STAINED)
 m.put(38, cp, ARCH_BOT); m.put(38, cp - 1, ARCH_TOP); m.put(39, cp, ARCH_BOT); m.put(39, cp - 1, ARCH_TOP)
 m.rect(38, cp + 1, 39, H - 1, ROAD)
-# the garden: hedged beds round the founder's statue
+# the garden: hedged beds round Queen Seraphina's statue
 m.relief(26, 31, 30, 35)
 m.tall(28, 32, STATUE_A)
 for x, y in ((26, 31), (30, 31), (26, 35), (30, 35)): m.put(x, y, FLOWER_BUSH)
@@ -104,7 +104,7 @@ m.locked_door('Royal Archives', 40, ar, ['\\C[6]ROYAL ARCHIVES\\C[0]', 'Every la
 m.locked_door('Valemont Manor', 7, mn, ['A brass plate: \\C[6]House Valemont\\C[0], Keepers of the Royal Seal.',
               'A butler opens the door a crack... and shuts it again.'], style=1)
 m.locked_door('Royal Chapel', 38, cp, ['Organ music and the smell of incense.', 'A service is in progress - best not to interrupt.'], style=1)
-m.sign('Founder Statue', 28, 34, ['\\C[6]Queen Seraphine the Wise\\C[0]', '"Rule with a ledger in one hand and mercy in the other."'])
+m.sign('Queen Statue', 28, 34, ['\\C[6]Queen Seraphina the Wise\\C[0]', '"Rule with a ledger in one hand and mercy in the other."'])
 m.npc('Royal Guard', AX[0] - 1, WALK + 1, 'People3', 6, ('Royal Guard:', 'The Royal Quarter. Mind your manners -',
       'half the people here outrank the other half.'), direction=2)
 m.npc('Treasury Guard', 28, tr + 1, 'People3', 7, ('Treasury Guard:', 'Move along.'), direction=2)

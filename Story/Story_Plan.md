@@ -57,9 +57,17 @@
 |---|---|---|
 | Jeanne Ignatia (Fire) | Clan Dracoheart | Suksesi Dracoheart (no. 6) |
 | Neraya Ocevara (Water) | **Pulau asal Neraya**, cocok dengan sebutannya sebagai *Hidden Champion* | Konflik laut (no. 7) |
-| *(Champion belum)* | **Arulustus:** dipasang di **mahkota raja** | Loyalis / civil war (no. 3–4) |
-| *(Champion belum)* | **Kerajaan Nova:** disimpan di **ruangannya sendiri** | Loyalis / civil war (no. 3–4) |
+| Roderick Tempest (Thunder) | **Arulustus:** dipasang di **mahkota raja** | Loyalis / civil war (no. 3–4) |
+| Magnus Blackwood (Earth) | **Kerajaan Nova:** disimpan di **ruangannya sendiri** | Loyalis / civil war (no. 3–4) |
 | 4 lainnya | **[Belum]** | |
+
+### Dua keluarga kerajaan [Tetap]
+
+- **Raja Nova adalah keturunan Magnus Blackwood**, **raja Arulustus keturunan Roderick Tempest**. **Blackwood** dan **Tempest** adalah nama keluarga yang **masih aktif**. Raja Nova: **Cedric Nova Blackwood IX** (air mancur di alun-alun: leluhurnya, *King Cedric IV*). Raja Arulustus **[Belum]**.
+- **Simbolisme: petir lawan bumi.** Bumi menang: tanah menetralkan petir. Ini sejalan dengan sejarah, karena Nova memenangkan perang 16 tahun lalu.
+- Yang sudah ada di game dan kini termasuk wangsa Blackwood: **patung Queen Seraphina the Wise** (Royal Quarter; ratu pertama yang memerintah tanpa raja, lihat bible) dan **patung Magnus Blackwood, Champion of Earth** di alun-alun, leluhur wangsa raja (kutipan: *"Stand like the mountain, and let the storm break on you."*). Nama **Seraphine** (Sera) terinspirasi dari ratu ini.
+- **Nama "Aurelian" tidak dipakai** (terlalu mirip "Arulustus"), untuk raja maupun antagonis. Air mancur di alun-alun sudah diganti menjadi *King Cedric IV*.
+- **Format nama raja Nova:** *[nama] Nova Blackwood IX*.
 
 **[Usulan]** Kristal segel adalah kunci pilar Champion masing-masing (lihat Konsep Pengikat). Kalau kedelapannya disatukan di Sealed Vault, segelnya terbuka: itulah klimaks Bab 13.
 
@@ -139,17 +147,11 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
   - ia makin nekat dan langsung mengincar Sealed Vault;
   - sebagian anggota Order mulai ragu.
 
-## Antagonis Utama [Belum]
+## Antagonis Utama [Tetap]
 
-Bible belum memberinya nama. Usulan:
+**Lucian Valcrest.** *Lucian* berarti cahaya; *Valcrest* menggemakan *Dawncrest*, seolah ia pewaris Caelum.
 
-| Nama | Makna |
-|---|---|
-| **Aurelian Valcrest** *(rekomendasi)* | *Aurum* = emas, cahaya. "Valcrest" menggemakan "Dawncrest": ia merasa pewaris Caelum. |
-| **Lucius Aldermoor** | *Lux* = cahaya. |
-| **Elias Brightmoor** | Lembut, cocok kalau ia tampil ramah bak orang suci. |
-
-**Julukan:** *the Second Dawn*, sebutan dari anggota Order.
+**[Usulan] Julukan:** *the Second Dawn*, sebutan dari anggota Order.
 
 ## World Map
 
@@ -178,7 +180,7 @@ Bible belum memberinya nama. Usulan:
 - **Tambahan:**
   - Bloodrose, Diana, Barion, dan Lysandre masuk bible.
   - Konsep 8 pilar segel, kalau disetujui.
-  - Nama antagonis dan knight commander baru.
+  - Nama knight commander baru. *(Antagonis: Lucian Valcrest, raja Nova: Cedric Nova Blackwood IX, sudah masuk bible.)*
   - **Konflik Utama [Tetap]:** 8 artefak, tipu daya Evil Force, loyalis Arulustus dan civil war, suksesi Dracoheart (Valeria menjadi kepala keluarga), pulau Neraya.
 - ~~Tujuan Order~~ → sudah masuk bible: Order ingin menghancurkan, pemimpinnya ingin mengendalikan. Kristal segel dan fragmen Evil Force juga sudah masuk.
 
@@ -186,7 +188,7 @@ Bible belum memberinya nama. Usulan:
 
 1. **Jumlah bab:** 12 penuh (Bab 2–13), atau dipadatkan?
 2. **Konsep 8 pilar segel:** dipakai atau tidak?
-3. **Nama antagonis.**
+3. ~~Nama antagonis~~ → **Lucian Valcrest**.
 4. **Konflik di desa perbatasan (Bab 5).** Usulan: warga dituduh menyembunyikan sisa pasukan perang, padahal Order yang mengadu domba.
 5. **Konflik di villa Bloodrose (Bab 7).** Usulan: salah paham. Party datang memburu jejak kristal hitam yang mengarah ke villa, dan penghuni villa mengira party adalah utusan Order.
 6. **Knight commander baru** (Bab 7): nama, kepribadian, hubungan dengan Roland dan Sera.
@@ -197,7 +199,7 @@ Bible belum memberinya nama. Usulan:
 11. **Quest Yuki saat Kael sekarat (Bab 11):** isi quest sebelum jejaknya mengarah ke villa.
 12. **Krisis suksesi Dracoheart:** tetap di Babak III atau dipindah? *(Hasil akhirnya sudah [Tetap]: Valeria menjadi kepala keluarga. Nasib Ignatius belum.)*
 13. **Arulustus:** world map kedua, atau di map yang sama?
-14. **Pemilik kristal** di mahkota raja Arulustus dan di ruang penyimpanan Nova, serta lokasi 4 kristal lainnya.
+14. ~~Pemilik kristal di Arulustus dan Nova~~ → Roderick (Thunder) dan Magnus (Earth). Lokasi 4 kristal lainnya masih terbuka.
 15. **Pilar kota danau (Bab 3)** setelah pilar Water pindah ke pulau Neraya.
 16. **Peran Kaine dan Sera di akhir cerita** (sudah [Tetap] bahwa keduanya penting, bentuknya belum).
 17. **Ley:** kapan dan bagaimana bergabung (ditunda).

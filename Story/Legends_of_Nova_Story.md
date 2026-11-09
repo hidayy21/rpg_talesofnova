@@ -12,6 +12,11 @@
 - Keduanya berada dalam **ketegangan panas selama 100 tahun**, yang berakhir lewat **perang 16 tahun lalu**, dimenangkan Nova. Ignatius Dracoheart berjasa besar dalam kemenangan ini.
 - Usia saat perang (16 tahun lalu): Ignatius 53, Cassius 35 (sudah di intelijen), Vivienne 32, Valeria 28, Kaine 11, Seraphine 9, Kael 3. Selene lahir setahun kemudian (lihat Timeline Keluarga).
 - Perang tersebut memulai **masa damai baru**. Meski begitu, kekuatan militer tetap diperlukan untuk **berjaga-jaga** dan untuk melawan **simpatisan sisa-sisa perang**.
+- **Keluarga kerajaan:** raja Nova adalah keturunan **Magnus Blackwood** (Champion of Earth), raja Arulustus keturunan **Roderick Tempest** (Champion of Thunder). Nama keluarga Blackwood dan Tempest **masih aktif**.
+  - Raja Nova sekarang: **Cedric Nova Blackwood IX**. Air mancur di alun-alun ibu kota dipersembahkan untuk leluhurnya, **King Cedric IV**. Nama raja Arulustus belum ditentukan.
+  - **Queen Seraphina Nova Blackwood** (*Seraphina the Wise*) — **ratu pertama Nova yang memerintah tanpa seorang raja**. Masa kejayaannya **23 tahun**, sampai putranya, **Pangeran Oswin Nova Blackwood**, dewasa dan siap menggantikannya. Patungnya berdiri di Queen's Garden, Royal Quarter.
+  - Alun-alun ibu kota memasang **patung Magnus Blackwood**, leluhur wangsa raja.
+  - **Simbolisme:** petir lawan bumi. Bumi menang, karena tanah menetralkan petir, dan Nova memang memenangkan perang.
 - **Sisa loyalis Arulustus** berkonflik dengan Kerajaan Nova, dibekingi Order of Caelum. Nantinya di dalam Arulustus pecah **civil war**: pemerintahan yang sekarang melawan para loyalis.
 
 ### Guild
@@ -33,9 +38,9 @@
 - **Caelum Dawncrest** — pahlawan, *Champion of Light*, salah satu rekan Asterion dan Jeanne. Jiwanya bereinkarnasi menjadi Kael.
 - Asterion, Jeanne, dan Caelum adalah tiga dari **8 hero (Elemental Champion)**. Lima lainnya:
   - **Rafael Eisendorf** — *Champion of Ice*.
-  - **Magnus Blackwood** — *Champion of Earth* (batu).
+  - **Magnus Blackwood** — *Champion of Earth* (batu). Keturunannya adalah **keluarga kerajaan Nova**.
   - **Sylphi Haizea** — *Champion of Wind*.
-  - **Roderick Tempest** — *Champion of Thunder*.
+  - **Roderick Tempest** — *Champion of Thunder*. Keturunannya adalah **keluarga kerajaan Arulustus**.
   - **Neraya Ocevara** — *Hidden Champion of Water*.
 
 Usia di tabel adalah usia mereka **saat mengalahkan Evil Force**. Penampilan mereka di usia itu: `Elemental_Champions.png` (kartu per Champion) dan `Elemental_Champions_group.png` (bersama).
@@ -113,6 +118,7 @@ Kael **bukan** reinkarnasi Asterion maupun Jeanne. Mereka adalah **leluhur biolo
   - Hanya membawa darah Asterion, sehingga awakening-nya **Darkness murni** (lihat Awakening Garis Darah).
 - **Kaine Ashveil** (anak pertama, kakak laki-laki, 27 tahun) — berpetualang di laut. Rambut merah, aptitude utama **Fire**.
 - **Seraphine Ashveil** (anak kedua, kakak perempuan, 25 tahun) — mengabdi pada kerajaan sebagai kesatria, berpangkat **commander**, setara dengan Roland Talonheart.
+  - Namanya terinspirasi dari **Queen Seraphina the Wise**, ratu pertama Nova yang memerintah tanpa raja, dari wangsa Blackwood (patungnya ada di Royal Quarter).
   - Diangkat menjadi commander di usia **23**, salah satu yang **termuda**. Rekor sebelumnya dipegang **kakeknya, Ignatius Dracoheart**, di usia **24**. Rambut merah, aptitude utama **Fire**.
 - **Kaelen Ashveil** (Kael, anak ketiga) — protagonis.
 - **Selene Ashveil** (anak bungsu, adik perempuan, 15 tahun) — rambut hitam. Seperti Kael, aptitude utamanya **Shadow**.
@@ -315,7 +321,7 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 
 ### Pemimpin
 
-- *(Nama belum ditentukan.)* **Bos terakhir game ini.** Seorang mage dengan affinity **Light**, dan Light adalah **elemen utamanya**.
+- **Lucian Valcrest.** *Lucian* berarti cahaya; *Valcrest* menggemakan *Dawncrest*, seolah ia pewaris Caelum. **Bos terakhir game ini.** Seorang mage dengan affinity **Light**, dan Light adalah **elemen utamanya**.
 - **Ironi yang disengaja:** Light biasanya elemen pahlawan, di sini justru elemen antagonis utama.
 - Ia **memimpikan kejayaan Age of Heroes**, dan **percaya dirinya adalah seorang penyelamat**.
 - Punya **savior complex**: ia **menganggap dirinya Champion of Light**, karena kuatnya affinity Light yang ia miliki. Padahal affinity tidak sama dengan jiwa Champion (lihat Siklus Reinkarnasi). Reinkarnasi yang asli adalah Kael.
@@ -331,7 +337,7 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 - Evil Force **memiliki kehendak** dan mampu **memanipulasi** dari balik segel, misalnya menanamkan bukti palsu untuk mengelabui Order of Caelum (lihat Masa Lalu Yuki).
 - Salah satu **taringnya** pernah ditemukan dan ditempa menjadi **katana** di Benua Timur.
 - **Dua jenis benda** yang terkait dengannya:
-  - **Kristal segel (8):** **setiap Elemental Champion punya satu kristal**. Inilah artefak yang dikumpulkan Order. Lokasi yang sudah diketahui: kristal Jeanne Ignatia di **clan Dracoheart**, kristal Neraya Ocevara di **pulau asal Neraya**, satu dipasang di **mahkota raja Arulustus**, satu disimpan di **ruangan khusus di Kerajaan Nova**.
+  - **Kristal segel (8):** **setiap Elemental Champion punya satu kristal**. Inilah artefak yang dikumpulkan Order. Lokasi yang sudah diketahui: kristal Jeanne Ignatia di **clan Dracoheart**, kristal Neraya Ocevara di **pulau asal Neraya**, kristal Roderick Tempest dipasang di **mahkota raja Arulustus**, kristal Magnus Blackwood disimpan di **ruangan khusus di Kerajaan Nova**.
   - **Fragmen Evil Force (beberapa):** bagian tubuh Evil Force, kadang ditempa menjadi benda. **Mumeitō** adalah salah satunya. Bukan kristal segel.
 
 ## Prolog (Playable + Tutorial)
