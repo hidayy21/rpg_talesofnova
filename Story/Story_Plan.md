@@ -161,7 +161,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 | 12 | Kebenaran soal Evil Force (perpustakaan Bloodrose + catatan riset Isolde): Order hanyalah pion. **[Usulan]** **Kutub, desa Eisendorf** (kristal Rafael): Lucian melihat Twilight Emperor untuk pertama kali, keyakinannya retak, dan ia mundur. Party menyimpan kristal Ice. | |
 | 13 | Reuni keluarga dan **komedi nama awakening** (Kael, Kaine, Sera, Cassius; Kael kini bisa pamer Twilight). **Konflik Dracoheart**: Valeria menjadi kepala keluarga. **[Usulan]** Valeria menyerahkan kristal Jeanne kepada Kael. Awakening Selene (Tartarus Monarch). | |
 | 14 | **Penobatan Raja Leo.** Order menyerang istana dan merebut mahkota. **[Usulan]** Royal Mage pengkhianat membantu Order merebut kristal Ice dan Fire dari party. **[Tetap]** Mahkota ini **kristal terakhir** yang diambil Order (palsu), lalu bab final dimulai. Scene Cedric menunjukkan Crown of the First King kepada Leo. | |
-| 15 | **Bab final.** Sealed Vault (pilar Light): final melawan Lucian. Evil Force gagal keluar karena kristal Magnus dan Asterion palsu. **Ley membuka kotak kecilnya**, dan Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor. Antagonis kalah, **Isolde bangun**. Ending. | |
+| 15 | **Bab final.** Sealed Vault (pilar Light): final melawan Lucian. Evil Force gagal keluar karena kristal Magnus dan Asterion palsu. **Ley membuka kotak kecilnya**, dan Kael memakai kristal Asterion yang asli untuk memperkuat Twilight Emperor (lihat Final Boss: Lucian). Antagonis kalah, **Isolde bangun**. Ending. | |
 
 **Kalau terlalu panjang:** Bab 8 dan 9 bisa digabung, atau Bab 5 dan 6.
 
@@ -205,6 +205,52 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
   - ia makin nekat dan langsung mengincar Sealed Vault;
   - sebagian anggota Order mulai ragu.
 
+## Final Boss: Lucian (2 tahap)
+
+**[Tetap]**
+- **Tahap 1:** party melawan Lucian.
+- **Tahap 2:** **Kael 1v1 melawan Lucian.** Di sinilah **Twilight Emperor** diperkuat oleh kristal segel.
+- **Kristal tetap:** **Kael memakai Darkness** (kristal Asterion yang asli, dari kotak Ley) dan **Lucian memakai Light**, keduanya **sejak awal tahap 2**.
+- **Kristal rotasi:** masing-masing menambah **satu kristal lagi** yang bisa diganti. Amplify-nya jadi **dua elemen sekaligus**: Darkness + satu elemen untuk Kael, Light + satu elemen untuk Lucian.
+- **Pool rotasi:** Water, Thunder, Ice, Wind, dan **Earth palsu**. Pemain memilih kristal mana yang dipakai, dan Lucian juga berganti kristal.
+- **Event di tengah pertarungan:** Kael mengambil **kristal Fire**, dan Fire masuk ke pool.
+- **Earth palsu bisa dipilih, tetapi tidak memberi amplify.** Pemain yang jeli (ingat Cedric yang tenang saat mahkota direbut) tidak akan tertipu.
+- **Inti tantangannya:** kejelian dan strategi. Beberapa elemen lebih kuat atau saling melemahkan, misalnya **Api kalah dari Air** dan **Air kalah dari Petir**.
+
+**[Usulan] Tabel elemen**
+
+Lingkaran enam elemen: **Fire → Ice → Wind → Earth → Thunder → Water → Fire** (panah = mengalahkan). Light dan Darkness saling kuat satu sama lain.
+
+| Elemen | Kuat terhadap | Lemah terhadap |
+|---|---|---|
+| Fire | Ice (mencair) | Water |
+| Ice | Wind (angin membeku) | Fire |
+| Wind | Earth (mengikis) | Ice |
+| Earth | Thunder (menetralkan petir, sesuai bible) | Wind |
+| Thunder | Water (menyengat) | Earth |
+| Water | Fire (memadamkan) | Thunder |
+| Light ↔ Darkness | Saling kuat | |
+
+- Earth di atas kertas kuat melawan Thunder, jadi pemain yang hanya membaca tabel akan tergoda memilihnya: itulah jebakannya.
+- Elemen ini sudah ada di database game (System → Elements: Fire, Ice, Thunder, Water, Earth, Wind, Light, Darkness).
+
+**[Usulan] Nama bentuk amplify** (format: *Twilight Emperor: [nama]*)
+
+| Kristal kedua | Nama | Catatan |
+|---|---|---|
+| Fire | **Twilight Ebonflame** | Darkness + Fire adalah **Ebonflame**, awakening pertama Kael (Bab 3). Diambil lewat event di tengah fight: awakening pertamanya kembali dalam bentuk paling kuat. Kalau Valeria memang menyerahkan kristal Jeanne kepada Kael (Bab 13), Kael mengambil kembali pemberian tantenya. |
+| Water | **Abyssal Tide** | |
+| Thunder | **Black Thunder** | |
+| Ice | **Nightfrost** | |
+| Wind | **Night Gale** | |
+| Earth (palsu) | *(tidak ada)* | *"The crystal is silent."* Kael tetap dalam Twilight Emperor biasa. |
+
+Lucian memakai pola yang sama dengan julukan usulannya: *Second Dawn: Radiant Tide*, *Radiant Storm*, dst.
+
+**[Belum]**
+- **Pool bersama atau terpisah?** Usulan: bersama. Kristal yang dipegang Kael tidak bisa dipakai Lucian, jadi pemain juga bisa **menahan** elemen yang mengancam Kael.
+- **Kristal Darkness tiruan di tangan Lucian.** Usulan: saat Ley mengeluarkan kristal asli, tiruan di tangan Lucian meredup dan retak, dan Lucian sadar ia tertipu.
+
 ## Antagonis Utama [Tetap]
 
 **Lucian Valcrest.** *Lucian* berarti cahaya; *Valcrest* menggemakan *Dawncrest*, seolah ia pewaris Caelum.
@@ -234,7 +280,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 
 - **Isolde tidak mati.** Ia tertidur oleh kutukan dan bangun di ending. *(Bible: gugur saat memanggil Kael kembali.)*
 - **Twilight Emperor bangkit di villa Bloodrose**, bukan di depan antagonis. Antagonis baru melihatnya di pertemuan berikutnya. *(Bible: terungkap di hadapan antagonis, Kael menang sesaat, antagonis kabur.)*
-- **Nama awakening:** di catatan diskusi tertulis "Twilight Force". Rencana ini tetap memakai **Twilight Emperor** sampai diputuskan lain.
+- ~~**Nama awakening:** "Twilight Force" atau Twilight Emperor~~ → **[Tetap] Twilight Emperor**.
 - **Tambahan:**
   - Bloodrose, Diana, Barion, dan Lysandre masuk bible.
   - Konsep 8 pilar segel, kalau disetujui.
