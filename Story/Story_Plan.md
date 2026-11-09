@@ -212,7 +212,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 - **Tahap 2:** **Kael 1v1 melawan Lucian.** Di sinilah **Twilight Emperor** diperkuat oleh kristal segel.
 - **Kristal tetap:** **Kael memakai Darkness** (kristal Asterion yang asli, dari kotak Ley) dan **Lucian memakai Light**, keduanya **sejak awal tahap 2**.
 - **Kristal rotasi:** masing-masing menambah **satu kristal lagi** yang bisa diganti. Amplify-nya jadi **dua elemen sekaligus**: Darkness + satu elemen untuk Kael, Light + satu elemen untuk Lucian.
-- **Pool rotasi:** **Fire**, Water, Thunder, Ice, Wind, **Earth palsu**, dan **Darkness tiruan (FAKE)**. Pemain memilih kristal mana yang dipakai, dan Lucian juga berganti kristal.
+- **Pool rotasi:** **Fire**, Water, Thunder, Ice, Wind, dan **Earth palsu**. Pemain memilih kristal mana yang dipakai, dan Lucian juga berganti kristal.
 - **Pool muncul lewat event setelah Kael dan Lucian masing-masing berjalan 1 turn.** Di turn pertama, Kael hanya memakai Darkness dan Lucian hanya Light.
 - **Di event itu Kael mengambil kristal Fire lewat cutscene** sebagai kristal rotasi pertamanya (**Twilight Ebonflame**). Setelah itu rotasi bebas dari seluruh pool, termasuk Fire.
 - **Ritme pool:** setelah cutscene Fire, pemain melanjutkan dengan Darkness + Fire. Pool muncul lagi **setiap 3 turn** (turn 4, 7, 10, dst.; di troop event MV: *Turn 1 + 3 × X*).
@@ -221,7 +221,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 - **[Usulan] Urutan setiap event pool:**
   1. **Lucian memilih duluan**, dan pilihannya ditampilkan (*"Lucian seizes the Water crystal!"*). Ia selalu mengambil elemen yang **mengalahkan kristal Kael saat itu**.
   2. **Pemain menjawab:** membalas dengan elemen yang mengalahkan pilihan Lucian, atau tetap memakai kristalnya sekarang. Pemain yang sadar Lucian selalu meng-counter bisa memancingnya (Kael memakai Ice → Lucian pasti mengambil Fire → pemain sudah siap dengan Water).
-  - **Teknis:** *Show Choices* MV maksimal 6 pilihan. Pool berisi 7 kristal dan satu selalu dipegang Lucian, jadi tersisa tepat 6 (termasuk kristal Kael saat ini sebagai pilihan "tetap").
+  - **Teknis:** *Show Choices* MV maksimal 6 pilihan. Pool berisi 6 kristal dan satu selalu dipegang Lucian, jadi tersisa 5 (termasuk kristal Kael saat ini sebagai pilihan "tetap").
 - **Earth palsu bisa dipilih, tetapi tidak memberi amplify.** Pemain yang jeli (ingat Cedric yang tenang saat mahkota direbut) tidak akan tertipu.
 - **Inti tantangannya:** kejelian dan strategi. Beberapa elemen lebih kuat atau saling melemahkan, misalnya **Api kalah dari Air** dan **Air kalah dari Petir**.
 
@@ -257,8 +257,7 @@ Lucian memakai pola yang sama dengan julukan usulannya: *Second Dawn: Radiant Ti
 
 **[Tetap] Pool bersama**
 - Kael dan Lucian mengambil dari **pool yang sama**. Kristal yang sedang dipegang satu pihak tidak bisa dipakai pihak lain, jadi pemain juga bisa **menahan** elemen yang mengancam Kael.
-- **Kristal Darkness tiruan ikut di pool**, dengan label **(FAKE)**. Efeknya sama dengan Earth palsu: **tidak memberi amplify**.
-- **Earth palsu tidak berlabel**, karena kepalsuannya belum terungkap. Hanya Darkness yang sudah ketahuan palsu sejak kristal asli muncul dari kotak Ley.
+- **Earth palsu tidak berlabel** dan tampak seperti kristal lain.
 
 ## Antagonis Utama [Tetap]
 
