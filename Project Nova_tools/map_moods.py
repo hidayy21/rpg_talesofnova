@@ -35,6 +35,9 @@ MOODS = {
     K.ACADEMY_UNDERCROFT: {'grade': 'gloom', 'particles': 'dust'}, K.ACADEMY_TOWER: {'grade': 'arcane', 'bloom': 0.5, 'vignette': 0.4,
                                                                                          'particles': 'fireflies'},   # motes like stars
     K.ACADEMY_DINING: {'grade': 'interior', 'sunbeams': 0.4, 'particles': 'dust'},
+    K.FROSTHOLLOW: {'grade': 'noble', 'particles': 'snow', 'fog': 0.15, 'fog color': '#dfe8f5'},   # falling snow, a pale haze
+    K.FROST_INN: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'}, K.FROST_STORE: ROOM,
+    K.FROST_SMITHY: {'grade': 'interior', 'particles': 'embers'},                 # sparks from the forge
     K.QUILL_INN: ROOM, K.QUILL_APOTHECARY: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'},
 }
 

@@ -14,9 +14,16 @@ ACADEMY, ACADEMY_HALL = 31, 32
 ACADEMY_COURT, ACADEMY_CLASSES, ACADEMY_LIBRARY, ACADEMY_UNDERCROFT, ACADEMY_UPPER, ACADEMY_TOWER = 33, 34, 35, 36, 37, 38
 QUILL_INN, QUILL_APOTHECARY = 39, 40
 ACADEMY_DINING = 41
+# chapter 5: the walled border town at the end of the north road, before the pass to Arulustus
+FROSTHOLLOW = 42
+FROST_INN, FROST_STORE, FROST_SMITHY = 43, 44, 45      # its interiors
 
 NAMES = {
     WORLD: ('World Map', 'Western Continent'),
+    FROSTHOLLOW: ('Frosthollow', 'Frosthollow'),
+    FROST_INN: ('Frosthollow - Hearthfire Inn', 'Hearthfire Inn'),
+    FROST_STORE: ('Frosthollow - General Store', 'Frosthollow General Store'),
+    FROST_SMITHY: ('Frosthollow - Smithy', "Hilda's Forge"),
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
     MARKET: ('Nova - Market District', 'Royal Capital - Market District'),
     RESIDENTIAL: ('Nova - Residential Quarter', 'Royal Capital - Lantern Row'),
@@ -56,6 +63,13 @@ NAMES = {
 
 # Arrival points, filled in by the map scripts' layouts (kept here so both sides of a link use one source).
 ARRIVE = {
+    # Frosthollow <-> the World Map (the north road ends at the town icon, 26-27,11-12)
+    'frosthollow_from_world': (FROSTHOLLOW, 27, 49, 8),
+    'world_from_frosthollow': (WORLD, 26, 13, 2),
+    # Frosthollow's interiors (doors on Map042) and back out onto their doorsteps
+    'frost_inn_from_town': (FROST_INN, 11, 13, 8), 'town_from_frost_inn': (FROSTHOLLOW, 19, 23, 2),
+    'frost_store_from_town': (FROST_STORE, 7, 11, 8), 'town_from_frost_store': (FROSTHOLLOW, 51, 22, 2),
+    'frost_smithy_from_town': (FROST_SMITHY, 8, 11, 8), 'town_from_frost_smithy': (FROSTHOLLOW, 42, 26, 2),
     # Grand Plaza
     'plaza_from_residential': (PLAZA, 1, 16, 6),  # west road
     'plaza_from_market': (PLAZA, 42, 16, 4),      # east road
