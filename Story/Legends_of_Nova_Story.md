@@ -367,8 +367,8 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 1. **Kekalahan pertama:** Yuki sempat **kalah** dari kakaknya, lalu **diselamatkan oleh Kael**. Kael hanya **menangkis dan bertarung sebentar**; ini tetap pertarungan Yuki.
 2. Momen ini membuat Yuki **sadar bahwa rasa dendamnya justru menghalangi dirinya**.
 3. **Jeda panjang:** pertemuan berikutnya baru terjadi **beberapa arc kemudian**.
-4. **Pertemuan kedua, di pulau naga asal Neraya:** **Hyōjin no Jotei** muncul **tepat saat pertarungan dimulai**, sebagai **kejutan bagi pemain**. Yuki menjadi **anggota party pertama yang mendapatkan true awakening**, mendahului Twilight Emperor milik Kael. Duel ini **terputus tanpa pemenang**.
-5. **Pertemuan ketiga, saat Kael sekarat** setelah kalah dari pemimpin Order: Yuki memimpin party dan harus menang **tanpa Kael**, yang dulu menyelamatkannya.
+4. **Pertemuan kedua, di pulau naga asal Neraya:** Yuki berduel dengan Homura, dan **Hyōjin no Jotei** muncul **di tengah pertarungan**, sebagai **kejutan bagi pemain**. Yuki menjadi **anggota party pertama yang mendapatkan true awakening**, mendahului Twilight Emperor milik Kael. Terdesak, **Homura kabur**.
+5. **Pertemuan ketiga, saat Kael sekarat** setelah kalah dari pemimpin Order: Yuki memimpin party dan harus menang **tanpa Kael**, yang dulu menyelamatkannya. Di sinilah Homura **benar-benar dikalahkan**.
 6. Di tengah pertarungan, ada momen Yuki **berhenti dan ragu**, karena yang ia lawan tetaplah kakaknya. Sang kakak justru **memanfaatkan keraguan itu**, dan pertarungan berlanjut.
 7. **Akhir:** Yuki mengalahkan dan **membunuh** kakaknya. **Bukan kisah pengampunan yang puitis**: ia harus menuntaskannya untuk **mengakhiri kesedihan masa lalunya dan move on**.
 

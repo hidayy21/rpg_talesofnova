@@ -104,7 +104,7 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 | 5 | Desa perbatasan: Roland dan pasukannya. Ada konflik. | **Roland bergabung (sementara)** |
 | 6 | Hutan: misteri Diana. | **Diana bergabung** |
 | 7 | Villa Bloodrose: konflik dengan penghuni rumah, lalu berdamai. Kenal Lysandre dan ayahnya. Pulangnya party bertemu pasukan Lord Commander baru yang membawa kabar krisis. | **Roland pergi** |
-| 8 | Laut bersama Kaine: pulau asal Neraya, artefak Neraya, bertemu Champion of Water yang baru. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung**; **Homura muncul lagi: Hyōjin no Jotei** (Yuki true awakening, mendahului Kael sesuai bible). Duel terputus tanpa pemenang. |
+| 8 | Laut bersama Kaine: pulau asal Neraya, artefak Neraya, bertemu Champion of Water yang baru. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung**; **Duel dengan Homura: Hyōjin no Jotei** di tengah pertarungan (Yuki true awakening, mendahului Kael sesuai bible). Homura kabur. |
 | 9 | Krisis memuncak. | |
 | **Titik tengah** | | |
 | 10 | Kael kalah dari antagonis utama dan terkena kutukan Light. | Kael keluar dari party |
@@ -115,7 +115,7 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 
 **Kalau terlalu panjang:** Bab 8 dan 9 bisa digabung, atau Bab 5 dan 6.
 
-**Tiga pertemuan Yuki dengan Homura [Tetap]:** Bab 4 (Yuki kalah, diselamatkan Kael) → Bab 8 di pulau naga (Hyōjin no Jotei, duel terputus) → Bab 11 saat Kael sekarat (Yuki menang). Jarak Hyōjin no Jotei dan Twilight Emperor jadi dekat, dan Yuki tetap awakening lebih dulu.
+**Tiga pertemuan Yuki dengan Homura [Tetap]:** Bab 4 (Yuki kalah, diselamatkan Kael) → Bab 8 di pulau naga (Hyōjin no Jotei di tengah duel, Homura kabur) → Bab 11 saat Kael sekarat (Homura benar-benar dikalahkan). Jarak Hyōjin no Jotei dan Twilight Emperor jadi dekat, dan Yuki tetap awakening lebih dulu.
 
 ## Titik Tengah: Kael Jatuh dan Bangkit [Tetap, detail Usulan ditandai]
 
