@@ -368,9 +368,10 @@ Dihitung mundur dari awal Bab 1 (Kael naik ke Class 3).
 2. Momen ini membuat Yuki **sadar bahwa rasa dendamnya justru menghalangi dirinya**.
 3. **Jeda panjang:** pertemuan berikutnya baru terjadi **beberapa arc kemudian**.
 4. **Pertemuan kedua, di pulau naga asal Neraya:** Yuki berduel dengan Homura, dan **Hyōjin no Jotei** muncul **di tengah pertarungan**, sebagai **kejutan bagi pemain**. Yuki menjadi **anggota party pertama yang mendapatkan true awakening**, mendahului Twilight Emperor milik Kael. Terdesak, **Homura kabur**.
-5. **Pertemuan ketiga, saat Kael sekarat** setelah kalah dari pemimpin Order: Yuki memimpin party dan harus menang **tanpa Kael**, yang dulu menyelamatkannya. Di sinilah Homura **benar-benar dikalahkan**.
+5. **Pertemuan ketiga, bersamaan dengan pertarungan Kael melawan pemimpin Order:** Homura menghadang party. Yuki berkata **ia yang akan menghadapinya**. **Kael percaya pada Yuki** dan mengajak anggota party lain mengejar pemimpin Order. Ini duel terakhir, dan Yuki harus menang **tanpa Kael**, yang dulu menyelamatkannya. Di sinilah Homura **benar-benar dikalahkan**.
 6. Di tengah pertarungan, ada momen Yuki **berhenti dan ragu**, karena yang ia lawan tetaplah kakaknya. Sang kakak justru **memanfaatkan keraguan itu**, dan pertarungan berlanjut.
 7. **Akhir:** Yuki mengalahkan dan **membunuh** kakaknya. **Bukan kisah pengampunan yang puitis**: ia harus menuntaskannya untuk **mengakhiri kesedihan masa lalunya dan move on**.
+8. **Sesudahnya:** sementara Yuki berduel, **Kael dan party kalah** dari pemimpin Order. Yuki **merasa bersalah** karena tidak ikut bertarung bersama rekan-rekannya. Rasa bersalah inilah yang ia bawa saat menjadi pemimpin sementara dan mencari obat untuk Kael.
 
 ### Mirabelle Moonvale (Mira)
 

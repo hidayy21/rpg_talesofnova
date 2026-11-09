@@ -107,32 +107,33 @@ Mira → Roland (sementara) → Diana → *Roland pergi* → bertemu Lysandre (b
 | 8 | Laut bersama Kaine: pulau asal Neraya, artefak Neraya, bertemu Champion of Water yang baru. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung**; **Duel dengan Homura: Hyōjin no Jotei** di tengah pertarungan (Yuki true awakening, mendahului Kael sesuai bible). Homura kabur. |
 | 9 | Krisis memuncak. | |
 | **Titik tengah** | | |
-| 10 | Kael kalah dari antagonis utama dan terkena kutukan Light. | Kael keluar dari party |
-| 11 | **Yuki menjadi MC sementara.** **Rematch Homura: Yuki menang** tanpa Kael. Pencarian obat berakhir di villa Bloodrose. | **Twilight Emperor**; **Roland, lalu Lysandre bergabung** |
+| 10 | Homura menghadang party; Yuki menghadapinya sendiri, Kael dan party lain mengejar antagonis utama. Kael kalah dan terkena kutukan Light. | **Duel terakhir: Yuki mengalahkan Homura**; Kael keluar dari party |
+| 11 | **Yuki menjadi MC sementara**, dibebani rasa bersalah karena tidak ikut bertarung. Pencarian obat berakhir di villa Bloodrose. | **Twilight Emperor**; **Roland, lalu Lysandre bergabung** |
 | **Babak III — Twilight** | | |
 | 12 | Kebenaran soal Evil Force (perpustakaan Bloodrose + catatan riset Isolde): Order hanyalah pion. Reuni keluarga dan **komedi nama awakening** (Kael, Kaine, Sera, Cassius; Kael kini bisa pamer Twilight). Krisis suksesi Dracoheart. Awakening Selene (Tartarus Monarch). | |
 | 13 | Sealed Vault (pilar Light): final melawan pemimpin Order. Antagonis kalah, **Isolde bangun**. Ending. | |
 
 **Kalau terlalu panjang:** Bab 8 dan 9 bisa digabung, atau Bab 5 dan 6.
 
-**Tiga pertemuan Yuki dengan Homura [Tetap]:** Bab 4 (Yuki kalah, diselamatkan Kael) → Bab 8 di pulau naga (Hyōjin no Jotei di tengah duel, Homura kabur) → Bab 11 saat Kael sekarat (Homura benar-benar dikalahkan). Jarak Hyōjin no Jotei dan Twilight Emperor jadi dekat, dan Yuki tetap awakening lebih dulu.
+**Tiga pertemuan Yuki dengan Homura [Tetap]:** Bab 4 (Yuki kalah, diselamatkan Kael) → Bab 8 di pulau naga (Hyōjin no Jotei di tengah duel, Homura kabur) → Bab 10, bersamaan dengan pertarungan Kael melawan antagonis utama (Homura benar-benar dikalahkan, sementara Kael dan party kalah). Jarak Hyōjin no Jotei dan Twilight Emperor jadi dekat, dan Yuki tetap awakening lebih dulu.
 
 ## Titik Tengah: Kael Jatuh dan Bangkit [Tetap, detail Usulan ditandai]
 
-1. **Kael kalah** dari antagonis utama. Ia tidak mati, tetapi sekarat oleh **kutukan dari elemen cahaya**. **[Usulan]** Nama kutukannya: **Dawnbrand**.
-2. **Yuki menjadi MC sementara.**
+1. **Homura menghadang party.** Yuki: *ia yang akan menghadapinya.* Kael percaya padanya dan membawa party lain mengejar antagonis utama. Yuki memenangkan duel terakhir dan membunuh Homura.
+2. **Kael kalah** dari antagonis utama. Ia tidak mati, tetapi sekarat oleh **kutukan dari elemen cahaya**. **[Usulan]** Nama kutukannya: **Dawnbrand**.
+3. **Yuki menjadi MC sementara.**
    - Secara teknis bisa: Kael dikeluarkan dari party, Yuki menjadi pemimpin, dan Kael tampil sebagai event yang terbaring.
    - Sesuai bible: Yuki tampil sebagai pemimpin saat Kael tidak ada.
+   - Yuki **merasa bersalah** karena tidak ikut bertarung bersama rekan-rekannya saat Kael kalah.
    - Party saat itu: Yuki, Mira, Diana, Barion.
-3. **Beberapa quest** mencari obat, sampai ketahuan bahwa yang dibutuhkan adalah sebuah **spell** yang kemungkinan tersimpan di **perpustakaan keluarga Bloodrose**.
-   - **[Tetap]** Salah satunya: **rematch Homura**, dan Yuki menang tanpa Kael. **[Usulan]** Order mengirim Homura untuk menghabisi Kael yang sekarat, atau untuk merebut buku spell.
-4. Party sudah berteman dengan Bloodrose sejak Bab 7, jadi mereka datang ke villa. **Lysandre dan ayahnya** membantu menemukan buku spell itu.
-5. **Mira gagal** merapal spell tersebut. Kondisi Kael makin kritis.
-6. Malam itu **Roland, Sera, dan Isolde** tiba di villa Bloodrose.
-7. Isolde mempelajari buku itu dengan spell khususnya, lalu merapalnya. Spell itu **menukar life force dan kutukan**, sehingga kutukan pindah ke tubuh Isolde.
-8. **Kael membuka mata** dengan aura yang sangat besar: **Twilight Emperor**. Semua yang hadir terkejut dan terkagum. Ayah Lysandre menyebutnya **kebangkitan**.
-9. **Isolde tidak mati.** Kutukan membuatnya tidak sadarkan diri.
-10. **Lysandre bergabung.** **Roland bergabung** untuk mengawasi mereka. **Sera membawa Isolde** ke ibu kota bersama sebagian pasukannya.
+4. **Beberapa quest** mencari obat, sampai ketahuan bahwa yang dibutuhkan adalah sebuah **spell** yang kemungkinan tersimpan di **perpustakaan keluarga Bloodrose**.
+5. Party sudah berteman dengan Bloodrose sejak Bab 7, jadi mereka datang ke villa. **Lysandre dan ayahnya** membantu menemukan buku spell itu.
+6. **Mira gagal** merapal spell tersebut. Kondisi Kael makin kritis.
+7. Malam itu **Roland, Sera, dan Isolde** tiba di villa Bloodrose.
+8. Isolde mempelajari buku itu dengan spell khususnya, lalu merapalnya. Spell itu **menukar life force dan kutukan**, sehingga kutukan pindah ke tubuh Isolde.
+9. **Kael membuka mata** dengan aura yang sangat besar: **Twilight Emperor**. Semua yang hadir terkejut dan terkagum. Ayah Lysandre menyebutnya **kebangkitan**.
+10. **Isolde tidak mati.** Kutukan membuatnya tidak sadarkan diri.
+11. **Lysandre bergabung.** **Roland bergabung** untuk mengawasi mereka. **Sera membawa Isolde** ke ibu kota bersama sebagian pasukannya.
 
 ### Kenapa Isolde baru bisa sembuh setelah antagonis kalah [Usulan]
 
