@@ -259,6 +259,12 @@ Lucian memakai pola yang sama dengan julukan usulannya: *Second Dawn: Radiant Ti
 - Kael dan Lucian mengambil dari **pool yang sama**. Kristal yang sedang dipegang satu pihak tidak bisa dipakai pihak lain, jadi pemain juga bisa **menahan** elemen yang mengancam Kael.
 - **Earth palsu tidak berlabel** dan tampak seperti kristal lain.
 
+**[Tetap] Earth palsu tidak pernah di-reveal ke party**
+- Saat **Lucian memakai Earth, tidak terjadi apa-apa.** Lucian dan party sama-sama bingung; hanya pemain yang tahu sebabnya, dari scene Cedric dan Leo setelah penobatan (Bab 14).
+- **[Usulan] Umpan:** Lucian selalu meng-counter Kael, dan Earth mengalahkan Thunder. Pemain yang jeli bisa **sengaja memakai Thunder untuk memancing Lucian mengambil Earth palsu**, sehingga Lucian membuang satu fase tanpa amplify.
+- **Party tetap punya penjelasan sendiri:** Evil Force gagal keluar karena kristal Darkness yang dibawa Order palsu, dan yang asli ada di kotak Ley. Mereka tidak perlu tahu soal Earth.
+- **Ending:** party mengembalikan kristal-kristal ke kerajaan, termasuk Earth palsu. Kerajaan menerimanya dengan tenang tanpa berkata apa-apa. **[Usulan]** Satu tatapan atau senyum kecil Cedric ke Leo sebagai kedipan terakhir untuk pemain.
+
 ## Antagonis Utama [Tetap]
 
 **Lucian Valcrest.** *Lucian* berarti cahaya; *Valcrest* menggemakan *Dawncrest*, seolah ia pewaris Caelum.
