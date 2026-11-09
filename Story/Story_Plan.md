@@ -212,8 +212,9 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 - **Tahap 2:** **Kael 1v1 melawan Lucian.** Di sinilah **Twilight Emperor** diperkuat oleh kristal segel.
 - **Kristal tetap:** **Kael memakai Darkness** (kristal Asterion yang asli, dari kotak Ley) dan **Lucian memakai Light**, keduanya **sejak awal tahap 2**.
 - **Kristal rotasi:** masing-masing menambah **satu kristal lagi** yang bisa diganti. Amplify-nya jadi **dua elemen sekaligus**: Darkness + satu elemen untuk Kael, Light + satu elemen untuk Lucian.
-- **Pool rotasi:** Water, Thunder, Ice, Wind, **Earth palsu**, dan **Darkness tiruan (FAKE)**. Pemain memilih kristal mana yang dipakai, dan Lucian juga berganti kristal.
-- **Event di tengah pertarungan:** Kael mengambil **kristal Fire**, dan Fire masuk ke pool.
+- **Pool rotasi:** **Fire**, Water, Thunder, Ice, Wind, **Earth palsu**, dan **Darkness tiruan (FAKE)**. Pemain memilih kristal mana yang dipakai, dan Lucian juga berganti kristal.
+- **Pool muncul lewat event setelah Kael dan Lucian masing-masing berjalan 1 turn.** Di turn pertama, Kael hanya memakai Darkness dan Lucian hanya Light.
+- **Di event itu Kael mengambil kristal Fire** sebagai kristal rotasi pertamanya (**Twilight Ebonflame**). Setelah itu rotasi bebas dari seluruh pool, termasuk Fire.
 - **Earth palsu bisa dipilih, tetapi tidak memberi amplify.** Pemain yang jeli (ingat Cedric yang tenang saat mahkota direbut) tidak akan tertipu.
 - **Inti tantangannya:** kejelian dan strategi. Beberapa elemen lebih kuat atau saling melemahkan, misalnya **Api kalah dari Air** dan **Air kalah dari Petir**.
 
@@ -238,7 +239,7 @@ Lingkaran enam elemen: **Fire → Ice → Wind → Earth → Thunder → Water �
 
 | Kristal kedua | Nama | Catatan |
 |---|---|---|
-| Fire | **Twilight Ebonflame** | Darkness + Fire adalah **Ebonflame**, awakening pertama Kael (Bab 3). Diambil lewat event di tengah fight: awakening pertamanya kembali dalam bentuk paling kuat. Kalau Valeria memang menyerahkan kristal Jeanne kepada Kael (Bab 13), Kael mengambil kembali pemberian tantenya. |
+| Fire | **Twilight Ebonflame** | Darkness + Fire adalah **Ebonflame**, awakening pertama Kael (Bab 3). Diambil di event saat pool muncul (setelah 1 turn): awakening pertamanya kembali dalam bentuk paling kuat. Kalau Valeria memang menyerahkan kristal Jeanne kepada Kael (Bab 13), Kael mengambil kembali pemberian tantenya. |
 | Water | **Abyssal Tide** | |
 | Thunder | **Black Thunder** | |
 | Ice | **Nightfrost** | |
