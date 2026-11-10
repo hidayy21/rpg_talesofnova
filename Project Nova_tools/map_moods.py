@@ -38,8 +38,10 @@ MOODS = {
     K.FROSTHOLLOW: {'grade': 'noble', 'particles': 'snow', 'fog': 0.15, 'fog color': '#dfe8f5'},   # falling snow, a pale haze
     K.FROST_INN: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'}, K.FROST_STORE: ROOM,
     K.FROST_SMITHY: {'grade': 'interior', 'particles': 'embers'},                 # sparks from the forge
-    K.VILLA_BLOODROSE: {'grade': 'gloom', 'fog': 0.3, 'fog color': '#5a4a78', 'vignette': 0.45,   # cold night, violet
-                        'particles': 'fireflies'},                                # mist off the chasm, wisps
+    K.VILLA_BLOODROSE: {'grade': 'noble', 'fog': 0.45, 'fog color': '#eef2f4', 'vignette': 0.3,   # day by default, soft white mist;
+                        'particles': 'auto',                                      # the clock brings the night (ch. 7, 11)
+                        'fog bank': '0,45,19,49,0.8; 23,45,43,49,0.8', 'bloom': 0.2,   # thick grey mist in the dead wood
+                        'fog mystery': 1},                                        # either side of the road
     K.VILLA_HALL: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'},    # candlelight and moonlit windows
     K.VILLA_UPPER: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'},
     K.VILLA_LIBRARY: {'grade': 'interior', 'vignette': 0.4, 'particles': 'dust'},

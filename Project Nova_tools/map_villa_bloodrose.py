@@ -58,7 +58,7 @@ ROSE_BUSH, ROSE_CLUMP = FLOWER_BUSH, NN(5)               # pink in daylight, dee
 THORNS = (NN(12), NN(13))                               # dry thorny shrubs
 
 m = Town(W, H, K.NAMES[K.VILLA_BLOODROSE][0], K.NAMES[K.VILLA_BLOODROSE][1], ground=DARK_GRASS)
-m.note = '<ambient: #5c5878>\n<glow: 0.6>'               # always night here; lamps and windows carry the light
+m.note = '<outdoor>\n<night ambient: #5c5878>\n<glow: 0.4>'               # always night here; lamps and windows carry the light
 m.bgm = {'name': '03_Ancient_Castle', 'pan': 0, 'pitch': 95, 'volume': 70}
 m.bgs = {'name': 'Wind', 'pan': 0, 'pitch': 80, 'volume': 45}
 rnd = random.Random(48)
@@ -137,8 +137,7 @@ for x0 in (14, 26):                                       # dragon statues at th
     stamp(x0, 16, DRAGON, lambda n: n)
 for x in (17, 25):                                        # lamps along the avenue
     for base in (20, 31):
-        m.lamp(x, base); claim(x, base - 2, x, base)
-        light(x, base - 1, 150, '#ffb060', oy=-30)
+        m.lamp(x, base); claim(x, base - 2, x, base)        # the lamp tile is lit by NovaLighting's Tile Lights
 claim(16, 16, 26, 32)
 for y in range(18, 33): m.cell(0, y, METAL_FENCE, 1); m.cell(W - 1, y, METAL_FENCE, 1)
 
@@ -199,7 +198,7 @@ claim(0, 37, W - 1, 44)
 m.rect(0, 45, W - 1, H - 1, WITHERED)
 m.rect(20, 45, 22, H - 1, ROAD)
 for x in (18, 24):
-    m.lamp(x, 47); claim(x, 45, x, 47); light(x, 46, 150, '#ffb060', oy=-30)
+    m.lamp(x, 47); claim(x, 45, x, 47)                     # lit by Tile Lights, no extra light event
 m.put(17, 47, SIGNPOST); claim(17, 47, 17, 47)
 for x0, y0, tree in ((1, 45, BARE_TREE_A), (6, 46, BARE_TREE_B), (10, 45, BARE_TREE_C), (27, 45, BARE_TREE_C),
                      (32, 46, BARE_TREE_A), (37, 45, BARE_TREE_B), (40, 46, BARE_TREE_A), (14, 46, BARE_PAIR)):

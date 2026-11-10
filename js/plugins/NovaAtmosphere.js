@@ -87,6 +87,11 @@
  *   <fog: 0.6>            drifting fog over the map (0-1); it follows the
  *                         light: grey-blue and thinner at night
  *   <fog color: #c8d8d0>
+ *   <fog bank: x1,y1,x2,y2,N>  a bank of thick mist (N 0-1) lying on that
+ *                         rectangle of tiles, soft at the edges, slowly
+ *                         drifting; several banks separated by ;
+ *   <fog mystery>         the fog breathes: it slowly thickens and thins,
+ *                         and a third layer of low wisps drifts across
  *
  * Grade presets: each tints the shadows and the highlights of the map and
  * sets its colour strength; they blend over a second when you change maps.
@@ -544,7 +549,8 @@
 
     Sprite_NovaFog.prototype.initialize = function() {
         Sprite.prototype.initialize.call(this);
-        this._layers = [{ speed: 0.18, scale: 1.6, weight: 0.65 }, { speed: -0.1, scale: 2.4, weight: 0.5 }].map(function(d) {
+        this._layers = [{ speed: 0.18, scale: 1.6, weight: 0.65 }, { speed: -0.1, scale: 2.4, weight: 0.5 },
+                        { speed: 0.42, scale: 1.0, weight: 0.45, wisp: true }].map(function(d) {
             var s = new TilingSprite(fogBitmap());
             s.move(0, 0, Graphics.width, Graphics.height);
             s._d = d;
@@ -556,14 +562,62 @@
         this._drift = 0;
     };
 
+    // <fog bank: x1,y1,x2,y2,N; ...>: thick mist lying on those tiles, fixed on the map
+    function fogBanks() {
+        if (!$dataMap) return [];
+        if ($dataMap._novaFogBanks) return $dataMap._novaFogBanks;
+        var raw = meta()['fog bank'];
+        $dataMap._novaFogBanks = typeof raw !== 'string' ? [] : raw.split(';').map(function(part) {
+            var n = part.split(',').map(Number);
+            return n.length === 5 && n.every(function(v) { return !isNaN(v); }) ? n : null;
+        }).filter(Boolean);
+        return $dataMap._novaFogBanks;
+    }
+
+    var BANK_PAD = 80;                                            // the mist spills this far past the edge, softly
+    function bankBitmap(w, h, seed) {
+        var bmp = new Bitmap(w + BANK_PAD * 2, h + BANK_PAD * 2), ctx = ctxOf(bmp);
+        var rand = function() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+        var count = Math.ceil(w * h / 2600);                      // loose clumps with gaps, not one white sheet
+        for (var i = 0; i < count; i++) {
+            var x = BANK_PAD + rand() * w, y = BANK_PAD + rand() * h, r = 60 + rand() * 90, a = 0.06 + rand() * 0.16;
+            var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+            g.addColorStop(0, 'rgba(255,255,255,' + a + ')');
+            g.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = g;
+            ctx.fillRect(x - r, y - r, r * 2, r * 2);
+        }
+        dirty(bmp);
+        return bmp;
+    }
+
+    Sprite_NovaFog.prototype.buildBanks = function() {
+        var tw = $gameMap.tileWidth(), th = $gameMap.tileHeight();
+        this._banks = [];
+        fogBanks().forEach(function(b, n) {
+            var w = (b[2] - b[0] + 1) * tw, h = (b[3] - b[1] + 1) * th;
+            for (var k = 0; k < 2; k++) {                         // two sheets that sway apart and breathe out of step
+                var s = new Sprite(bankBitmap(w, h, 101 + n * 31 + k * 7));
+                s._mx = b[0] * tw - BANK_PAD;
+                s._my = b[1] * th - BANK_PAD;
+                s._k = Math.max(0, Math.min(1, b[4]));
+                s._phase = n * 1.7 + k * 2.9;
+                this._banks.push(s);
+                this.addChild(s);
+            }
+        }, this);
+    };
+
     Sprite_NovaFog.prototype.targetStrength = function() {
         return enabled() ? Math.max(0, Math.min(1, metaNum('fog', 0))) : 0;
     };
 
     Sprite_NovaFog.prototype.update = function() {
         Sprite.prototype.update.call(this);
+        if (!this._banks) this.buildBanks();
         this._strength = mix(this._strength, this.targetStrength(), 0.03);
-        this.visible = this._strength > 0.01;
+        this._bankFade = mix(this._bankFade || 0, enabled() ? 1 : 0, 0.03);
+        this.visible = this._strength > 0.01 || (this._banks.length > 0 && this._bankFade > 0.01);
         if (!this.visible) return;
         this._drift++;
         var c = hex(meta()['fog color'] || FOG_COLOR) || [212, 221, 214];
@@ -575,12 +629,27 @@
         }
         var tint = (Math.round(c[0]) << 16) | (Math.round(c[1]) << 8) | Math.round(c[2]);
         var ox = $gameMap.displayX() * $gameMap.tileWidth(), oy = $gameMap.displayY() * $gameMap.tileHeight();
+        var mystery = !!meta()['fog mystery'], t = this._drift;
         this._layers.forEach(function(s, i) {
             var d = s._d;
+            s.visible = this._strength > 0.01 && (!d.wisp || mystery);
+            if (!s.visible) return;
             s.tint = tint;
-            s.origin.x = (ox / d.scale + this._drift * d.speed) % 512;
-            s.origin.y = (oy / d.scale + Math.sin(this._drift * 0.002 + i) * 30) % 512;
-            s.opacity = 255 * Math.min(1, this._strength * light * d.weight * 1.6);
+            s.origin.x = (ox / d.scale + t * d.speed) % 512;
+            s.origin.y = (oy / d.scale + Math.sin(t * 0.002 + i) * 30 + (d.wisp ? Math.sin(t * 0.004) * 60 : 0)) % 512;
+            // mystery: each layer swells and fades on its own slow beat, so banks of mist come and go
+            var breath = mystery ? 0.7 + 0.3 * Math.sin(t * (0.004 + i * 0.0017) + i * 2.1) : 1;
+            s.opacity = 255 * Math.min(1, this._strength * light * d.weight * 1.6 * breath);
+        }, this);
+        // banks are a shade greyer than the open fog: a heavier, colder mist
+        var bankTint = (Math.round(c[0] * 0.86) << 16) | (Math.round(c[1] * 0.86) << 8) | Math.round(c[2] * 0.9);
+        this._banks.forEach(function(s) {
+            var p = s._phase;
+            s.tint = bankTint;
+            s.x = s._mx - ox + Math.sin(t * 0.003 + p) * 28;     // drifting slowly to and fro
+            s.y = s._my - oy + Math.sin(t * 0.0023 + p * 1.3) * 10;
+            var breath = 0.55 + 0.45 * Math.sin(t * 0.005 + p);
+            s.opacity = 255 * Math.min(1, s._k * light * breath * this._bankFade * 1.25);
         }, this);
     };
 
