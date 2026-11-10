@@ -65,6 +65,21 @@
  * @type boolean
  * @default true
  *
+ * @param Time Mode
+ * @type select
+ * @option clock
+ * @option switch
+ * @desc clock: time runs by itself (Day Length). switch: time stands still; the Night Switch of NovaLighting decides day or night.
+ * @default clock
+ *
+ * @param Day Time
+ * @desc Switch mode: the time the sky turns to when the Night Switch goes OFF.
+ * @default 10:00
+ *
+ * @param Night Time
+ * @desc Switch mode: the time the sky turns to when the Night Switch goes ON.
+ * @default 21:00
+ *
  * @help
  * Place below NovaMenu and NovaLighting.
  *
@@ -79,6 +94,13 @@
  *   and Lights Off the Night Switch is ON, so lamps, windows and every
  *   event page that checks that switch follow the clock. Interiors keep
  *   their own <ambient>.
+ *
+ * Switch mode (Time Mode = switch)
+ *   The clock does not run. Turn the Night Switch (NovaLighting, switch 10)
+ *   ON in an event and the sky rolls through dusk into night in about two
+ *   seconds; OFF and it rolls on to the next morning. On a new map or a
+ *   loaded save it is simply day or night, no roll. "Clock set 21:00" still
+ *   works and moves the switch with it.
  *
  * HUD (bottom left of the map screen)
  *   A sky dial turning with the day (sun, sunset, moon), the time, the part
@@ -110,6 +132,7 @@
     var DAY_VAR = Number(params['Day Variable'] || 0);
     var SHOW_HUD = String(params['Show HUD'] || 'true') === 'true';
     var NIGHT_SWITCH = Number(PluginManager.parameters('NovaLighting')['Night Switch'] || 0);
+    var BY_SWITCH = String(params['Time Mode'] || 'clock').trim().toLowerCase() === 'switch' && NIGHT_SWITCH > 0;
 
     function parseTime(text, fallback) {
         var m = String(text || '').match(/(\d+)\s*[:.]\s*(\d+)/);
@@ -118,6 +141,8 @@
     var START = parseTime(params['Start Time'], 480);
     var LIGHTS_ON = parseTime(params['Lights On'], 1080);
     var LIGHTS_OFF = parseTime(params['Lights Off'], 360);
+    var DAY_AT = parseTime(params['Day Time'], 600);
+    var NIGHT_AT = parseTime(params['Night Time'], 1260);
 
     function hex(c) {
         c = String(c || '').trim().replace('#', '');
@@ -178,6 +203,8 @@
         var c = clock(), m = ((minutes % 1440) + 1440) % 1440;
         if (nextDayIfPast && m <= c.minutes) c.day++;
         c.minutes = m;
+        c.toward = null;
+        if (BY_SWITCH) $gameSwitches.setValue(NIGHT_SWITCH, this.isNight());   // the switch follows a set time
         this.sync();
     };
 
@@ -185,13 +212,14 @@
         var c = clock(), t = c.minutes + minutes;
         c.day += Math.floor(t / 1440);
         c.minutes = ((t % 1440) + 1440) % 1440;
+        if (BY_SWITCH) $gameSwitches.setValue(NIGHT_SWITCH, this.isNight());
         this.sync();
     };
 
     // Night Switch and the optional variables follow the clock (written only when they change).
     NovaDayNight.sync = function() {
         var night = this.isNight();
-        if (NIGHT_SWITCH && $gameSwitches.value(NIGHT_SWITCH) !== night) $gameSwitches.setValue(NIGHT_SWITCH, night);
+        if (!BY_SWITCH && NIGHT_SWITCH && $gameSwitches.value(NIGHT_SWITCH) !== night) $gameSwitches.setValue(NIGHT_SWITCH, night);
         if (HOUR_VAR && $gameVariables.value(HOUR_VAR) !== this.hour()) $gameVariables.setValue(HOUR_VAR, this.hour());
         if (MINUTE_VAR && $gameVariables.value(MINUTE_VAR) !== this.minute()) $gameVariables.setValue(MINUTE_VAR, this.minute());
         if (DAY_VAR && $gameVariables.value(DAY_VAR) !== this.day()) $gameVariables.setValue(DAY_VAR, this.day());
@@ -214,10 +242,27 @@
         return [0, 1, 2].map(function(i) { return Math.round(ca[i] + (cb[i] - ca[i]) * f); });
     };
 
+    // Switch mode: roll the sky forward to the day or night time the Night Switch asks for.
+    // instant: jump there (new map, loaded save) instead of rolling through dusk or dawn
+    NovaDayNight.followSwitch = function(instant) {
+        var c = clock(), want = $gameSwitches.value(NIGHT_SWITCH);
+        var target = c.toward !== undefined && c.toward !== null ? c.toward : null;
+        if (target === null || isLightsTime(target) !== want) {
+            if (this.isNight() === want && target === null) return;
+            target = c.toward = want ? NIGHT_AT : DAY_AT;
+        }
+        var left = ((target - c.minutes) + 1440) % 1440, step = instant ? left : Math.min(left, 6);
+        if (c.minutes + step >= 1440) c.day++;
+        c.minutes = (c.minutes + step) % 1440;
+        if (step >= left) { c.minutes = target; c.toward = null; }
+        this.sync();
+    };
+
     // The clock runs on the map only.
     var _Scene_Map_update = Scene_Map.prototype.update;
     Scene_Map.prototype.update = function() {
         _Scene_Map_update.call(this);
+        if (BY_SWITCH) { NovaDayNight.followSwitch(false); return; }
         if (!this.isActive() || NovaDayNight.isStopped()) return;
         if (PAUSE_EVENTS && ($gameMap.isEventRunning() || $gameMessage.isBusy())) return;
         NovaDayNight.add(1440 / DAY_FRAMES);
@@ -227,6 +272,7 @@
     var _Scene_Map_start = Scene_Map.prototype.start;
     Scene_Map.prototype.start = function() {
         _Scene_Map_start.call(this);
+        if (BY_SWITCH) NovaDayNight.followSwitch(true);
         NovaDayNight.sync();
     };
 
