@@ -31,6 +31,11 @@ BB = {
     K.FROSTHOLLOW: ('Snowfield', 'Snowfield'),
     K.FROST_INN: NOBLE, K.FROST_STORE: SHOP, K.FROST_SMITHY: SHOP,
     K.VILLA_BLOODROSE: ('Cobblestones4', 'DemonCastle1'),
+    K.VILLA_HALL: NOBLE, K.VILLA_UPPER: NOBLE, K.VILLA_LIBRARY: NOBLE,
+    **{mid: NOBLE for mid in (K.VILLA_DINING, K.VILLA_MUSIC, K.VILLA_WEST, K.VILLA_EAST, K.VILLA_LYSANDRE, K.VILLA_STUDY,
+                              K.VILLA_GUEST, K.VILLA_GUEST2)},
+    K.VILLA_ARCHIVE: ('Cobblestones4', 'DemonCastle3'),
+    K.VILLA_BALLROOM: ('DecorativeTile', 'DemonCastle2'),                     # the fight with David
 }
 
 if __name__ == '__main__':

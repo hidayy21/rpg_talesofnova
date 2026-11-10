@@ -20,6 +20,11 @@ FROST_INN, FROST_STORE, FROST_SMITHY = 43, 44, 45      # its interiors
 # (46 Wild Forest 1 and 47 Ice Cave are the user's own maps)
 # chapters 7 and 11: the Bloodrose family seat (where it sits on the World Map is still open in Story_Plan.md)
 VILLA_BLOODROSE = 48
+VILLA_HALL, VILLA_UPPER, VILLA_LIBRARY, VILLA_ARCHIVE = 49, 50, 51, 52   # inside the villa
+VILLA_DINING, VILLA_MUSIC, VILLA_WEST, VILLA_EAST = 53, 54, 55, 56        # either side of the hall and the gallery
+VILLA_LYSANDRE, VILLA_STUDY, VILLA_GUEST, VILLA_GUEST2 = 57, 58, 59, 60   # rooms off the wings
+VILLA_BALLROOM = 61                                                        # behind the hall; shut until the story opens it
+SW_VILLA_BALLROOM = 12                                                     # switch: the ballroom doors open
 
 NAMES = {
     WORLD: ('World Map', 'Western Continent'),
@@ -28,6 +33,19 @@ NAMES = {
     FROST_STORE: ('Frosthollow - General Store', 'Frosthollow General Store'),
     FROST_SMITHY: ('Frosthollow - Smithy', "Hilda's Forge"),
     VILLA_BLOODROSE: ('Villa Bloodrose', 'Villa Bloodrose'),
+    VILLA_HALL: ('Villa Bloodrose - Grand Hall', 'Villa Bloodrose - Grand Hall'),
+    VILLA_UPPER: ('Villa Bloodrose - Upper Floor', 'Villa Bloodrose - Gallery'),
+    VILLA_LIBRARY: ('Villa Bloodrose - Library', 'The Bloodrose Library'),
+    VILLA_ARCHIVE: ('Villa Bloodrose - Sealed Archive', 'The Sealed Archive'),
+    VILLA_DINING: ('Villa Bloodrose - Dining Room', 'Villa Bloodrose - Dining Room'),
+    VILLA_MUSIC: ('Villa Bloodrose - Music Room', 'Villa Bloodrose - Music Room'),
+    VILLA_WEST: ('Villa Bloodrose - West Wing', 'Villa Bloodrose - West Wing'),
+    VILLA_EAST: ('Villa Bloodrose - East Wing', 'Villa Bloodrose - East Wing'),
+    VILLA_LYSANDRE: ("Villa Bloodrose - Lysandre's Room", "Lysandre's Room"),
+    VILLA_STUDY: ("Villa Bloodrose - David's Study", "The Master's Study"),
+    VILLA_GUEST: ('Villa Bloodrose - Guest Room', 'Guest Room'),
+    VILLA_GUEST2: ('Villa Bloodrose - Blue Guest Room', 'Blue Guest Room'),
+    VILLA_BALLROOM: ('Villa Bloodrose - Ballroom', 'Villa Bloodrose - Ballroom'),
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
     MARKET: ('Nova - Market District', 'Royal Capital - Market District'),
     RESIDENTIAL: ('Nova - Residential Quarter', 'Royal Capital - Lantern Row'),
@@ -76,6 +94,21 @@ ARRIVE = {
     'frost_smithy_from_town': (FROST_SMITHY, 8, 11, 8), 'town_from_frost_smithy': (FROSTHOLLOW, 42, 26, 2),
     # Villa Bloodrose: arrive at the foot of the south road (no World Map link until its location is decided)
     'bloodrose_from_world': (VILLA_BLOODROSE, 21, 48, 8),
+    # ... and inside (map_villa_bloodrose_interiors.py)
+    'hall_from_bloodrose': (VILLA_HALL, 15, 18, 8), 'bloodrose_from_hall': (VILLA_BLOODROSE, 21, 16, 2),
+    'villa_hall_from_dining': (VILLA_HALL, 1, 13, 6), 'villa_dining_from_hall': (VILLA_DINING, 15, 12, 4),
+    'villa_hall_from_music': (VILLA_HALL, 29, 13, 4), 'villa_music_from_hall': (VILLA_MUSIC, 1, 12, 6),
+    'upper_from_hall_w': (VILLA_UPPER, 9, 13, 2), 'upper_from_hall_e': (VILLA_UPPER, 21, 13, 2),
+    'hall_from_upper_w': (VILLA_HALL, 9, 4, 2), 'hall_from_upper_e': (VILLA_HALL, 21, 4, 2),
+    'west_from_upper': (VILLA_WEST, 24, 5, 4), 'upper_from_west': (VILLA_UPPER, 1, 6, 6),
+    'east_from_upper': (VILLA_EAST, 1, 5, 6), 'upper_from_east': (VILLA_UPPER, 29, 6, 4),
+    'library_from_upper': (VILLA_LIBRARY, 13, 22, 8), 'upper_from_library': (VILLA_UPPER, 15, 4, 2),
+    'archive_from_library': (VILLA_ARCHIVE, 7, 10, 8), 'library_from_archive': (VILLA_LIBRARY, 23, 5, 2),
+    'lysandre_from_east': (VILLA_LYSANDRE, 6, 8, 8), 'east_from_lysandre': (VILLA_EAST, 5, 4, 2),
+    'study_from_west': (VILLA_STUDY, 6, 8, 8), 'west_from_study': (VILLA_WEST, 10, 4, 2),
+    'guest_from_east': (VILLA_GUEST, 5, 7, 8), 'east_from_guest': (VILLA_EAST, 11, 4, 2),
+    'guest2_from_east': (VILLA_GUEST2, 5, 7, 8), 'east_from_guest2': (VILLA_EAST, 17, 4, 2),
+    'ballroom_from_hall': (VILLA_BALLROOM, 15, 22, 8), 'hall_from_ballroom': (VILLA_HALL, 15, 4, 2),
     # Grand Plaza
     'plaza_from_residential': (PLAZA, 1, 16, 6),  # west road
     'plaza_from_market': (PLAZA, 42, 16, 4),      # east road

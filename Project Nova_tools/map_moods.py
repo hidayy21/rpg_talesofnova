@@ -40,6 +40,12 @@ MOODS = {
     K.FROST_SMITHY: {'grade': 'interior', 'particles': 'embers'},                 # sparks from the forge
     K.VILLA_BLOODROSE: {'grade': 'gloom', 'fog': 0.3, 'fog color': '#5a4a78', 'vignette': 0.45,   # cold night, violet
                         'particles': 'fireflies'},                                # mist off the chasm, wisps
+    K.VILLA_HALL: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'},    # candlelight and moonlit windows
+    K.VILLA_UPPER: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'},
+    K.VILLA_LIBRARY: {'grade': 'interior', 'vignette': 0.4, 'particles': 'dust'},
+    K.VILLA_ARCHIVE: {'grade': 'arcane', 'vignette': 0.5, 'particles': 'dust'},   # shut away for centuries
+    **{mid: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'} for mid in (
+        K.VILLA_BALLROOM, K.VILLA_DINING, K.VILLA_MUSIC, K.VILLA_WEST, K.VILLA_EAST, K.VILLA_LYSANDRE, K.VILLA_STUDY, K.VILLA_GUEST, K.VILLA_GUEST2)},
     K.QUILL_INN: ROOM, K.QUILL_APOTHECARY: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'},
 }
 
