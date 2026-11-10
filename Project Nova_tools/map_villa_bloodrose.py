@@ -230,7 +230,7 @@ for gx, gy, lines in ((32, 21, ('"Here sleeps Aurelie Bloodrose, who loved the g
                       (30, 26, ('"To the first David, who swore the oath and kept it."',))):
     m.add_event('Grave', gx, gy, [page(None, priority=1, commands=text(*lines))])
 
-ITEMS = {1: 'Potion', 5: 'Hi-Potion', 7: 'Magic Water'}
+ITEMS = {1: 'Potion', 2: 'Magic Water', 5: 'Hi-Potion'}
 
 
 def loot(name, x, y, item, n, where):
@@ -242,7 +242,7 @@ def loot(name, x, y, item, n, where):
 
 
 loot('Loot: Urn', 4, 22, 5, 1, 'in the stone urn')
-loot('Loot: Offering', 34, 28, 7, 1, 'among the grave offerings')
+loot('Loot: Offering', 34, 28, 2, 1, 'among the grave offerings')
 
 m.npc('Lysandre', 12, 26, '$Succubus', 0, ('Lysandre:', 'You crossed the bridge without an invitation.',
       'Bold. Or foolish. Father will decide which.'), direction=4)
