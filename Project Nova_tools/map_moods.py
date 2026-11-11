@@ -46,6 +46,9 @@ MOODS = {
     K.VILLA_UPPER: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'},
     K.VILLA_LIBRARY: {'grade': 'interior', 'vignette': 0.4, 'particles': 'dust'},
     K.VILLA_ARCHIVE: {'grade': 'arcane', 'vignette': 0.5, 'particles': 'dust'},   # shut away for centuries
+    K.VILLA_CELLARS: {'grade': 'gloom', 'vignette': 0.45, 'particles': 'dust'},   # torchlit cellars under the house
+    K.VILLA_DEPTHS: {'grade': 'arcane', 'fog': 0.2, 'fog color': '#5a6a9a', 'vignette': 0.5, 'particles': 'dust'},  # older stone
+    K.VILLA_ROSE_WAY: {'grade': 'gloom', 'vignette': 0.45, 'particles': 'dust'},   # earth passage up to the garden
     **{mid: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'} for mid in (
         K.VILLA_BALLROOM, K.VILLA_DINING, K.VILLA_MUSIC, K.VILLA_WEST, K.VILLA_EAST, K.VILLA_LYSANDRE, K.VILLA_STUDY, K.VILLA_GUEST, K.VILLA_GUEST2)},
     K.QUILL_INN: ROOM, K.QUILL_APOTHECARY: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'},

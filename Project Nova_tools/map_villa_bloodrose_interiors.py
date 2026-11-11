@@ -150,8 +150,12 @@ def go(r, name, x, y, key, d=None):
     r.add_event(name, x, y, [L.exit_page(target, tx, ty, d or td)])
 
 
+DOOR_HOLE = L.ext('Outside_B', 69)                # the dark doorway seen behind a door while it swings open
+
+
 def door(r, name, x, y, key, sheet='!Door1', style=0):
     target, tx, ty, td = K.ARRIVE[key]
+    r.put(x, y, DOOR_HOLE)
     r.add_event(name, x, y, [L.door_page(target, tx, ty, td, sheet, style)])
 
 
@@ -276,6 +280,8 @@ def hall():
                                          'I shall announce you. Very loudly.'))
     r.npc('Maid', 22, 10, 'Evil', 5, ('Maid:', 'Mind the floor, please - I polished it for a ball nobody came to.'),
           move=1, freq=2)
+    # beneath the west stair: the cellars (Map062) - barred; the party only comes there through the ballroom floor
+    locked(r, 'Cellar Door', 7, 3, ['The cellar door. A heavy iron bar lies across it, locked in place.'])
     return r
 
 
@@ -509,8 +515,25 @@ def ballroom():
         for base in (9, 14, 19): candelabra(r, x, base)
     for x in (1, W - 2): column(r, NI, x, 21, POTTED_TREE)
     for x in (11, 19): candelabra(r, x, 22)
+    trapdoor(r, 15, 16)
     r.exit_door(15, *K.ARRIVE['hall_from_ballroom'])
     return r
+
+
+def trapdoor(r, x, y):
+    """The floor under the party's battle spot. Hidden until switch 13 (set it when the fight with David ends): then
+    the panel drops and the party falls into the cellars (Map062, map_villa_bloodrose_depths.py). Afterwards it is
+    only a seam in the marble."""
+    sw = {'switch1Valid': True, 'switch1Id': K.SW_VILLA_TRAPDOOR}
+    snd = lambda n, v=90, p=100: cmd(250, [{'name': n, 'volume': v, 'pitch': p, 'pan': 0}])
+    fall = [snd('Switch2'), cmd(230, [20]), snd('Collapse1'), cmd(225, [7, 9, 30, True]),
+            snd('Fall'), cmd(221, []), cmd(230, [40]), cmd(123, ['A', 0]),
+            *L.transfer(*K.ARRIVE['villa_cellars_from_ballroom'][:3], 2, fade=2)]
+    r.add_event('Trapdoor', x, y, [
+        page(None, priority=0),
+        page(L.tile_image(L.ext('Dungeon_B', 147)), trigger=3, priority=0, commands=fall, cond=sw),
+        page(None, priority=0, commands=text('A hairline seam runs round a square of the marble. It holds - for now.'),
+             cond=dict(sw, selfSwitchValid=True, selfSwitchCh='A'))])
 
 
 def build():

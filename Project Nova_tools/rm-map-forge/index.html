@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>RM Map Forge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">RM Map Forge</div>
+    <button id="btnOpenProject" title="Pilih folder proyek RPG Maker MV/MZ (yang berisi folder data dan img)">Buka Proyek RPG Maker</button>
+    <span id="projectLabel" class="muted">Belum ada proyek</span>
+    <label class="inline" id="tilesetWrap" hidden>Tileset <select id="tilesetSelect"></select></label>
+    <div class="spacer"></div>
+    <button id="btnUndo" title="Ctrl+Z" disabled>↶ Undo</button>
+    <button id="btnRedo" title="Ctrl+Y / Ctrl+Shift+Z" disabled>↷ Redo</button>
+    <button id="btnSaveWork" title="Simpan pekerjaan ke file .json agar bisa dilanjutkan nanti">Simpan Kerja</button>
+    <button id="btnLoadWork" title="Buka file kerja .json">Muat Kerja</button>
+    <button id="btnExport" class="primary" title="Tulis peta ke proyek RPG Maker">Ekspor ke RPG Maker</button>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="panel">
+        <h2>Generator</h2>
+        <label>Tipe peta <select id="mapType"></select></label>
+        <div class="row2">
+          <label>Lebar <input id="mapW" type="number" min="10" max="256"></label>
+          <label>Tinggi <input id="mapH" type="number" min="10" max="256"></label>
+        </div>
+        <label>Seed
+          <span class="row"><input id="seed" spellcheck="false"><button id="btnDice" title="Seed acak">🎲</button></span>
+        </label>
+        <div id="paramBox"></div>
+        <div id="hillBox"></div>
+        <button id="btnGenerate" class="primary wide">Generate</button>
+        <p id="ruleHint" class="hint" hidden>Aturan terrain berubah — klik <b>Generate</b> untuk menerapkan.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Terrain <small>klik baris = pilih kuas</small></h2>
+        <div id="terrainList"></div>
+        <button id="btnAddTerrain" class="wide subtle">+ Tambah terrain</button>
+      </section>
+
+      <section class="panel">
+        <h2>Biome <small>klik baris = kuas biome</small></h2>
+        <div id="biomeList"></div>
+        <div class="row2">
+          <button id="btnAddBiome" class="subtle">+ Tambah biome</button>
+          <label class="check"><input id="showBiome" type="checkbox"> Tampilkan warna</label>
+        </div>
+      </section>
+
+      <section class="panel" id="pathPanel">
+        <h2>Jalan <small>titik arah + tangga otomatis</small></h2>
+        <div id="pathList"></div>
+        <button id="btnAddPath" class="wide subtle">+ Jalan baru</button>
+      </section>
+
+      <section class="panel">
+        <h2>Objek <small>disebar acak</small></h2>
+        <div id="objectList"></div>
+        <div class="row2">
+          <button id="btnAddObject" class="subtle">+ Tambah objek</button>
+          <button id="btnScatter" class="subtle">Sebar ulang</button>
+        </div>
+      </section>
+    </aside>
+
+    <section class="stage">
+      <div class="toolbar">
+        <div class="seg" id="toolSeg">
+          <button data-tool="terrain" class="on" title="Lukis terrain terpilih">🖌 Terrain</button>
+          <button data-tool="level" title="Lukis tingkat bukit (tebing dibuat otomatis)">⛰ Tinggi</button>
+          <button data-tool="biome" title="Lukis biome terpilih">🎨 Biome</button>
+          <button data-tool="path" title="Klik peta untuk menambah titik arah jalan terpilih">📍 Jalan</button>
+          <button data-tool="object" title="Taruh objek terpilih">📦 Objek</button>
+          <button data-tool="erase" title="Hapus objek">🧽 Hapus objek</button>
+        </div>
+        <label class="inline" id="levelWrap" hidden>Tingkat
+          <select id="levelSel">
+            <option value="0">0 · tanah</option>
+            <option value="1" selected>1 · bukit</option>
+            <option value="2">2 · bukit tinggi</option>
+            <option value="3">3 · puncak</option>
+          </select>
+        </label>
+        <label class="inline">Ukuran kuas <input id="radius" type="range" min="1" max="12" value="2"><span id="radiusVal">2</span></label>
+        <label class="inline">Zoom <select id="zoom"></select></label>
+        <label class="inline"><input id="showGrid" type="checkbox"> Grid</label>
+        <div class="spacer"></div>
+        <span id="hoverInfo" class="muted"></span>
+      </div>
+      <div id="noProjectNote" class="note">
+        Mode pratinjau: peta digambar dengan warna. <b>Buka Proyek RPG Maker</b> untuk memakai tileset asli dan mengekspor.
+      </div>
+      <div id="viewport" class="viewport"><canvas id="mapCanvas"></canvas></div>
+    </section>
+  </main>
+
+  <dialog id="pickerDlg">
+    <div class="dlg">
+      <div class="dlg-head"><h3 id="pickerTitle">Pilih tile</h3><button class="x" data-close>✕</button></div>
+      <div id="pickerTabs" class="tabs"></div>
+      <div id="pickerBody" class="picker-body"></div>
+      <div class="dlg-foot">
+        <span id="pickerHover" class="muted"></span>
+        <div class="spacer"></div>
+        <button id="pickerNone" class="subtle">Tanpa tile (warna saja)</button>
+        <button data-close>Batal</button>
+        <button id="pickerUse" class="primary" hidden>Pakai pilihan</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="exportDlg">
+    <div class="dlg narrow">
+      <div class="dlg-head"><h3>Ekspor ke RPG Maker</h3><button class="x" data-close>✕</button></div>
+      <p class="warn">⚠ <b>Backup proyek dulu.</b> Tutup RPG Maker sebelum ekspor dan buka lagi setelah selesai. Kalau RPG Maker masih terbuka, ia bisa menimpa daftar peta saat menyimpan.</p>
+      <label>Tujuan
+        <select id="exMode">
+          <option value="new">Buat peta baru</option>
+          <option value="overwrite">Timpa peta yang sudah ada</option>
+        </select>
+      </label>
+      <label id="exNameRow">Nama peta <input id="exName"></label>
+      <label id="exParentRow">Letakkan di bawah <select id="exParent"></select></label>
+      <label id="exTargetRow" hidden>Peta yang ditimpa <select id="exTarget"></select></label>
+      <div id="exInfo" class="hint"></div>
+      <div class="dlg-foot">
+        <div class="spacer"></div>
+        <button data-close>Batal</button>
+        <button id="exGo" class="primary">Ekspor</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toasts"></div>
+  <input type="file" id="dirInput" webkitdirectory hidden>
+  <input type="file" id="workInput" accept=".json,application/json" hidden>
+
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -76,6 +76,9 @@ CAPE = C_ + 165
 REPO_SWORDS, REPO_SPEARS = (C_ + 174, C_ + 182), (C_ + 175, C_ + 183)
 GOLD_BARS, SILVER_BARS = C_ + 200, C_ + 202
 RAILING = C_ + 224
+# ---------------------------------------------------------------- from other sheets
+DOOR_HOLE = L.ext('Outside_B', 69)          # dark doorway behind a !Door1 event (Outside_B 71 = round-topped)
+INVISIBLE_WALL = L.ext('Avy_Ship_B3', 1)    # a blank tile that blocks - the only one in all the sheets
 
 
 class Room(L.MapBuilder):
@@ -112,6 +115,26 @@ class Room(L.MapBuilder):
         for r, row in enumerate(rows):
             for c, t in enumerate(row):
                 self.put(x + c, y + r, t, 3 if r < len(rows) - 1 else 2)
+
+    def door(self, name, x, y, target, tx, ty, d=8, sheet='!Door1', style=0):
+        """A door in the back wall (bottom face row) that opens onto another map. The dark hole goes under it -
+        without it the player sees bare wall while the door swings open."""
+        self.put(x, y, DOOR_HOLE)
+        return self.add_event(name, x, y, [L.door_page(target, tx, ty, d, sheet, style)])
+
+    def locked_door(self, name, x, y, lines, style=0):
+        """A door that never opens: only its text (servants' rooms, a kitchen heard through the wall...)."""
+        return self.add_event(name, x, y, [L.door_page(0, 0, 0, locked_text=lines, index=style)])
+
+    def seal_wall_tops(self):
+        """Inside A4 wall tops are passable, so thin partitions and the border can be walked on: lay an invisible
+        blocking tile over every wall top. Call it last, after all furniture."""
+        for y in range(self.h):
+            for x in range(self.w):
+                v = self.auto[0][y][x]
+                if v and v[0] == 'A4' and (v[1] % 16) < 8:
+                    if not self.top[1][y][x]: self.put(x, y, INVISIBLE_WALL, 3)
+                    elif not self.top[0][y][x]: self.put(x, y, INVISIBLE_WALL, 2)
 
     def exit_door(self, x, target, tx, ty, d=2):
         """Doorway in the bottom wall: carve it and put the touch exit there."""

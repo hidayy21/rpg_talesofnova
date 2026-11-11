@@ -25,6 +25,12 @@ VILLA_DINING, VILLA_MUSIC, VILLA_WEST, VILLA_EAST = 53, 54, 55, 56        # eith
 VILLA_LYSANDRE, VILLA_STUDY, VILLA_GUEST, VILLA_GUEST2 = 57, 58, 59, 60   # rooms off the wings
 VILLA_BALLROOM = 61                                                        # behind the hall; shut until the story opens it
 SW_VILLA_BALLROOM = 12                                                     # switch: the ballroom doors open
+VILLA_CELLARS, VILLA_DEPTHS = 62, 63                                       # beneath the villa (rm-map-forge layouts)
+VILLA_ROSE_WAY = 64                                                        # the old way up, out under the Bloodrose tree
+SW_VILLA_TRAPDOOR = 13                                                     # switch: the ballroom floor gives way (set it after the fight)
+SW_VILLA_GRATE = 14                                                       # switch: the cellar grate is raised (lever)
+SW_VILLA_ROSE_WAY = 15                                                     # switch: the slab under the tree is open both ways
+VAR_VILLA_BRAZIERS = 10                                                    # variable: braziers lit in order (4 = seal awake, 5 = open)
 
 NAMES = {
     WORLD: ('World Map', 'Western Continent'),
@@ -46,6 +52,9 @@ NAMES = {
     VILLA_GUEST: ('Villa Bloodrose - Guest Room', 'Guest Room'),
     VILLA_GUEST2: ('Villa Bloodrose - Blue Guest Room', 'Blue Guest Room'),
     VILLA_BALLROOM: ('Villa Bloodrose - Ballroom', 'Villa Bloodrose - Ballroom'),
+    VILLA_CELLARS: ('Villa Bloodrose - Cellars', 'Bloodrose Cellars'),
+    VILLA_DEPTHS: ('Villa Bloodrose - Old Foundations', 'The Old Foundations'),
+    VILLA_ROSE_WAY: ('Villa Bloodrose - Rose Way', 'The Rose Way'),
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
     MARKET: ('Nova - Market District', 'Royal Capital - Market District'),
     RESIDENTIAL: ('Nova - Residential Quarter', 'Royal Capital - Lantern Row'),
@@ -109,6 +118,11 @@ ARRIVE = {
     'guest_from_east': (VILLA_GUEST, 5, 7, 8), 'east_from_guest': (VILLA_EAST, 11, 4, 2),
     'guest2_from_east': (VILLA_GUEST2, 5, 7, 8), 'east_from_guest2': (VILLA_EAST, 17, 4, 2),
     'ballroom_from_hall': (VILLA_BALLROOM, 15, 22, 8), 'hall_from_ballroom': (VILLA_HALL, 15, 4, 2),
+    # beneath the villa (map_villa_bloodrose_depths.py): the ballroom trapdoor drops the party into the cellars; the
+    # way out climbs the Rose Way to a slab under the Bloodrose tree in the garden
+    'villa_cellars_from_ballroom': (VILLA_CELLARS, 39, 26, 2),
+    'villa_roseway_from_depths': (VILLA_ROSE_WAY, 17, 40, 8), 'villa_depths_from_roseway': (VILLA_DEPTHS, 24, 14, 2),
+    'villa_roseway_from_bloodrose': (VILLA_ROSE_WAY, 8, 4, 2), 'villa_bloodrose_from_roseway': (VILLA_BLOODROSE, 8, 29, 2),
     # Grand Plaza
     'plaza_from_residential': (PLAZA, 1, 16, 6),  # west road
     'plaza_from_market': (PLAZA, 42, 16, 4),      # east road

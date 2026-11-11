@@ -36,6 +36,8 @@ BB = {
                               K.VILLA_GUEST, K.VILLA_GUEST2)},
     K.VILLA_ARCHIVE: ('Cobblestones4', 'DemonCastle3'),
     K.VILLA_BALLROOM: ('DecorativeTile', 'DemonCastle2'),                     # the fight with David
+    K.VILLA_CELLARS: ('Cobblestones2', 'Brick'), K.VILLA_DEPTHS: ('Ruins3', 'Ruins1'),
+    K.VILLA_ROSE_WAY: ('Dirt2', 'DirtCave'),
 }
 
 if __name__ == '__main__':
