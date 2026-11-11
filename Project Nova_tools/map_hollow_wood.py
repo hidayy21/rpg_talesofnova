@@ -19,7 +19,7 @@ W, H = 40, 50
 PF = 'PM_Forest'
 # trees: green below, withering above (bands are the rows of the trunk); PM_Forest groupings checked on a render
 GREEN = [Tree([(16, 17, 18), (24, 25, 26), (32, 33, 34)], 0.30, (24, H), PF),
-         Tree([(40, 41, 42), (48, 49, 50)], 0.25, (22, H), PF),
+         Tree([(40, 41, 42), (48, 49, 50), (56, 57, 58)], 0.25, (22, H), PF),
          Tree([(112, 113), (120, 121)], 0.25, (18, H), PF),                 # pines
          Tree([(114, 115), (122, 123)], 0.22, (18, H), PF),
          Tree(T.BIG_TREE, 0.08, (26, H))]

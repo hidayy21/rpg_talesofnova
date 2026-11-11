@@ -66,5 +66,12 @@ null,
 {"id":64,"expanded":false,"name":"Villa Bloodrose - Rose Way","order":64,"parentId":49,"scrollX":0,"scrollY":0},
 {"id":65,"expanded":false,"name":"Lilydale","order":65,"parentId":1,"scrollX":0,"scrollY":0},
 {"id":66,"expanded":false,"name":"Hollow Wood","order":66,"parentId":1,"scrollX":0,"scrollY":0},
-{"id":67,"expanded":false,"name":"Mistveil","order":67,"parentId":1,"scrollX":0,"scrollY":0}
+{"id":67,"expanded":false,"name":"Mistveil","order":67,"parentId":1,"scrollX":0,"scrollY":0},
+{"id":68,"expanded":false,"name":"Lilydale - Lantern & Lily Tavern","order":68,"parentId":65,"scrollX":0,"scrollY":0},
+{"id":69,"expanded":false,"name":"Lilydale - Lantern & Lily Upstairs","order":69,"parentId":65,"scrollX":0,"scrollY":0},
+{"id":70,"expanded":false,"name":"Lilydale - Chapel","order":70,"parentId":65,"scrollX":0,"scrollY":0},
+{"id":71,"expanded":false,"name":"Lilydale - General Goods","order":71,"parentId":65,"scrollX":0,"scrollY":0},
+{"id":72,"expanded":false,"name":"Lilydale - Henrik's House","order":72,"parentId":65,"scrollX":0,"scrollY":0},
+{"id":73,"expanded":false,"name":"Lilydale - Marta's House","order":73,"parentId":65,"scrollX":0,"scrollY":0},
+{"id":74,"expanded":false,"name":"Lilydale - Bram's House","order":74,"parentId":65,"scrollX":0,"scrollY":0}
 ]

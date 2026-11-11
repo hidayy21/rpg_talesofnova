@@ -43,6 +43,9 @@ MOODS = {
                         'fog bank': '0,45,19,49,0.8; 23,45,43,49,0.8', 'bloom': 0.2,   # thick grey mist in the dead wood
                         'fog mystery': 1},                                        # either side of the road
     K.VILLA_HALL: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'},    # candlelight and moonlit windows
+    K.LILY_TAVERN: {'grade': 'interior', 'sunbeams': 0.3, 'particles': 'dust'}, K.LILY_INN: ROOM,
+    K.LILY_CHAPEL: {'grade': 'interior', 'sunbeams': 0.5, 'particles': 'dust', 'vignette': 0.3},   # light through stained glass
+    K.LILY_STORE: ROOM, K.LILY_HENRIK: ROOM, K.LILY_MARTA: ROOM, K.LILY_BRAM: ROOM,
     K.VILLA_UPPER: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'},
     K.VILLA_LIBRARY: {'grade': 'interior', 'vignette': 0.4, 'particles': 'dust'},
     K.VILLA_ARCHIVE: {'grade': 'arcane', 'vignette': 0.5, 'particles': 'dust'},   # shut away for centuries

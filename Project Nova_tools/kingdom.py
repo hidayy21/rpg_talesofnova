@@ -33,6 +33,8 @@ SW_VILLA_ROSE_WAY = 15                                                     # swi
 VAR_VILLA_BRAZIERS = 10                                                    # variable: braziers lit in order (4 = seal awake, 5 = open)
 LILYDALE = 65                                                              # chapter 7: the village the party reaches first
 HOLLOW_WOOD, MISTVEIL = 66, 67                                             # the misty wood between Lilydale and the villa
+LILY_TAVERN, LILY_INN, LILY_CHAPEL = 68, 69, 70                            # Lilydale: the Lantern & Lily (tavern, inn upstairs), chapel
+LILY_STORE, LILY_HENRIK, LILY_MARTA, LILY_BRAM = 71, 72, 73, 74            # Lilydale: the item shop, the three elders' houses
 
 NAMES = {
     WORLD: ('World Map', 'Western Continent'),
@@ -60,6 +62,13 @@ NAMES = {
     LILYDALE: ('Lilydale', 'Lilydale'),
     HOLLOW_WOOD: ('Hollow Wood', 'Hollow Wood'),
     MISTVEIL: ('Mistveil', 'Mistveil'),
+    LILY_TAVERN: ('Lilydale - Lantern & Lily Tavern', 'Lantern & Lily'),
+    LILY_INN: ('Lilydale - Lantern & Lily Upstairs', 'Lantern & Lily - Rooms'),
+    LILY_CHAPEL: ('Lilydale - Chapel', 'Lilydale Chapel'),
+    LILY_STORE: ('Lilydale - General Goods', 'Thistle & Wick General Goods'),
+    LILY_HENRIK: ("Lilydale - Henrik's House", "Old Henrik's House"),
+    LILY_MARTA: ("Lilydale - Marta's House", "Old Marta's House"),
+    LILY_BRAM: ("Lilydale - Bram's House", "Old Bram's House"),
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
     MARKET: ('Nova - Market District', 'Royal Capital - Market District'),
     RESIDENTIAL: ('Nova - Residential Quarter', 'Royal Capital - Lantern Row'),
@@ -113,6 +122,14 @@ ARRIVE = {
     'hollow_from_lilydale': (HOLLOW_WOOD, 20, 48, 8), 'lilydale_from_hollow': (LILYDALE, 25, 1, 2),
     'mistveil_from_hollow': (MISTVEIL, 21, 48, 8), 'hollow_from_mistveil': (HOLLOW_WOOD, 21, 1, 2),
     'mistveil_from_bloodrose': (MISTVEIL, 21, 1, 2),
+    # Lilydale's doors (map_lilydale.py) and rooms (map_lilydale_interiors.py)
+    'lily_tavern_from_town': (LILY_TAVERN, 9, 11, 8), 'lilydale_from_tavern': (LILYDALE, 17, 17, 2),
+    'lily_inn_from_tavern': (LILY_INN, 17, 8, 2), 'lily_tavern_from_inn': (LILY_TAVERN, 16, 3, 2),
+    'lily_chapel_from_town': (LILY_CHAPEL, 7, 13, 8), 'lilydale_from_chapel': (LILYDALE, 31, 17, 2),
+    'lily_store_from_town': (LILY_STORE, 8, 10, 8), 'lilydale_from_store': (LILYDALE, 38, 26, 2),
+    'lily_henrik_from_town': (LILY_HENRIK, 6, 8, 8), 'lilydale_from_henrik': (LILYDALE, 5, 9, 2),
+    'lily_marta_from_town': (LILY_MARTA, 6, 8, 8), 'lilydale_from_marta': (LILYDALE, 13, 26, 2),
+    'lily_bram_from_town': (LILY_BRAM, 6, 8, 8), 'lilydale_from_bram': (LILYDALE, 6, 35, 2),
     # ... and inside (map_villa_bloodrose_interiors.py)
     'hall_from_bloodrose': (VILLA_HALL, 15, 18, 8), 'bloodrose_from_hall': (VILLA_BLOODROSE, 21, 16, 2),
     'villa_hall_from_dining': (VILLA_HALL, 1, 13, 6), 'villa_dining_from_hall': (VILLA_DINING, 15, 12, 4),

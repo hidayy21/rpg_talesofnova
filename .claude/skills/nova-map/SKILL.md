@@ -54,6 +54,7 @@ Tilesets (`data/Tilesets.json`), each map picks one with its A1-A5 ground:
 | 17 / 18 | Avy Landmarks 1 / 2 | Outside ground, big landmark objects (towers, lighthouse, giant tree...) |
 | 19 | Avy Ship | `Avy_Ship_A2` decks, ship hulls |
 | 20 | Wizard Castle | `WizardCastle_A2/A4` floors and walls (+ Inside_B/C as C/D) - magic academy, mage towers |
+| 21 | Medieval Town | Outside (B/C/D as in towns, so `town_kit` works) + `MedievalTown_A2/A3` (mixed: half-timber walls, shingle/slate roofs from the MedievalVillage pack plus Outside/PM/Avy picks - names in `make_medieval_tileset.py` `MED_ROOF`/`MED_WALL`/`MED_GROUND`) + `MedievalVillage_B` in slot E (gables, dormers, chimneys, 2-tall windows/doors). Rebuild with `make_medieval_tileset.py --save`. Used by Lilydale. |
 
 That table is a snapshot: new packs are added with `import_tilesets.py` and become new tilesets. Read the live list
 from `data/Tilesets.json` before choosing.

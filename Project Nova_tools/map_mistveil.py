@@ -1,5 +1,5 @@
-# MAP067 - Mistveil (chapter 7): the dead heart of the wood before Villa Bloodrose. Nothing here has leaves any more:
-# twisted bare trees packed close, withered grass, a thick mist that breathes (NovaAtmosphere <fog mystery>). The road
+# MAP067 - Mistveil (chapter 7): the dying heart of the wood before Villa Bloodrose. Most trees are bare and twisted,
+# packed close; a few pines and oaks still hold on, fewer the nearer the villa. Withered grass, a thick mist that breathes (NovaAtmosphere <fog mystery>). The road
 # winds and forks; the side ways end in nothing, or in something worse:
 #   - west: a dead end with a traveller's pack (Magic Water);
 #   - east: a shard of black crystal half sunk in the earth, the dead ground spreading from it (the corruption under
@@ -29,6 +29,11 @@ DEAD = [Tree([(176, 177, 178), (184, 185, 186), (192, 193, 194)], 0.30, None, PF
         Tree([(136, 137, 138), (144, 145, 146), (152, 153, 154)], 0.15, (36, H), PF),   # a few still mossy near the
         Tree([(139, 140), (147, 148), (155, 156)], 0.15, (36, H), PF),                  # way in from Hollow Wood
         Tree([(163,), (171,)], 0.10, None, PF)]
+# the living ones (a quarter or so of the trees): pines, an oak here and there; none in the last stretch to the villa
+LIVING = [Tree([(112, 113), (120, 121)], 0.16, (10, H), PF),                         # dark pine
+          Tree([(114, 115), (122, 123)], 0.10, (14, H), PF),                         # green pine
+          Tree([(16, 17, 18), (24, 25, 26), (32, 33, 34)], 0.07, (24, H), PF)]       # oak
+TREES = DEAD[:3] + LIVING[:1] + DEAD[3:5] + LIVING[1:] + DEAD[5:]   # tried in this order at every cell
 FILL = (177, 177, T.BOULDER, T.BOULDER_B, NN(12), NN(13), T.STUMP)   # blocking: closes the gaps between the trees
 
 ROAD = [(21, 49), (21, 44), (13, 40), (10, 33), (18, 29), (27, 31), (33, 25), (30, 18), (22, 15), (16, 10), (21, 6)]
@@ -50,7 +55,7 @@ KEEP = GLADES + [SIGN, (SIGN[0], SIGN[1] + 1)] + [(x, 0) for x in (20, 21, 22)] 
 
 m = forge(K.NAMES[K.MISTVEIL], W, H, seed='mistveil-4', ground=A2(20), road=A2(1), overlay=(A2(12), 0.74, 6),
           params={'hills': 0, 'scale': 16, 'shadow': True},
-          paths=[(ROAD, 2), (TOP, 3), (WEST, 1), (EAST, 1), (LOOP, 1), (SHRINE_WAY, 1)], keep=KEEP, trees=DEAD)
+          paths=[(ROAD, 2), (TOP, 3), (WEST, 1), (EAST, 1), (LOOP, 1), (SHRINE_WAY, 1)], keep=KEEP, trees=TREES)
 m.note = '<outdoor>'
 m.bgm = {'name': 'Dungeon2', 'pan': 0, 'pitch': 80, 'volume': 55}
 m.bgs = {'name': 'Wind', 'pan': 0, 'pitch': 70, 'volume': 45}
