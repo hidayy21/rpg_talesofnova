@@ -151,7 +151,7 @@ Mira → Ley → Roland (sementara) → Diana → *Roland dan Ley pergi* → ber
 | **Babak II — Perbatasan** | | |
 | 5 | Desa perbatasan: Ley melapor ke Roland. **[Usulan]** Ini kampung halaman kapten Ley: Ley menyerahkan kotak kepada istri dan anak kapten, kotak dibuka, lalu kembali ke tangan Ley (party sedang di markas Roland). **[Usulan]** Desa diserang sisa loyalis Arulustus yang diadu domba Order. Roland ternyata tahu reputasi Ley, dan party baru sadar Ley sekuat itu. | **Roland bergabung (sementara)** |
 | 6 | Hutan: misteri Diana. **[Usulan]** Kuil angin (kristal Sylphi) retak dan melahirkan binatang terkorupsi. Party mengalahkan agen Order dan menyimpan kristal Wind. | **Diana bergabung** |
-| 7 | Villa Bloodrose: konflik dengan penghuni rumah, lalu berdamai. Kenal Lysandre dan ayahnya. Pulangnya party bertemu pasukan Lord Commander baru yang membawa kabar krisis (**[Usulan]** loyalis Arulustus mulai bergerak). | **Roland dan Ley pergi** |
+| 7 | Villa Bloodrose: konflik dengan penghuni rumah, lalu berdamai. Kenal Lysandre dan ayahnya. **Rincian lengkap: [Bloodrose_Plan.md](Bloodrose_Plan.md)** (desa, hutan berkabut, menginap di villa, jebakan ballroom, dungeon, David terkorupsi). Pulangnya party bertemu pasukan Lord Commander baru yang membawa kabar krisis (**[Usulan]** loyalis Arulustus mulai bergerak). | **Roland dan Ley pergi** |
 | 8 | Laut bersama Kaine: pulau asal Neraya, bertemu Champion of Water yang baru. **[Usulan]** Party menyimpan kristal Neraya. Kaine berlayar lagi membawa kabar soal Order. | **Barion bergabung**; **Duel dengan Homura: Hyōjin no Jotei** di tengah pertarungan (Yuki true awakening, mendahului Kael sesuai bible). Homura kabur. |
 | 9 | **[Usulan] Civil War Arulustus:** loyalis (dibekingi Order) melawan pemerintahan sekarang. Order merebut kristal Roderick dari mahkota raja Arulustus. | |
 | **Titik tengah** | | |
@@ -299,7 +299,7 @@ Lucian memakai pola yang sama dengan julukan usulannya: *Second Dawn: Radiant Ti
 | Pantai selatan (±45,63) | Kota pelabuhan untuk perjalanan laut | 8 |
 | Pulau tenggara (±58,77) | Pulau asal Neraya: kristal dan pilar Water | 8 |
 | Teluk salju barat laut (±11,17) | **[Usulan]** Kutub: desa **Eisendorf**, kristal Rafael (Ice) | 12 |
-| Villa Bloodrose | **[Belum]** Lokasinya: di Kerajaan Nova, di Arulustus, atau wilayah sendiri? | 7, 11 |
+| Villa Bloodrose | **[Tetap]** Setelah sebuah desa dan hutan berkabut (2 map). **[Belum]** Wilayahnya: Kerajaan Nova, Arulustus, atau wilayah sendiri? | 7, 11 |
 
 ## Perubahan terhadap Story Bible (kalau rencana ini disetujui)
 
@@ -319,7 +319,7 @@ Lucian memakai pola yang sama dengan julukan usulannya: *Second Dawn: Radiant Ti
 2. **Konsep 8 pilar segel:** dipakai atau tidak?
 3. ~~Nama antagonis~~ → **Lucian Valcrest**.
 4. **Konflik di desa perbatasan (Bab 5).** Usulan: warga dituduh menyembunyikan sisa pasukan perang, padahal Order yang mengadu domba.
-5. **Konflik di villa Bloodrose (Bab 7).** Usulan: salah paham. Party datang memburu jejak kristal hitam yang mengarah ke villa, dan penghuni villa mengira party adalah utusan Order.
+5. ~~Konflik di villa Bloodrose (Bab 7)~~ → **[Tetap]** David dan pegawai non-manusia terkorupsi oleh benda yang ditanam Order di dungeon. Lihat [Bloodrose_Plan.md](Bloodrose_Plan.md).
 6. **Lord Commander baru** (Bab 7): nama, kepribadian, hubungan dengan Roland dan Sera.
 7. **Krisis yang membuat Roland pergi** (Bab 7): **[Usulan]** loyalis Arulustus mulai bergerak, menuju civil war di Bab 9–10.
 8. **Misteri Diana.** Usulan: regunya dulu dikorbankan dalam operasi yang ditutup-tutupi, dengan jejak Order (atau intelijen kerajaan, terhubung ke Cassius) di baliknya.
