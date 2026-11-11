@@ -122,7 +122,7 @@ def light(r, x, y, radius, color, flicker=True, oy=0):
 
 def candelabra(r, x, base_y):
     column(r, WZ, x, base_y - 1, CANDELABRA)
-    light(r, x, base_y, 110, '#ffc070', oy=-36)
+    light(r, x, base_y, 90, '#a87c4c', oy=-36)
 
 
 def chandelier(r, x, y):

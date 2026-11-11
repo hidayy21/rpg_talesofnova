@@ -318,16 +318,16 @@
         // cinematic: S-curve, cool shadows / warm highlights
         '    if (cine > 0.0) {',
         '        vec3 sc = clamp(col, 0.0, 1.0);',
-        '        col = mix(col, sc * sc * (3.0 - 2.0 * sc), cine * 0.4);',
+        '        col = mix(col, sc * sc * (3.0 - 2.0 * sc), cine * 0.32);',
         '        float l = dot(col, LUMA);',
-        '        col *= mix(vec3(1.0), mix(vec3(0.92, 0.97, 1.06), vec3(1.03, 1.0, 0.96), smoothstep(0.15, 0.75, l)), cine);',
+        '        col *= mix(vec3(1.0), mix(vec3(0.92, 0.97, 1.06), vec3(1.03, 1.0, 0.96), smoothstep(0.15, 0.75, l)), cine * 0.8);',
         '    }',
         // vignette (round on a wide screen)
         '    vec2 v = (screen - 0.5) * vec2(screenSize.x / screenSize.y, 1.0) * 0.82;',
         '    col *= 1.0 - vignette * smoothstep(0.3, 0.85, length(v));',
         // cinematic corners: darker toward the four corners, a little toward top and bottom
         '    vec2 q = abs(screen - 0.5) * 2.0;',
-        '    col *= 1.0 - cine * (0.8 * smoothstep(0.7, 1.42, length(q)) + 0.2 * smoothstep(0.55, 1.0, q.y));',
+        '    col *= 1.0 - cine * (0.62 * smoothstep(0.7, 1.42, length(q)) + 0.16 * smoothstep(0.55, 1.0, q.y));',
         '    gl_FragColor = vec4(clamp(col, 0.0, 1.0), base.a);',
         '}'
     ].join('\n');
@@ -361,7 +361,7 @@
         u.bloom = on ? metaNum('bloom', BLOOM) : 0;
         var cine = on ? metaNum('cinematic', CINEMATIC) : 0;
         u.cine = mix(u.cine, cine, instant ? 1 : 0.05);
-        u.tilt = on ? metaNum('tilt shift', TILT) * (1 + 0.6 * cine) : 0;
+        u.tilt = on ? metaNum('tilt shift', TILT) * (1 + 0.45 * cine) : 0;
         u.vignette = on ? metaNum('vignette', VIGNETTE) : 0;
         var t = gradeTarget(on), g = this._grade, f = instant || !g ? 1 : 0.05;
         if (!g) g = this._grade = { low: t.low.slice(), high: t.high.slice(), sat: t.sat, con: t.con };

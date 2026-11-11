@@ -11,7 +11,9 @@ const fs = require('fs'), path = require('path'), http = require('http'), { spaw
 
 const ROOT = path.resolve(__dirname, '..');
 const EDGE = ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
-              'C:/Program Files/Microsoft/Edge/Application/msedge.exe'].find(p => fs.existsSync(p));
+              'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
+              '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+              '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(p => fs.existsSync(p));
 const [shotsFile, outDir] = process.argv.slice(2);
 const shots = JSON.parse(fs.readFileSync(shotsFile, 'utf8'));
 // the game's screen size comes from Community_Basic in js/plugins.js
