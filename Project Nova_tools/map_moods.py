@@ -51,6 +51,11 @@ MOODS = {
     K.VILLA_ROSE_WAY: {'grade': 'gloom', 'vignette': 0.45, 'particles': 'dust'},   # earth passage up to the garden
     **{mid: {'grade': 'interior', 'vignette': 0.35, 'particles': 'dust'} for mid in (
         K.VILLA_BALLROOM, K.VILLA_DINING, K.VILLA_MUSIC, K.VILLA_WEST, K.VILLA_EAST, K.VILLA_LYSANDRE, K.VILLA_STUDY, K.VILLA_GUEST, K.VILLA_GUEST2)},
+    K.LILYDALE: {'grade': 'warm', 'sunbeams': 0.5, 'particles': 'pollen', 'fog': 0.08, 'fog color': '#f2ece0'},  # bright, a little sleepy
+    K.HOLLOW_WOOD: {'grade': 'forest', 'fog': 0.22, 'fog color': '#c9d2cc', 'sunbeams': 0.35, 'vignette': 0.35,  # green below,
+                    'fog bank': '0,0,39,20,0.55'},                                  # the mist gathers where the trees die
+    K.MISTVEIL: {'grade': 'mystic', 'fog': 0.6, 'fog color': '#e3e6e8', 'fog mystery': 1, 'vignette': 0.45,  # the mist breathes
+                 'bloom': 0.2},
     K.QUILL_INN: ROOM, K.QUILL_APOTHECARY: {'grade': 'interior', 'sunbeams': 0.35, 'particles': 'dust'},
 }
 

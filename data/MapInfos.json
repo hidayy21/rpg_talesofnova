@@ -63,5 +63,8 @@ null,
 {"id":61,"expanded":false,"name":"Villa Bloodrose - Ballroom","order":61,"parentId":48,"scrollX":0,"scrollY":0},
 {"id":62,"expanded":false,"name":"Villa Bloodrose - Cellars","order":62,"parentId":49,"scrollX":0,"scrollY":0},
 {"id":63,"expanded":false,"name":"Villa Bloodrose - Old Foundations","order":63,"parentId":49,"scrollX":0,"scrollY":0},
-{"id":64,"expanded":false,"name":"Villa Bloodrose - Rose Way","order":64,"parentId":49,"scrollX":0,"scrollY":0}
+{"id":64,"expanded":false,"name":"Villa Bloodrose - Rose Way","order":64,"parentId":49,"scrollX":0,"scrollY":0},
+{"id":65,"expanded":false,"name":"Lilydale","order":65,"parentId":1,"scrollX":0,"scrollY":0},
+{"id":66,"expanded":false,"name":"Hollow Wood","order":66,"parentId":1,"scrollX":0,"scrollY":0},
+{"id":67,"expanded":false,"name":"Mistveil","order":67,"parentId":1,"scrollX":0,"scrollY":0}
 ]

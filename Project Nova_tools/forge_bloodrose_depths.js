@@ -2,7 +2,7 @@
 // cave passage that climbs out to the garden.
 // node forge_bloodrose_depths.js <out.json>   (map_villa_bloodrose_depths.py runs it)
 const path = require('path');
-const C = require(path.resolve('D:/RPG Maker MV/Project Nova/Project Nova_tools/rm-map-forge/core.js'));
+const C = require(path.join(__dirname, 'rm-map-forge', 'core.js'));
 
 function level(seed, w, h, params, floorAuto, wallAuto, type = 'dungeon') {
   const cfg = C.defaultConfig(type);

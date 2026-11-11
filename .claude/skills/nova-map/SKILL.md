@@ -20,12 +20,14 @@ Indonesian; map names, dialogue and code comments stay in English like the rest 
 | `validate_maps.py` | `check({id: map})` - transfers land on walkable tiles, doorsteps open, no stacked events. |
 | `edge_exits.py` | Widens edge exits to the whole open crossing (`Town.save` already runs it). |
 | `tile_numbers.py` | `python3 tile_numbers.py <Sheet> ...` -> `_work/tiles_<Sheet>.png`, each tile with its number. |
-| `rm-map-forge/` | The user's map generator (browser app; `core.js` also runs in Node): cave and dungeon (rooms & corridors) layouts with walls, faces and shadows. Use it from Python through a small Node script - see `forge_bloodrose_depths.js` + `map_villa_bloodrose_depths.py` (`ForgeMap`: forge tiles underneath, our props/events on top, rooms found again from the floor, stairs on whole wall). Fixed seeds keep the map stable. |
+| `rm-map-forge/` | The user's map generator (browser app; `core.js` also runs in Node): cave and dungeon (rooms & corridors) layouts with walls, faces and shadows. Use it from Python through a small Node script - see `forge_bloodrose_depths.js` + `map_villa_bloodrose_depths.py` for caves and dungeons, `forge_outdoor.py` for everything outdoors (`ForgeMap`: forge tiles underneath, our props/events on top, rooms found again from the floor, stairs on whole wall). Fixed seeds keep the map stable. |
+| `forge_outdoor.py` + `forge_outdoor.js` | **rm-map-forge for every outdoor natural map** (forests, wilds, the woods round a village): `forge(names, w, h, seed, ground, road, paths, trees, keep, hill, stairs, patch, overlay, zones)` runs the forge's `outside` generator (noise ground, raised ground with cliffs, roads A*-routed through your points with stairs on cliffs) and packs your trees densely everywhere the road and `keep` cells are not. Returns a `ForgeOutdoor` (a `Town`: sign, npc, door, exit, lamp work; edge exits widened on save) with `is_road`, `has_object`, `is_face`, `clear`, `reach(starts)`. See "Forests, wilds and villages" below; examples `map_hollow_wood.py`, `map_mistveil.py`, `map_lilydale.py`. |
+| `Referensi Map/` (project root) | **165 maps from classic RPGs** (DQ, FF4-6, Chrono Trigger, Tales of Phantasia, Secret/Trials of Mana, Golden Sun, Lagoon...), named `Game - Place (type).png` - `(kerajaan)` castles/capitals, `(salju)` snow, `(reruntuhan)` ruins, plain = towns and villages. Study them before laying out any town, village, castle or snow map - see "Reference maps". |
 | `game_screenshot.js` | Screenshots from the **running game** (every plugin and shader on) without RPG Maker: `node game_screenshot.js shots.json out_dir` serves the project, runs it in headless Edge (WebGL via SwiftShader) and saves one PNG per `{name, map, x, y, override, switches, bars, message}`. `override` sets NovaAtmosphere tags (e.g. `{"cinematic": 0}` for a before/after). Use it to show the user how a map really looks in game. |
 | `atlas.py` | `atlas(tileset, 'A2', range(32), out)` - sample block of every autotile kind of a sheet. |
 | `_work/tilenames.txt` | `Sheet:n:Name` for the stock Outside/Inside sheets (search it before opening images). |
 
-Good references for style and helpers: `map_market.py`, `map_hollow_farm.py`, `map_city_gate.py` (towns),
+Good references for style and helpers: `map_lilydale.py` (village in a forest clearing), `map_hollow_wood.py` / `map_mistveil.py` (forged woods, a misty labyrinth), `map_market.py`, `map_hollow_farm.py`, `map_city_gate.py` (towns),
 `map_interiors.py` (rooms), `map_prison.py`, `map_briarwood_entrance.py` (forest/dungeon-ish, chests, crystals),
 `map_villa_bloodrose_interiors.py` (a whole castle: hall, wings, rooms behind doors, open side doorways between
 maps, a switch-gated door, twin stairs, a balcony, lights on every candle and window), `map_frosthollow.py`
@@ -87,6 +89,8 @@ fitting ones were left out), so the user can see nothing was skipped.
 
 1. **Plan with the user only what you cannot decide**: where the map sits in the world (which map links to it and on
    which edge/door), size, mood. Everything else - layout, props, NPC lines - is yours to propose.
+   Before proposing a layout, open 2-4 maps from `Referensi Map/` that match the place (village, castle town, snow
+   town...) and say which you looked at and what general ideas you take from them.
 2. **Ids and links**: next free map id = first unused index in `data/MapInfos.json`. Add the constant, `NAMES` entry
    and `ARRIVE` points to `kingdom.py` (or the chapter's own module if it is not part of the capital), and add the
    matching exit/door on the neighbour map (see "Changing existing maps").
@@ -120,6 +124,46 @@ fitting ones were left out), so the user can see nothing was skipped.
 7. **Hand off**: tell the user to open it in Nova Tools (`Nova Tools.command` / `.bat`, http://localhost:8765) for
    touch-ups, and in the editor only after Nova Tools is done. Commit only when asked (push needs the Bash sandbox
    disabled).
+
+## Reference maps (`Referensi Map/`)
+
+Classic RPG maps kept in the project on purpose as study material. Use them for **general ideas only** - how a
+village is framed by forest, how roads lead to a square, where the inn and the church sit, how a castle town steps
+up to its keep, how dense props are - then lay out our own plan (never copy a layout, see below). Make thumbnails
+into the scratchpad (`PIL.Image.thumbnail((1000, 1000))`) and Read them; many sheets also show the interiors, which
+help when planning a building's rooms. There are no forest maps in the folder: for woods, take the framing of the
+towns' surroundings (the dense tree walls round FF4's Mist, the forest ring round many DQ/Mana villages).
+
+## Forests, wilds and villages: rm-map-forge (`forge_outdoor.py`)
+
+Any natural outdoor map starts from the forge, not from hand-placed trees:
+- **Road**: `paths=[(points, width)]` - a few waypoints from edge to edge; the forge routes between them. Side ways
+  (dead ends, a chest, a shrine) are extra paths starting on the main road. The edge cells of the road are the
+  exits; read them back with `m.is_road(x, 0)` and line them up with the neighbour (same x, offset kept).
+- **Trees**: `Tree(rows, density, band, sheet)` - rows top to bottom, the last row stands on the ground (layer 2),
+  the rest go on layer 3. `band=(y0, y1)` limits a kind to rows of the map, so a wood can change as you walk
+  (green below, dying above). Densities ~0.2-0.3 per kind give a closed forest; three passes fill the gaps.
+  **Every row of a tree is kept off the road and `keep` cells**, because PM_* crowns block: a crown over the road
+  would close it.
+- **Ground**: `ground`, `patch` (noise patches), `overlay` (layer-1 patches), `zones=[(auto, y0, y1)]` (another ground
+  over a band of rows, ragged edge - withering grass). Auto kinds as the forge counts them: `A2(k)` = 16+k, `A4(k)` =
+  80+k. Outside_A2: 0 meadow, 1 dirt path (meadow edges), 8 dirt, 9 grass on dirt, 12 dead grass (yellow), 20
+  withered grass, 23 moss; **15 'Soil' is empty on this sheet**. Hills: `hill=A4(32)` Ledge A (meadow) with
+  `stairs=L.A5 + 27`; a hill top always shows its ledge's grass, so in a withered zone keep hills off or few.
+- **Labyrinths** (a misty wood): after forging, close every open cell that is not road or glade with blocking 1x1
+  fillers next to the road (dead shrub Outside_B 177, boulders 95/103, Nova_Nature thorns 12/13, stump 92) and
+  `BLOCKER` (767) further in - otherwise the gaps between trees are shortcuts through the maze.
+- **Villages**: forge only the forest ring - `keep` = the clearing plus every building/field rect with a margin
+  (decide those rects before forging), `paths=[]`; then `m.rect(0, 0, W-1, H-1, GRASS)` paints our own ground and
+  the village is laid by hand with the `Town` helpers. Cells of the ring no tree fitted get `BLOCKER` with a bush on
+  layer 3 drawn over it.
+- **Check**: `m.reach(arrivals)` - every door step, NPC neighbour, chest and both exits must be in it.
+- Tree groupings checked on renders (PM_Forest): round green 3x3 `(16,17,18)(24,25,26)(32,33,34)`, small round 3x2
+  `(40,41,42)(48,49,50)`, pines 2x2 `(112,113)(120,121)` / `(114,115)(122,123)`, big 5x6 rows 3-7/11-15/.../43-47,
+  mossy 3x3 `(136..)(144..)(152..)`, mossy 2x3 `(139,140)(147,148)(155,156)`, `(141..)(149..)(157..)`, bare 3x3
+  `(176..)(184..)(192..)` and `(181..)(189..)(197..)`, bare 2x3 `(179,180)(187,188)(195,196)`, twigs 3x2
+  `(160..)(168..)`, the violet "rose" tree 5x7 `(200-204)...(248-252)`; lilies in water `9`, `10`. Outside_B: big tree
+  2x2 `(112,113)(120,121)`. `!Crystal`: index 2 = green (healing), index 0 direction 6 = purple (dark crystal).
 
 ## Changing existing maps
 
@@ -200,4 +244,8 @@ Castles and big houses - the plan the user expects:
   a switch or a variable (`variableValue` = at least). Flood-fill twice - with the barrier shut (the lever must be
   reachable) and open (everything else must be).
 - Windows line endings: write files with `newline=''` as the library does, keep `ensure_ascii=False`.
+- **Save order with edge exits**: `Town.save` widens edge exits by opening the neighbour map, so a chain of new maps
+  fails on the first save if the next map does not exist yet - save them all, then save them all once more.
+- `map_moods.py --apply` re-orders the tags of maps whose note it rewrites (Map048 shows as changed only for that):
+  for new maps apply `set_tag` and the battleback to those files only.
 - Shell heredocs break on mixed quotes in long Python snippets: write the snippet to a scratchpad file and run it.

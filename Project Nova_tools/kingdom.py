@@ -31,6 +31,8 @@ SW_VILLA_TRAPDOOR = 13                                                     # swi
 SW_VILLA_GRATE = 14                                                       # switch: the cellar grate is raised (lever)
 SW_VILLA_ROSE_WAY = 15                                                     # switch: the slab under the tree is open both ways
 VAR_VILLA_BRAZIERS = 10                                                    # variable: braziers lit in order (4 = seal awake, 5 = open)
+LILYDALE = 65                                                              # chapter 7: the village the party reaches first
+HOLLOW_WOOD, MISTVEIL = 66, 67                                             # the misty wood between Lilydale and the villa
 
 NAMES = {
     WORLD: ('World Map', 'Western Continent'),
@@ -55,6 +57,9 @@ NAMES = {
     VILLA_CELLARS: ('Villa Bloodrose - Cellars', 'Bloodrose Cellars'),
     VILLA_DEPTHS: ('Villa Bloodrose - Old Foundations', 'The Old Foundations'),
     VILLA_ROSE_WAY: ('Villa Bloodrose - Rose Way', 'The Rose Way'),
+    LILYDALE: ('Lilydale', 'Lilydale'),
+    HOLLOW_WOOD: ('Hollow Wood', 'Hollow Wood'),
+    MISTVEIL: ('Mistveil', 'Mistveil'),
     PLAZA: ('Royal Kingdom of Nova', 'Royal Capital - Grand Plaza'),
     MARKET: ('Nova - Market District', 'Royal Capital - Market District'),
     RESIDENTIAL: ('Nova - Residential Quarter', 'Royal Capital - Lantern Row'),
@@ -101,8 +106,13 @@ ARRIVE = {
     'frost_inn_from_town': (FROST_INN, 11, 13, 8), 'town_from_frost_inn': (FROSTHOLLOW, 19, 23, 2),
     'frost_store_from_town': (FROST_STORE, 7, 11, 8), 'town_from_frost_store': (FROSTHOLLOW, 51, 22, 2),
     'frost_smithy_from_town': (FROST_SMITHY, 8, 11, 8), 'town_from_frost_smithy': (FROSTHOLLOW, 42, 26, 2),
-    # Villa Bloodrose: arrive at the foot of the south road (no World Map link until its location is decided)
+    # Villa Bloodrose: arrive at the foot of the south road, out of Mistveil
     'bloodrose_from_world': (VILLA_BLOODROSE, 21, 48, 8),
+    # Chapter 7: Lilydale -> Hollow Wood -> Mistveil -> the villa, each road leaving by the top edge (no World Map link
+    # until the region is decided)
+    'hollow_from_lilydale': (HOLLOW_WOOD, 20, 48, 8), 'lilydale_from_hollow': (LILYDALE, 25, 1, 2),
+    'mistveil_from_hollow': (MISTVEIL, 21, 48, 8), 'hollow_from_mistveil': (HOLLOW_WOOD, 21, 1, 2),
+    'mistveil_from_bloodrose': (MISTVEIL, 21, 1, 2),
     # ... and inside (map_villa_bloodrose_interiors.py)
     'hall_from_bloodrose': (VILLA_HALL, 15, 18, 8), 'bloodrose_from_hall': (VILLA_BLOODROSE, 21, 16, 2),
     'villa_hall_from_dining': (VILLA_HALL, 1, 13, 6), 'villa_dining_from_hall': (VILLA_DINING, 15, 12, 4),

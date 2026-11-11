@@ -38,6 +38,7 @@ BB = {
     K.VILLA_BALLROOM: ('DecorativeTile', 'DemonCastle2'),                     # the fight with David
     K.VILLA_CELLARS: ('Cobblestones2', 'Brick'), K.VILLA_DEPTHS: ('Ruins3', 'Ruins1'),
     K.VILLA_ROSE_WAY: ('Dirt2', 'DirtCave'),
+    K.LILYDALE: ('Grassland', 'Town1'), K.HOLLOW_WOOD: ('Grassland', 'Forest'), K.MISTVEIL: ('DirtField', 'Forest'),
 }
 
 if __name__ == '__main__':
