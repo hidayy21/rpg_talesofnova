@@ -58,6 +58,23 @@
  * @desc How many motes float over the map (0 = none).
  * @default 36
  *
+ * @param Cinematic
+ * @desc Film look (0 = off, 1 = strong): deeper shadows, cool shadows and warm highlights, darker corners, more depth of field. Map note <cinematic: 0.8>.
+ * @default 0.75
+ *
+ * @param Contact Shadows
+ * @desc Soft shadow on the ground at the foot of walls, cliffs and furniture (0 = off, 1 = dark). Map note <contact shadows: 0.5>.
+ * @default 0.5
+ *
+ * @param Letterbox
+ * @desc Height of each black bar in cutscenes, as a share of the screen (0 = never).
+ * @default 0.1
+ *
+ * @param Auto Letterbox
+ * @type boolean
+ * @desc Slide the bars in by themselves while an Autorun event runs (a cutscene).
+ * @default true
+ *
  * @help
  * Place below NovaLighting and NovaDayNight.
  *
@@ -92,6 +109,24 @@
  *                         drifting; several banks separated by ;
  *   <fog mystery>         the fog breathes: it slowly thickens and thins,
  *                         and a third layer of low wisps drifts across
+ *
+ *   <cinematic: 0.8>      film look on this map (0 = off)
+ *   <contact shadows: 0>  shadows at the foot of walls and things (0 = off)
+ *
+ * Cinematic: a gentle S-curve (deeper shadows), shadows a touch cool and
+ * highlights a touch warm, the four corners darker than the round vignette,
+ * and a stronger tilt shift - so the map reads like a frame of film.
+ *
+ * Contact shadows: every tile that blocks on all sides (walls, cliffs,
+ * furniture, tree trunks - not water) casts a soft shadow on the walkable
+ * ground round it, mostly toward the bottom of the screen. It sits under the
+ * characters and under the upper tiles (canopies, roofs).
+ *
+ * Letterbox: black bars slide in at the top and bottom while an Autorun event
+ * runs (turn off with the Auto Letterbox parameter), or when asked:
+ *   Cinema bars on        bars in (stay until "off" or "auto")
+ *   Cinema bars off       bars out
+ *   Cinema bars auto      back to automatic
  *
  * Grade presets: each tints the shadows and the highlights of the map and
  * sets its colour strength; they blend over a second when you change maps.
@@ -128,6 +163,10 @@
     var SUNBEAMS = num('Sunbeams', 0.7);
     var PARTICLES = num('Particles', 36);
     var FOG_COLOR = P['Fog Color'] || '#d4ddd6';
+    var CINEMATIC = num('Cinematic', 0.75);
+    var CONTACT = num('Contact Shadows', 0.5);
+    var LETTERBOX = num('Letterbox', 0.1);
+    var AUTO_BARS = P['Auto Letterbox'] !== 'false';
 
     // name -> shadow tint, highlight tint (multipliers), saturation, contrast
     var GRADES = {
@@ -205,7 +244,10 @@
     function enabled() { return ConfigManager.novaAtmosphere && !($gameSystem && $gameSystem._novaAtmosphereOff); }
 
     function meta() { return $dataMap ? $dataMap.meta : {}; }
+    window.NovaAtmosphere = window.NovaAtmosphere || { override: {} };
     function metaNum(key, fallback) {
+        var o = window.NovaAtmosphere.override;
+        if (o && o[key] !== undefined) return o[key];
         var m = meta();
         return m[key] !== undefined && m[key] !== true && !isNaN(Number(m[key])) ? Number(m[key]) : fallback;
     }
@@ -236,6 +278,7 @@
         'uniform float contrast;',
         'uniform vec3 gradeLow;',
         'uniform vec3 gradeHigh;',
+        'uniform float cine;',
         'const vec3 LUMA = vec3(0.299, 0.587, 0.114);',
         'vec3 tap(vec2 uv) { return texture2D(uSampler, clamp(uv, filterClamp.xy, filterClamp.zw)).rgb; }',
         'void main(void) {',
@@ -272,9 +315,19 @@
         '    col = mix(vec3(dot(col, LUMA)), col, saturation);',
         '    col = (col - 0.5) * contrast + 0.5;',
         '    col *= mix(gradeLow, gradeHigh, smoothstep(0.05, 0.85, dot(col, LUMA)));',
+        // cinematic: S-curve, cool shadows / warm highlights
+        '    if (cine > 0.0) {',
+        '        vec3 sc = clamp(col, 0.0, 1.0);',
+        '        col = mix(col, sc * sc * (3.0 - 2.0 * sc), cine * 0.4);',
+        '        float l = dot(col, LUMA);',
+        '        col *= mix(vec3(1.0), mix(vec3(0.92, 0.97, 1.06), vec3(1.03, 1.0, 0.96), smoothstep(0.15, 0.75, l)), cine);',
+        '    }',
         // vignette (round on a wide screen)
         '    vec2 v = (screen - 0.5) * vec2(screenSize.x / screenSize.y, 1.0) * 0.82;',
         '    col *= 1.0 - vignette * smoothstep(0.3, 0.85, length(v));',
+        // cinematic corners: darker toward the four corners, a little toward top and bottom
+        '    vec2 q = abs(screen - 0.5) * 2.0;',
+        '    col *= 1.0 - cine * (0.8 * smoothstep(0.7, 1.42, length(q)) + 0.2 * smoothstep(0.55, 1.0, q.y));',
         '    gl_FragColor = vec4(clamp(col, 0.0, 1.0), base.a);',
         '}'
     ].join('\n');
@@ -289,6 +342,7 @@
         this.uniforms.contrast = CONTRAST;
         this.uniforms.gradeLow = new Float32Array([1, 1, 1]);
         this.uniforms.gradeHigh = new Float32Array([1, 1, 1]);
+        this.uniforms.cine = 0;
         this._grade = null;
     }
     AtmosphereFilter.prototype = Object.create(PIXI.Filter.prototype);
@@ -305,7 +359,9 @@
     AtmosphereFilter.prototype.sync = function(instant) {
         var on = enabled(), u = this.uniforms;
         u.bloom = on ? metaNum('bloom', BLOOM) : 0;
-        u.tilt = on ? metaNum('tilt shift', TILT) : 0;
+        var cine = on ? metaNum('cinematic', CINEMATIC) : 0;
+        u.cine = mix(u.cine, cine, instant ? 1 : 0.05);
+        u.tilt = on ? metaNum('tilt shift', TILT) * (1 + 0.6 * cine) : 0;
         u.vignette = on ? metaNum('vignette', VIGNETTE) : 0;
         var t = gradeTarget(on), g = this._grade, f = instant || !g ? 1 : 0.05;
         if (!g) g = this._grade = { low: t.low.slice(), high: t.high.slice(), sat: t.sat, con: t.con };
@@ -654,6 +710,120 @@
     };
 
     //=========================================================================
+    // Contact shadows: a soft shadow on the walkable ground round every tile that
+    // blocks on all four sides. Drawn once per map at a quarter of the tile size
+    // (smoothing does the rest), it lives in the tilemap between the lower tiles
+    // and the characters.
+    //=========================================================================
+    var CS = 12;                                   // shadow pixels per tile
+    function isSolid(x, y) {
+        if (!$gameMap.isValid(x, y)) return false;
+        if ($gameMap.isBoatPassable(x, y) || $gameMap.isShipPassable(x, y)) return false;   // water
+        var empty = true;
+        for (var z = 0; z < 4; z++) if ($gameMap.tileId(x, y, z)) { empty = false; break; }
+        if (empty) return false;                   // the void round a dungeon
+        return [2, 4, 6, 8].every(function(d) { return !$gameMap.isPassable(x, y, d); });
+    }
+
+    function Sprite_NovaContact() { this.initialize.apply(this, arguments); }
+    Sprite_NovaContact.prototype = Object.create(Sprite.prototype);
+    Sprite_NovaContact.prototype.constructor = Sprite_NovaContact;
+    Sprite_NovaContact.prototype.initialize = function() {
+        Sprite.prototype.initialize.call(this);
+        this.z = 0.5;                              // above the lower tiles (0), below characters (1+)
+        this._strength = enabled() ? metaNum('contact shadows', CONTACT) : 0;
+        if (this._strength > 0 && $dataMap && $gameMap.tileset()) this.build();
+        this.scale.x = $gameMap.tileWidth() / CS;
+        this.scale.y = $gameMap.tileHeight() / CS;
+    };
+    Sprite_NovaContact.prototype.build = function() {
+        var w = $gameMap.width(), h = $gameMap.height();
+        if (w * h > 40000) return;                 // the world map: skip
+        var mask = document.createElement('canvas');
+        mask.width = w * CS; mask.height = h * CS;
+        var m = mask.getContext('2d'), solid = [], grid = [];
+        for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) if ((grid[y * w + x] = isSolid(x, y))) solid.push([x, y]);
+        // casters: walls, cliffs and roofs (A3/A4), and things two tiles wide or more. A small single thing (a sign,
+        // a pot, a grave) already has its shadow painted in its tile.
+        var at = function(x, y) { return x >= 0 && x < w && grid[y * w + x]; };
+        m.fillStyle = '#000';
+        solid.forEach(function(p) {
+            var x = p[0], y = p[1], wall = false;
+            for (var z = 0; z < 2; z++) { var t = $gameMap.tileId(x, y, z); if (t >= Tilemap.TILE_ID_A3 && t < Tilemap.TILE_ID_MAX) wall = true; }
+            if (wall || at(x - 1, y) || at(x + 1, y)) m.fillRect(x * CS, y * CS, CS, CS);
+        });
+        if (!solid.length) return;
+        var bmp = new Bitmap(w * CS, h * CS);
+        bmp.smooth = true;
+        var c = ctxOf(bmp);
+        // the shadow falls toward the bottom of the screen (light from above and in front): the solid shape moved
+        // down half a tile and blurred. No ring all round - round a small thing it would leave a pale square.
+        c.save();
+        c.filter = 'blur(' + Math.round(CS * 0.3) + 'px)';
+        c.globalAlpha = 0.9; c.drawImage(mask, CS * 0.08, CS * 0.5);
+        c.filter = 'blur(' + Math.round(CS * 0.5) + 'px)';
+        c.globalAlpha = 0.35; c.drawImage(mask, CS * 0.12, CS * 0.7);
+        c.restore();
+        // only on the ground, never on the thing itself - cut out every solid tile, with soft edges
+        var cut = document.createElement('canvas');
+        cut.width = mask.width; cut.height = mask.height;
+        var k = cut.getContext('2d');
+        k.fillStyle = '#000';
+        solid.forEach(function(p) { k.fillRect(p[0] * CS + 1, p[1] * CS + 1, CS - 2, CS - 2); });
+        c.save();
+        c.globalCompositeOperation = 'destination-out';
+        c.filter = 'blur(2px)';
+        c.drawImage(cut, 0, 0); c.drawImage(cut, 0, 0);
+        c.restore();
+        dirty(bmp);
+        this.bitmap = bmp;
+        this.opacity = Math.round(255 * Math.min(1, this._strength * 1.3));
+    };
+    Sprite_NovaContact.prototype.update = function() {
+        Sprite.prototype.update.call(this);
+        this.x = Math.round(-$gameMap.displayX() * $gameMap.tileWidth());
+        this.y = Math.round(-$gameMap.displayY() * $gameMap.tileHeight());
+    };
+
+    //=========================================================================
+    // Letterbox: black bars in cutscenes
+    //=========================================================================
+    function barsWanted() {
+        var mode = $gameSystem._novaBars || 'auto';
+        if (mode === 'on') return true;
+        if (mode === 'off' || !AUTO_BARS) return false;
+        var it = $gameMap._interpreter;
+        if (!it.isRunning()) return false;
+        var ev = it.eventId() > 0 && $gameMap.event(it.eventId());
+        return !!(ev && ev._trigger === 3);
+    }
+
+    function Sprite_NovaLetterbox() { this.initialize.apply(this, arguments); }
+    Sprite_NovaLetterbox.prototype = Object.create(Sprite.prototype);
+    Sprite_NovaLetterbox.prototype.constructor = Sprite_NovaLetterbox;
+    Sprite_NovaLetterbox.prototype.initialize = function() {
+        Sprite.prototype.initialize.call(this);
+        var bh = Math.max(1, Math.round(Graphics.height * LETTERBOX));
+        this._bh = bh;
+        this._t = barsWanted() ? 1 : 0;
+        this._top = new Sprite(new Bitmap(Graphics.width, bh));
+        this._bottom = new Sprite(new Bitmap(Graphics.width, bh));
+        this._top.bitmap.fillAll('#000000'); this._bottom.bitmap.fillAll('#000000');
+        this.addChild(this._top); this.addChild(this._bottom);
+        this.update();
+    };
+    Sprite_NovaLetterbox.prototype.update = function() {
+        Sprite.prototype.update.call(this);
+        if (LETTERBOX <= 0) { this.visible = false; return; }
+        var target = barsWanted() ? 1 : 0;
+        this._t += Math.max(-0.06, Math.min(0.06, target - this._t));
+        var e = this._t * this._t * (3 - 2 * this._t), off = Math.round(this._bh * (1 - e));
+        this.visible = this._t > 0.001;
+        this._top.y = -off;
+        this._bottom.y = Graphics.height - this._bh + off;
+    };
+
+    //=========================================================================
     // Hook into the map
     //=========================================================================
     var _createLowerLayer = Spriteset_Map.prototype.createLowerLayer;
@@ -667,6 +837,15 @@
         this._baseSprite.addChildAt(this._novaFog, idx);
         this._baseSprite.addChildAt(this._novaSunbeams, idx + 1);
         this._baseSprite.addChildAt(this._novaMotes, idx + 2);
+        this._novaContact = new Sprite_NovaContact();
+        this._tilemap.addChild(this._novaContact);
+    };
+
+    var _createUpperLayer = Spriteset_Map.prototype.createUpperLayer;
+    Spriteset_Map.prototype.createUpperLayer = function() {
+        _createUpperLayer.call(this);
+        this._novaLetterbox = new Sprite_NovaLetterbox();
+        this.addChild(this._novaLetterbox);
     };
 
     var _createToneChanger = Spriteset_Map.prototype.createToneChanger;
@@ -692,6 +871,11 @@
     var _pluginCommand = Game_Interpreter.prototype.pluginCommand;
     Game_Interpreter.prototype.pluginCommand = function(command, args) {
         _pluginCommand.call(this, command, args);
+        if (command.toLowerCase() === 'cinema' && String(args[0] || '').toLowerCase() === 'bars') {
+            var mode = String(args[1] || 'auto').toLowerCase();
+            $gameSystem._novaBars = mode === 'on' || mode === 'off' ? mode : 'auto';
+            return;
+        }
         if (command.toLowerCase() !== 'atmosphere') return;
         $gameSystem._novaAtmosphereOff = String(args[0] || '').toLowerCase() === 'off';
     };
