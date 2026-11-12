@@ -848,15 +848,35 @@ function fillFrom(x, y) {
 }
 
 function pickAt(x, y) {
+  const done = test => { revealInPalette(test); if (S.tool === 'pick') setTool('pen'); };
   for (const z of [3, 2]) {
     const id = at(x, y, z);
-    if (id) { setBrush({ type: 'tiles', ids: [[id]], w: 1, h: 1, label: describe(id) }); return; }
+    if (id) { setBrush({ type: 'tiles', ids: [[id]], w: 1, h: 1, label: describe(id) }); done(c => c.id === id); return; }
   }
   for (const z of [1, 0]) {
     const id = at(x, y, z);
-    if (isAuto(id)) { setBrush({ type: 'auto', kind: kindOf(id), w: 1, h: 1, label: describe(id) }); return; }
-    if (id) { setBrush({ type: 'tiles', ids: [[id]], w: 1, h: 1, ground: true, label: describe(id) }); return; }
+    if (isAuto(id)) { const kind = kindOf(id); setBrush({ type: 'auto', kind, w: 1, h: 1, label: describe(id) }); done(c => c.kind === kind); return; }
+    if (id) { setBrush({ type: 'tiles', ids: [[id]], w: 1, h: 1, ground: true, label: describe(id) }); done(c => c.id === id); return; }
   }
+}
+
+// Pipet: open the palette tab that holds the picked tile, select it there and scroll it into view - as if it
+// had been clicked in the palette. Sheets of other tilesets are opened as a tab first.
+function revealInPalette(test) {
+  const b = S.brush, id = b.type === 'auto' ? A1 + b.kind * 48 : b.ids[0][0];
+  if (b.type === 'auto' || (id >= A5 && id < A1)) { if (S.tab !== 'A') selectTab('A'); }
+  else if (isExt(id)) {
+    const e = extInfo(id).sheet; if (!e) return;
+    if (!(S.tab === 'X' && S.extSheet === e.slot)) {
+      if (S.pinned.some(p => p.slot === e.slot)) selectTab('X', e.slot); else pinSheet(e.slot);
+    }
+  } else if (id < 1024) { const k = 'BCDE'[Math.floor(id / 256)]; if (S.tab !== k) selectTab(k); }
+  const cell = palLayout().find(test);
+  if (!cell) { S.palSel = null; renderPalette(); return; }
+  S.palSel = { x0: cell.x, y0: cell.y, x1: cell.x, y1: cell.y };
+  renderPalette();
+  const wrap = $('palWrap'), t = T * S.palZoom, top = $('pal').getBoundingClientRect().top - wrap.getBoundingClientRect().top + wrap.scrollTop + cell.y * t;
+  if (top < wrap.scrollTop || top + t > wrap.scrollTop + wrap.clientHeight) wrap.scrollTop = top - (wrap.clientHeight - t) / 2;
 }
 
 function toggleShadow(x, y, qx, qy, on) {
