@@ -3,7 +3,7 @@
 #            sells a bed (the shared inn common event) and food and drink (the tavern shop).
 #   MAP069 - Lantern & Lily, upstairs: a corridor with three guest rooms off it, like a village inn - the party's room
 #            open, the other two taken.
-#   MAP070 - Lilydale Chapel: pews, the altar, stained glass; a plaque for the lady of the villa, who was born here.
+#   MAP070 - Lilydale Church: pews, the altar, stained glass; a plaque for the lady of the villa, who was born here.
 #   MAP071 - Thistle & Wick General Goods: the item shop (no weapons or armor in Lilydale).
 #   MAP072-074 - the elders' houses: Henrik (by his fire), Marta (her granddaughter at home), Bram (his wife).
 # Pots, barrels and crates marked as loot can be searched once each.
@@ -116,7 +116,7 @@ def inn_up():
     return r
 
 
-# =========================================================================== the chapel
+# =========================================================================== the church
 @reg(K.LILY_CHAPEL)
 def chapel():
     W, H = 15, 15
